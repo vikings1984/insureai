@@ -1,0 +1,221 @@
+{
+  "project": {
+    "name": "InsureScope",
+    "description_zh": "AI 驱动的保险信息聚合系统",
+    "description_en": "AI-Driven Insurance Information Aggregation System",
+    "language": ["zh", "en"],
+    "daily_report_time": "08:00",
+    "timezone": "Asia/Shanghai"
+  },
+
+  "ai": {
+    "provider": "openai",
+    "model": "gpt-4o",
+    "api_key_env": "OPENAI_API_KEY",
+    "base_url": "",
+    "temperature": 0.3,
+    "throttle_sec": 0,
+    "max_retries": 3,
+    "batch_size": 10
+  },
+
+  "translation": {
+    "enabled": true,
+    "provider": "zhipu",
+    "api_key_env": "ZHIPU_API_KEY",
+    "translate_overseas": true,
+    "source_languages": ["en"]
+  },
+
+  "scoring": {
+    "ai_score_threshold": 6.0,
+    "insurance_relevance_weight": 0.5,
+    "novelty_weight": 0.2,
+    "impact_weight": 0.2,
+    "quality_weight": 0.1,
+    "time_window_hours": 24
+  },
+
+  "categories": {
+    "regulation": {
+      "name_zh": "监管政策",
+      "name_en": "Regulation & Policy",
+      "description_zh": "银保监会/金融监管总局新规、合规要求、政策解读",
+      "keywords_zh": ["监管", "政策", "合规", "银保监", "金融监管", "处罚", "牌照", "偿付能力", "准备金", "通知", "管理办法"],
+      "keywords_en": ["regulation", "policy", "compliance", "CBIRC", "NFRA", "solvency", "penalty", "license"]
+    },
+    "product": {
+      "name_zh": "产品发布/更新",
+      "name_en": "Product Releases & Updates",
+      "description_zh": "保险新产品上线、产品升级、费率调整、创新产品",
+      "keywords_zh": ["新产品", "上线", "费率", "保费", "承保", "保险产品", "条款", "保障", "投保", "理赔服务"],
+      "keywords_en": ["product launch", "premium", "coverage", "underwriting", "policy", "new product", "riders"]
+    },
+    "industry": {
+      "name_zh": "行业动态",
+      "name_en": "Industry Dynamics",
+      "description_zh": "保险公司经营、市场格局、并购、人事变动、业绩",
+      "keywords_zh": ["保险行业", "市场份额", "并购", "重组", "上市", "业绩", "保费收入", "赔付率", "人事", "高管"],
+      "keywords_en": ["insurance industry", "market share", "M&A", "IPO", "revenue", "premium income", "loss ratio"]
+    },
+    "research": {
+      "name_zh": "论文研究",
+      "name_en": "Research & Papers",
+      "description_zh": "保险科技、精算研究、风险模型、AI+保险学术论文",
+      "keywords_zh": ["研究", "论文", "精算", "模型", "风险", "保险科技", "InsurTech", "定价", "大数据", "人工智能"],
+      "keywords_en": ["research", "paper", "actuarial", "risk model", "InsurTech", "pricing", "AI insurance", "deep learning"]
+    },
+    "claims": {
+      "name_zh": "理赔与案例",
+      "name_en": "Claims & Cases",
+      "description_zh": "理赔案例、纠纷判例、反欺诈、消费者权益",
+      "keywords_zh": ["理赔", "拒赔", "纠纷", "诉讼", "判例", "欺诈", "反欺诈", "消费者", "投诉", "调解"],
+      "keywords_en": ["claims", "denial", "dispute", "litigation", "fraud", "anti-fraud", "consumer", "complaint"]
+    }
+  },
+
+  "sources": {
+    "search": {
+      "enabled": true,
+      "provider": "serpapi",
+      "api_key_env": "SERPAPI_API_KEY",
+      "engine": "google",
+      "num_results_per_query": 10,
+      "language": "zh-CN",
+      "country": "cn",
+      "time_range": "d",
+      "keywords": [
+        "保险 监管 政策 金融监管总局",
+        "保险 行业动态 市场 最新",
+        "保险 科技 InsurTech 人工智能",
+        "保险 产品 新规 费率调整",
+        "保险 理赔 纠纷 判例",
+        "车险 健康险 寿险 最新"
+      ]
+    },
+    "akshare": {
+      "enabled": true,
+      "data_sources": [
+        "macro_data",
+        "insurance_stocks",
+        "concept_stocks",
+        "stock_news"
+      ],
+      "update_interval_hours": 6
+    },
+    "rss": [
+      {
+        "name": "Insurance Journal",
+        "url": "https://www.insurancejournal.com/feed/",
+        "category_hint": "industry",
+        "enabled": true,
+        "language": "en",
+        "translate": true
+      },
+      {
+        "name": "Reinsurance News",
+        "url": "https://www.reinsurancene.ws/feed/",
+        "category_hint": "industry",
+        "enabled": true,
+        "language": "en",
+        "translate": true
+      },
+      {
+        "name": "Artemis - Insurance Linked Securities",
+        "url": "https://www.artemis.bm/feed/",
+        "category_hint": "industry",
+        "enabled": true,
+        "language": "en",
+        "translate": true
+      },
+      {
+        "name": "Business Insurance",
+        "url": "https://www.businessinsurance.com/feed/",
+        "category_hint": "industry",
+        "enabled": true,
+        "language": "en",
+        "translate": true
+      }
+    ],
+    "reddit": {
+      "enabled": true,
+      "subreddits": ["Insurance", "InsuranceProfessional", "actuary", "InsuranceTech"],
+      "min_score": 10,
+      "fetch_top_posts": 20
+    },
+    "hackernews": {
+      "enabled": true,
+      "fetch_top_stories": 30,
+      "min_score": 50,
+      "insurance_keywords": ["insurance", "insurtech", "actuarial", "claim", "underwriting", "solvency"]
+    },
+    "github": [
+      {
+        "type": "repo_releases",
+        "owner": "open-underwriting",
+        "repo": "open-underwriting",
+        "enabled": true
+      }
+    ],
+    "wechat": {
+      "enabled": true,
+      "accounts": [
+        "中国保险报",
+        "慧保天下",
+        "保险一哥",
+        "13个精算师",
+        "保观",
+        "分子实验室"
+      ],
+      "rss_bridge_url_env": "WECHAT_RSS_BRIDGE_URL"
+    }
+  },
+
+  "filtering": {
+    "ai_score_threshold": 6.0,
+    "insurance_relevance_min": 0.4,
+    "time_window_hours": 24,
+    "max_items_per_category": 15,
+    "exclude_keywords_zh": ["招聘", "培训班", "广告", "课程推广"],
+    "exclude_keywords_en": ["job posting", "hiring", "training course", "advertisement"]
+  },
+
+  "enrichment": {
+    "enabled": true,
+    "search_provider": "duckduckgo",
+    "max_concepts_per_item": 3,
+    "score_threshold_for_enrichment": 7.0
+  },
+
+  "output": {
+    "github_pages": {
+      "enabled": true,
+      "docs_dir": "docs"
+    },
+    "webhook": {
+      "enabled": false,
+      "url_env": "INSURE_WEBHOOK_URL",
+      "platform": "feishu",
+      "delivery": "summary"
+    },
+    "email": {
+      "enabled": false,
+      "smtp_server": "",
+      "smtp_port": 465,
+      "email_address": "",
+      "password_env": "EMAIL_PASSWORD"
+    },
+    "api": {
+      "enabled": true,
+      "host": "0.0.0.0",
+      "port": 8080
+    },
+    "rss_output": {
+      "enabled": true,
+      "feed_title_zh": "InsureScope 保险资讯",
+      "feed_title_en": "InsureScope Insurance News",
+      "feed_description_zh": "AI 驱动的每日保险信息聚合",
+      "feed_description_en": "AI-Curated Daily Insurance Information Digest"
+    }
+  }
+}
