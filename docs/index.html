@@ -1005,150 +1005,17 @@
         </div>
 
         <div class="changelog-date-group">
-          <div class="changelog-date">2026 年 6 月 24 日 周三</div>
-
-          <div class="changelog-entry">
-            <div class="changelog-meta">
-              <span class="changelog-time">23:00</span>
-              <span class="changelog-tag tag-optimize">优化</span>
-            </div>
-            <div class="changelog-title">信源提报和反馈接入 GitHub Issues，去掉了国外 RSS 源</div>
-            <div class="changelog-body">
-              <p>之前信源提报和反馈表单提交后数据只存在浏览器本地，团队收不到。这次把提交流程接入了 GitHub Issues，同时暂时关闭了国外保险 RSS 源，先聚焦中文资讯。</p>
-              <ul>
-                <li><strong>信源提报 → GitHub Issues</strong>：提交后自动跳转 GitHub Issues 页面，表单内容预填到 Issue 标题和正文，团队直接收到通知</li>
-                <li><strong>反馈 → GitHub Issues</strong>：同上，反馈类型、内容、联系方式自动填入 Issue 模板</li>
-                <li><strong>暂时关闭国外 RSS</strong>：Insurance Journal、Reinsurance News、Business Insurance 三个英文源暂时关闭，后续有需求再开放</li>
-                <li><strong>推荐理由全面优化</strong>：之前展示的是「基于关键词匹配评分: 分类=product, 相关度=0.82」，现在改成自然语言描述，如「产品创新：新能源车险改革方案出台，反映了保险产品设计与市场需求的新方向」</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="changelog-entry">
-            <div class="changelog-meta">
-              <span class="changelog-time">16:00</span>
-              <span class="changelog-tag tag-update">更新</span>
-            </div>
-            <div class="changelog-title">数据自动更新方案上线，Cloudflare Pages 部署就绪</div>
-            <div class="changelog-body">
-              <p>之前每次更新数据都需要手动跑脚本，现在接入了 GitHub Actions 定时任务，每天自动采集、自动部署。</p>
-              <ul>
-                <li><strong>定时采集</strong>：每天北京时间 8:00，GitHub Actions 自动运行采集脚本，从中文保险信息源抓取最新资讯</li>
-                <li><strong>自动评分分类</strong>：基于关键词匹配自动分配监管政策、产品发布、行业动态、论文研究、理赔案例五大分类</li>
-                <li><strong>自动部署</strong>：采集完成后自动 git commit & push，Cloudflare Pages 检测到变更后 30 秒内上线</li>
-                <li><strong>手动触发</strong>：支持在 GitHub Actions 页面手动触发指定日期的采集</li>
-              </ul>
-            </div>
-          </div>
+          <div class="changelog-date">2026 年 6 月 25 日 周三</div>
 
           <div class="changelog-entry">
             <div class="changelog-meta">
               <span class="changelog-time">10:00</span>
               <span class="changelog-tag tag-announce">公告</span>
             </div>
-            <div class="changelog-title">InsureAI 品牌正式上线，原 InsureScope 更名为 InsureAI</div>
+            <div class="changelog-title">InsureAI 正式上线</div>
             <div class="changelog-body">
-              <p>从 InsureScope 更名为 InsureAI，全新 Logo 和视觉体系上线。这次更名是为了让品牌名更直接地传达「AI + Insurance」的核心定位。</p>
-              <ul>
-                <li><strong>全新 Logo</strong>：Hex Mesh 蜂窝网格设计，六边形象征分布式保险网络，中心三角代表 AI 核心聚合，橙红渐变配色</li>
-                <li><strong>品牌色</strong>：从金色改为活力橙红 #F97316 → #EF4444，更现代、更有科技感</li>
-                <li><strong>全站统一</strong>：侧边栏 Logo、Favicon、页面标题、配置文件中所有 InsureScope 引用已全部替换为 InsureAI</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="changelog-date-group">
-          <div class="changelog-date">2026 年 6 月 12 日 周五</div>
-
-          <div class="changelog-entry">
-            <div class="changelog-meta">
-              <span class="changelog-time">15:00</span>
-              <span class="changelog-tag tag-optimize">修复</span>
-            </div>
-            <div class="changelog-title">修复页面导航切换失效问题</div>
-            <div class="changelog-body">
-              <p>精选、全部、日报、更新日志等页面点击侧边栏后无法切换——所有页面内容同时显示在屏幕上，看起来像是卡住了。</p>
-              <ul>
-                <li><strong>根因</strong>：.page 元素缺少 CSS 显示/隐藏规则。switchPage 函数通过切换 .active 类来控制页面，但 CSS 中只有 .page-header 的样式，没有 .page 的 display 控制</li>
-                <li><strong>修复</strong>：补上 .page { display: none } 和 .page.active { display: block } 两条规则，7 个页面全部切换正常</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="changelog-date-group">
-          <div class="changelog-date">2026 年 6 月 11 日 周三</div>
-
-          <div class="changelog-entry">
-            <div class="changelog-meta">
-              <span class="changelog-time">18:00</span>
-              <span class="changelog-tag tag-update">更新</span>
-            </div>
-            <div class="changelog-title">7 个完整页面 + 侧边栏导航架构上线</div>
-            <div class="changelog-body">
-              <p>从单页扩展为完整的多页应用，覆盖保险资讯阅读的全场景。为什么做这个——一个资讯聚合平台，如果只有信息流是不够的，用户还需要日报回顾、信源共建、更新透明、反馈渠道。</p>
-              <ul>
-                <li><strong>精选</strong>：AI 评分 + 推荐理由 + 时间线布局，作为首页核心入口</li>
-                <li><strong>全部保险动态</strong>：纯时间排序，无评分标签，完整的信息流，适合想浏览全貌的用户</li>
-                <li><strong>保险日报</strong>：按天汇总，每日统计卡片，适合快速扫读当天的保险行业动态</li>
-                <li><strong>信源提报</strong>：表单页面 + 优质信源推荐，开放共建，让社区一起丰富信息源</li>
-                <li><strong>关于</strong>：项目介绍 + 核心能力 + 数据概览，让新访客 5 秒内知道这是谁做的</li>
-                <li><strong>更新日志</strong>：版本历史记录，透明迭代，每次改动都有交代</li>
-                <li><strong>反馈</strong>：类型选择 + 内容表单，收集用户声音</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="changelog-date-group">
-          <div class="changelog-date">2026 年 6 月 10 日 周二</div>
-
-          <div class="changelog-entry">
-            <div class="changelog-meta">
-              <span class="changelog-time">09:00</span>
-              <span class="changelog-tag tag-announce">公告</span>
-            </div>
-            <div class="changelog-title">项目启动：AI 驱动的保险行业智能资讯聚合</div>
-            <div class="changelog-body">
-              <p>保险行业从业者每天面对海量信息——监管政策、产品发布、行业动态、研究洞察、理赔案例，分散在数十个网站和公众号里。InsureAI 的初衷就是把这些信息聚合起来，用 AI 筛选出最有价值的内容。</p>
-              <ul>
-                <li><strong>定位</strong>：AI 驱动的保险行业智能资讯聚合平台，不做原创，只做精选和聚合</li>
-                <li><strong>架构</strong>：纯静态 HTML + CSS + JS，零依赖单文件，降低部署门槛，方便 GitHub Pages / Cloudflare Pages 托管</li>
-                <li><strong>数据</strong>：预置 15 条保险行业动态数据用于演示，后续接入真实信息源</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="changelog-entry">
-            <div class="changelog-meta">
-              <span class="changelog-time">02:00</span>
-              <span class="changelog-tag tag-optimize">优化</span>
-            </div>
-            <div class="changelog-title">移动端底部导航与视觉动效</div>
-            <div class="changelog-body">
-              <p>补齐手机端阅读体验，之前手机版只是把桌面版挤进了小屏幕。</p>
-              <ul>
-                <li><strong>底部导航</strong>：768px 以下屏幕显示固定底部导航栏（精选/全部/日报/提报/关于），拇指够得着</li>
-                <li><strong>触摸优化</strong>：按钮点击反馈、卡片悬停动效、评分标签放大效果</li>
-                <li><strong>适配</strong>：搜索栏垂直排列、时间线隐藏、字体大小调整</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="changelog-entry">
-            <div class="changelog-meta">
-              <span class="changelog-time">01:00</span>
-              <span class="changelog-tag tag-optimize">优化</span>
-            </div>
-            <div class="changelog-title">页面加载与数据容错优化</div>
-            <div class="changelog-body">
-              <p>解决数据加载失败时页面空白的问题——fetch 外部 JSON 时如果网络不通，页面直接白屏，体验很差。</p>
-              <ul>
-                <li><strong>加载动画</strong>：页面初始化时显示旋转加载指示器，避免空白等待</li>
-                <li><strong>数据容错</strong>：内嵌备份数据，fetch 失败时自动降级，确保页面始终可展示</li>
-                <li><strong>缓存清除</strong>：fetch 添加时间戳参数，避免浏览器缓存旧数据</li>
-              </ul>
+              <p>InsureAI — AI 驱动的保险行业智能资讯聚合平台，今日正式上线。</p>
+              <p>每日从监管机构、保险公司、行业媒体、研究机构等公开渠道中，筛选出对保险从业者最有价值的内容，覆盖监管政策、产品发布、行业动态、研究洞察、理赔案例五大分类。</p>
             </div>
           </div>
         </div>
