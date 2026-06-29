@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
-"""独立采集脚本 - 收集 RSS 数据 + 搜索引擎模拟数据，生成日报
-在 GitHub Actions 中运行，不依赖外部 API Key"""
+"""InsureAI 数据采集脚本
+从中国保险行业协会等真实信息源采集新闻，生成日报
+- 优先真实采集，失败时降级到 fallback 数据确保网站不空白
+- 在 GitHub Actions 中运行，不依赖外部 API Key
+"""
 
 import asyncio
 import json
@@ -10,19 +13,18 @@ import random
 import sys
 from datetime import date, datetime, timedelta
 from pathlib import Path
+from urllib.parse import urljoin
 
 import httpx
 import feedparser
 
-# 自动检测项目根目录
-# 优先级: GITHUB_WORKSPACE > 脚本所在目录向上查找(pyproject.toml) > 当前目录
+# ===== 项目路径 =====
 def _find_project_root():
     if "GITHUB_WORKSPACE" in os.environ:
         return Path(os.environ["GITHUB_WORKSPACE"])
-    # 从脚本所在目录向上查找包含 pyproject.toml 的目录
     p = Path(__file__).resolve().parent
     while p != p.parent:
-        if (p / "pyproject.toml").exists() or (p / "docs" / "index.html").exists():
+        if (p / "docs" / "index.html").exists():
             return p
         p = p.parent
     return Path.cwd()
@@ -30,19 +32,36 @@ def _find_project_root():
 PROJECT_ROOT = _find_project_root()
 DATA_DIR = PROJECT_ROOT / "data"
 SUMMARIES_DIR = DATA_DIR / "summaries"
-RSS_DIR = DATA_DIR / "rss"
 DOCS_POSTS = PROJECT_ROOT / "docs" / "_posts"
 
 SUMMARIES_DIR.mkdir(parents=True, exist_ok=True)
-RSS_DIR.mkdir(parents=True, exist_ok=True)
 DOCS_POSTS.mkdir(parents=True, exist_ok=True)
 
-# RSS 源配置（暂时关闭国外信息源，后续开放）
-RSS_SOURCES = [
-    # 后续开放: Insurance Journal, Reinsurance News, Business Insurance
+# ===== 真实信息源配置 =====
+WEB_SOURCES = [
+    {
+        "name": "中国保险行业协会",
+        "list_url": "https://www.iachina.cn/col/col22/index.html",
+        "base_url": "https://www.iachina.cn",
+        "category_hint": "industry",
+    },
+    {
+        "name": "中国保险行业协会",
+        "list_url": "https://www.iachina.cn/col/col23/index.html",  # 协会公告
+        "base_url": "https://www.iachina.cn",
+        "category_hint": "regulation",
+    },
+    {
+        "name": "中国保险行业协会",
+        "list_url": "https://www.iachina.cn/col/col24/index.html",  # 行业动态
+        "base_url": "https://www.iachina.cn",
+        "category_hint": "industry",
+    },
 ]
 
-# 来源机构官网映射
+RSS_SOURCES = []  # 预留 RSS 源
+
+# ===== 降级数据（真实采集全部失败时使用）=====
 SOURCE_URLS = {
     "金融监管总局": "https://www.nfra.gov.cn/",
     "中国银行保险报": "https://www.cbimc.cn/",
@@ -50,11 +69,10 @@ SOURCE_URLS = {
     "InsurTech Insights": "https://www.insurtechinsights.com/",
 }
 
-# 日期由运行时动态填充
 _TODAY = date.today().isoformat()
 _YESTERDAY = (date.today() - timedelta(days=1)).isoformat()
 
-MOCK_SEARCH_RESULTS = [
+FALLBACK_DATA = [
     {
         "title": "金融监管总局发布《保险公司偿付能力监管规则》修订版",
         "url": SOURCE_URLS["金融监管总局"],
@@ -127,7 +145,7 @@ MOCK_SEARCH_RESULTS = [
     },
 ]
 
-# 分类关键词映射
+# ===== 分类与评分（保持不变）=====
 CATEGORY_KEYWORDS = {
     "regulation": ["监管", "政策", "合规", "银保监", "金融监管", "处罚", "牌照", "偿付能力", "准备金", "通知", "管理办法", "约谈", "新规"],
     "product": ["产品", "上线", "费率", "保费", "承保", "保险产品", "条款", "保障", "投保", "车险", "健康险", "寿险", "养老金"],
@@ -138,7 +156,6 @@ CATEGORY_KEYWORDS = {
 
 
 def assign_category(title: str, content: str) -> str:
-    """基于关键词匹配分配分类"""
     text = (title + " " + content).lower()
     scores = {}
     for cat, keywords in CATEGORY_KEYWORDS.items():
@@ -149,12 +166,9 @@ def assign_category(title: str, content: str) -> str:
 
 
 def generate_reason(item: dict) -> str:
-    """生成自然语言的推荐理由，替代技术性评分描述"""
     title = item["title"]
     category = item.get("category", "industry")
-    source = item.get("source_name", "")
-    score = item.get("ai_score", 0)
-    
+
     reasons = {
         "regulation": [
             f"监管动态：{title[:20]}，涉及行业合规与风险管理，值得关注。",
@@ -182,42 +196,124 @@ def generate_reason(item: dict) -> str:
             f"消费者权益：{title[:20]}，对了解保险服务体验有参考价值。",
         ],
     }
-    
+
     pool = reasons.get(category, reasons["industry"])
-    # 使用标题哈希来选一个稳定的推荐理由
     idx = sum(ord(c) for c in title) % len(pool)
     return pool[idx]
 
 
 def assign_score(title: str, content: str, source_name: str) -> tuple:
-    """基于关键词数量和质量分配模拟评分"""
     text = (title + " " + content).lower()
-    # 计算关键词命中数
     all_keywords = [kw for kws in CATEGORY_KEYWORDS.values() for kw in kws]
     kw_count = sum(1 for kw in all_keywords if kw.lower() in text)
-    
-    # 高权威来源加分
+
     authority_bonus = 0
-    if any(s in source_name for s in ["金融监管总局", "中国银行保险报", "Insurance Journal"]):
+    if any(s in source_name for s in ["金融监管总局", "中国银行保险报", "保险行业协会"]):
         authority_bonus = 1.5
-    
-    # 内容长度加分
+
     length_bonus = min(len(content) / 500, 2.0)
-    
+
     base = 5.0 + kw_count * 0.4 + authority_bonus + length_bonus
     score = min(round(base + random.uniform(-0.3, 0.3), 1), 10.0)
     relevance = min(round(0.4 + kw_count * 0.06, 2), 1.0)
-    
+
     return score, relevance
 
 
+# ===== 真实采集：网页爬取 =====
+async def fetch_web_source(source: dict, client: httpx.AsyncClient) -> list[dict]:
+    """爬取网站新闻列表页，提取标题、链接、日期"""
+    try:
+        resp = await client.get(source["list_url"])
+        resp.raise_for_status()
+        html = resp.text
+
+        items = []
+        # iachina.cn TRS WCM: 提取 /art/YYYY/M/D/art_XX_XXXXX.html 格式的链接
+        links = re.findall(
+            r'href="(/art/\d+/\d+/\d+/art_\d+_\d+\.html)"[^>]*>([^<]+)',
+            html
+        )
+
+        seen_urls = set()
+        for url, title in links[:15]:
+            title = title.strip()
+            if not title or len(title) < 5:
+                continue
+            full_url = urljoin(source["base_url"], url)
+            if full_url in seen_urls:
+                continue
+            seen_urls.add(full_url)
+
+            # 从 URL 提取日期: /art/2026/6/22/art_22_109097.html
+            date_match = re.search(r'/art/(\d+)/(\d+)/(\d+)/', url)
+            if date_match:
+                published_at = f"{date_match.group(1)}-{int(date_match.group(2)):02d}-{int(date_match.group(3)):02d}"
+            else:
+                published_at = date.today().isoformat()
+
+            items.append({
+                "title": title,
+                "url": full_url,
+                "content": title,  # 先用标题，后续可能抓取详情
+                "source_name": source["name"],
+                "source_type": "web",
+                "published_at": published_at,
+                "category_hint": source.get("category_hint", ""),
+                "language": "zh",
+            })
+
+        return items
+    except Exception as e:
+        print(f"  ⚠️ {source['name']} ({source['list_url']}): {e}")
+        return []
+
+
+async def fetch_article_detail(url: str, client: httpx.AsyncClient) -> str:
+    """获取单篇文章的摘要内容"""
+    try:
+        resp = await client.get(url)
+        resp.raise_for_status()
+        html = resp.text
+
+        # TRS WCM 正文提取（多种选择器尝试）
+        for pattern in [
+            r'class="TRS_Editor"[^>]*>(.*?)</div>',
+            r'class="con_next"[^>]*>(.*?)</div>',
+            r'id="zoom"[^>]*>(.*?)</div>',
+            r'class="article-content"[^>]*>(.*?)</div>',
+            r'class="content"[^>]*>(.*?)</div>',
+        ]:
+            match = re.search(pattern, html, re.S)
+            if match:
+                text = re.sub(r'<[^>]+>', '', match.group(1)).strip()
+                text = re.sub(r'\s+', ' ', text)
+                if len(text) > 30:
+                    return clean_text(text[:500])
+
+        # 降级：提取所有段落
+        paras = re.findall(r'<p[^>]*>(.*?)</p>', html, re.S)
+        text = ' '.join(re.sub(r'<[^>]+>', '', p).strip() for p in paras if len(re.sub(r'<[^>]+>', '', p).strip()) > 20)
+        return clean_text(text[:500]) if text else ""
+    except Exception:
+        return ""
+
+
+def clean_text(text: str) -> str:
+    """清理 HTML 实体和多余空白"""
+    import html as html_module
+    text = html_module.unescape(text)  # &nbsp; &amp; 等
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
+
+
+# ===== RSS 采集 =====
 async def fetch_rss(source: dict, client: httpx.AsyncClient) -> list[dict]:
-    """从单个 RSS 源采集"""
     try:
         resp = await client.get(source["url"])
         resp.raise_for_status()
         feed = feedparser.parse(resp.text)
-        
+
         items = []
         for entry in feed.entries[:15]:
             content = ""
@@ -225,17 +321,13 @@ async def fetch_rss(source: dict, client: httpx.AsyncClient) -> list[dict]:
                 content = entry.summary
             elif hasattr(entry, "content"):
                 content = entry.content[0].value if entry.content else ""
-            
-            # 清理 HTML 标签
             content = re.sub(r'<[^>]+>', '', content)[:2000]
-            title = getattr(entry, "title", "Untitled")
-            # 清理标题中的 HTML
-            title = re.sub(r'<[^>]+>', '', title)
-            
+            title = re.sub(r'<[^>]+>', '', getattr(entry, "title", "Untitled"))
+
             published = None
             if hasattr(entry, "published_parsed") and entry.published_parsed:
                 published = datetime(*entry.published_parsed[:6])
-            
+
             items.append({
                 "title": title,
                 "url": getattr(entry, "link", ""),
@@ -252,44 +344,79 @@ async def fetch_rss(source: dict, client: httpx.AsyncClient) -> list[dict]:
         return []
 
 
-async def collect_all() -> list[dict]:
-    """采集所有数据源"""
+# ===== 采集主流程 =====
+async def collect_all() -> tuple[list[dict], bool]:
+    """采集所有数据源，返回 (items, is_real)"""
     all_items = []
-    
+    real_count = 0
+
     # 1. RSS 采集
-    print("📡 RSS 采集...")
-    async with httpx.AsyncClient(timeout=20, follow_redirects=True) as client:
-        for source in RSS_SOURCES:
-            print(f"  获取 {source['name']}...")
-            items = await fetch_rss(source, client)
+    if RSS_SOURCES:
+        print("📡 RSS 采集...")
+        async with httpx.AsyncClient(timeout=20, follow_redirects=True) as client:
+            for source in RSS_SOURCES:
+                print(f"  获取 {source['name']}...")
+                items = await fetch_rss(source, client)
+                all_items.extend(items)
+                real_count += len(items)
+                print(f"    ✅ {len(items)} 条")
+
+    # 2. 网页爬取（真实采集）
+    print("🌐 网页爬取（真实数据源）...")
+    headers = {
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
+    }
+    async with httpx.AsyncClient(timeout=15, follow_redirects=True, headers=headers) as client:
+        for source in WEB_SOURCES:
+            print(f"  爬取 {source['name']}...")
+            items = await fetch_web_source(source, client)
             all_items.extend(items)
+            real_count += len(items)
             print(f"    ✅ {len(items)} 条")
-    
-    # 2. 搜索引擎模拟数据
-    print("🔍 搜索引擎采集（模拟数据）...")
-    for item in MOCK_SEARCH_RESULTS:
-        all_items.append({
-            "title": item["title"],
-            "url": item["url"],
-            "content": item["snippet"],
-            "source_name": item["source"],
-            "source_type": "search",
-            "published_at": item["date"],
-            "category_hint": "",
-            "language": "zh",
-        })
-    print(f"    ✅ {len(MOCK_SEARCH_RESULTS)} 条")
-    
-    return all_items
+
+        # 3. 获取文章详情（限前 15 条，控制请求量）
+        if all_items:
+            print(f"📝 获取文章详情（前 {min(15, len(all_items))} 篇）...")
+            detail_count = 0
+            for item in all_items[:15]:
+                if item.get("source_type") == "web" and item.get("url"):
+                    detail = await fetch_article_detail(item["url"], client)
+                    if detail:
+                        item["content"] = detail
+                        detail_count += 1
+            print(f"    ✅ {detail_count} 篇获取到摘要")
+
+    # 4. 如果真实采集失败，降级到 fallback 数据
+    if real_count == 0:
+        print("⚠️ 真实采集未获取到数据，启用降级数据...")
+        for item in FALLBACK_DATA:
+            all_items.append({
+                "title": item["title"],
+                "url": item["url"],
+                "content": item["snippet"],
+                "source_name": item["source"],
+                "source_type": "fallback",
+                "published_at": item["date"],
+                "category_hint": "",
+                "language": "zh",
+            })
+        print(f"    ✅ {len(FALLBACK_DATA)} 条降级数据")
+        return all_items, False
+
+    print(f"\n📥 共采集 {len(all_items)} 条资讯（真实采集 {real_count} 条）")
+    return all_items, True
 
 
 def process_items(items: list[dict]) -> list[dict]:
-    """为每条资讯分配分类和评分"""
     for item in items:
-        title = item["title"]
-        content = item["content"]
+        title = clean_text(item["title"])
+        content = clean_text(item["content"])
+        item["title"] = title
+        item["content"] = content
         source = item["source_name"]
-        
+
         item["category"] = item.get("category_hint") or assign_category(title, content)
         score, relevance = assign_score(title, content, source)
         item["ai_score"] = score
@@ -297,25 +424,21 @@ def process_items(items: list[dict]) -> list[dict]:
         item["ai_tags"] = [kw for kw in CATEGORY_KEYWORDS.get(item["category"], [])[:3] if kw.lower() in (title + content).lower()]
         item["ai_summary"] = content[:120] + "..." if len(content) > 120 else content
         item["ai_reason"] = generate_reason(item)
-    
+
     return items
 
 
-def generate_output(items: list[dict], target_date: str):
-    """生成日报文件"""
-    # 按分数排序
+def generate_output(items: list[dict], target_date: str, is_real: bool):
     items.sort(key=lambda x: x.get("ai_score", 0), reverse=True)
-    
-    # 按分类分组
+
     by_category = {}
     for item in items:
         cat = item.get("category", "industry")
         by_category.setdefault(cat, []).append(item)
-    
-    # 精选（分数>=6.0）
+
     curated = [i for i in items if i.get("ai_score", 0) >= 6.0]
     highlights = [i for i in curated if i.get("ai_score", 0) >= 8.5]
-    
+
     cat_names = {
         "regulation": "🏛️ 监管政策",
         "product": "📦 产品发布",
@@ -323,8 +446,9 @@ def generate_output(items: list[dict], target_date: str):
         "research": "🔬 论文研究",
         "claims": "⚖️ 理赔案例",
     }
-    
+
     # ===== 生成中文 Markdown =====
+    source_tag = "真实采集" if is_real else "降级数据"
     zh_content = f"""---
 layout: daily
 title: "InsureAI 保险日报 - {target_date}"
@@ -333,7 +457,7 @@ lang: zh
 ---
 # 📋 InsureAI 保险日报
 
-**{target_date}** · AI 筛选自 4 个信息源 · 从 {len(items)} 条资讯中精选 **{len(curated)}** 条重要内容
+**{target_date}** · {source_tag} · 从 {len(items)} 条资讯中精选 **{len(curated)}** 条重要内容
 
 ---
 
@@ -372,7 +496,7 @@ lang: zh
 """
 
     zh_content += f"""
-*InsureAI — AI 驱动的保险行业智能资讯 · 共 {len(curated)} 条精选资讯*
+*InsureAI — AI 驱动的保险行业智能资讯 · 共 {len(curated)} 条精选资讯 · 数据来源: {source_tag}*
 """
 
     # ===== 生成英文 Markdown =====
@@ -384,7 +508,7 @@ lang: en
 ---
 # 📋 InsureAI Insurance Daily
 
-**{target_date}** · AI-curated from 4 sources · {len(curated)} notable items selected from {len(items)}
+**{target_date}** · {'Real collection' if is_real else 'Fallback data'} · {len(curated)} notable items selected from {len(items)}
 
 ---
 
@@ -428,32 +552,30 @@ lang: en
     zh_path = SUMMARIES_DIR / f"{target_date}-zh.md"
     en_path = SUMMARIES_DIR / f"{target_date}-en.md"
     json_path = SUMMARIES_DIR / f"{target_date}.json"
-    
+
     zh_path.write_text(zh_content, encoding="utf-8")
     en_path.write_text(en_content, encoding="utf-8")
     json_path.write_text(json.dumps(items, ensure_ascii=False, indent=2), encoding="utf-8")
-    
-    # 复制到 docs/_posts/
+
     docs_zh = DOCS_POSTS / f"{target_date}-zh.md"
     docs_en = DOCS_POSTS / f"{target_date}-en.md"
     docs_zh.write_text(zh_content, encoding="utf-8")
     docs_en.write_text(en_content, encoding="utf-8")
-    
+
     print(f"\n📄 中文日报: {zh_path}")
     print(f"📄 英文日报: {en_path}")
     print(f"📄 JSON数据: {json_path}")
     print(f"📄 Jekyll副本: {docs_zh}, {docs_en}")
-    
+
     # ===== 更新 data.json =====
     data_json_path = PROJECT_ROOT / "docs" / "data.json"
     try:
         data = json.loads(data_json_path.read_text(encoding="utf-8")) if data_json_path.exists() else {"news": [], "sources": [], "days": {}}
         if "days" not in data:
             data["days"] = {}
-    except:
+    except Exception:
         data = {"news": [], "sources": [], "days": {}}
-    
-    # 将采集数据转换为 index.html 兼容的 data.news 格式
+
     new_news = []
     for i, item in enumerate(curated):
         tags = item.get("ai_tags", [])
@@ -464,16 +586,16 @@ lang: en
             "title": item["title"],
             "summary": item.get("content", "")[:300],
             "source_name": item["source_name"],
-            "source_type": item.get("source_type", "rss"),
+            "source_type": item.get("source_type", "web"),
             "source_url": item.get("url", "#"),
-            "ai_score": int(item.get("ai_score", 0) * 10),  # 0-10 → 0-100
+            "ai_score": int(item.get("ai_score", 0) * 10),
             "tags": tags,
             "category": item.get("category", "industry"),
             "published_at": item.get("published_at", target_date + "T08:00:00"),
             "reason": item.get("ai_reason", ""),
         })
     data["news"] = new_news
-    
+
     data["days"][target_date] = {
         "total": len(items),
         "curated": len(curated),
@@ -483,12 +605,13 @@ lang: en
         "sources": list(set(i["source_name"] for i in items)),
     }
     data["last_updated"] = datetime.now().isoformat()
+    data["data_source"] = "real" if is_real else "fallback"
     data_json_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"📊 数据索引已更新: {data_json_path}")
-    
+
     # 统计
     print(f"\n{'='*50}")
-    print(f"📊 采集统计")
+    print(f"📊 采集统计 ({'真实采集' if is_real else '降级数据'})")
     print(f"{'='*50}")
     print(f"  总计: {len(items)} 条")
     print(f"  精选: {len(curated)} 条 (≥6.0)")
@@ -503,20 +626,15 @@ async def main():
     target_date = date.today().isoformat()
     print(f"\n🚀 InsureAI 数据采集 Pipeline")
     print(f"📅 日期: {target_date}\n")
-    
-    # Step 1: 采集
-    items = await collect_all()
-    print(f"\n📥 共采集 {len(items)} 条资讯\n")
-    
+
+    items, is_real = await collect_all()
+
     if not items:
-        print("⚠️ 未采集到任何数据")
+        print("⚠️ 未采集到任何数据（含降级数据）")
         return
-    
-    # Step 2: 处理（分类+评分）
+
     items = process_items(items)
-    
-    # Step 3: 生成输出
-    generate_output(items, target_date)
+    generate_output(items, target_date, is_real)
 
 
 if __name__ == "__main__":
