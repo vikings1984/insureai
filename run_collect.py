@@ -4,8 +4,9 @@
 
 数据源优先级：
 1. 东方财富搜索 API（主源）— 多关键词搜索，覆盖全分类，当天新闻
-2. 中国保险行业协会（辅源）— 协会要闻 + 行业动态
-3. 降级数据（兜底）— 真实采集全部失败时
+2. AkShare 开源接口（补充源）— 个股新闻 + CCTV 新闻联播
+3. 中国保险行业协会（辅源）— 协会要闻 + 行业动态
+4. 降级数据（兜底）— 真实采集全部失败时
 """
 
 import asyncio
@@ -50,6 +51,18 @@ IACHINA_COLUMNS = [
     {"col": 22, "name": "中国保险行业协会", "category_hint": "industry"},
     {"col": 24, "name": "中国保险行业协会", "category_hint": "industry"},
 ]
+
+# AkShare: 保险上市公司个股新闻（5家主要险企）
+AKSHARE_STOCK_SYMBOLS = [
+    {"code": "601318", "name": "中国平安", "category_hint": "industry"},
+    {"code": "601628", "name": "中国人寿", "category_hint": "industry"},
+    {"code": "601601", "name": "中国太保", "category_hint": "industry"},
+    {"code": "601336", "name": "新华保险", "category_hint": "industry"},
+    {"code": "601319", "name": "中国人保", "category_hint": "industry"},
+]
+
+# AkShare: CCTV 新闻联播（保险关键词过滤）
+CCTV_INSURANCE_KEYWORDS = ["保险", "金融监管", "银保监", "偿付能力", "农险", "养老金"]
 
 FRESHNESS_DAYS = 14  # 只保留最近 N 天的文章
 
@@ -237,6 +250,85 @@ async def fetch_iachina(client: httpx.AsyncClient) -> list[dict]:
     return items
 
 
+# ===== AkShare 采集 =====
+def fetch_akshare_stock_news() -> list[dict]:
+    """通过 AkShare 获取保险上市公司个股新闻"""
+    items = []
+    try:
+        import akshare as ak
+    except ImportError:
+        print("    ⚠️ AkShare 未安装，跳过个股新闻")
+        return items
+
+    for cfg in AKSHARE_STOCK_SYMBOLS:
+        code = cfg["code"]
+        name = cfg["name"]
+        try:
+            df = ak.stock_news_em(symbol=code)
+            if df is None or df.empty:
+                continue
+            for _, row in df.iterrows():
+                title = str(row.get("新闻标题", "")).strip()
+                content = str(row.get("新闻内容", "")).strip()
+                if not title or len(title) < 5:
+                    continue
+                pub = str(row.get("发布时间", ""))[:10]
+                items.append({
+                    "title": title,
+                    "url": str(row.get("新闻链接", "")),
+                    "content": content[:500],
+                    "source_name": str(row.get("文章来源", name)),
+                    "source_type": "akshare",
+                    "published_at": pub,
+                    "category_hint": cfg.get("category_hint", ""),
+                    "language": "zh",
+                })
+            print(f"    ✅ {name}({code}): {len(df)} 篇")
+        except Exception as e:
+            print(f"    ⚠️ {name}({code}): {e}")
+    return items
+
+
+def fetch_akshare_cctv_news() -> list[dict]:
+    """通过 AkShare 获取央视新闻联播，按保险关键词过滤"""
+    items = []
+    try:
+        import akshare as ak
+    except ImportError:
+        return items
+
+    # 尝试今天和昨天的新闻联播
+    for days_ago in [0, 1]:
+        d = date.today() - timedelta(days=days_ago)
+        date_str = d.strftime("%Y%m%d")
+        try:
+            df = ak.news_cctv(date=date_str)
+            if df is None or df.empty:
+                continue
+            for _, row in df.iterrows():
+                title = str(row.get("title", "")).strip()
+                content = str(row.get("content", "")).strip()
+                # 关键词过滤：只保留保险相关新闻
+                text = title + content
+                if not any(kw in text for kw in CCTV_INSURANCE_KEYWORDS):
+                    continue
+                items.append({
+                    "title": title,
+                    "url": f"https://tv.cctv.com/lm/xwlb/day/{date_str}.shtml",
+                    "content": content[:500],
+                    "source_name": "央视新闻联播",
+                    "source_type": "akshare",
+                    "published_at": d.isoformat(),
+                    "category_hint": "regulation",
+                    "language": "zh",
+                })
+            filtered_count = sum(1 for _, r in df.iterrows() if any(kw in str(r.get("title", "")) + str(r.get("content", "")) for kw in CCTV_INSURANCE_KEYWORDS))
+            print(f"    ✅ CCTV {date_str}: {len(df)} 篇（筛选后 {filtered_count} 条保险相关）")
+        except Exception as e:
+            print(f"    ⚠️ CCTV {date_str}: {e}")
+    return items
+
+
 # ===== 采集主流程 =====
 async def collect_all() -> tuple[list[dict], bool]:
     all_items = []
@@ -252,6 +344,17 @@ async def collect_all() -> tuple[list[dict], bool]:
         ia_items = await fetch_iachina(client)
         all_items.extend(ia_items)
         real_count += len(ia_items)
+
+    # AkShare 同步采集
+    print("\n📊 AkShare 个股新闻（5家险企）...")
+    ak_stock_items = fetch_akshare_stock_news()
+    all_items.extend(ak_stock_items)
+    real_count += len(ak_stock_items)
+
+    print("\n📺 AkShare 央视新闻联播（保险关键词过滤）...")
+    ak_cctv_items = fetch_akshare_cctv_news()
+    all_items.extend(ak_cctv_items)
+    real_count += len(ak_cctv_items)
 
     # 去重（按 URL）
     seen_urls = set()
