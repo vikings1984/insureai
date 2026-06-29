@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install feedparser httpx
+          pip install feedparser httpx akshare
       - name: Run collection
         run: python run_collect.py
       - name: Commit and push
