@@ -1097,6 +1097,24 @@
     let NEWS_DATA = [];
     let SOURCES_DATA = [];
 
+    // ===== XSS Protection: HTML escape for all dynamic content =====
+    function esc(str) {
+      if (str == null) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function safeUrl(url) {
+      if (!url || typeof url !== 'string') return '';
+      const u = url.trim();
+      if (/^https?:\/\//i.test(u)) return u;
+      return '';
+    }
+
     // ===== LocalStorage Utils =====
     const storage = {
       get: (k) => { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch(e) { return {}; } },
@@ -1199,11 +1217,11 @@
         return `
           <div class="hot-topic-card" onclick="showDetail(${item.id})">
             <div class="hot-topic-rank">#${i + 1} 热点</div>
-            <div class="hot-topic-title">${item.title}</div>
+            <div class="hot-topic-title">${esc(item.title)}</div>
             <div class="hot-topic-meta">
-              <span>${item.source_name || ''}</span>
-              <span>· ${catNames[item.category] || item.category}</span>
-              <span class="hot-topic-count">&#9733; ${item.ai_score}</span>
+              <span>${esc(item.source_name) || ''}</span>
+              <span>· ${esc(catNames[item.category] || item.category)}</span>
+              <span class="hot-topic-count">&#9733; ${esc(item.ai_score)}</span>
             </div>
           </div>
         `;
@@ -1269,32 +1287,32 @@
           const isRead = state.read[news.id];
           const isFav = state.fav[news.id];
           const hasSource = news.source_url && news.source_url !== '#';
-          const sourceSub = news.source_type ? `<span class="source-sub">${news.source_type}</span>` : '';
-          const scoreBadge = showScore ? `<span class="score-badge">&#9733; <span class="score-num">${news.ai_score}</span></span>` : '';
+          const sourceSub = news.source_type ? `<span class="source-sub">${esc(news.source_type)}</span>` : '';
+          const scoreBadge = showScore ? `<span class="score-badge">&#9733; <span class="score-num">${esc(news.ai_score)}</span></span>` : '';
           const reasonBlock = showReason && news.reason ? `
             <div class="card-reason">
-              <div class="reason-text"><span class="reason-label">推荐理由：</span>${news.reason}</div>
+              <div class="reason-text"><span class="reason-label">推荐理由：</span>${esc(news.reason)}</div>
             </div>
           ` : '';
-          const tags = news.tags ? news.tags.split(',').map(t => `<span class="card-tag" onclick="event.stopPropagation();searchTag('${t.trim()}')">${t.trim()}</span>`).join('') : '';
+          const tags = news.tags ? news.tags.split(',').map(t => `<span class="card-tag" onclick="event.stopPropagation();searchTag('${esc(t.trim())}')">${esc(t.trim())}</span>`).join('') : '';
           const summaryClass = news.summary && news.summary.length > 80 ? 'collapsed' : '';
           const toggleBtn = news.summary && news.summary.length > 80 ? `<span class="summary-toggle" onclick="event.stopPropagation();toggleSummary(this)">展开</span>` : '';
 
           html += `
             <div class="timeline-item ${isRead ? 'is-read' : ''} ${isFav ? 'is-fav' : ''}" data-id="${news.id}" onclick="showDetail(${news.id})" style="cursor:pointer">
               <div class="time-col">
-                <div class="time-text">${formatTime(news.published_at)}</div>
+                <div class="time-text">${esc(formatTime(news.published_at))}</div>
               </div>
               <div class="timeline-axis">
                 <div class="timeline-dot"></div>
               </div>
               <div class="card-content">
-                <div class="card-source">${news.source_name || '未知来源'}${sourceSub} · <span class="relative-time">${formatRelativeTime(news.published_at)}</span></div>
+                <div class="card-source">${esc(news.source_name) || '未知来源'}${sourceSub} · <span class="relative-time">${esc(formatRelativeTime(news.published_at))}</span></div>
                 <div class="title-row">
-                  <div class="card-title" data-id="${news.id}">${news.title}</div>
+                  <div class="card-title" data-id="${news.id}">${esc(news.title)}</div>
                   ${scoreBadge}
                 </div>
-                <div class="card-summary ${summaryClass}">${news.summary || ''}${toggleBtn}</div>
+                <div class="card-summary ${summaryClass}">${esc(news.summary) || ''}${toggleBtn}</div>
                 <div class="card-tags">${tags}</div>
                 ${reasonBlock}
               </div>
@@ -1687,20 +1705,21 @@
       const shareUrl = window.location.origin + window.location.pathname + '?id=' + id;
 
       document.getElementById('modal-title').textContent = news.title;
+      const safeHref = safeUrl(news.source_url);
       document.getElementById('modal-body').innerHTML = `
         <div class="modal-meta">
-          <span>${news.source_name || '未知来源'}</span>
-          ${news.source_type ? `<span class="source-sub">${news.source_type}</span>` : ''}
-          <span> · ${formatRelativeTime(news.published_at)}</span>
-          <span> · ${catNames[news.category] || news.category}</span>
-          ${news.ai_score ? `<span class="score-badge" style="display:inline-flex;vertical-align:middle;margin-left:4px">&#9733; <span class="score-num">${news.ai_score}</span></span>` : ''}
+          <span>${esc(news.source_name) || '未知来源'}</span>
+          ${news.source_type ? `<span class="source-sub">${esc(news.source_type)}</span>` : ''}
+          <span> · ${esc(formatRelativeTime(news.published_at))}</span>
+          <span> · ${esc(catNames[news.category] || news.category)}</span>
+          ${news.ai_score ? `<span class="score-badge" style="display:inline-flex;vertical-align:middle;margin-left:4px">&#9733; <span class="score-num">${esc(news.ai_score)}</span></span>` : ''}
         </div>
-        ${news.reason ? `<div class="card-reason" style="margin-bottom:16px"><div class="reason-text"><span class="reason-label">推荐理由：</span>${news.reason}</div></div>` : ''}
-        <p style="white-space:pre-wrap;line-height:1.8">${news.summary || '暂无摘要'}</p>
+        ${news.reason ? `<div class="card-reason" style="margin-bottom:16px"><div class="reason-text"><span class="reason-label">推荐理由：</span>${esc(news.reason)}</div></div>` : ''}
+        <p style="white-space:pre-wrap;line-height:1.8">${esc(news.summary) || '暂无摘要'}</p>
         <div style="margin-top:12px">${tags}</div>
         <div class="modal-actions">
-          ${hasUrl ? `<a href="${news.source_url}" target="_blank" rel="noopener noreferrer" class="modal-btn primary">阅读原文 &#8599;</a>` : ''}
-          <button class="modal-btn secondary" onclick="copyShareLink('${shareUrl.replace(/'/g, "\\'")}')">&#128279; 复制链接</button>
+          ${safeHref ? `<a href="${esc(safeHref)}" target="_blank" rel="noopener noreferrer" class="modal-btn primary">阅读原文 &#8599;</a>` : ''}
+          <button class="modal-btn secondary" onclick="copyShareLink('${esc(shareUrl.replace(/'/g, "\\'"))}')">&#128279; 复制链接</button>
           <button class="modal-btn secondary" onclick="document.getElementById('modal-overlay').classList.remove('active')">关闭</button>
         </div>
       `;

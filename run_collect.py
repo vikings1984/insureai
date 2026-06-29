@@ -13,8 +13,9 @@ import asyncio
 import html as html_module
 import json
 import os
-import random
 import re
+import sys
+import traceback
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from urllib.parse import quote, urljoin
@@ -116,6 +117,16 @@ def clean_text(text: str) -> str:
     return text
 
 
+def validate_url(url: str) -> str:
+    """验证 URL 安全性，只允许 http/https 协议"""
+    if not url or not isinstance(url, str):
+        return ""
+    url = url.strip()
+    if re.match(r'^https?://', url, re.I):
+        return url
+    return ""
+
+
 def assign_category(title: str, content: str, hint: str = "") -> str:
     if hint:
         return hint
@@ -131,27 +142,31 @@ def assign_score(title: str, content: str, source_name: str, pub_date: str) -> t
     all_kw = [kw for kws in CATEGORY_KEYWORDS.values() for kw in kws]
     kw_count = sum(1 for kw in all_kw if kw.lower() in text)
 
-    authority = 1.5 if any(s in source_name for s in AUTHORITY_SOURCES) else 0
-    length_bonus = min(len(content) / 300, 2.0)
+    # 权威来源加分（最高1.0）
+    authority = 1.0 if any(s in source_name for s in AUTHORITY_SOURCES) else 0
+    # 内容长度加分（最高1.0）
+    length_bonus = min(len(content) / 500, 1.0)
 
-    # 新鲜度加分
+    # 新鲜度加分（最高1.5）
     freshness_bonus = 0
     try:
         d = datetime.strptime(pub_date[:10], "%Y-%m-%d")
         days_old = (datetime.now() - d).days
         if days_old <= 1:
-            freshness_bonus = 2.0
-        elif days_old <= 3:
             freshness_bonus = 1.5
-        elif days_old <= 7:
+        elif days_old <= 3:
             freshness_bonus = 1.0
-        elif days_old <= 14:
+        elif days_old <= 7:
             freshness_bonus = 0.5
     except Exception:
         pass
 
-    base = 4.0 + kw_count * 0.3 + authority + length_bonus + freshness_bonus
-    score = min(round(base + random.uniform(-0.2, 0.2), 1), 10.0)
+    # 关键词匹配加分（每个关键词0.2，最高1.5）
+    kw_bonus = min(kw_count * 0.2, 1.5)
+
+    # 基础分3.0 + 各维度加分，满分10.0
+    base = 3.0 + kw_bonus + authority + length_bonus + freshness_bonus
+    score = min(round(base, 1), 10.0)
     relevance = min(round(0.3 + kw_count * 0.05, 2), 1.0)
     return score, relevance
 
@@ -411,7 +426,7 @@ def generate_output(items: list[dict], target_date: str, is_real: bool):
         by_cat.setdefault(item["category"], []).append(item)
 
     curated = [i for i in items if i.get("ai_score", 0) >= 6.0]
-    highlights = [i for i in curated if i.get("ai_score", 0) >= 8.5]
+    highlights = [i for i in curated if i.get("ai_score", 0) >= 7.0]
 
     cat_names = {"regulation": "🏛️ 监管政策", "product": "📦 产品发布", "industry": "📊 行业动态", "research": "🔬 研究洞察", "claims": "⚖️ 理赔案例"}
     src_tag = "真实多源采集" if is_real else "降级数据"
@@ -471,7 +486,7 @@ lang: zh
     data["news"] = [{
         "id": i + 1, "title": item["title"], "summary": item.get("content", "")[:300],
         "source_name": item["source_name"], "source_type": item.get("source_type", "web"),
-        "source_url": item.get("url", "#"), "ai_score": int(item.get("ai_score", 0) * 10),
+        "source_url": validate_url(item.get("url", "")) or "#", "ai_score": int(item.get("ai_score", 0) * 10),
         "tags": ",".join(item.get("ai_tags", [])), "category": item.get("category", "industry"),
         "published_at": item.get("published_at", target_date), "reason": item.get("ai_reason", ""),
     } for i, item in enumerate(curated)]
