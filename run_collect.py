@@ -47,78 +47,79 @@ RSS_SOURCES = [
 _TODAY = date.today().isoformat()
 _YESTERDAY = (date.today() - timedelta(days=1)).isoformat()
 
+
+def _search_url(title: str) -> str:
+    """生成百度搜索链接，替代虚构的原文URL"""
+    from urllib.parse import quote
+    return f"https://www.baidu.com/s?wd={quote(title)}"
+
+
 MOCK_SEARCH_RESULTS = [
     {
         "title": "金融监管总局发布《保险公司偿付能力监管规则》修订版",
-        "url": "https://www.nfra.gov.cn/cn/view/pages/ItemDetail.html?docId=20260624",
         "snippet": "国家金融监督管理总局近日发布《保险公司偿付能力监管规则（第3号）》修订版，进一步强化保险公司资本管理要求，新增风险导向的差异化监管措施。",
         "source": "金融监管总局",
         "date": _TODAY,
     },
     {
         "title": "新能源车险综合改革方案出台，保费有望下降15%-20%",
-        "url": "https://www.cbimc.cn/news/2026/06/ev-insurance-reform",
         "snippet": "中国保险行业协会联合多家新能源车企推出车险综合改革方案，通过UBI数据共享和大数据精算模型优化定价，预计新能源车险综合费率下降15%-20%。",
         "source": "中国银行保险报",
         "date": _TODAY,
     },
     {
         "title": "中国人寿上半年保费收入突破5000亿元，同比增长8.3%",
-        "url": "https://www.cbimc.cn/news/2026/06/chinalife-premium",
         "snippet": "中国人寿保险股份有限公司发布2026年上半年保费收入公告，累计原保险保费收入约5120亿元，同比增长8.3%，新业务价值增长显著。",
         "source": "中国银行保险报",
         "date": _TODAY,
     },
     {
         "title": "保险科技公司水滴完成D轮融资，估值超50亿美元",
-        "url": "https://www.36kr.com/p/20260624-insurtech",
         "snippet": "水滴公司宣布完成3亿美元D轮融资，由红杉资本领投，资金将用于AI保险经纪平台升级和东南亚市场拓展。",
         "source": "36氪",
         "date": _TODAY,
     },
     {
         "title": "AI精算模型在健康险定价中取得突破性进展",
-        "url": "https://www.insurtechinsights.com/2026/06/ai-actuarial",
         "snippet": "清华大学保险科技实验室发布最新研究成果，基于深度学习的健康险精算模型在预测准确率上超越传统GLM模型30%以上。",
         "source": "InsurTech Insights",
         "date": _TODAY,
     },
     {
         "title": "多家保险公司因违规销售被监管约谈",
-        "url": "https://www.nfra.gov.cn/cn/view/pages/ItemDetail.html?docId=20260624b",
         "snippet": "金融监管总局对5家保险公司进行监管约谈，涉及误导销售、捆绑销售等问题，要求限期整改并提交合规报告。",
         "source": "金融监管总局",
         "date": _TODAY,
     },
     {
         "title": "第三支柱个人养老金保险产品扩容至48款",
-        "url": "https://www.cbimc.cn/news/2026/06/pension-products",
         "snippet": "人社部公布第三支柱个人养老金保险产品最新名录，新增12款产品，涵盖商业养老保险、专属商业养老等多个品类。",
         "source": "中国银行保险报",
         "date": _TODAY,
     },
     {
         "title": "保险业上半年罚单破亿，虚假材料成重灾区",
-        "url": "https://www.cbimc.cn/news/2026/06/regulation-fines",
         "snippet": "2026年上半年保险业严监管持续，累计罚单金额突破1.2亿元，虚假材料、误导销售为两大重灾区，监管力度持续加码。",
         "source": "中国银行保险报",
         "date": _YESTERDAY,
     },
     {
         "title": "众安保险发布AI中台战略，全面赋能保险全链路",
-        "url": "https://www.36kr.com/p/20260623-zhongan-ai",
         "snippet": "众安保险发布AI中台战略，覆盖产品设计、核保、理赔、客服等全链路环节，AI驱动承保效率提升40%以上。",
         "source": "36氪",
         "date": _YESTERDAY,
     },
     {
         "title": "中国平安发布2026年十大理赔案例，科技赋能服务升级",
-        "url": "https://www.cbimc.cn/news/2026/06/pingan-claims",
         "snippet": "中国平安发布2026年上半年十大理赔案例，AI智能理赔占比达65%，平均理赔时效缩短至1.8天，客户满意度显著提升。",
         "source": "中国银行保险报",
         "date": _YESTERDAY,
     },
 ]
+
+# 为每条模拟数据生成搜索链接
+for _item in MOCK_SEARCH_RESULTS:
+    _item["url"] = _search_url(_item["title"])
 
 # 分类关键词映射
 CATEGORY_KEYWORDS = {
