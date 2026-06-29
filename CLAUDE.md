@@ -18,6 +18,7 @@
 - 分类体系固定：regulation / product / industry / research / claims
 - 配色主题：`--accent: #F97316`（暗色）/ `#EA580C`（亮色），Logo 橙红渐变
 - Logo 文件：`docs/assets/logo/logo.svg`（矢量）和 `logo.png`（位图）
+- `run_collect.py` 是独立脚本，不依赖 `src/` 目录（已删除）
 
 ## 命令速查
 
@@ -39,7 +40,6 @@ pip install feedparser httpx
 | `README.md` | 项目概览、快速开始 |
 | `docs/assets/logo/design-philosophy.md` | Logo 设计理念 |
 | `data/config.json` | 信息源与分类配置 |
-| `pyproject.toml` | Python 包依赖与 CLI 入口 |
 
 ## 协作流程
 
