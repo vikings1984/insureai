@@ -147,12 +147,14 @@ def assign_score(title: str, content: str, source_name: str, pub_date: str) -> t
     # 内容长度加分（最高1.0）
     length_bonus = min(len(content) / 500, 1.0)
 
-    # 新鲜度加分（最高1.5）
+    # 新鲜度加分（当天2.5，3天内1.5，7天内0.8，14天内0.3）
     freshness_bonus = 0
     try:
         d = datetime.strptime(pub_date[:10], "%Y-%m-%d")
         days_old = (datetime.now() - d).days
-        if days_old <= 1:
+        if days_old <= 0:
+            freshness_bonus = 2.5
+        elif days_old <= 1:
             freshness_bonus = 1.5
         elif days_old <= 3:
             freshness_bonus = 1.0
