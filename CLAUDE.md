@@ -28,7 +28,12 @@
 - 分类体系固定：regulation / product / industry / research / claims
 - 前端 XSS 防护：所有动态内容必须用 `esc()` 转义，URL 用 `safeUrl()` 验证
 - 采集端 URL 验证：`validate_url()` 只允许 http/https 协议
-- 评分算法确定性：无随机噪声，基础分 3.0 + 关键词(≤1.5) + 权威(≤1.0) + 长度(≤1.0) + 新鲜度(≤1.5)
+- 评分算法确定性：无随机噪声，基础分 3.0 + 关键词(≤1.5) + 权威(≤1.0) + 长度(≤1.0) + 新鲜度(≤3.5)，满分 10.0
+- 评分阈值：curated ≥ 6.0（对应 ai_score ≥ 60），highlight ≥ 7.0（对应 ai_score ≥ 70），前端精选页阈值 60
+- 时区：所有日期计算使用 Asia/Shanghai 时区
+- source_type 输出为中文标签（财经媒体/行业协会/监管机构等），非技术值
+- data.json 输出包含 sources 数组和 source_health 数据源健康状态
+- 增量更新：data.json 保留近 3 天历史新闻，总量上限 100 条
 - `src/` 目录已删除，`run_collect.py` 是唯一采集入口
 
 ## 命令速查

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self';">
   <link rel="icon" type="image/svg+xml" href="assets/logo/logo.svg">
   <title>InsureAI - AI 驱动的保险行业智能资讯</title>
   <style>
@@ -1138,11 +1139,13 @@
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
         NEWS_DATA = data.news || [];
+        NEWS_DATA = deduplicateData(NEWS_DATA);
         SOURCES_DATA = data.sources || [];
         initApp();
       } catch (e) {
         console.warn('Failed to load data.json, using backup data:', e);
         NEWS_DATA = BACKUP_DATA.news || [];
+        NEWS_DATA = deduplicateData(NEWS_DATA);
         SOURCES_DATA = BACKUP_DATA.sources || [];
         initApp();
       }
@@ -1191,7 +1194,6 @@
     // ===== Filter =====
     function filterData(keyword, category) {
       let data = [...NEWS_DATA];
-      data = deduplicateData(data);
       if (category && category !== 'all') data = data.filter(item => item.category === category);
       if (keyword) {
         const kw = keyword.toLowerCase();
@@ -1231,7 +1233,7 @@
     // ===== Render Featured =====
     function renderFeatured() {
       let data = filterData(state.featured.keyword, state.featured.category);
-      data = data.filter(item => item.ai_score >= 75);
+      data = data.filter(item => item.ai_score >= 60);
       data.sort((a, b) => b.ai_score - a.ai_score || new Date(b.published_at) - new Date(a.published_at));
       renderHotTopics(data);
       renderTimeline('timeline-featured', data, true, true);
@@ -1294,7 +1296,7 @@
               <div class="reason-text"><span class="reason-label">推荐理由：</span>${esc(news.reason)}</div>
             </div>
           ` : '';
-          const tags = news.tags ? news.tags.split(',').map(t => `<span class="card-tag" onclick="event.stopPropagation();searchTag('${esc(t.trim())}')">${esc(t.trim())}</span>`).join('') : '';
+          const tags = news.tags ? news.tags.split(',').map(t => `<span class="card-tag" data-tag="${esc(t.trim())}" onclick="event.stopPropagation();searchTag(this.dataset.tag)">${esc(t.trim())}</span>`).join('') : '';
           const summaryClass = news.summary && news.summary.length > 80 ? 'collapsed' : '';
           const toggleBtn = news.summary && news.summary.length > 80 ? `<span class="summary-toggle" onclick="event.stopPropagation();toggleSummary(this)">展开</span>` : '';
 
@@ -1324,7 +1326,7 @@
 
       container.innerHTML = html;
 
-      }
+    }
 
     // ===== Render Daily =====
     function renderDaily() {
@@ -1367,14 +1369,15 @@
         `;
         cat.items.forEach(item => {
           const hasSource = item.source_url && item.source_url !== '#';
+          const safeHref = safeUrl(item.source_url);
           html += `
             <div class="daily-entry">
               <div class="daily-entry-source">
-                <span class="source-name">${item.source_name}</span>
-                ${item.source_type ? `<span class="source-tag">${item.source_type}</span>` : ''}
+                <span class="source-name">${esc(item.source_name)}</span>
+                ${item.source_type ? `<span class="source-tag">${esc(item.source_type)}</span>` : ''}
               </div>
-              <div class="daily-entry-title">${hasSource ? `<a href="${item.source_url}" target="_blank">${globalNum}. ${item.title}</a>` : `${globalNum}. ${item.title}`}</div>
-              <div class="daily-entry-summary">${item.summary || ''}</div>
+              <div class="daily-entry-title">${hasSource ? `<a href="${esc(safeHref)}" target="_blank" rel="noopener noreferrer">${globalNum}. ${esc(item.title)}</a>` : `${globalNum}. ${esc(item.title)}`}</div>
+              <div class="daily-entry-summary">${esc(item.summary) || ''}</div>
             </div>
           `;
           globalNum++;
@@ -1389,7 +1392,7 @@
             <div class="daily-stat-label">今日事件</div>
           </div>
           <div class="daily-stat">
-            <div class="daily-stat-num">${NEWS_DATA.filter(n => n.ai_score >= 80).length}</div>
+            <div class="daily-stat-num">${NEWS_DATA.filter(n => n.ai_score >= 60).length}</div>
             <div class="daily-stat-label">精选</div>
           </div>
           <div class="daily-stat">
@@ -1423,8 +1426,8 @@
           <div class="source-item">
             <div class="source-rank ${rankClass}">${rank}</div>
             <div class="source-info">
-              <div class="source-name">${s.name}</div>
-              <div class="source-type">${s.type} · ${s.reason.substring(0, 30)}...</div>
+              <div class="source-name">${esc(s.name)}</div>
+              <div class="source-type">${esc(s.type)} · ${esc(s.reason.substring(0, 30))}...</div>
             </div>
             <div class="source-score ${scoreClass}">${s.score}</div>
           </div>
@@ -1447,8 +1450,8 @@
           <div class="source-item">
             <div class="source-rank" style="background:var(--accent);color:#fff;font-size:0.7rem;font-weight:700;font-family:monospace">N° ${num}</div>
             <div class="source-info">
-              <div class="source-name">${s.name}</div>
-              <div class="source-type">${typeLabels[s.type] || s.type} · ${s.reason.substring(0, 30)}...</div>
+              <div class="source-name">${esc(s.name)}</div>
+              <div class="source-type">${esc(typeLabels[s.type] || s.type)} · ${esc(s.reason.substring(0, 30))}...</div>
             </div>
             <div style="font-size:0.7rem;color:var(--text-muted)">${t}</div>
           </div>
@@ -1456,30 +1459,15 @@
       }).join('');
     }
 
-    // ===== RSS =====
+    // ===== RSS (Deprecated - 即将上线) =====
     function getRSSLinks() {
-      const base = window.location.origin + window.location.pathname.replace(/\/$/, '');
-      return [
-        { name: '精选 RSS', url: base + '/rss/curated.xml', desc: '每日精选高分资讯' },
-        { name: '全部 RSS', url: base + '/rss/all.xml', desc: '全部采集资讯，按时间排序' },
-        { name: '日报 RSS', url: base + '/rss/daily.xml', desc: '每日中英文日报' },
-      ];
+      return [];
     }
 
     function renderRSSLinks() {
       const container = document.getElementById('rss-links');
       if (!container) return;
-      const links = getRSSLinks();
-      container.innerHTML = links.map(l => `
-        <div style="display:flex;align-items:center;gap:12px;padding:8px 12px;background:var(--bg-tertiary);border-radius:8px">
-          <span style="font-size:1.1rem">📡</span>
-          <div style="flex:1">
-            <div style="font-weight:600;font-size:0.85rem">${l.name}</div>
-            <div style="font-size:0.75rem;color:var(--text-muted)">${l.desc}</div>
-          </div>
-          <button onclick="navigator.clipboard.writeText('${l.url}');this.textContent='已复制';setTimeout(()=>this.textContent='复制',1500)" style="padding:4px 12px;border:1px solid var(--border-color);border-radius:6px;background:var(--bg-primary);color:var(--text-secondary);cursor:pointer;font-size:0.78rem">复制</button>
-        </div>
-      `).join('');
+      container.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text-muted);font-size:0.85rem">📡 RSS 订阅功能即将上线</div>';
     }
 
     // ===== Filter =====
@@ -1501,9 +1489,6 @@
     }
     function formatTime(dateStr) {
       return new Date(dateStr).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
-    }
-    function formatFullDate(dateStr) {
-      return new Date(dateStr).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
     }
     function formatRelativeTime(dateStr) {
       const date = new Date(dateStr);
@@ -1599,16 +1584,17 @@
       });
     });
 
+    let searchTimerF;
     document.getElementById('search-featured').addEventListener('input', (e) => {
-      state.featured.keyword = e.target.value;
-      renderFeatured();
+      clearTimeout(searchTimerF);
+      searchTimerF = setTimeout(() => { state.featured.keyword = e.target.value; renderFeatured(); }, 250);
     });
     document.getElementById('search-btn-featured').addEventListener('click', renderFeatured);
 
+    let searchTimerA;
     document.getElementById('search-all').addEventListener('input', (e) => {
-      state.all.keyword = e.target.value;
-      state.all.page = 1;
-      renderAll();
+      clearTimeout(searchTimerA);
+      searchTimerA = setTimeout(() => { state.all.keyword = e.target.value; state.all.page = 1; renderAll(); }, 250);
     });
     document.getElementById('search-btn-all').addEventListener('click', renderAll);
 
@@ -1640,7 +1626,7 @@
         '- **提报时间**: ' + new Date().toISOString() + '\n\n' +
         '---\n*此 Issue 由 InsureAI 信源提报页面自动生成*'
       );
-      const issueUrl = 'https://github.com/YOUR_USERNAME/YOUR_REPO/issues/new?title=' + title + '&body=' + body + '&labels=信源提报';
+      const issueUrl = 'https://github.com/pzlkv/insureai/issues/new?title=' + title + '&body=' + body + '&labels=信源提报';
       window.open(issueUrl, '_blank');
       // 同时保存到 localStorage 作为备份
       const data = { url, name, type, reason, timestamp: new Date().toISOString() };
@@ -1668,7 +1654,7 @@
         '## 反馈内容\n' + content + '\n\n' +
         '---\n*此 Issue 由 InsureAI 反馈页面自动生成*'
       );
-      const issueUrl = 'https://github.com/YOUR_USERNAME/YOUR_REPO/issues/new?title=' + title + '&body=' + body + '&labels=反馈';
+      const issueUrl = 'https://github.com/pzlkv/insureai/issues/new?title=' + title + '&body=' + body + '&labels=反馈';
       window.open(issueUrl, '_blank');
       // 同时保存到 localStorage 作为备份
       const data = { type: state.feedbackType, content, contact, timestamp: new Date().toISOString() };
@@ -1699,7 +1685,7 @@
       if (el) el.classList.add('is-read');
 
       const catNames = { regulation: '监管政策', product: '产品发布', industry: '行业动态', research: '研究洞察', claims: '理赔案例' };
-      const tags = news.tags ? news.tags.split(',').map(t => `<span class="card-tag" style="cursor:default">${t.trim()}</span>`).join('') : '';
+      const tags = news.tags ? news.tags.split(',').map(t => `<span class="card-tag" style="cursor:default">${esc(t.trim())}</span>`).join('') : '';
       const hasUrl = news.source_url && news.source_url !== '#';
       // Build share URL (current page URL with anchor)
       const shareUrl = window.location.origin + window.location.pathname + '?id=' + id;

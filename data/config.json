@@ -25,7 +25,7 @@
       {
         "name": "AkShare news_cctv",
         "type": "python_lib",
-        "filter_keywords": ["保险", "金融监管", "偿付能力"]
+        "filter_keywords": ["保险", "金融监管", "银保监", "偿付能力", "农险", "养老金"]
       }
     ]
   },
@@ -34,7 +34,15 @@
     "curated_threshold": 6.0,
     "highlight_threshold": 7.0,
     "freshness_days": 14,
-    "max_items": 25
+    "max_items": 25,
+    "freshness_bonus": {
+      "today": 3.5,
+      "1day": 2.0,
+      "3days": 1.0,
+      "7days": 0.5,
+      "14days": 0.3
+    },
+    "max_theoretical_score": 10.0
   },
   "categories": ["regulation", "product", "industry", "research", "claims"]
 }

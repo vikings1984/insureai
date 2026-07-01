@@ -19,6 +19,7 @@ import traceback
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from urllib.parse import quote, urljoin
+from zoneinfo import ZoneInfo
 
 import httpx
 
@@ -38,6 +39,19 @@ SUMMARIES_DIR = PROJECT_ROOT / "data" / "summaries"
 DOCS_POSTS = PROJECT_ROOT / "docs" / "_posts"
 SUMMARIES_DIR.mkdir(parents=True, exist_ok=True)
 DOCS_POSTS.mkdir(parents=True, exist_ok=True)
+
+# 加载配置
+CONFIG_PATH = PROJECT_ROOT / "data" / "config.json"
+_config_cache = None
+def _load_config():
+    global _config_cache
+    if _config_cache is not None:
+        return _config_cache
+    try:
+        _config_cache = json.loads(CONFIG_PATH.read_text("utf-8"))
+    except Exception:
+        _config_cache = {}
+    return _config_cache
 
 # ===== 数据源配置 =====
 EASTMONEY_SEARCH_KEYWORDS = [
@@ -147,19 +161,22 @@ def assign_score(title: str, content: str, source_name: str, pub_date: str) -> t
     # 内容长度加分（最高1.0）
     length_bonus = min(len(content) / 500, 1.0)
 
-    # 新鲜度加分（当天2.5，3天内1.5，7天内0.8，14天内0.3）
+    # 新鲜度加分（当天3.5，3天内2.0，7天内1.0，14天内0.5）
     freshness_bonus = 0
     try:
-        d = datetime.strptime(pub_date[:10], "%Y-%m-%d")
-        days_old = (datetime.now() - d).days
+        d = datetime.strptime(pub_date[:10], "%Y-%m-%d").date()
+        today = datetime.now(ZoneInfo("Asia/Shanghai")).date()
+        days_old = (today - d).days
         if days_old <= 0:
-            freshness_bonus = 2.5
+            freshness_bonus = 3.5
         elif days_old <= 1:
-            freshness_bonus = 1.5
+            freshness_bonus = 2.0
         elif days_old <= 3:
             freshness_bonus = 1.0
         elif days_old <= 7:
             freshness_bonus = 0.5
+        elif days_old <= 14:
+            freshness_bonus = 0.3
     except Exception:
         pass
 
@@ -203,7 +220,7 @@ async def fetch_eastmoney(client: httpx.AsyncClient) -> list[dict]:
         try:
             resp = await client.get(url, timeout=15)
             resp.raise_for_status()
-            m = re.search(r'jQuery\((.*)\)', resp.text, re.S)
+            m = re.search(r'jQuery[\w]*\((.*)\)', resp.text, re.S)
             if not m:
                 continue
             data = json.loads(m.group(1))
@@ -250,7 +267,9 @@ async def fetch_iachina(client: httpx.AsyncClient) -> list[dict]:
                     continue
                 seen.add(full_url)
                 dm = re.search(r'/art/(\d+)/(\d+)/(\d+)/', link)
-                pub = f"{dm.group(1)}-{int(dm.group(2)):02d}-{int(dm.group(3)):02d}" if dm else date.today().isoformat()
+                if not dm:
+                    continue
+                pub = f"{dm.group(1)}-{int(dm.group(2)):02d}-{int(dm.group(3)):02d}"
                 items.append({
                     "title": title,
                     "url": full_url,
@@ -316,7 +335,7 @@ def fetch_akshare_cctv_news() -> list[dict]:
 
     # 尝试今天和昨天的新闻联播
     for days_ago in [0, 1]:
-        d = date.today() - timedelta(days=days_ago)
+        d = datetime.now(ZoneInfo("Asia/Shanghai")).date() - timedelta(days=days_ago)
         date_str = d.strftime("%Y%m%d")
         try:
             df = ak.news_cctv(date=date_str)
@@ -347,40 +366,53 @@ def fetch_akshare_cctv_news() -> list[dict]:
 
 
 # ===== 采集主流程 =====
-async def collect_all() -> tuple[list[dict], bool]:
+async def collect_all() -> tuple[list[dict], bool, dict]:
     all_items = []
     real_count = 0
+    source_health = {}
 
     print("📡 东方财富搜索 API（主源）...")
     async with httpx.AsyncClient(follow_redirects=True, headers=HTTP_HEADERS) as client:
         em_items = await fetch_eastmoney(client)
         all_items.extend(em_items)
         real_count += len(em_items)
+        source_health["eastmoney"] = {"count": len(em_items), "ok": len(em_items) > 0}
 
         print("\n🌐 中国保险行业协会（辅源）...")
         ia_items = await fetch_iachina(client)
         all_items.extend(ia_items)
         real_count += len(ia_items)
+        source_health["iachina"] = {"count": len(ia_items), "ok": len(ia_items) > 0}
 
     # AkShare 同步采集
     print("\n📊 AkShare 个股新闻（5家险企）...")
-    ak_stock_items = fetch_akshare_stock_news()
+    ak_stock_items = await asyncio.to_thread(fetch_akshare_stock_news)
     all_items.extend(ak_stock_items)
     real_count += len(ak_stock_items)
+    source_health["akshare_stock"] = {"count": len(ak_stock_items), "ok": len(ak_stock_items) > 0}
 
     print("\n📺 AkShare 央视新闻联播（保险关键词过滤）...")
-    ak_cctv_items = fetch_akshare_cctv_news()
+    ak_cctv_items = await asyncio.to_thread(fetch_akshare_cctv_news)
     all_items.extend(ak_cctv_items)
     real_count += len(ak_cctv_items)
+    source_health["akshare_cctv"] = {"count": len(ak_cctv_items), "ok": len(ak_cctv_items) > 0}
 
-    # 去重（按 URL）
+    # 去重（按 URL，无 URL 时按标题）
     seen_urls = set()
+    seen_titles = set()
     deduped = []
     for item in all_items:
         url = item.get("url", "")
-        if url and url not in seen_urls:
+        title = item.get("title", "")
+        if url:
+            if url in seen_urls:
+                continue
             seen_urls.add(url)
-            deduped.append(item)
+        elif title:
+            if title in seen_titles:
+                continue
+            seen_titles.add(title)
+        deduped.append(item)
     all_items = deduped
 
     if real_count == 0:
@@ -392,16 +424,18 @@ async def collect_all() -> tuple[list[dict], bool]:
                 "source_name": fb["source"], "source_type": "fallback",
                 "published_at": today, "category_hint": fb.get("category", ""), "language": "zh",
             })
-        return all_items, False
+        print(f"\n🏥 数据源健康: {json.dumps(source_health, ensure_ascii=False)}")
+        return all_items, False, source_health
 
     # 新鲜度过滤
-    cutoff = date.today() - timedelta(days=FRESHNESS_DAYS)
+    cutoff = (datetime.now(ZoneInfo("Asia/Shanghai")).date()) - timedelta(days=FRESHNESS_DAYS)
     fresh = [i for i in all_items if i.get("published_at", "") >= cutoff.isoformat()]
     if not fresh:
         fresh = all_items  # 如果过滤后为空，保留全部
 
     print(f"\n📥 采集 {len(all_items)} 条 → 去重后 {len(deduped)} 条 → 近{FRESHNESS_DAYS}天 {len(fresh)} 条")
-    return fresh, True
+    print(f"\n🏥 数据源健康: {json.dumps(source_health, ensure_ascii=False)}")
+    return fresh, True, source_health
 
 
 def process_items(items: list[dict]) -> list[dict]:
@@ -419,7 +453,11 @@ def process_items(items: list[dict]) -> list[dict]:
     return items
 
 
-def generate_output(items: list[dict], target_date: str, is_real: bool):
+def generate_output(items: list[dict], target_date: str, is_real: bool, source_health: dict = None):
+    SOURCE_TYPE_MAP = {
+        "api": "财经媒体", "web": "行业协会", "akshare": "财经媒体",
+        "fallback": "兜底数据", "regulator": "监管机构", "company": "保险公司",
+    }
     items.sort(key=lambda x: x.get("ai_score", 0), reverse=True)
     items = items[:25]  # 最多 25 条
 
@@ -471,7 +509,6 @@ lang: zh
     # 写入文件
     for path, content in [
         (SUMMARIES_DIR / f"{target_date}-zh.md", zh),
-        (DOCS_POSTS / f"{target_date}-zh.md", zh),
     ]:
         path.write_text(content, encoding="utf-8")
     (SUMMARIES_DIR / f"{target_date}.json").write_text(json.dumps(items, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -485,13 +522,33 @@ lang: zh
     if "days" not in data:
         data["days"] = {}
 
-    data["news"] = [{
+    today_news = [{
         "id": i + 1, "title": item["title"], "summary": item.get("content", "")[:300],
-        "source_name": item["source_name"], "source_type": item.get("source_type", "web"),
-        "source_url": validate_url(item.get("url", "")) or "#", "ai_score": int(item.get("ai_score", 0) * 10),
+        "source_name": item["source_name"], "source_type": SOURCE_TYPE_MAP.get(item.get("source_type", ""), item.get("source_type", "web")),
+        "source_url": validate_url(item.get("url", "")) or "#", "ai_score": round(item.get("ai_score", 0) * 10),
         "tags": ",".join(item.get("ai_tags", [])), "category": item.get("category", "industry"),
         "published_at": item.get("published_at", target_date), "reason": item.get("ai_reason", ""),
     } for i, item in enumerate(curated)]
+
+    # 增量合并：保留近3天的历史新闻
+    old_news = data.get("news", [])
+    seen_urls = set(n.get("source_url", "") for n in today_news if n.get("source_url"))
+    merged = list(today_news)
+    for old_item in old_news:
+        old_url = old_item.get("source_url", "")
+        if old_url and old_url not in seen_urls:
+            # 只保留近3天的历史
+            try:
+                old_date = old_item.get("published_at", "")[:10]
+                if old_date >= (datetime.now(ZoneInfo("Asia/Shanghai")).date() - timedelta(days=3)).isoformat():
+                    # 映射旧 source_type 为中文标签
+                    old_item["source_type"] = SOURCE_TYPE_MAP.get(old_item.get("source_type", ""), old_item.get("source_type", "财经媒体"))
+                    merged.append(old_item)
+                    seen_urls.add(old_url)
+            except Exception:
+                pass
+    # 限制总量100条
+    data["news"] = merged[:100]
 
     data["days"][target_date] = {
         "total": len(items), "curated": len(curated), "highlights": len(highlights),
@@ -500,7 +557,20 @@ lang: zh
         "sources": list(set(i["source_name"] for i in items)),
     }
     data["last_updated"] = datetime.now().isoformat()
+    # 输出信源列表
+    source_set = {}
+    for item in items:
+        sn = item.get("source_name", "")
+        if sn and sn not in source_set:
+            source_set[sn] = {
+                "name": sn,
+                "type": SOURCE_TYPE_MAP.get(item.get("source_type", ""), "财经媒体"),
+                "score": 85 if sn in AUTHORITY_SOURCES else 75,
+                "reason": f"采集自{sn}的保险行业资讯",
+            }
+    data["sources"] = list(source_set.values())[:10]
     data["data_source"] = "real" if is_real else "fallback"
+    data["source_health"] = source_health or {}
     dj_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
 
     # 统计
@@ -518,14 +588,14 @@ lang: zh
 
 
 async def main():
-    target = date.today().isoformat()
+    target = datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
     print(f"\n🚀 InsureAI 采集 Pipeline | {target}\n")
-    items, is_real = await collect_all()
+    items, is_real, source_health = await collect_all()
     if not items:
         print("⚠️ 无数据")
         return
     items = process_items(items)
-    generate_output(items, target, is_real)
+    generate_output(items, target, is_real, source_health)
 
 
 if __name__ == "__main__":
