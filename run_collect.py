@@ -55,11 +55,19 @@ def _load_config():
 
 # ===== 数据源配置 =====
 EASTMONEY_SEARCH_KEYWORDS = [
-    {"keyword": "保险", "category_hint": "", "page_size": 15},
-    {"keyword": "保险监管", "category_hint": "regulation", "page_size": 8},
-    {"keyword": "保险产品", "category_hint": "product", "page_size": 8},
-    {"keyword": "保险理赔", "category_hint": "claims", "page_size": 8},
-    {"keyword": "保险科技", "category_hint": "research", "page_size": 8},
+    {"keyword": "保险", "category_hint": "", "page_size": 12},
+    {"keyword": "保险监管", "category_hint": "regulation", "page_size": 12},
+    {"keyword": "保险产品", "category_hint": "product", "page_size": 10},
+    {"keyword": "保险理赔", "category_hint": "claims", "page_size": 12},
+    {"keyword": "保险科技", "category_hint": "research", "page_size": 10},
+    {"keyword": "人身险", "category_hint": "product", "page_size": 5},
+    {"keyword": "健康险", "category_hint": "product", "page_size": 5},
+    {"keyword": "养老保险", "category_hint": "product", "page_size": 5},
+    {"keyword": "险资运用", "category_hint": "industry", "page_size": 5},
+    {"keyword": "偿付能力", "category_hint": "regulation", "page_size": 8},
+    {"keyword": "金融监管总局", "category_hint": "regulation", "page_size": 8},
+    {"keyword": "车险", "category_hint": "product", "page_size": 5},
+    {"keyword": "保险消费者", "category_hint": "claims", "page_size": 5},
 ]
 
 IACHINA_COLUMNS = [
@@ -79,7 +87,7 @@ AKSHARE_STOCK_SYMBOLS = [
 # AkShare: CCTV 新闻联播（保险关键词过滤）
 CCTV_INSURANCE_KEYWORDS = ["保险", "金融监管", "银保监", "偿付能力", "农险", "养老金"]
 
-FRESHNESS_DAYS = 14  # 只保留最近 N 天的文章
+FRESHNESS_DAYS = 21  # 只保留最近 N 天的文章
 
 # ===== 降级数据 =====
 SOURCE_URLS = {
@@ -117,6 +125,17 @@ CATEGORY_KEYWORDS = {
 
 AUTHORITY_SOURCES = ["中国证券报", "上海证券报", "证券时报", "新华财经", "人民日报", "中国经营报", "第一财经", "澎湃新闻", "券商中国", "北京商报"]
 
+# 股市行情噪声关键词 — 标题中包含这些词的条目视为股市快讯而非行业资讯
+STOCK_NOISE_KEYWORDS = [
+    "板块拉升", "板块走强", "板块反弹", "板块震荡", "板块大涨", "板块下跌",
+    "涨停", "跌停", "涨幅", "跌幅", "盘中走强", "午后走强", "持续走强",
+    "大幅反弹", "持续反弹", "持续拉升", "强势拉升", "震荡拉升",
+    "融资客", "净买入", "净卖出", "资金流入", "资金流出",
+]
+
+# 股市噪声豁免词 — 如果标题同时包含这些词则保留（说明是实质性内容）
+STOCK_NOISE_EXEMPT = ["保险科技", "保险产品", "保险理赔", "保险监管", "偿付能力", "保险创新", "保险服务"]
+
 HTTP_HEADERS = {
     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -129,6 +148,36 @@ def clean_text(text: str) -> str:
     text = re.sub(r'<[^>]+>', '', text)
     text = re.sub(r'\s+', ' ', text).strip()
     return text
+
+
+def is_stock_noise(title: str) -> bool:
+    """检测标题是否为股市行情噪声（快讯而非行业资讯）"""
+    if not title:
+        return False
+    # 豁免：包含实质性保险话题词的不过滤
+    if any(kw in title for kw in STOCK_NOISE_EXEMPT):
+        return False
+    # 明确的股市噪声词
+    if any(kw in title for kw in STOCK_NOISE_KEYWORDS):
+        return True
+    # 组合检测：保险板块 + 股市动词
+    stock_verbs = ["拉升", "走强", "反弹", "涨停", "跌停", "震荡", "大涨", "下跌", "盘中", "午后", "持续", "暴力", "强势"]
+    if "保险板块" in title and any(v in title for v in stock_verbs):
+        return True
+    # 融资数据类
+    if "融资客" in title or "净买入" in title or "净卖出" in title:
+        return True
+    return False
+
+
+def title_similarity(t1: str, t2: str) -> float:
+    """计算两个标题的字符级相似度（Jaccard）"""
+    if not t1 or not t2:
+        return 0
+    s1, s2 = set(t1), set(t2)
+    inter = len(s1 & s2)
+    union = len(s1 | s2)
+    return inter / union if union > 0 else 0
 
 
 def validate_url(url: str) -> str:
@@ -397,13 +446,19 @@ async def collect_all() -> tuple[list[dict], bool, dict]:
     real_count += len(ak_cctv_items)
     source_health["akshare_cctv"] = {"count": len(ak_cctv_items), "ok": len(ak_cctv_items) > 0}
 
-    # 去重（按 URL，无 URL 时按标题）
+    # 去重（按 URL，无 URL 时按标题）+ 股市噪声过滤 + 标题相似度去重
     seen_urls = set()
     seen_titles = set()
     deduped = []
+    noise_filtered = 0
     for item in all_items:
         url = item.get("url", "")
         title = item.get("title", "")
+        # 股市噪声过滤
+        if is_stock_noise(title):
+            noise_filtered += 1
+            continue
+        # URL 去重
         if url:
             if url in seen_urls:
                 continue
@@ -412,8 +467,18 @@ async def collect_all() -> tuple[list[dict], bool, dict]:
             if title in seen_titles:
                 continue
             seen_titles.add(title)
+        # 标题相似度去重（与已保留的条目比较）
+        is_dup = False
+        for kept in deduped:
+            if title_similarity(title, kept.get("title", "")) > 0.5:
+                is_dup = True
+                break
+        if is_dup:
+            continue
         deduped.append(item)
     all_items = deduped
+    if noise_filtered:
+        print(f"  🚫 过滤股市噪声 {noise_filtered} 条")
 
     if real_count == 0:
         print("\n⚠️ 真实采集失败，启用降级数据...")
@@ -450,6 +515,16 @@ def process_items(items: list[dict]) -> list[dict]:
         item["insurance_relevance"] = rel
         item["ai_tags"] = [kw for kw in CATEGORY_KEYWORDS.get(item["category"], [])[:3] if kw.lower() in (title + content).lower()]
         item["ai_reason"] = generate_reason(item)
+
+    # 分类均衡加分：每个分类至少保证有内容
+    cat_counts = {}
+    for item in items:
+        cat_counts[item["category"]] = cat_counts.get(item["category"], 0) + 1
+    for item in items:
+        cat = item["category"]
+        if cat_counts.get(cat, 0) < 3:
+            # 弱势分类加分，最高+1.0
+            item["ai_score"] = min(item["ai_score"] + 1.0, 10.0)
     return items
 
 
@@ -459,7 +534,7 @@ def generate_output(items: list[dict], target_date: str, is_real: bool, source_h
         "fallback": "兜底数据", "regulator": "监管机构", "company": "保险公司",
     }
     items.sort(key=lambda x: x.get("ai_score", 0), reverse=True)
-    items = items[:25]  # 最多 25 条
+    items = items[:30]  # 最多 30 条
 
     by_cat = {}
     for item in items:
