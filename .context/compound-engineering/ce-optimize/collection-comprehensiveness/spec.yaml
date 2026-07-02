@@ -1,0 +1,91 @@
+name: collection-comprehensiveness
+description: |
+  优化保险行业资讯采集的全面性。通过调整搜索关键词、信源配置、分类逻辑和评分参数，
+  提升采集结果在分类覆盖、信源多样性、话题广度方面的质量。
+
+metric:
+  primary:
+    name: comprehensiveness_score
+    direction: maximize
+    target: 4.0
+    type: judge
+  degenerate_gates:
+    - name: total_items
+      operator: ">="
+      threshold: 15
+    - name: category_diversity
+      operator: ">="
+      threshold: 4
+    - name: source_diversity
+      operator: ">="
+      threshold: 8
+    - name: max_single_source_pct
+      operator: "<="
+      threshold: 40
+  judge:
+    rubric: |
+      你是一位保险行业资讯编辑专家。请评估以下采集结果的"全面性"，打分 1-5：
+
+      5分：覆盖全面且均衡 — 5个分类(regulation/product/industry/research/claims)均有覆盖，
+           信源多样(≥10家)，无明显遗漏的重要话题，包含监管动态、产品创新、行业趋势、
+           技术研究和理赔实务等多个维度。
+
+      4分：覆盖良好 — 至少4个分类有合理覆盖，信源多样(≥8家)，
+           可能有轻微的话题遗漏但整体覆盖面广。
+
+      3分：覆盖一般 — 3个分类有覆盖，信源尚可(≥6家)，
+           存在明显的话题缺口（如完全缺少监管或理赔类内容）。
+
+      2分：覆盖不足 — 仅1-2个分类占主导，信源集中(≤5家)，
+           大量话题缺失，采集结果偏向单一维度。
+
+      1分：严重不足 — 条目极少或全部集中在一个分类，
+           信源单一，无法反映行业全貌。
+
+      评估维度：
+      1. 分类均衡度：5个分类是否都有合理覆盖？（每个分类至少2条为佳）
+      2. 话题多样性：同一分类内是否覆盖了不同子话题？
+      3. 信源多样性：信源是否足够多样？是否包含权威媒体？
+      4. 时间覆盖：是否覆盖了最近多天的新闻？
+      5. 内容质量：标题和摘要是否反映了实质性内容？
+
+      也请报告：
+      - missing_categories: 未覆盖或严重不足的分类列表
+      - coverage_gaps: 具体的覆盖缺口描述（文本）
+      - topic_diversity_score: 1-5 话题多样性子分
+
+    scoring:
+      primary: comprehensiveness_score
+      secondary:
+        - topic_diversity_score
+    sample_size: 25
+    batch_size: 25
+    max_total_cost_usd: 5
+
+measurement:
+  command: "python3 .context/compound-engineering/ce-optimize/collection-comprehensiveness/evaluate_collection.py"
+  working_directory: "."
+  timeout_seconds: 120
+  stability:
+    mode: single
+    noise_threshold: 0.3
+
+scope:
+  mutable:
+    - run_collect.py
+  immutable:
+    - docs/index.html
+    - .github/workflows/daily-pipeline.yml
+    - data/config.json
+    - requirements.txt
+    - .context/compound-engineering/ce-optimize/collection-comprehensiveness/evaluate_collection.py
+
+execution:
+  mode: serial
+  max_concurrent: 1
+
+stopping:
+  max_iterations: 4
+  max_hours: 1
+  plateau_iterations: 3
+  minimum_improvement: 0.3

@@ -1,0 +1,68 @@
+name: source-diversification
+description: 扩大信息采集渠道，接入搜索引擎、微信公众号、头条等新数据源
+
+metric:
+  primary:
+    name: channel_comprehensiveness
+    direction: maximize
+    target: 4.0
+    type: judge
+  judge:
+    rubric: |
+      评估采集结果的渠道多样性和内容全面性，打分1-5：
+      - 5: 内容来自4+种平台类型(财经API/搜索引擎/微信公众号/头条等)，渠道间重叠低，话题覆盖广
+      - 4: 内容来自3+种平台类型，话题多样性好，新渠道带来部分增量内容
+      - 3: 内容来自2+种平台类型，渠道间有中等重叠
+      - 2: 内容主要来自1-2种平台类型，重叠高，新视角有限
+      - 1: 所有内容仅来自已有渠道，无新渠道内容
+      同时报告: distinct_channels(整数), new_channel_items(整数), overlap_count(整数)
+    scoring:
+      primary: channel_comprehensiveness
+      secondary: [distinct_channels, new_channel_items]
+    sample_size: 10
+    batch_size: 5
+    max_total_cost_usd: 5
+  degenerate_gates:
+    - name: total_items
+      operator: ">="
+      threshold: 15
+    - name: category_diversity
+      operator: ">="
+      threshold: 4
+    - name: source_diversity
+      operator: ">="
+      threshold: 10
+    - name: stock_noise_count
+      operator: "<="
+      threshold: 0
+
+measurement:
+  command: "python3 .context/compound-engineering/ce-optimize/source-diversification/evaluate_sources.py"
+  working_directory: "."
+  timeout_seconds: 180
+
+scope:
+  mutable:
+    - run_collect.py
+    - data/config.json
+    - requirements.txt
+  immutable:
+    - docs/index.html
+    - .context/compound-engineering/ce-optimize/source-diversification/evaluate_sources.py
+
+execution:
+  mode: serial
+  max_concurrent: 1
+
+stopping:
+  max_iterations: 4
+  max_hours: 1
+  target_reached: true
+  plateau_iterations: 3
+
+constraints:
+  - "不引入需要付费的API"
+  - "所有新渠道必须支持优雅降级(失败不影响已有采集)"
+  - "仅采集公开可访问的标题/链接/摘要，不存储全文"
+  - "遵守robots.txt，低频访问"
+  - "GitHub Actions环境兼容(无浏览器渲染依赖)"
