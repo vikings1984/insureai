@@ -11,6 +11,8 @@
 - **采集**：`run_collect.py`，多源真实采集（东方财富 API + AkShare + 保险行业协会 + 搜索引擎）
 - **研究报告注册表**：`data/research_reports.json`，19家权威机构研究报告的策展注册表（三层覆盖体系）
 - **部署**：GitHub Actions 每6小时触发采集（UTC 0/6/12/18 = 北京时间 08/14/20/02）→ git push → Cloudflare Pages + EdgeOne Pages 自动部署
+- **Cloudflare 部署URL**：`https://insureai.southman1984.workers.dev/docs/`（注意：`*.workers.dev` 域名在中国大陆被DNS污染，需科学上网或使用自定义域名）
+- **EdgeOne 部署URL**：`https://insureai-dp481943qvg1.edgeone.cool/docs/index.html`（注意：预览链接可能需要认证/刷新，正式访问需在EdgeOne控制台配置自定义域名或获取有效访问链接）
 - **根目录 `index.html`**：EdgeOne 部署的入口重定向页，指向 `docs/index.html`，不可删除
 
 ## 数据源
