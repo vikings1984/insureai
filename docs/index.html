@@ -302,6 +302,14 @@
     .score-badge:hover { transform: scale(1.05); }
     .score-badge .score-num { font-weight: 700; }
 
+    .date-verified-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 14px; height: 14px; font-size: 0.65rem; font-weight: 700;
+      color: var(--accent-green); margin-left: 4px;
+      border: 1px solid var(--accent-green); border-radius: 50%;
+      vertical-align: middle; opacity: 0.7;
+    }
+
     .card-summary { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 10px; }
     .card-summary.collapsed {
       display: -webkit-box;
@@ -1290,6 +1298,7 @@
           const isFav = state.fav[news.id];
           const hasSource = news.source_url && news.source_url !== '#';
           const sourceSub = news.source_type ? `<span class="source-sub">${esc(news.source_type)}</span>` : '';
+          const dateVerified = news.date_verified ? '<span class="date-verified-badge" title="发布日期已验证">&#10003;</span>' : '';
           const scoreBadge = showScore ? `<span class="score-badge">&#9733; <span class="score-num">${esc(news.ai_score)}</span></span>` : '';
           const reasonBlock = showReason && news.reason ? `
             <div class="card-reason">
@@ -1309,7 +1318,7 @@
                 <div class="timeline-dot"></div>
               </div>
               <div class="card-content">
-                <div class="card-source">${esc(news.source_name) || '未知来源'}${sourceSub} · <span class="relative-time">${esc(formatRelativeTime(news.published_at))}</span></div>
+                <div class="card-source">${esc(news.source_name) || '未知来源'}${sourceSub} · <span class="relative-time">${esc(formatRelativeTime(news.published_at))}</span>${dateVerified}</div>
                 <div class="title-row">
                   <div class="card-title" data-id="${news.id}">${esc(news.title)}</div>
                   ${scoreBadge}
