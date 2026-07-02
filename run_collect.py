@@ -136,6 +136,19 @@ STOCK_NOISE_KEYWORDS = [
 # 股市噪声豁免词 — 如果标题同时包含这些词则保留（说明是实质性内容）
 STOCK_NOISE_EXEMPT = ["保险科技", "保险产品", "保险理赔", "保险监管", "偿付能力", "保险创新", "保险服务"]
 
+# 非新闻来源黑名单 — 百度/搜索引擎结果中排除这些非新闻网站
+BLACKLIST_DOMAINS = [
+    "zhihu.com", "baike.baidu.com", "bilibili.com", "360doc.com",
+    "wenku.baidu.com", "experience.baidu.com", "edu.baidu.com",
+    "tieba.baidu.com", "douban.com", "segmentfault.com",
+    "csdn.net", "jianshu.com", "cnblogs.com",
+]
+BLACKLIST_SOURCE_NAMES = [
+    "知乎", "百度百科", "哔哩哔哩", "发表网", "发表云", "百度知道",
+    "百度经验", "360doc", "豆瓣", "博客园", "CSDN", "简书",
+    "百度文库", "百度贴吧",
+]
+
 HTTP_HEADERS = {
     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -167,6 +180,18 @@ def is_stock_noise(title: str) -> bool:
     # 融资数据类
     if "融资客" in title or "净买入" in title or "净卖出" in title:
         return True
+    return False
+
+
+def is_blacklisted(url: str, source_name: str) -> bool:
+    """检测是否为非新闻来源（知乎/百科/论坛等）"""
+    url_lower = (url or "").lower()
+    for domain in BLACKLIST_DOMAINS:
+        if domain in url_lower:
+            return True
+    for name in BLACKLIST_SOURCE_NAMES:
+        if name in (source_name or ""):
+            return True
     return False
 
 
@@ -414,6 +439,231 @@ def fetch_akshare_cctv_news() -> list[dict]:
     return items
 
 
+# ===== 百度新闻搜索 =====
+BAIDU_SEARCH_KEYWORDS = [
+    {"keyword": "保险", "category_hint": ""},
+    {"keyword": "保险监管", "category_hint": "regulation"},
+    {"keyword": "保险理赔", "category_hint": "claims"},
+    {"keyword": "保险产品", "category_hint": "product"},
+]
+
+async def fetch_baidu_news(client: httpx.AsyncClient) -> list[dict]:
+    """通过百度新闻搜索采集保险资讯（含重试逻辑）"""
+    items = []
+    mobile_ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1"
+    for cfg in BAIDU_SEARCH_KEYWORDS:
+        kw = cfg["keyword"]
+        # 尝试两种URL格式：桌面版 + 移动版
+        urls = [
+            f"https://www.baidu.com/s?tn=news&wd={quote(kw)}&rn=10&cl=2",
+            f"https://m.baidu.com/s?word={quote(kw)}&from=1099a&sa=tb&tn=news",
+        ]
+        html = None
+        for url in urls:
+            try:
+                headers = {"User-Agent": mobile_ua} if "m.baidu.com" in url else {}
+                resp = await client.get(url, timeout=15, headers=headers)
+                resp.raise_for_status()
+                page = resp.text
+                if "百度安全验证" in page or "wappass.baidu.com" in page:
+                    continue
+                html = page
+                break
+            except Exception:
+                continue
+        if not html:
+            print(f"    ⚠️ 百度'{kw}': 所有URL均被拦截")
+            continue
+        try:
+            # 解析搜索结果
+            results = re.findall(r'<a[^>]*href="(https?://[^"]*)"[^>]*>(.*?)</a>', html, re.S)
+            # 过滤百度自身链接
+            results = [(u, t) for u, t in results if "baidu.com" not in u and len(clean_text(re.sub(r'<[^>]+>', '', t))) > 5]
+            # 提取摘要
+            snippets = re.findall(r'<span class="c-color-text"[^>]*>(.*?)</span>', html, re.S)
+            source_info = re.findall(r'<span class="c-color-gray"[^>]*>(.*?)</span>', html, re.S)
+            
+            count = 0
+            for i, (link, title_html) in enumerate(results[:8]):
+                title = clean_text(re.sub(r'<[^>]+>', '', title_html))
+                if not title or len(title) < 5:
+                    continue
+                snippet = ""
+                if i < len(snippets):
+                    snippet = clean_text(re.sub(r'<[^>]+>', '', snippets[i]))
+                source_name = "百度新闻"
+                pub_date = datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
+                if i < len(source_info):
+                    info_text = clean_text(re.sub(r'<[^>]+>', '', source_info[i]))
+                    parts = info_text.split()
+                    if parts:
+                        source_name = parts[0]
+                    date_match = re.search(r'(\d{4})-(\d{1,2})-(\d{1,2})', info_text)
+                    if date_match:
+                        pub_date = f"{date_match.group(1)}-{int(date_match.group(2)):02d}-{int(date_match.group(3)):02d}"
+                    else:
+                        days_match = re.search(r'(\d+)天前', info_text)
+                        if days_match:
+                            d = datetime.now(ZoneInfo("Asia/Shanghai")).date() - timedelta(days=int(days_match.group(1)))
+                            pub_date = d.isoformat()
+                        hours_match = re.search(r'(\d+)小时前', info_text)
+                        if hours_match:
+                            pub_date = datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
+
+                items.append({
+                    "title": title,
+                    "url": link,
+                    "content": snippet[:500] if snippet else title,
+                    "source_name": source_name,
+                    "source_type": "baidu",
+                    "published_at": pub_date,
+                    "category_hint": cfg.get("category_hint", ""),
+                    "language": "zh",
+                })
+                count += 1
+            print(f"    ✅ 百度'{kw}': {count} 篇")
+            await asyncio.sleep(1.0)
+        except Exception as e:
+            print(f"    ⚠️ 百度'{kw}'解析失败: {e}")
+    return items
+
+
+# ===== 今日头条搜索 =====
+TOUTIAO_SEARCH_KEYWORDS = [
+    {"keyword": "保险", "category_hint": ""},
+    {"keyword": "保险监管", "category_hint": "regulation"},
+    {"keyword": "保险理赔", "category_hint": "claims"},
+]
+
+async def fetch_toutiao_news(client: httpx.AsyncClient) -> list[dict]:
+    """通过今日头条搜索采集保险资讯"""
+    items = []
+    for cfg in TOUTIAO_SEARCH_KEYWORDS:
+        kw = cfg["keyword"]
+        url = f"https://so.toutiao.com/search?keyword={quote(kw)}&pd=information&dvpf=pc"
+        try:
+            resp = await client.get(url, timeout=15)
+            resp.raise_for_status()
+            html = resp.text
+            # 头条搜索结果解析
+            # 提取标题和链接
+            results = re.findall(r'<a[^>]*class="[^"]*result-title[^"]*"[^>]*href="([^"]+)"[^>]*>(.*?)</a>', html, re.S)
+            if not results:
+                # 尝试另一种结构
+                results = re.findall(r'<a[^>]*href="(https?://[^"]*toutiao[^"]*)"[^>]*>(.*?)</a>', html, re.S)
+            
+            count = 0
+            for link, title_html in results[:8]:
+                title = clean_text(re.sub(r'<[^>]+>', '', title_html))
+                if not title or len(title) < 5:
+                    continue
+                if "保险" not in title and kw not in title:
+                    continue
+                # 提取摘要
+                snippet_match = re.search(rf'{re.escape(title_html)}.*?<p[^>]*>(.*?)</p>', html, re.S)
+                snippet = ""
+                if snippet_match:
+                    snippet = clean_text(re.sub(r'<[^>]+>', '', snippet_match.group(1)))
+                
+                items.append({
+                    "title": title,
+                    "url": link,
+                    "content": snippet[:500] if snippet else title,
+                    "source_name": "今日头条",
+                    "source_type": "toutiao",
+                    "published_at": datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat(),
+                    "category_hint": cfg.get("category_hint", ""),
+                    "language": "zh",
+                })
+                count += 1
+            print(f"    ✅ 头条'{kw}': {count} 篇")
+            await asyncio.sleep(0.8)
+        except Exception as e:
+            print(f"    ⚠️ 头条'{kw}': {e}")
+    return items
+
+
+# ===== 搜狗微信公众号搜索 =====
+SOGOU_WECHAT_KEYWORDS = [
+    {"keyword": "保险", "category_hint": ""},
+    {"keyword": "保险监管", "category_hint": "regulation"},
+    {"keyword": "保险产品", "category_hint": "product"},
+    {"keyword": "保险科技", "category_hint": "research"},
+    {"keyword": "健康险", "category_hint": "product"},
+    {"keyword": "养老保险", "category_hint": "product"},
+]
+
+async def fetch_sogou_wechat(client: httpx.AsyncClient) -> list[dict]:
+    """通过搜狗微信搜索采集公众号保险文章（尽力而为）"""
+    items = []
+    for cfg in SOGOU_WECHAT_KEYWORDS:
+        kw = cfg["keyword"]
+        url = f"https://weixin.sogou.com/weixin?type=2&query={quote(kw)}&ie=utf8"
+        try:
+            wechat_headers = {
+                **HTTP_HEADERS,
+                "Referer": "https://weixin.sogou.com/",
+                "Cookie": "SUV=00A0000000000001",
+            }
+            resp = await client.get(url, timeout=15, headers=wechat_headers)
+            resp.raise_for_status()
+            html = resp.text
+            if "验证码" in html or "antispider" in html.lower():
+                print(f"    ⚠️ 搜狗微信'{kw}': 触发验证码，跳过")
+                continue
+            # 解析搜索结果：提取文章链接、标题、日期
+            # 搜狗微信结果块结构: <div class="txt-box"> ... <a href="link">title</a> ... <span class="s2">日期</span>
+            results = re.findall(r'<a[^>]*target="_blank"[^>]*href="([^"]+)"[^>]*>(.*?)</a>', html, re.S)
+            # 提取日期信息（格式: "YYYY-MM-DD" 或 "X天前" 或 "X小时前"）
+            date_blocks = re.findall(r'<span[^>]*class="s2"[^>]*>(.*?)</span>', html, re.S)
+            # 提取公众号账号名（class="all-time-y2" 的 span）
+            account_names = re.findall(r'<span[^>]*class="all-time-y2"[^>]*>(.*?)</span>', html, re.S)
+            # 提取 Unix 时间戳（timeConvert('XXXX') 格式）
+            timestamps = re.findall(r"timeConvert\('(\d+)'\)", html)
+            
+            count = 0
+            for i, (link, title_html) in enumerate(results[:8]):
+                title = clean_text(re.sub(r'<[^>]+>', '', title_html))
+                if not title or len(title) < 5:
+                    continue
+                if "保险" not in title and kw not in title:
+                    continue
+                # 提取公众号账号名
+                source_name = "微信公众号"
+                if i < len(account_names):
+                    acct = clean_text(re.sub(r'<[^>]+>', '', account_names[i]))
+                    if acct and len(acct) > 1:
+                        source_name = f"公众号·{acct}"
+                if not link.startswith("http"):
+                    link = urljoin("https://weixin.sogou.com", link)
+                # 解析日期：优先从 Unix 时间戳转换
+                pub_date = datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
+                if i < len(timestamps):
+                    try:
+                        ts = int(timestamps[i])
+                        dt = datetime.fromtimestamp(ts, tz=ZoneInfo("Asia/Shanghai"))
+                        pub_date = dt.date().isoformat()
+                    except Exception:
+                        pass
+                
+                items.append({
+                    "title": title,
+                    "url": link,
+                    "content": title,
+                    "source_name": source_name,
+                    "source_type": "wechat",
+                    "published_at": pub_date,
+                    "category_hint": cfg.get("category_hint", ""),
+                    "language": "zh",
+                })
+                count += 1
+            print(f"    ✅ 搜狗微信'{kw}': {count} 篇")
+            await asyncio.sleep(1.5)
+        except Exception as e:
+            print(f"    ⚠️ 搜狗微信'{kw}': {e}")
+    return items
+
+
 # ===== 采集主流程 =====
 async def collect_all() -> tuple[list[dict], bool, dict]:
     all_items = []
@@ -433,6 +683,24 @@ async def collect_all() -> tuple[list[dict], bool, dict]:
         real_count += len(ia_items)
         source_health["iachina"] = {"count": len(ia_items), "ok": len(ia_items) > 0}
 
+        print("\n🔍 百度新闻搜索...")
+        bd_items = await fetch_baidu_news(client)
+        all_items.extend(bd_items)
+        real_count += len(bd_items)
+        source_health["baidu"] = {"count": len(bd_items), "ok": len(bd_items) > 0}
+
+        print("\n📄 今日头条搜索...")
+        tt_items = await fetch_toutiao_news(client)
+        all_items.extend(tt_items)
+        real_count += len(tt_items)
+        source_health["toutiao"] = {"count": len(tt_items), "ok": len(tt_items) > 0}
+
+        print("\n💬 搜狗微信公众号搜索...")
+        wx_items = await fetch_sogou_wechat(client)
+        all_items.extend(wx_items)
+        real_count += len(wx_items)
+        source_health["wechat"] = {"count": len(wx_items), "ok": len(wx_items) > 0}
+
     # AkShare 同步采集
     print("\n📊 AkShare 个股新闻（5家险企）...")
     ak_stock_items = await asyncio.to_thread(fetch_akshare_stock_news)
@@ -446,17 +714,23 @@ async def collect_all() -> tuple[list[dict], bool, dict]:
     real_count += len(ak_cctv_items)
     source_health["akshare_cctv"] = {"count": len(ak_cctv_items), "ok": len(ak_cctv_items) > 0}
 
-    # 去重（按 URL，无 URL 时按标题）+ 股市噪声过滤 + 标题相似度去重
+    # 去重（按 URL，无 URL 时按标题）+ 股市噪声过滤 + 黑名单过滤 + 标题相似度去重
     seen_urls = set()
     seen_titles = set()
     deduped = []
     noise_filtered = 0
+    blacklist_filtered = 0
     for item in all_items:
         url = item.get("url", "")
         title = item.get("title", "")
+        source_name = item.get("source_name", "")
         # 股市噪声过滤
         if is_stock_noise(title):
             noise_filtered += 1
+            continue
+        # 非新闻来源黑名单过滤
+        if is_blacklisted(url, source_name):
+            blacklist_filtered += 1
             continue
         # URL 去重
         if url:
@@ -479,6 +753,8 @@ async def collect_all() -> tuple[list[dict], bool, dict]:
     all_items = deduped
     if noise_filtered:
         print(f"  🚫 过滤股市噪声 {noise_filtered} 条")
+    if blacklist_filtered:
+        print(f"  🚫 过滤非新闻来源 {blacklist_filtered} 条")
 
     if real_count == 0:
         print("\n⚠️ 真实采集失败，启用降级数据...")
@@ -532,9 +808,19 @@ def generate_output(items: list[dict], target_date: str, is_real: bool, source_h
     SOURCE_TYPE_MAP = {
         "api": "财经媒体", "web": "行业协会", "akshare": "财经媒体",
         "fallback": "兜底数据", "regulator": "监管机构", "company": "保险公司",
+        "baidu": "搜索引擎", "toutiao": "头条资讯", "wechat": "微信公众号",
     }
     items.sort(key=lambda x: x.get("ai_score", 0), reverse=True)
-    items = items[:30]  # 最多 30 条
+    # 渠道均衡：限制每个 source_type 最多占比 50%
+    stype_counts = {}
+    balanced = []
+    for item in items:
+        st = item.get("source_type", "")
+        if stype_counts.get(st, 0) >= 15:  # 每个渠道最多15条
+            continue
+        stype_counts[st] = stype_counts.get(st, 0) + 1
+        balanced.append(item)
+    items = balanced[:30]  # 最多 30 条
 
     by_cat = {}
     for item in items:
