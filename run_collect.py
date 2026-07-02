@@ -241,6 +241,112 @@ def validate_url(url: str) -> str:
     return ""
 
 
+# ===== 文章页日期提取（第一性原理：发布日期只能来自源页面，不能来自爬虫时间）=====
+ARTICLE_DATE_PATTERNS = [
+    # meta 标签（最可靠）
+    r'<meta[^>]+property=["\']article:published_time["\'][^>]+content=["\']([^"\']+)["\']',
+    r'<meta[^>]+name=["\']publishdate["\'][^>]+content=["\']([^"\']+)["\']',
+    r'<meta[^>]+name=["\']publication_date["\'][^>]+content=["\']([^"\']+)["\']',
+    r'<meta[^>]+name=["\']weibo:article:create_at["\'][^>]+content=["\']([^"\']+)["\']',
+    # JSON-LD 结构化数据
+    r'"datePublished"[:\s]*"([^"]+)"',
+    # 时间元素
+    r'<time[^>]+datetime=["\']([^"\']+)["\']',
+    # 常见新闻页面日期格式
+    r'(\d{4}[-/年]\d{1,2}[-/月]\d{1,2})',
+]
+
+# URL 中的日期模式（如 /2026/07/02/ 或 20260702）
+URL_DATE_PATTERN = r'/(\d{4})(\d{2})(\d{2})/'
+
+
+async def fetch_article_date(client: httpx.AsyncClient, url: str) -> str | None:
+    """从文章页面提取真实发布日期。
+    第一性原理：发布日期是文章的固有属性，只能从源页面提取，不能默认为今天。
+    """
+    if not url or not validate_url(url):
+        return None
+    # 黑名单域名不抓取
+    if is_blacklisted(url, ""):
+        return None
+    try:
+        resp = await client.get(url, timeout=8, follow_redirects=True)
+        if resp.status_code != 200:
+            return None
+        html = resp.text[:50000]  # 只读前50K节省内存
+        # 1. 尝试 meta 标签和结构化数据
+        for pattern in ARTICLE_DATE_PATTERNS:
+            m = re.search(pattern, html, re.I)
+            if m:
+                raw = m.group(1)
+                # 解析为标准日期
+                parsed = _parse_date_string(raw)
+                if parsed:
+                    return parsed
+        # 2. 尝试从 URL 提取日期
+        url_match = re.search(URL_DATE_PATTERN, url)
+        if url_match:
+            y, mo, d = url_match.groups()
+            return f"{y}-{mo}-{d}"
+        return None
+    except Exception:
+        return None
+
+
+def _parse_date_string(raw: str) -> str | None:
+    """将各种日期格式解析为 YYYY-MM-DD"""
+    raw = raw.strip()
+    # ISO 格式: 2026-07-02T10:30:00+08:00
+    m = re.match(r'(\d{4})-(\d{1,2})-(\d{1,2})', raw)
+    if m:
+        return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
+    # 中文格式: 2026年7月2日
+    m = re.match(r'(\d{4})年(\d{1,2})月(\d{1,2})日', raw)
+    if m:
+        return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
+    # 斜杠格式: 2026/07/02
+    m = re.match(r'(\d{4})/(\d{1,2})/(\d{1,2})', raw)
+    if m:
+        return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
+    return None
+
+
+def extract_date_from_text(text: str) -> str | None:
+    """从文本中提取日期（用于搜索引擎结果页的时间信息）"""
+    if not text:
+        return None
+    # "X小时前" → 今天
+    hours_match = re.search(r'(\d+)小时前', text)
+    if hours_match:
+        return datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
+    # "X天前" → 计算日期
+    days_match = re.search(r'(\d+)天前', text)
+    if days_match:
+        d = datetime.now(ZoneInfo("Asia/Shanghai")).date() - timedelta(days=int(days_match.group(1)))
+        return d.isoformat()
+    # "昨天"
+    if '昨天' in text:
+        d = datetime.now(ZoneInfo("Asia/Shanghai")).date() - timedelta(days=1)
+        return d.isoformat()
+    # "前天"
+    if '前天' in text:
+        d = datetime.now(ZoneInfo("Asia/Shanghai")).date() - timedelta(days=2)
+        return d.isoformat()
+    # "今天"
+    if '今天' in text or '今日' in text:
+        return datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
+    # YYYY-MM-DD 或 YYYY-MM-DD HH:MM
+    m = re.search(r'(\d{4})-(\d{1,2})-(\d{1,2})', text)
+    if m:
+        return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
+    # MM-DD（当年）
+    m = re.search(r'(\d{1,2})月(\d{1,2})日', text)
+    if m:
+        year = datetime.now(ZoneInfo("Asia/Shanghai")).year
+        return f"{year}-{int(m.group(1)):02d}-{int(m.group(2)):02d}"
+    return None
+
+
 def assign_category(title: str, content: str, hint: str = "") -> str:
     if hint:
         return hint
@@ -251,7 +357,11 @@ def assign_category(title: str, content: str, hint: str = "") -> str:
     return max(scores, key=scores.get)
 
 
-def assign_score(title: str, content: str, source_name: str, pub_date: str) -> tuple:
+def assign_score(title: str, content: str, source_name: str, pub_date: str, date_verified: bool = True) -> tuple:
+    """计算文章评分。
+    第一性原理：新鲜度加分只能给予已验证发布日期的文章。
+    未知日期的文章不获得新鲜度加分（避免旧文冒充新闻）。
+    """
     text = (title + " " + content).lower()
     all_kw = [kw for kws in CATEGORY_KEYWORDS.values() for kw in kws]
     kw_count = sum(1 for kw in all_kw if kw.lower() in text)
@@ -261,24 +371,29 @@ def assign_score(title: str, content: str, source_name: str, pub_date: str) -> t
     # 内容长度加分（最高1.0）
     length_bonus = min(len(content) / 500, 1.0)
 
-    # 新鲜度加分（当天3.5，3天内2.0，7天内1.0，14天内0.5）
+    # 新鲜度加分：仅对已验证日期的文章生效
     freshness_bonus = 0
-    try:
-        d = datetime.strptime(pub_date[:10], "%Y-%m-%d").date()
-        today = datetime.now(ZoneInfo("Asia/Shanghai")).date()
-        days_old = (today - d).days
-        if days_old <= 0:
-            freshness_bonus = 3.5
-        elif days_old <= 1:
-            freshness_bonus = 2.0
-        elif days_old <= 3:
-            freshness_bonus = 1.0
-        elif days_old <= 7:
-            freshness_bonus = 0.5
-        elif days_old <= 14:
-            freshness_bonus = 0.3
-    except Exception:
-        pass
+    if date_verified and pub_date:
+        try:
+            d = datetime.strptime(pub_date[:10], "%Y-%m-%d").date()
+            today = datetime.now(ZoneInfo("Asia/Shanghai")).date()
+            days_old = (today - d).days
+            if days_old < 0:
+                # 未来日期异常，不加分
+                pass
+            elif days_old <= 0:
+                freshness_bonus = 3.5
+            elif days_old <= 1:
+                freshness_bonus = 2.0
+            elif days_old <= 3:
+                freshness_bonus = 1.0
+            elif days_old <= 7:
+                freshness_bonus = 0.5
+            elif days_old <= 14:
+                freshness_bonus = 0.3
+        except Exception:
+            pass
+    # 未知日期：freshness_bonus 保持为 0，旧文无法冒充新闻
 
     # 关键词匹配加分（每个关键词0.2，最高1.5）
     kw_bonus = min(kw_count * 0.2, 1.5)
@@ -330,13 +445,15 @@ async def fetch_eastmoney(client: httpx.AsyncClient) -> list[dict]:
                 content = clean_text(a.get("content", ""))
                 if not title or len(title) < 5:
                     continue
+                pub_date = a.get("date", "")[:10]
                 items.append({
                     "title": title,
                     "url": a.get("url", ""),
                     "content": content[:500],
                     "source_name": a.get("mediaName", "东方财富"),
                     "source_type": "api",
-                    "published_at": a.get("date", "")[:10],
+                    "published_at": pub_date,
+                    "date_verified": bool(pub_date),  # API 返回的日期可信
                     "category_hint": cfg.get("category_hint", ""),
                     "language": "zh",
                 })
@@ -377,6 +494,7 @@ async def fetch_iachina(client: httpx.AsyncClient) -> list[dict]:
                     "source_name": col_cfg["name"],
                     "source_type": "web",
                     "published_at": pub,
+                    "date_verified": True,  # URL 路径中的日期可信
                     "category_hint": col_cfg.get("category_hint", ""),
                     "language": "zh",
                 })
@@ -416,6 +534,7 @@ def fetch_akshare_stock_news() -> list[dict]:
                     "source_name": str(row.get("文章来源", name)),
                     "source_type": "akshare",
                     "published_at": pub,
+                    "date_verified": bool(pub),  # AkShare 返回的日期可信
                     "category_hint": cfg.get("category_hint", ""),
                     "language": "zh",
                 })
@@ -455,6 +574,7 @@ def fetch_akshare_cctv_news() -> list[dict]:
                     "source_name": "央视新闻联播",
                     "source_type": "akshare",
                     "published_at": d.isoformat(),
+                    "date_verified": True,  # 按日期查询，日期可信
                     "category_hint": "regulation",
                     "language": "zh",
                 })
@@ -479,9 +599,12 @@ async def fetch_baidu_news(client: httpx.AsyncClient) -> list[dict]:
     mobile_ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1"
     for cfg in BAIDU_SEARCH_KEYWORDS:
         kw = cfg["keyword"]
-        # 尝试两种URL格式：桌面版 + 移动版
+        # 尝试两种URL格式：桌面版 + 移动版（带时间过滤：仅最近7天）
+        now_ts = int(datetime.now(ZoneInfo("Asia/Shanghai")).timestamp())
+        week_ago_ts = now_ts - 7 * 86400
+        gpc_param = f"stf%3D{week_ago_ts}%2C{now_ts}%7Cstftype%3D1"
         urls = [
-            f"https://www.baidu.com/s?tn=news&wd={quote(kw)}&rn=10&cl=2",
+            f"https://www.baidu.com/s?tn=news&wd={quote(kw)}&rn=10&cl=2&gpc={gpc_param}",
             f"https://m.baidu.com/s?word={quote(kw)}&from=1099a&sa=tb&tn=news",
         ]
         html = None
@@ -518,23 +641,20 @@ async def fetch_baidu_news(client: httpx.AsyncClient) -> list[dict]:
                 if i < len(snippets):
                     snippet = clean_text(re.sub(r'<[^>]+>', '', snippets[i]))
                 source_name = "百度新闻"
-                pub_date = datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
+                pub_date = None
+                date_verified = False
                 if i < len(source_info):
                     info_text = clean_text(re.sub(r'<[^>]+>', '', source_info[i]))
                     parts = info_text.split()
                     if parts:
                         source_name = parts[0]
-                    date_match = re.search(r'(\d{4})-(\d{1,2})-(\d{1,2})', info_text)
-                    if date_match:
-                        pub_date = f"{date_match.group(1)}-{int(date_match.group(2)):02d}-{int(date_match.group(3)):02d}"
-                    else:
-                        days_match = re.search(r'(\d+)天前', info_text)
-                        if days_match:
-                            d = datetime.now(ZoneInfo("Asia/Shanghai")).date() - timedelta(days=int(days_match.group(1)))
-                            pub_date = d.isoformat()
-                        hours_match = re.search(r'(\d+)小时前', info_text)
-                        if hours_match:
-                            pub_date = datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
+                    extracted = extract_date_from_text(info_text)
+                    if extracted:
+                        pub_date = extracted
+                        date_verified = True
+                # 未能提取日期时，pub_date 保持 None，不默认为今天
+                if not pub_date:
+                    pub_date = datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
 
                 items.append({
                     "title": title,
@@ -543,6 +663,7 @@ async def fetch_baidu_news(client: httpx.AsyncClient) -> list[dict]:
                     "source_name": source_name,
                     "source_type": "baidu",
                     "published_at": pub_date,
+                    "date_verified": date_verified,
                     "category_hint": cfg.get("category_hint", ""),
                     "language": "zh",
                 })
@@ -589,17 +710,22 @@ async def fetch_google_news_rss(client: httpx.AsyncClient) -> list[dict]:
                     if not source or source == 'Google新闻':
                         source = parts[1].strip()
                 # 解析日期 (RFC 2822)
-                pub_date = datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
+                pub_date = None
+                date_verified = False
                 if pub_date_raw:
                     try:
                         dt = datetime.strptime(pub_date_raw, '%a, %d %b %Y %H:%M:%S GMT')
                         pub_date = dt.date().isoformat()
+                        date_verified = True
                     except Exception:
                         try:
                             dt = datetime.strptime(pub_date_raw, '%a, %d %b %Y %H:%M:%S %z')
                             pub_date = dt.astimezone(ZoneInfo("Asia/Shanghai")).date().isoformat()
+                            date_verified = True
                         except Exception:
                             pass
+                if not pub_date:
+                    pub_date = datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
                 content = clean_text(desc) if desc else title
                 items.append({
                     "title": title,
@@ -608,6 +734,7 @@ async def fetch_google_news_rss(client: httpx.AsyncClient) -> list[dict]:
                     "source_name": source,
                     "source_type": "google",
                     "published_at": pub_date,
+                    "date_verified": date_verified,
                     "category_hint": cfg.get("category_hint", ""),
                     "language": "zh",
                 })
@@ -657,21 +784,18 @@ async def fetch_360_news(client: httpx.AsyncClient) -> list[dict]:
                 title = clean_text(title)
                 if not title or len(title) < 5:
                     continue
-                # 解析日期
-                pub_date = datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
+                # 解析日期：优先从时间span提取，提取失败则为未知
+                pub_date = None
+                date_verified = False
                 if i < len(time_spans):
                     time_text = clean_text(re.sub(r'<[^>]+>', '', time_spans[i]))
-                    # 尝试解析 "X小时前" / "X天前" / "YYYY-MM-DD"
-                    hours_match = re.search(r'(\d+)小时前', time_text)
-                    days_match = re.search(r'(\d+)天前', time_text)
-                    date_match = re.search(r'(\d{4})-(\d{1,2})-(\d{1,2})', time_text)
-                    if date_match:
-                        pub_date = f"{date_match.group(1)}-{int(date_match.group(2)):02d}-{int(date_match.group(3)):02d}"
-                    elif days_match:
-                        d = datetime.now(ZoneInfo("Asia/Shanghai")).date() - timedelta(days=int(days_match.group(1)))
-                        pub_date = d.isoformat()
-                    elif hours_match:
-                        pub_date = datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
+                    extracted = extract_date_from_text(time_text)
+                    if extracted:
+                        pub_date = extracted
+                        date_verified = True
+                # 未能提取日期时，不默认为今天，稍后通过 fetch_article_date 补充
+                if not pub_date:
+                    pub_date = datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
                 # 从URL推断来源
                 source_name = "360搜索"
                 if "360kuai.com" in link:
@@ -683,6 +807,7 @@ async def fetch_360_news(client: httpx.AsyncClient) -> list[dict]:
                     "source_name": source_name,
                     "source_type": "360",
                     "published_at": pub_date,
+                    "date_verified": date_verified,
                     "category_hint": cfg.get("category_hint", ""),
                     "language": "zh",
                 })
@@ -757,6 +882,7 @@ async def fetch_sogou_news(client: httpx.AsyncClient) -> list[dict]:
                     "source_name": source_name,
                     "source_type": "sogou",
                     "published_at": datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat(),
+                    "date_verified": False,  # 搜狗新闻结果页无日期信息，稍后通过 fetch_article_date 补充
                     "category_hint": cfg.get("category_hint", ""),
                     "language": "zh",
                 })
@@ -832,14 +958,25 @@ async def fetch_sogou_wechat(client: httpx.AsyncClient) -> list[dict]:
                 if not link.startswith("http"):
                     link = urljoin("https://weixin.sogou.com", link)
                 # 解析日期：优先从 Unix 时间戳转换
-                pub_date = datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
+                pub_date = None
+                date_verified = False
                 if i < len(timestamps):
                     try:
                         ts = int(timestamps[i])
                         dt = datetime.fromtimestamp(ts, tz=ZoneInfo("Asia/Shanghai"))
                         pub_date = dt.date().isoformat()
+                        date_verified = True
                     except Exception:
                         pass
+                # 退而求其次：从日期块提取
+                if not date_verified and i < len(date_blocks):
+                    date_text = clean_text(re.sub(r'<[^>]+>', '', date_blocks[i]))
+                    extracted = extract_date_from_text(date_text)
+                    if extracted:
+                        pub_date = extracted
+                        date_verified = True
+                if not pub_date:
+                    pub_date = datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
                 
                 items.append({
                     "title": title,
@@ -848,6 +985,7 @@ async def fetch_sogou_wechat(client: httpx.AsyncClient) -> list[dict]:
                     "source_name": source_name,
                     "source_type": "wechat",
                     "published_at": pub_date,
+                    "date_verified": date_verified,
                     "category_hint": cfg.get("category_hint", ""),
                     "language": "zh",
                 })
@@ -978,18 +1116,59 @@ async def collect_all() -> tuple[list[dict], bool, dict]:
             all_items.append({
                 "title": fb["title"], "url": fb["url"], "content": fb["snippet"],
                 "source_name": fb["source"], "source_type": "fallback",
-                "published_at": today, "category_hint": fb.get("category", ""), "language": "zh",
+                "published_at": today, "date_verified": False, "category_hint": fb.get("category", ""), "language": "zh",
             })
         print(f"\n🏥 数据源健康: {json.dumps(source_health, ensure_ascii=False)}")
         return all_items, False, source_health
 
-    # 新鲜度过滤
+    # ===== 第一性原理：日期验证 =====
+    # 对 date_verified=False 的条目，访问文章页面提取真实发布日期
+    # 这是防止旧文冒充新闻的关键步骤
+    # 使用新的 client 避免主采集阶段连接池耗尽
+    unverified = [i for i in all_items if not i.get("date_verified", True)]
+    if unverified:
+        print(f"\n📅 日期验证: {len(unverified)} 条待验证（最多验证15条）...")
+        verified_count = 0
+        old_dates_found = 0
+        async with httpx.AsyncClient(follow_redirects=True, headers=HTTP_HEADERS) as verify_client:
+            sem = asyncio.Semaphore(5)  # 并发限制
+            async def verify_one(item):
+                nonlocal verified_count, old_dates_found
+                url = item.get("url", "")
+                if not url or url == "#":
+                    return
+                async with sem:
+                    real_date = await fetch_article_date(verify_client, url)
+                if real_date:
+                    item["published_at"] = real_date
+                    item["date_verified"] = True
+                    verified_count += 1
+                    # 检查是否为旧文（超过7天）
+                    try:
+                        from datetime import date as date_cls
+                        d = date_cls.fromisoformat(real_date[:10])
+                        today = datetime.now(ZoneInfo("Asia/Shanghai")).date()
+                        if (today - d).days > 7:
+                            old_dates_found += 1
+                    except Exception:
+                        pass
+            tasks = [verify_one(item) for item in unverified[:15]]
+            await asyncio.gather(*tasks, return_exceptions=True)
+        print(f"  ✅ 日期验证完成: {verified_count}/{len(unverified[:15])} 条成功提取真实日期")
+        if old_dates_found:
+            print(f"  🚫 发现 {old_dates_found} 条旧文（>7天），将被新鲜度过滤")
+
+    # 新鲜度过滤（日期验证后，旧文会被正确过滤）
     cutoff = (datetime.now(ZoneInfo("Asia/Shanghai")).date()) - timedelta(days=FRESHNESS_DAYS)
     fresh = [i for i in all_items if i.get("published_at", "") >= cutoff.isoformat()]
     if not fresh:
         fresh = all_items  # 如果过滤后为空，保留全部
 
+    # 统计日期验证情况
+    verified_items = sum(1 for i in fresh if i.get("date_verified", False))
+    unverified_items = len(fresh) - verified_items
     print(f"\n📥 采集 {len(all_items)} 条 → 去重后 {len(deduped)} 条 → 近{FRESHNESS_DAYS}天 {len(fresh)} 条")
+    print(f"  📅 日期已验证: {verified_items} 条, 日期未验证: {unverified_items} 条")
     print(f"\n🏥 数据源健康: {json.dumps(source_health, ensure_ascii=False)}")
     return fresh, True, source_health
 
@@ -1001,7 +1180,7 @@ def process_items(items: list[dict]) -> list[dict]:
         item["title"] = title
         item["content"] = content
         item["category"] = assign_category(title, content, item.get("category_hint", ""))
-        score, rel = assign_score(title, content, item["source_name"], item.get("published_at", ""))
+        score, rel = assign_score(title, content, item["source_name"], item.get("published_at", ""), item.get("date_verified", False))
         item["ai_score"] = score
         item["insurance_relevance"] = rel
         item["ai_tags"] = [kw for kw in CATEGORY_KEYWORDS.get(item["category"], [])[:3] if kw.lower() in (title + content).lower()]
@@ -1127,16 +1306,21 @@ lang: zh
         "source_name": item["source_name"], "source_type": SOURCE_TYPE_MAP.get(item.get("source_type", ""), item.get("source_type", "web")),
         "source_url": validate_url(item.get("url", "")) or "#", "ai_score": round(item.get("ai_score", 0) * 10),
         "tags": ",".join(item.get("ai_tags", [])), "category": item.get("category", "industry"),
-        "published_at": item.get("published_at", target_date), "reason": item.get("ai_reason", ""),
+        "published_at": item.get("published_at", target_date), "date_verified": item.get("date_verified", False),
+        "reason": item.get("ai_reason", ""),
     } for i, item in enumerate(curated)]
 
     # 增量合并：保留近3天的历史新闻
+    # 第一性原理：不保留 date_verified=False 的旧条目，因为其日期可能是假的
     old_news = data.get("news", [])
     seen_urls = set(n.get("source_url", "") for n in today_news if n.get("source_url"))
     merged = list(today_news)
     for old_item in old_news:
         old_url = old_item.get("source_url", "")
         if old_url and old_url not in seen_urls:
+            # 跳过日期未验证的旧条目（防止旧文通过假日期持续留存）
+            if not old_item.get("date_verified", False):
+                continue
             # 只保留近3天的历史
             try:
                 old_date = old_item.get("published_at", "")[:10]
