@@ -1705,7 +1705,7 @@
         <div class="modal-meta">
           <span>${esc(news.source_name) || '未知来源'}</span>
           ${news.source_type ? `<span class="source-sub">${esc(news.source_type)}</span>` : ''}
-          <span> · ${esc(formatRelativeTime(news.published_at))}</span>
+          <span> · ${esc(formatRelativeTime(news.published_at))}</span>${news.date_verified ? '<span class="date-verified-badge" title="发布日期已验证">&#10003;</span>' : ''}
           <span> · ${esc(catNames[news.category] || news.category)}</span>
           ${news.ai_score ? `<span class="score-badge" style="display:inline-flex;vertical-align:middle;margin-left:4px">&#9733; <span class="score-num">${esc(news.ai_score)}</span></span>` : ''}
         </div>
