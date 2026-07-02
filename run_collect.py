@@ -127,6 +127,82 @@ CATEGORY_KEYWORDS = {
 
 AUTHORITY_SOURCES = ["中国证券报", "上海证券报", "证券时报", "新华财经", "人民日报", "中国经营报", "第一财经", "澎湃新闻", "券商中国", "北京商报"]
 
+# ===== 权威研究报告来源（三层覆盖体系）=====
+# 第一层：国际再保险巨头（宏观市场数据）
+AUTHORITATIVE_REPORT_SOURCES_REINSURANCE = [
+    "瑞士再保险", "Swiss Re", "瑞再", "慕尼黑再保险", "Munich Re", "慕再",
+    "劳合社", "Lloyd", "怡安", "Aon", "韦莱再保险", "Willis Re",
+]
+# 第二层：全球咨询机构（战略趋势）
+AUTHORITATIVE_REPORT_SOURCES_CONSULTING = [
+    "麦肯锡", "McKinsey", "德勤", "Deloitte", "BCG", "波士顿咨询",
+    "Gartner", "毕马威", "KPMG", "普华永道", "PwC",
+    "奥纬咨询", "Oliver Wyman", "埃森哲", "Accenture",
+    "佳达再保险", "Guy Carpenter", "Marsh McLennan", "威达信",
+]
+# 第三层：国内研究机构（本土落地视角）
+AUTHORITATIVE_REPORT_SOURCES_DOMESTIC = [
+    "中国保险行业协会", "中金公司", "CICC", "艾瑞咨询", "iResearch",
+    "头豹研究院", "LeadLeo", "清华五道口", "清华大学五道口",
+    "零壹财经", "零壹智库", "国家金融监督管理总局", "NFRA", "银保监会",
+]
+AUTHORITATIVE_REPORT_SOURCES = (
+    AUTHORITATIVE_REPORT_SOURCES_REINSURANCE
+    + AUTHORITATIVE_REPORT_SOURCES_CONSULTING
+    + AUTHORITATIVE_REPORT_SOURCES_DOMESTIC
+)
+
+# ===== 8大研究主题关键词体系 =====
+RESEARCH_TOPICS = {
+    "ai_intelligent": [
+        "人工智能", "AI", "生成式AI", "GenAI", "大模型", "智能核保", "智能理赔",
+        "机器学习", "深度学习", "自然语言处理", "NLP", "计算机视觉",
+        "智能体", "Agentic AI", "数字化转型", "数字化", "自动化",
+    ],
+    "pension_finance": [
+        "养老金融", "养老金", "养老保险", "个人养老金", "年金", "退休",
+        "老龄化", "银发经济", "第三支柱", "个人商业养老金", "养老储蓄",
+    ],
+    "product_innovation": [
+        "产品创新", "新品上市", "保险产品", "健康险", "惠民保", "护理险",
+        "UBI车险", "参数化保险", "创新产品", "产品升级", "保障方案",
+    ],
+    "channel_transformation": [
+        "渠道变革", "银保渠道", "代理人", "互联网保险", "线上化",
+        "数字化分销", "BBE", "团险转个险", "直销", "保险中介",
+    ],
+    "capital_reinsurance": [
+        "再保险", "巨灾债券", "ILS", "保险连接证券", "续转", "承保能力",
+        "私募资本", "资本管理", "并购", "M&A", "ROE", "偿付能力",
+    ],
+    "climate_catastrophe": [
+        "自然灾害", "巨灾", "台风", "飓风", "洪灾", "地震", "野火",
+        "气候变化", "极端天气", "NatCat", "巨灾保险", "灾害损失",
+        "碳排放", "绿色保险", "ESG",
+    ],
+    "digital_transformation": [
+        "数字化转型", "核心系统", "保险科技", "InsurTech", "区块链",
+        "大数据", "云计算", "API生态", "平台化", "线上化率",
+        "数字化指数", "技术栈", "系统现代化",
+    ],
+    "regulatory_change": [
+        "监管变革", "偿付能力", "C-ROSS", "IFRS 17", "金融监管总局",
+        "合规", "牌照", "行政处罚", "监管政策", "分级分类监管",
+        "数据安全", "个人信息保护", "反洗钱",
+    ],
+}
+
+RESEARCH_TOPIC_LABELS = {
+    "ai_intelligent": "AI智能化",
+    "pension_finance": "养老金融",
+    "product_innovation": "产品创新",
+    "channel_transformation": "渠道变革",
+    "capital_reinsurance": "资本与再保险",
+    "climate_catastrophe": "气候与巨灾",
+    "digital_transformation": "数字化转型",
+    "regulatory_change": "监管变革",
+}
+
 # 股市行情噪声关键词 — 标题中包含这些词的条目视为股市快讯而非行业资讯
 STOCK_NOISE_KEYWORDS = [
     "板块拉升", "板块走强", "板块反弹", "板块震荡", "板块大涨", "板块下跌",
@@ -423,10 +499,63 @@ def assign_category(title: str, content: str, hint: str = "") -> str:
     return max(scores, key=scores.get)
 
 
-def assign_score(title: str, content: str, source_name: str, pub_date: str, date_verified: bool = False) -> tuple:
+def assign_research_topic(title: str, content: str) -> str:
+    """将文章归类到8大研究主题之一。
+    返回主题key（如 'ai_intelligent'），无匹配则返回空字符串。
+    """
+    if not title and not content:
+        return ""
+    title = title or ""
+    content = content or ""
+    text = (title + " " + content).lower()
+    scores = {}
+    for topic, keywords in RESEARCH_TOPICS.items():
+        count = sum(1 for kw in keywords if kw.lower() in text)
+        if count > 0:
+            scores[topic] = count
+    if not scores:
+        return ""
+    return max(scores, key=scores.get)
+
+
+def is_authoritative_report(source_name: str, title: str, content: str) -> bool:
+    """检测文章是否来自权威研究报告来源或引用了权威机构。
+    三层覆盖体系：国际再保险巨头 + 全球咨询机构 + 国内研究机构。
+    """
+    text = (source_name + " " + title + " " + content).lower()
+    for src in AUTHORITATIVE_REPORT_SOURCES:
+        if src.lower() in text:
+            return True
+    # 报告类关键词（标题中包含"报告""白皮书""研究""展望"等）
+    report_indicators = ["报告", "白皮书", "研究", "展望", "洞察", "趋势", "蓝皮书", "年报"]
+    title_lower = title.lower()
+    if any(ind in title_lower for ind in report_indicators):
+        # 同时需匹配权威来源才认定
+        for src in AUTHORITATIVE_REPORT_SOURCES:
+            if src.lower() in text:
+                return True
+    return False
+
+
+def detect_report_layer(source_name: str) -> str:
+    """检测权威来源所属层级：reinsurance / consulting / domestic / 空"""
+    for src in AUTHORITATIVE_REPORT_SOURCES_REINSURANCE:
+        if src.lower() in source_name.lower():
+            return "reinsurance"
+    for src in AUTHORITATIVE_REPORT_SOURCES_CONSULTING:
+        if src.lower() in source_name.lower():
+            return "consulting"
+    for src in AUTHORITATIVE_REPORT_SOURCES_DOMESTIC:
+        if src.lower() in source_name.lower():
+            return "domestic"
+    return ""
+
+
+def assign_score(title: str, content: str, source_name: str, pub_date: str, date_verified: bool = False, is_auth_report: bool = False) -> tuple:
     """计算文章评分。
     第一性原理：新鲜度加分只能给予已验证发布日期的文章。
     未知日期的文章不获得新鲜度加分（避免旧文冒充新闻）。
+    权威研究报告加分：来自权威咨询/再保险/研究机构的文章获得额外加分。
     """
     text = (title + " " + content).lower()
     all_kw = [kw for kws in CATEGORY_KEYWORDS.values() for kw in kws]
@@ -434,6 +563,8 @@ def assign_score(title: str, content: str, source_name: str, pub_date: str, date
 
     # 权威来源加分（最高1.0）
     authority = 1.0 if any(s in source_name for s in AUTHORITY_SOURCES) else 0
+    # 权威研究报告加分（最高1.5）— 来自咨询机构/再保险巨头/研究智库的深度报告
+    report_bonus = 1.5 if is_auth_report else 0
     # 内容长度加分（最高1.0）
     length_bonus = min(len(content) / 500, 1.0)
 
@@ -465,7 +596,7 @@ def assign_score(title: str, content: str, source_name: str, pub_date: str, date
     kw_bonus = min(kw_count * 0.2, 1.5)
 
     # 基础分3.0 + 各维度加分，满分10.0
-    base = 3.0 + kw_bonus + authority + length_bonus + freshness_bonus
+    base = 3.0 + kw_bonus + authority + report_bonus + length_bonus + freshness_bonus
     score = min(round(base, 1), 10.0)
     relevance = min(round(0.3 + kw_count * 0.05, 2), 1.0)
     return score, relevance
@@ -1270,7 +1401,14 @@ def process_items(items: list[dict]) -> list[dict]:
         item["title"] = title
         item["content"] = content
         item["category"] = assign_category(title, content, item.get("category_hint", ""))
-        score, rel = assign_score(title, content, item["source_name"], item.get("published_at", ""), item.get("date_verified", False))
+        # 研究主题分类（8大主题）
+        item["research_topic"] = assign_research_topic(title, content)
+        # 权威研究报告检测
+        item["is_research_report"] = is_authoritative_report(item.get("source_name", ""), title, content)
+        score, rel = assign_score(
+            title, content, item["source_name"], item.get("published_at", ""),
+            item.get("date_verified", False), item.get("is_research_report", False)
+        )
         item["ai_score"] = score
         item["insurance_relevance"] = rel
         item["ai_tags"] = [kw for kw in CATEGORY_KEYWORDS.get(item["category"], [])[:3] if kw.lower() in (title + content).lower()]
@@ -1397,6 +1535,8 @@ lang: zh
         "source_url": validate_url(item.get("url", "")) or "#", "ai_score": round(item.get("ai_score", 0) * 10),
         "tags": ",".join(item.get("ai_tags", [])), "category": item.get("category", "industry"),
         "published_at": item.get("published_at", target_date), "date_verified": item.get("date_verified", False),
+        "research_topic": item.get("research_topic", ""),
+        "is_research_report": item.get("is_research_report", False),
         "reason": item.get("ai_reason", ""),
     } for i, item in enumerate(curated)]
 
@@ -1449,6 +1589,20 @@ lang: zh
     data["sources"] = list(source_set.values())[:10]
     data["data_source"] = "real" if is_real else "fallback"
     data["source_health"] = source_health or {}
+
+    # 加载权威研究报告注册表（三层覆盖体系）
+    research_reports_path = PROJECT_ROOT / "data" / "research_reports.json"
+    try:
+        if research_reports_path.exists():
+            research_registry = json.loads(research_reports_path.read_text("utf-8"))
+            # 更新注册表的last_updated
+            research_registry["last_updated"] = datetime.now(ZoneInfo("Asia/Shanghai")).strftime("%Y-%m-%d")
+            data["research_reports"] = research_registry
+            print(f"  📚 已加载 {len(research_registry.get('reports', []))} 份权威研究报告")
+    except Exception as e:
+        print(f"  ⚠️ 加载研究报告注册表失败: {e}")
+        data["research_reports"] = {"reports": [], "error": str(e)}
+
     dj_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
 
     # 统计

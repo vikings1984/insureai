@@ -310,6 +310,21 @@
       vertical-align: middle; opacity: 0.7;
     }
 
+    .auth-report-badge {
+      display: inline-flex; align-items: center;
+      font-size: 0.7rem; margin-left: 4px;
+      vertical-align: middle; opacity: 0.8;
+    }
+
+    .topic-badge {
+      display: inline-flex; align-items: center;
+      font-size: 0.68rem; font-weight: 600;
+      color: var(--accent); margin-left: 6px;
+      background: rgba(255, 120, 73, 0.12);
+      padding: 1px 6px; border-radius: 3px;
+      vertical-align: middle;
+    }
+
     .card-summary { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 10px; }
     .card-summary.collapsed {
       display: -webkit-box;
@@ -1131,6 +1146,16 @@
     };
 
     // ===== State =====
+    const RESEARCH_TOPIC_LABELS = {
+      ai_intelligent: 'AI智能化',
+      pension_finance: '养老金融',
+      product_innovation: '产品创新',
+      channel_transformation: '渠道变革',
+      capital_reinsurance: '资本与再保险',
+      climate_catastrophe: '气候与巨灾',
+      digital_transformation: '数字化转型',
+      regulatory_change: '监管变革',
+    };
     const state = {
       page: 'featured',
       featured: { category: 'all', keyword: '' },
@@ -1299,6 +1324,9 @@
           const hasSource = news.source_url && news.source_url !== '#';
           const sourceSub = news.source_type ? `<span class="source-sub">${esc(news.source_type)}</span>` : '';
           const dateVerified = news.date_verified ? '<span class="date-verified-badge" title="发布日期已验证">&#10003;</span>' : '';
+          const authReport = news.is_research_report ? '<span class="auth-report-badge" title="权威研究报告">&#128218;</span>' : '';
+          const topicLabel = news.research_topic ? RESEARCH_TOPIC_LABELS[news.research_topic] || '' : '';
+          const topicBadge = topicLabel ? `<span class="topic-badge" title="研究主题">${esc(topicLabel)}</span>` : '';
           const scoreBadge = showScore ? `<span class="score-badge">&#9733; <span class="score-num">${esc(news.ai_score)}</span></span>` : '';
           const reasonBlock = showReason && news.reason ? `
             <div class="card-reason">
@@ -1318,7 +1346,7 @@
                 <div class="timeline-dot"></div>
               </div>
               <div class="card-content">
-                <div class="card-source">${esc(news.source_name) || '未知来源'}${sourceSub} · <span class="relative-time">${esc(formatRelativeTime(news.published_at))}</span>${dateVerified}</div>
+                <div class="card-source">${esc(news.source_name) || '未知来源'}${sourceSub} · <span class="relative-time">${esc(formatRelativeTime(news.published_at))}</span>${dateVerified}${authReport}${topicBadge}</div>
                 <div class="title-row">
                   <div class="card-title" data-id="${news.id}">${esc(news.title)}</div>
                   ${scoreBadge}
@@ -1705,8 +1733,9 @@
         <div class="modal-meta">
           <span>${esc(news.source_name) || '未知来源'}</span>
           ${news.source_type ? `<span class="source-sub">${esc(news.source_type)}</span>` : ''}
-          <span> · ${esc(formatRelativeTime(news.published_at))}</span>${news.date_verified ? '<span class="date-verified-badge" title="发布日期已验证">&#10003;</span>' : ''}
+          <span> · ${esc(formatRelativeTime(news.published_at))}</span>${news.date_verified ? '<span class="date-verified-badge" title="发布日期已验证">&#10003;</span>' : ''}${news.is_research_report ? '<span class="auth-report-badge" title="权威研究报告">&#128218;</span>' : ''}
           <span> · ${esc(catNames[news.category] || news.category)}</span>
+          ${news.research_topic ? `<span class="topic-badge" title="研究主题">${esc(RESEARCH_TOPIC_LABELS[news.research_topic] || news.research_topic)}</span>` : ''}
           ${news.ai_score ? `<span class="score-badge" style="display:inline-flex;vertical-align:middle;margin-left:4px">&#9733; <span class="score-num">${esc(news.ai_score)}</span></span>` : ''}
         </div>
         ${news.reason ? `<div class="card-reason" style="margin-bottom:16px"><div class="reason-text"><span class="reason-label">推荐理由：</span>${esc(news.reason)}</div></div>` : ''}
