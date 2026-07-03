@@ -58,32 +58,32 @@ def _load_config():
 # ===== 数据源配置 =====
 EASTMONEY_SEARCH_KEYWORDS = [
     {"keyword": "保险", "category_hint": "", "page_size": 12},
-    {"keyword": "保险监管", "category_hint": "regulatory_change", "page_size": 12},
-    {"keyword": "保险产品", "category_hint": "product_innovation", "page_size": 10},
-    {"keyword": "保险理赔", "category_hint": "", "page_size": 12},
-    {"keyword": "保险科技", "category_hint": "digital_transformation", "page_size": 10},
-    {"keyword": "人身险", "category_hint": "product_innovation", "page_size": 5},
-    {"keyword": "健康险", "category_hint": "product_innovation", "page_size": 5},
-    {"keyword": "养老保险", "category_hint": "pension_finance", "page_size": 5},
-    {"keyword": "险资运用", "category_hint": "capital_reinsurance", "page_size": 5},
-    {"keyword": "偿付能力", "category_hint": "regulatory_change", "page_size": 8},
-    {"keyword": "金融监管总局", "category_hint": "regulatory_change", "page_size": 8},
-    {"keyword": "车险", "category_hint": "product_innovation", "page_size": 5},
-    {"keyword": "保险消费者", "category_hint": "", "page_size": 5},
+    {"keyword": "保险监管", "category_hint": "regulation", "page_size": 12},
+    {"keyword": "保险产品", "category_hint": "product", "page_size": 10},
+    {"keyword": "保险理赔", "category_hint": "claims", "page_size": 12},
+    {"keyword": "保险科技", "category_hint": "research", "page_size": 10},
+    {"keyword": "人身险", "category_hint": "product", "page_size": 5},
+    {"keyword": "健康险", "category_hint": "product", "page_size": 5},
+    {"keyword": "养老保险", "category_hint": "product", "page_size": 5},
+    {"keyword": "险资运用", "category_hint": "industry", "page_size": 5},
+    {"keyword": "偿付能力", "category_hint": "regulation", "page_size": 8},
+    {"keyword": "金融监管总局", "category_hint": "regulation", "page_size": 8},
+    {"keyword": "车险", "category_hint": "product", "page_size": 5},
+    {"keyword": "保险消费者", "category_hint": "claims", "page_size": 5},
 ]
 
 IACHINA_COLUMNS = [
-    {"col": 22, "name": "中国保险行业协会", "category_hint": ""},
-    {"col": 24, "name": "中国保险行业协会", "category_hint": ""},
+    {"col": 22, "name": "中国保险行业协会", "category_hint": "industry"},
+    {"col": 24, "name": "中国保险行业协会", "category_hint": "industry"},
 ]
 
 # AkShare: 保险上市公司个股新闻（5家主要险企）
 AKSHARE_STOCK_SYMBOLS = [
-    {"code": "601318", "name": "中国平安", "category_hint": "capital_reinsurance"},
-    {"code": "601628", "name": "中国人寿", "category_hint": "capital_reinsurance"},
-    {"code": "601601", "name": "中国太保", "category_hint": "capital_reinsurance"},
-    {"code": "601336", "name": "新华保险", "category_hint": "capital_reinsurance"},
-    {"code": "601319", "name": "中国人保", "category_hint": "capital_reinsurance"},
+    {"code": "601318", "name": "中国平安", "category_hint": "industry"},
+    {"code": "601628", "name": "中国人寿", "category_hint": "industry"},
+    {"code": "601601", "name": "中国太保", "category_hint": "industry"},
+    {"code": "601336", "name": "新华保险", "category_hint": "industry"},
+    {"code": "601319", "name": "中国人保", "category_hint": "industry"},
 ]
 
 # AkShare: CCTV 新闻联播（保险关键词过滤）
@@ -101,87 +101,28 @@ SOURCE_URLS = {
 FALLBACK_DATA = [
     {"title": "金融监管总局发布《保险公司偿付能力监管规则》修订版",
      "url": SOURCE_URLS["金融监管总局"], "snippet": "国家金融监督管理总局近日发布偿付能力监管规则修订版，强化资本管理。",
-     "source": "金融监管总局", "category": "regulatory_change"},
+     "source": "金融监管总局", "category": "regulation"},
     {"title": "新能源车险综合改革方案出台，保费有望下降15%-20%",
      "url": SOURCE_URLS["中国银行保险报"], "snippet": "车险综合改革方案通过UBI数据共享优化定价。",
-     "source": "中国银行保险报", "category": "product_innovation"},
+     "source": "中国银行保险报", "category": "product"},
     {"title": "中国人寿上半年保费收入突破5000亿元",
      "url": SOURCE_URLS["中国银行保险报"], "snippet": "中国人寿上半年保费收入约5120亿元，同比增长8.3%。",
-     "source": "中国银行保险报", "category": "capital_reinsurance"},
+     "source": "中国银行保险报", "category": "industry"},
     {"title": "保险科技公司水滴完成D轮融资",
      "url": SOURCE_URLS["36氪"], "snippet": "水滴公司完成3亿美元D轮融资。",
-     "source": "36氪", "category": "digital_transformation"},
+     "source": "36氪", "category": "research"},
     {"title": "保险业上半年罚单破亿，虚假材料成重灾区",
      "url": SOURCE_URLS["中国银行保险报"], "snippet": "保险业累计罚单金额突破1.2亿元。",
-     "source": "中国银行保险报", "category": "regulatory_change"},
+     "source": "中国银行保险报", "category": "claims"},
 ]
 
-# ===== 8大研究主题分类体系（替代原5分类）=====
+# ===== 分类关键词 =====
 CATEGORY_KEYWORDS = {
-    "ai_intelligent": [
-        "人工智能", "AI", "生成式AI", "GenAI", "大模型", "智能核保", "智能理赔",
-        "机器学习", "深度学习", "自然语言处理", "NLP", "计算机视觉",
-        "智能体", "Agentic AI", "自动化", "算法", "模型",
-    ],
-    "pension_finance": [
-        "养老金融", "养老金", "养老保险", "个人养老金", "年金", "退休",
-        "老龄化", "银发经济", "第三支柱", "个人商业养老金", "养老储蓄", "寿险",
-    ],
-    "product_innovation": [
-        "产品创新", "新品上市", "保险产品", "健康险", "惠民保", "护理险",
-        "UBI车险", "参数化保险", "创新产品", "产品升级", "保障方案",
-        "产品", "上线", "费率", "保费", "承保", "条款", "保障", "投保",
-        "车险", "分红", "万能险", "理赔", "拒赔", "纠纷", "赔付", "赔付率",
-        "欺诈", "反欺诈", "消费者", "投诉", "新品",
-    ],
-    "channel_transformation": [
-        "渠道变革", "银保渠道", "代理人", "互联网保险", "线上化",
-        "数字化分销", "BBE", "团险转个险", "直销", "保险中介",
-        "保险销售", "适当性管理", "渠道",
-    ],
-    "capital_reinsurance": [
-        "再保险", "巨灾债券", "ILS", "保险连接证券", "续转", "承保能力",
-        "私募资本", "资本管理", "并购", "M&A", "ROE", "偿付能力",
-        "并购", "重组", "上市", "业绩", "保费收入", "融资", "估值",
-        "经营", "成绩单", "总资产", "增长", "险资运用", "投资",
-    ],
-    "climate_catastrophe": [
-        "自然灾害", "巨灾", "台风", "飓风", "洪灾", "地震", "野火",
-        "气候变化", "极端天气", "NatCat", "巨灾保险", "灾害损失",
-        "碳排放", "绿色保险", "ESG",
-    ],
-    "digital_transformation": [
-        "数字化转型", "核心系统", "保险科技", "InsurTech", "区块链",
-        "大数据", "云计算", "API生态", "平台化", "线上化率",
-        "数字化指数", "技术栈", "系统现代化", "数字化", "科技保险", "数字",
-    ],
-    "regulatory_change": [
-        "监管变革", "偿付能力", "C-ROSS", "IFRS 17", "金融监管总局",
-        "合规", "牌照", "行政处罚", "监管政策", "分级分类监管",
-        "数据安全", "个人信息保护", "反洗钱", "监管", "政策", "银保监",
-        "金融监管", "处罚", "准备金", "通知", "管理办法", "约谈", "新规",
-        "立案调查", "指导", "诉讼", "判例", "调解",
-    ],
-}
-
-CATEGORY_LABELS = {
-    "ai_intelligent": "AI智能化",
-    "pension_finance": "养老金融",
-    "product_innovation": "产品创新",
-    "channel_transformation": "渠道变革",
-    "capital_reinsurance": "资本与再保险",
-    "climate_catastrophe": "气候与巨灾",
-    "digital_transformation": "数字化转型",
-    "regulatory_change": "监管变革",
-}
-
-# 旧分类→新主题映射（用于兼容历史 category_hint 值）
-LEGACY_CATEGORY_MAP = {
-    "regulation": "regulatory_change",
-    "product": "product_innovation",
-    "industry": "capital_reinsurance",
-    "research": "digital_transformation",
-    "claims": "product_innovation",
+    "regulation": ["监管", "政策", "合规", "银保监", "金融监管", "处罚", "牌照", "偿付能力", "准备金", "通知", "管理办法", "约谈", "新规", "行政处罚", "立案调查", "指导"],
+    "product": ["产品", "上线", "费率", "保费", "承保", "保险产品", "条款", "保障", "投保", "车险", "健康险", "寿险", "养老金", "农险", "分红", "万能险"],
+    "industry": ["保险行业", "市场", "并购", "重组", "上市", "业绩", "保费收入", "融资", "估值", "经营", "成绩单", "总资产", "增长"],
+    "research": ["研究", "精算", "模型", "风险", "保险科技", "InsurTech", "AI", "大数据", "人工智能", "算法", "科技保险", "数字"],
+    "claims": ["理赔", "拒赔", "纠纷", "诉讼", "判例", "欺诈", "反欺诈", "消费者", "投诉", "调解", "赔付", "赔付率"],
 }
 
 AUTHORITY_SOURCES = ["中国证券报", "上海证券报", "证券时报", "新华财经", "人民日报", "中国经营报", "第一财经", "澎湃新闻", "券商中国", "北京商报"]
@@ -211,9 +152,56 @@ AUTHORITATIVE_REPORT_SOURCES = (
     + AUTHORITATIVE_REPORT_SOURCES_DOMESTIC
 )
 
-# 8大研究主题 = CATEGORY_KEYWORDS（已统一）
-RESEARCH_TOPICS = CATEGORY_KEYWORDS
-RESEARCH_TOPIC_LABELS = CATEGORY_LABELS
+# ===== 8大研究主题关键词体系 =====
+RESEARCH_TOPICS = {
+    "ai_intelligent": [
+        "人工智能", "AI", "生成式AI", "GenAI", "大模型", "智能核保", "智能理赔",
+        "机器学习", "深度学习", "自然语言处理", "NLP", "计算机视觉",
+        "智能体", "Agentic AI", "数字化转型", "数字化", "自动化",
+    ],
+    "pension_finance": [
+        "养老金融", "养老金", "养老保险", "个人养老金", "年金", "退休",
+        "老龄化", "银发经济", "第三支柱", "个人商业养老金", "养老储蓄",
+    ],
+    "product_innovation": [
+        "产品创新", "新品上市", "保险产品", "健康险", "惠民保", "护理险",
+        "UBI车险", "参数化保险", "创新产品", "产品升级", "保障方案",
+    ],
+    "channel_transformation": [
+        "渠道变革", "银保渠道", "代理人", "互联网保险", "线上化",
+        "数字化分销", "BBE", "团险转个险", "直销", "保险中介",
+    ],
+    "capital_reinsurance": [
+        "再保险", "巨灾债券", "ILS", "保险连接证券", "续转", "承保能力",
+        "私募资本", "资本管理", "并购", "M&A", "ROE", "偿付能力",
+    ],
+    "climate_catastrophe": [
+        "自然灾害", "巨灾", "台风", "飓风", "洪灾", "地震", "野火",
+        "气候变化", "极端天气", "NatCat", "巨灾保险", "灾害损失",
+        "碳排放", "绿色保险", "ESG",
+    ],
+    "digital_transformation": [
+        "数字化转型", "核心系统", "保险科技", "InsurTech", "区块链",
+        "大数据", "云计算", "API生态", "平台化", "线上化率",
+        "数字化指数", "技术栈", "系统现代化",
+    ],
+    "regulatory_change": [
+        "监管变革", "偿付能力", "C-ROSS", "IFRS 17", "金融监管总局",
+        "合规", "牌照", "行政处罚", "监管政策", "分级分类监管",
+        "数据安全", "个人信息保护", "反洗钱",
+    ],
+}
+
+RESEARCH_TOPIC_LABELS = {
+    "ai_intelligent": "AI智能化",
+    "pension_finance": "养老金融",
+    "product_innovation": "产品创新",
+    "channel_transformation": "渠道变革",
+    "capital_reinsurance": "资本与再保险",
+    "climate_catastrophe": "气候与巨灾",
+    "digital_transformation": "数字化转型",
+    "regulatory_change": "监管变革",
+}
 
 # 股市行情噪声关键词 — 标题中包含这些词的条目视为股市快讯而非行业资讯
 STOCK_NOISE_KEYWORDS = [
@@ -502,30 +490,17 @@ def extract_date_from_text(text: str) -> str | None:
 
 
 def assign_category(title: str, content: str, hint: str = "") -> str:
-    """将文章归类到8大研究主题之一。
-    hint: 数据源预设的分类提示（可能是旧5分类值或新8主题值）
-    返回主题key（如 'ai_intelligent'），无匹配则返回 'capital_reinsurance'（默认）。
-    """
-    # 兼容旧分类hint值
     if hint:
-        if hint in LEGACY_CATEGORY_MAP:
-            return LEGACY_CATEGORY_MAP[hint]
-        if hint in CATEGORY_KEYWORDS:
-            return hint
-    # 关键词匹配
-    if not title and not content:
-        return "capital_reinsurance"
-    title = title or ""
-    content = content or ""
+        return hint
     text = (title + " " + content).lower()
     scores = {cat: sum(1 for kw in kws if kw.lower() in text) for cat, kws in CATEGORY_KEYWORDS.items()}
     if max(scores.values()) == 0:
-        return "capital_reinsurance"
+        return "industry"
     return max(scores, key=scores.get)
 
 
 def assign_research_topic(title: str, content: str) -> str:
-    """将文章归类到8大研究主题之一（assign_category 的别名，保持兼容）。
+    """将文章归类到8大研究主题之一。
     返回主题key（如 'ai_intelligent'），无匹配则返回空字符串。
     """
     if not title and not content:
@@ -629,18 +604,15 @@ def assign_score(title: str, content: str, source_name: str, pub_date: str, date
 
 def generate_reason(item: dict) -> str:
     title = item["title"][:30]
-    cat = item.get("category", "capital_reinsurance")
+    cat = item.get("category", "industry")
     reasons = {
-        "ai_intelligent": [f"AI智能化：{title}，反映人工智能在保险业的应用进展。", f"技术前沿：{title}，推动保险业智能化转型。"],
-        "pension_finance": [f"养老金融：{title}，涉及养老金与养老保险体系建设。", f"银发经济：{title}，反映老龄化背景下的保险机遇。"],
-        "product_innovation": [f"产品创新：{title}，反映保险产品设计新方向。", f"市场动态：{title}，对消费者有参考价值。"],
-        "channel_transformation": [f"渠道变革：{title}，反映保险销售与服务渠道转型。", f"渠道观察：{title}，展示保险分销模式创新。"],
-        "capital_reinsurance": [f"资本与再保险：{title}，反映保险业资本管理与再保险市场动态。", f"行业风向：{title}，有助于理解行业格局。"],
-        "climate_catastrophe": [f"气候与巨灾：{title}，反映自然灾害与巨灾保险体系建设。", f"风险管理：{title}，涉及气候风险与保险保障。"],
-        "digital_transformation": [f"数字化转型：{title}，推动保险业核心系统与技术升级。", f"保险科技：{title}，为行业数字化创新提供支撑。"],
-        "regulatory_change": [f"监管变革：{title}，涉及行业合规与风险管理。", f"政策风向：{title}，影响保险公司经营策略。"],
+        "regulation": [f"监管动态：{title}，涉及行业合规与风险管理。", f"政策风向：{title}，影响保险公司经营策略。"],
+        "product": [f"产品创新：{title}，反映保险产品设计新方向。", f"市场动态：{title}，对消费者有参考价值。"],
+        "industry": [f"行业风向：{title}，反映保险行业发展趋势。", f"市场观察：{title}，有助于理解行业格局。"],
+        "research": [f"技术前沿：{title}，推动行业数字化转型。", f"研究洞察：{title}，为行业创新提供支撑。"],
+        "claims": [f"理赔动态：{title}，展示保险服务实践。", f"消费者权益：{title}，了解理赔服务最新动态。"],
     }
-    pool = reasons.get(cat, reasons["capital_reinsurance"])
+    pool = reasons.get(cat, reasons["industry"])
     return pool[sum(ord(c) for c in title) % len(pool)]
 
 
@@ -800,7 +772,7 @@ def fetch_akshare_cctv_news() -> list[dict]:
                     "source_type": "akshare",
                     "published_at": d.isoformat(),
                     "date_verified": True,  # 按日期查询，日期可信
-                    "category_hint": "regulatory_change",
+                    "category_hint": "regulation",
                     "language": "zh",
                 })
             filtered_count = sum(1 for _, r in df.iterrows() if any(kw in str(r.get("title", "")) + str(r.get("content", "")) for kw in CCTV_INSURANCE_KEYWORDS))
@@ -813,9 +785,9 @@ def fetch_akshare_cctv_news() -> list[dict]:
 # ===== 百度新闻搜索 =====
 BAIDU_SEARCH_KEYWORDS = [
     {"keyword": "保险", "category_hint": ""},
-    {"keyword": "保险监管", "category_hint": "regulatory_change"},
-    {"keyword": "保险理赔", "category_hint": ""},
-    {"keyword": "保险产品", "category_hint": "product_innovation"},
+    {"keyword": "保险监管", "category_hint": "regulation"},
+    {"keyword": "保险理赔", "category_hint": "claims"},
+    {"keyword": "保险产品", "category_hint": "product"},
 ]
 
 async def fetch_baidu_news(client: httpx.AsyncClient) -> list[dict]:
@@ -905,9 +877,9 @@ async def fetch_baidu_news(client: httpx.AsyncClient) -> list[dict]:
 # ===== Google News RSS（可靠搜索引擎渠道，无需API Key）=====
 GOOGLE_NEWS_KEYWORDS = [
     {"keyword": "保险", "category_hint": ""},
-    {"keyword": "保险监管", "category_hint": "regulatory_change"},
-    {"keyword": "保险理赔", "category_hint": ""},
-    {"keyword": "保险产品", "category_hint": "product_innovation"},
+    {"keyword": "保险监管", "category_hint": "regulation"},
+    {"keyword": "保险理赔", "category_hint": "claims"},
+    {"keyword": "保险产品", "category_hint": "product"},
 ]
 
 async def fetch_google_news_rss(client: httpx.AsyncClient) -> list[dict]:
@@ -978,8 +950,8 @@ async def fetch_google_news_rss(client: httpx.AsyncClient) -> list[dict]:
 # ===== 360 搜索新闻 =====
 SEARCH360_KEYWORDS = [
     {"keyword": "保险", "category_hint": ""},
-    {"keyword": "保险监管", "category_hint": "regulatory_change"},
-    {"keyword": "保险理赔", "category_hint": ""},
+    {"keyword": "保险监管", "category_hint": "regulation"},
+    {"keyword": "保险理赔", "category_hint": "claims"},
 ]
 
 async def fetch_360_news(client: httpx.AsyncClient) -> list[dict]:
@@ -1049,7 +1021,7 @@ async def fetch_360_news(client: httpx.AsyncClient) -> list[dict]:
 # ===== 搜狗新闻搜索（非微信）=====
 SOGOU_NEWS_KEYWORDS = [
     {"keyword": "保险", "category_hint": ""},
-    {"keyword": "保险监管", "category_hint": "regulatory_change"},
+    {"keyword": "保险监管", "category_hint": "regulation"},
 ]
 
 async def fetch_sogou_news(client: httpx.AsyncClient) -> list[dict]:
@@ -1131,11 +1103,11 @@ WECHAT_LOW_QUALITY_MARKERS = [
 
 SOGOU_WECHAT_KEYWORDS = [
     {"keyword": "保险", "category_hint": ""},
-    {"keyword": "保险监管", "category_hint": "regulatory_change"},
-    {"keyword": "保险产品", "category_hint": "product_innovation"},
-    {"keyword": "保险科技", "category_hint": "digital_transformation"},
-    {"keyword": "健康险", "category_hint": "product_innovation"},
-    {"keyword": "养老保险", "category_hint": "pension_finance"},
+    {"keyword": "保险监管", "category_hint": "regulation"},
+    {"keyword": "保险产品", "category_hint": "product"},
+    {"keyword": "保险科技", "category_hint": "research"},
+    {"keyword": "健康险", "category_hint": "product"},
+    {"keyword": "养老保险", "category_hint": "product"},
 ]
 
 async def fetch_sogou_wechat(client: httpx.AsyncClient) -> list[dict]:
@@ -1429,8 +1401,8 @@ def process_items(items: list[dict]) -> list[dict]:
         item["title"] = title
         item["content"] = content
         item["category"] = assign_category(title, content, item.get("category_hint", ""))
-        # 研究主题与分类体系统一（8大主题）
-        item["research_topic"] = item["category"]
+        # 研究主题分类（8大主题）
+        item["research_topic"] = assign_research_topic(title, content)
         # 权威研究报告检测
         item["is_research_report"] = is_authoritative_report(item.get("source_name", ""), title, content)
         score, rel = assign_score(
@@ -1503,7 +1475,7 @@ def generate_output(items: list[dict], target_date: str, is_real: bool, source_h
     curated = [i for i in items if i.get("ai_score", 0) >= 6.0]
     highlights = [i for i in curated if i.get("ai_score", 0) >= 7.0]
 
-    cat_names = CATEGORY_LABELS
+    cat_names = {"regulation": "🏛️ 监管政策", "product": "📦 产品发布", "industry": "📊 行业动态", "research": "🔬 研究洞察", "claims": "⚖️ 理赔案例"}
     src_tag = "真实多源采集" if is_real else "降级数据"
 
     # Markdown 日报
@@ -1561,7 +1533,7 @@ lang: zh
         "id": i + 1, "title": item["title"], "summary": item.get("content", "")[:300],
         "source_name": item["source_name"], "source_type": SOURCE_TYPE_MAP.get(item.get("source_type", ""), item.get("source_type", "web")),
         "source_url": validate_url(item.get("url", "")) or "#", "ai_score": round(item.get("ai_score", 0) * 10),
-        "tags": ",".join(item.get("ai_tags", [])), "category": item.get("category", "capital_reinsurance"),
+        "tags": ",".join(item.get("ai_tags", [])), "category": item.get("category", "industry"),
         "published_at": item.get("published_at", target_date), "date_verified": item.get("date_verified", False),
         "research_topic": item.get("research_topic", ""),
         "is_research_report": item.get("is_research_report", False),

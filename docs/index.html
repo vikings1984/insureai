@@ -890,14 +890,11 @@
         </div>
         <div class="category-tabs" id="featured-tabs">
           <button class="category-tab active" data-category="all">全部</button>
-          <button class="category-tab" data-category="ai_intelligent">AI智能化</button>
-          <button class="category-tab" data-category="pension_finance">养老金融</button>
-          <button class="category-tab" data-category="product_innovation">产品创新</button>
-          <button class="category-tab" data-category="channel_transformation">渠道变革</button>
-          <button class="category-tab" data-category="capital_reinsurance">资本与再保险</button>
-          <button class="category-tab" data-category="climate_catastrophe">气候与巨灾</button>
-          <button class="category-tab" data-category="digital_transformation">数字化转型</button>
-          <button class="category-tab" data-category="regulatory_change">监管变革</button>
+          <button class="category-tab" data-category="regulation">监管</button>
+          <button class="category-tab" data-category="product">产品</button>
+          <button class="category-tab" data-category="industry">行业</button>
+          <button class="category-tab" data-category="research">研究</button>
+          <button class="category-tab" data-category="claims">理赔</button>
         </div>
         <div class="search-bar">
           <input type="text" id="search-featured" placeholder="搜索标题/摘要/标签..." autocomplete="off">
@@ -915,14 +912,11 @@
         </div>
         <div class="category-tabs" id="all-tabs">
           <button class="category-tab active" data-category="all">全部</button>
-          <button class="category-tab" data-category="ai_intelligent">AI智能化</button>
-          <button class="category-tab" data-category="pension_finance">养老金融</button>
-          <button class="category-tab" data-category="product_innovation">产品创新</button>
-          <button class="category-tab" data-category="channel_transformation">渠道变革</button>
-          <button class="category-tab" data-category="capital_reinsurance">资本与再保险</button>
-          <button class="category-tab" data-category="climate_catastrophe">气候与巨灾</button>
-          <button class="category-tab" data-category="digital_transformation">数字化转型</button>
-          <button class="category-tab" data-category="regulatory_change">监管变革</button>
+          <button class="category-tab" data-category="regulation">监管</button>
+          <button class="category-tab" data-category="product">产品</button>
+          <button class="category-tab" data-category="industry">行业</button>
+          <button class="category-tab" data-category="research">研究</button>
+          <button class="category-tab" data-category="claims">理赔</button>
         </div>
         <div class="search-bar">
           <input type="text" id="search-all" placeholder="搜索标题/摘要..." autocomplete="off">
@@ -1162,22 +1156,6 @@
       digital_transformation: '数字化转型',
       regulatory_change: '监管变革',
     };
-    // 旧5分类→新8主题映射（兼容历史data.json中的旧category值）
-    const LEGACY_CATEGORY_MAP = {
-      regulation: 'regulatory_change',
-      product: 'product_innovation',
-      industry: 'capital_reinsurance',
-      research: 'digital_transformation',
-      claims: 'product_innovation',
-    };
-    function getCategoryLabel(cat) {
-      if (RESEARCH_TOPIC_LABELS[cat]) return RESEARCH_TOPIC_LABELS[cat];
-      if (LEGACY_CATEGORY_MAP[cat] && RESEARCH_TOPIC_LABELS[LEGACY_CATEGORY_MAP[cat]]) return RESEARCH_TOPIC_LABELS[LEGACY_CATEGORY_MAP[cat]];
-      return cat;
-    }
-    function resolveCategory(cat) {
-      return LEGACY_CATEGORY_MAP[cat] || cat;
-    }
     const state = {
       page: 'featured',
       featured: { category: 'all', keyword: '' },
@@ -1249,7 +1227,7 @@
     // ===== Filter =====
     function filterData(keyword, category) {
       let data = [...NEWS_DATA];
-      if (category && category !== 'all') data = data.filter(item => resolveCategory(item.category) === category);
+      if (category && category !== 'all') data = data.filter(item => item.category === category);
       if (keyword) {
         const kw = keyword.toLowerCase();
         data = data.filter(item =>
@@ -1270,13 +1248,14 @@
       const hot = data.slice(0, 5);
       if (!hot.length) { container.innerHTML = ''; return; }
       container.innerHTML = hot.map((item, i) => {
+        const catNames = { regulation: '监管', product: '产品', industry: '行业', research: '研究', claims: '理赔' };
         return `
           <div class="hot-topic-card" onclick="showDetail(${item.id})">
             <div class="hot-topic-rank">#${i + 1} 热点</div>
             <div class="hot-topic-title">${esc(item.title)}</div>
             <div class="hot-topic-meta">
               <span>${esc(item.source_name) || ''}</span>
-              <span>· ${esc(getCategoryLabel(item.category))}</span>
+              <span>· ${esc(catNames[item.category] || item.category)}</span>
               <span class="hot-topic-count">&#9733; ${esc(item.ai_score)}</span>
             </div>
           </div>
@@ -1346,8 +1325,7 @@
           const sourceSub = news.source_type ? `<span class="source-sub">${esc(news.source_type)}</span>` : '';
           const dateVerified = news.date_verified ? '<span class="date-verified-badge" title="发布日期已验证">&#10003;</span>' : '';
           const authReport = news.is_research_report ? '<span class="auth-report-badge" title="权威研究报告">&#128218;</span>' : '';
-          const topicRaw = news.research_topic || resolveCategory(news.category);
-          const topicLabel = topicRaw ? (RESEARCH_TOPIC_LABELS[topicRaw] || getCategoryLabel(topicRaw)) : '';
+          const topicLabel = news.research_topic ? RESEARCH_TOPIC_LABELS[news.research_topic] || '' : '';
           const topicBadge = topicLabel ? `<span class="topic-badge" title="研究主题">${esc(topicLabel)}</span>` : '';
           const scoreBadge = showScore ? `<span class="score-badge">&#9733; <span class="score-num">${esc(news.ai_score)}</span></span>` : '';
           const reasonBlock = showReason && news.reason ? `
@@ -1394,19 +1372,15 @@
       const vol = Math.floor((new Date() - new Date('2024-05-15')) / 86400000);
 
       const cats = {
-        ai_intelligent: { name: 'AI智能化', items: [] },
-        pension_finance: { name: '养老金融', items: [] },
-        product_innovation: { name: '产品创新', items: [] },
-        channel_transformation: { name: '渠道变革', items: [] },
-        capital_reinsurance: { name: '资本与再保险', items: [] },
-        climate_catastrophe: { name: '气候与巨灾', items: [] },
-        digital_transformation: { name: '数字化转型', items: [] },
-        regulatory_change: { name: '监管变革', items: [] },
+        regulation: { name: '监管政策', items: [] },
+        product: { name: '产品发布', items: [] },
+        industry: { name: '行业动态', items: [] },
+        research: { name: '研究洞察', items: [] },
+        claims: { name: '理赔案例', items: [] }
       };
 
       NEWS_DATA.forEach(item => {
-        const resolvedCat = resolveCategory(item.category);
-        if (cats[resolvedCat]) cats[resolvedCat].items.push(item);
+        if (cats[item.category]) cats[item.category].items.push(item);
       });
 
       let html = `
@@ -1747,6 +1721,7 @@
       const el = document.querySelector(`.timeline-item[data-id="${id}"]`);
       if (el) el.classList.add('is-read');
 
+      const catNames = { regulation: '监管政策', product: '产品发布', industry: '行业动态', research: '研究洞察', claims: '理赔案例' };
       const tags = news.tags ? news.tags.split(',').map(t => `<span class="card-tag" style="cursor:default">${esc(t.trim())}</span>`).join('') : '';
       const hasUrl = news.source_url && news.source_url !== '#';
       // Build share URL (current page URL with anchor)
@@ -1759,8 +1734,8 @@
           <span>${esc(news.source_name) || '未知来源'}</span>
           ${news.source_type ? `<span class="source-sub">${esc(news.source_type)}</span>` : ''}
           <span> · ${esc(formatRelativeTime(news.published_at))}</span>${news.date_verified ? '<span class="date-verified-badge" title="发布日期已验证">&#10003;</span>' : ''}${news.is_research_report ? '<span class="auth-report-badge" title="权威研究报告">&#128218;</span>' : ''}
-          <span> · ${esc(getCategoryLabel(news.category))}</span>
-          ${(news.research_topic || resolveCategory(news.category)) ? `<span class="topic-badge" title="研究主题">${esc(getCategoryLabel(news.research_topic || resolveCategory(news.category)))}</span>` : ''}
+          <span> · ${esc(catNames[news.category] || news.category)}</span>
+          ${news.research_topic ? `<span class="topic-badge" title="研究主题">${esc(RESEARCH_TOPIC_LABELS[news.research_topic] || news.research_topic)}</span>` : ''}
           ${news.ai_score ? `<span class="score-badge" style="display:inline-flex;vertical-align:middle;margin-left:4px">&#9733; <span class="score-num">${esc(news.ai_score)}</span></span>` : ''}
         </div>
         ${news.reason ? `<div class="card-reason" style="margin-bottom:16px"><div class="reason-text"><span class="reason-label">推荐理由：</span>${esc(news.reason)}</div></div>` : ''}

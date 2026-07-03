@@ -57,10 +57,9 @@
 - `docs/index.html` 是所有页面内容唯一来源，不要在 `docs/` 下新增独立 HTML 页面
 - 数据格式：`{id, title, summary, source_name, source_type, source_url, ai_score(0-100=int*10), tags, category, published_at, date_verified, research_topic, is_research_report, reason}`
 - `date_verified` 布尔字段：标记发布日期是否从源页面验证。已验证条目获得新鲜度加分，未验证条目不获得新鲜度加分
-- `research_topic` 字段：与 `category` 统一，均为8大研究主题key（如 `ai_intelligent`）
+- `research_topic` 字段：8大研究主题key（如 `ai_intelligent`），无匹配则为空字符串
 - `is_research_report` 布尔字段：标记文章是否来自/引用权威研究报告来源（咨询机构/再保险巨头/研究智库）
-- 分类体系：8大研究主题（ai_intelligent / pension_finance / product_innovation / channel_transformation / capital_reinsurance / climate_catastrophe / digital_transformation / regulatory_change），旧5分类通过 `LEGACY_CATEGORY_MAP` 自动映射
-- 前端兼容：`getCategoryLabel()` 和 `resolveCategory()` 处理旧 `category` 值，`filterData()` 使用 `resolveCategory()` 确保旧数据筛选正确
+- 分类体系固定：regulation / product / industry / research / claims
 - 前端 XSS 防护：所有动态内容必须用 `esc()` 转义，URL 用 `safeUrl()` 验证
 - 采集端 URL 验证：`validate_url()` 只允许 http/https 协议；`is_safe_url()` 拦截内网 IP（SSRF 防护）
 - 评分算法确定性：无随机噪声，基础分 3.0 + 关键词(≤1.5) + 权威(≤1.0) + 权威报告(≤1.5) + 长度(≤1.0) + 新鲜度(≤3.5)，满分 10.0

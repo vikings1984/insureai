@@ -13,15 +13,11 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from run_collect import (
     assign_research_topic,
-    assign_category,
     is_authoritative_report,
     detect_report_layer,
     assign_score,
     RESEARCH_TOPICS,
     RESEARCH_TOPIC_LABELS,
-    CATEGORY_KEYWORDS,
-    CATEGORY_LABELS,
-    LEGACY_CATEGORY_MAP,
     AUTHORITATIVE_REPORT_SOURCES,
     AUTHORITATIVE_REPORT_SOURCES_REINSURANCE,
     AUTHORITATIVE_REPORT_SOURCES_CONSULTING,
@@ -69,15 +65,16 @@ class TestAssignResearchTopic:
         assert topic == "regulatory_change"
 
     def test_no_match(self):
-        topic = assign_research_topic("今日天气晴朗", "适合户外运动")
+        topic = assign_research_topic("某公司发布财报", "营收增长5%")
         assert topic == ""
 
     def test_multiple_topics_picks_highest(self):
         """当多个主题关键词都匹配时，选择匹配最多的主题"""
-        title = "AI大模型驱动智能核保变革"
-        content = "生成式AI与人工智能技术在智能理赔中的深度应用"
+        title = "AI驱动的养老金产品创新"
+        content = "人工智能技术在养老保险产品设计与数字化转型中的应用"
         topic = assign_research_topic(title, content)
-        # ai_intelligent 有6个匹配（AI、大模型、智能核保、生成式AI、人工智能、智能理赔）
+        # ai_intelligent 有2个匹配（AI、人工智能），pension_finance 有1个（养老金），
+        # product_innovation 有1个（产品创新），digital_transformation 有1个（数字化转型）
         assert topic == "ai_intelligent"
 
     def test_empty_input(self):
@@ -94,65 +91,6 @@ class TestAssignResearchTopic:
         """确保所有主题都有非空关键词列表"""
         for topic_key, keywords in RESEARCH_TOPICS.items():
             assert len(keywords) > 0, f"主题 {topic_key} 关键词列表为空"
-
-
-class TestAssignCategory:
-    """assign_category 8大主题分类（含旧分类兼容）"""
-
-    def test_legacy_hint_regulation(self):
-        """旧 hint 'regulation' 应映射到 'regulatory_change'"""
-        assert assign_category("某新闻", "某内容", "regulation") == "regulatory_change"
-
-    def test_legacy_hint_product(self):
-        """旧 hint 'product' 应映射到 'product_innovation'"""
-        assert assign_category("某新闻", "某内容", "product") == "product_innovation"
-
-    def test_legacy_hint_industry(self):
-        """旧 hint 'industry' 应映射到 'capital_reinsurance'"""
-        assert assign_category("某新闻", "某内容", "industry") == "capital_reinsurance"
-
-    def test_legacy_hint_research(self):
-        """旧 hint 'research' 应映射到 'digital_transformation'"""
-        assert assign_category("某新闻", "某内容", "research") == "digital_transformation"
-
-    def test_legacy_hint_claims(self):
-        """旧 hint 'claims' 应映射到 'product_innovation'"""
-        assert assign_category("某新闻", "某内容", "claims") == "product_innovation"
-
-    def test_new_hint_passthrough(self):
-        """新主题 hint 应直接返回（跳过关键词匹配）"""
-        assert assign_category("某新闻", "某内容", "ai_intelligent") == "ai_intelligent"
-        assert assign_category("某新闻", "某内容", "pension_finance") == "pension_finance"
-
-    def test_empty_hint_keyword_matching(self):
-        """空 hint 时使用关键词匹配"""
-        result = assign_category("AI大模型智能核保", "生成式AI应用", "")
-        assert result == "ai_intelligent"
-
-    def test_no_match_returns_default(self):
-        """无关键词匹配时返回默认值 'capital_reinsurance'"""
-        result = assign_category("今日天气晴朗", "适合户外运动", "")
-        assert result == "capital_reinsurance"
-
-    def test_empty_input_returns_default(self):
-        """空输入返回默认值"""
-        assert assign_category("", "", "") == "capital_reinsurance"
-        assert assign_category(None, None, "") == "capital_reinsurance"
-
-    def test_all_legacy_categories_mapped(self):
-        """确保所有旧分类都有映射"""
-        for old_cat in ["regulation", "product", "industry", "research", "claims"]:
-            assert old_cat in LEGACY_CATEGORY_MAP, f"旧分类 {old_cat} 缺少映射"
-
-    def test_all_new_topics_have_labels(self):
-        """确保所有8个新主题都有中文标签"""
-        assert len(CATEGORY_LABELS) == 8
-        for topic_key in CATEGORY_KEYWORDS:
-            assert topic_key in CATEGORY_LABELS, f"主题 {topic_key} 缺少中文标签"
-
-    def test_research_topics_alias_category_keywords(self):
-        """RESEARCH_TOPICS 应为 CATEGORY_KEYWORDS 的别名"""
-        assert RESEARCH_TOPICS is CATEGORY_KEYWORDS
 
 
 class TestIsAuthoritativeReport:
@@ -280,7 +218,6 @@ if __name__ == "__main__":
 
     classes = [
         TestAssignResearchTopic,
-        TestAssignCategory,
         TestIsAuthoritativeReport,
         TestDetectReportLayer,
         TestAssignScoreReportBonus,
