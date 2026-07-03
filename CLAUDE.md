@@ -104,6 +104,8 @@ python3 -m pytest tests/ -v
 | `requirements.txt` | Python 依赖（httpx, akshare） |
 | `data/config.json` | 数据源与评分配置 |
 | `data/research_reports.json` | 权威研究报告注册表（19家机构，三层覆盖） |
+| `docs/solutions/` | 已记录的问题解决方案（bug修复、架构模式、最佳实践），按类别组织，含 YAML frontmatter（module, tags, problem_type） |
+| `CONCEPTS.md` | 项目共享领域词汇表（实体、命名流程、状态概念），用于快速理解项目术语 |
 | `docs/assets/logo/design-philosophy.md` | Logo 设计理念 |
 
 ## 协作流程
