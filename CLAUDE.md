@@ -59,7 +59,10 @@
 - `date_verified` 布尔字段：标记发布日期是否从源页面验证。已验证条目获得新鲜度加分，未验证条目不获得新鲜度加分
 - `research_topic` 字段：8大研究主题key（如 `ai_intelligent`），无匹配则为空字符串
 - `is_research_report` 布尔字段：标记文章是否来自/引用权威研究报告来源（咨询机构/再保险巨头/研究智库）
-- 分类体系固定：regulation / product / industry / research / claims
+- 分类体系：regulation / product / industry / research / claims
+  - regulation / product / industry / claims：收集日常新闻，按关键词自动分类
+  - research：不收集日常新闻，专门收录 `data/research_reports.json` 中19家权威机构的研究报告（三层覆盖：国际再保险巨头/全球咨询机构/国内研究机构），在 `generate_output()` 中注入为 `category="research"` 的新闻条目
+  - 原 research 的科技类关键词（AI、保险科技、数字化等）已迁移到 industry
 - 前端 XSS 防护：所有动态内容必须用 `esc()` 转义，URL 用 `safeUrl()` 验证
 - 采集端 URL 验证：`validate_url()` 只允许 http/https 协议；`is_safe_url()` 拦截内网 IP（SSRF 防护）
 - 评分算法确定性：无随机噪声，基础分 3.0 + 关键词(≤1.5) + 权威(≤1.0) + 权威报告(≤1.5) + 长度(≤1.0) + 新鲜度(≤3.5)，满分 10.0

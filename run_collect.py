@@ -61,7 +61,7 @@ EASTMONEY_SEARCH_KEYWORDS = [
     {"keyword": "保险监管", "category_hint": "regulation", "page_size": 12},
     {"keyword": "保险产品", "category_hint": "product", "page_size": 10},
     {"keyword": "保险理赔", "category_hint": "claims", "page_size": 12},
-    {"keyword": "保险科技", "category_hint": "research", "page_size": 10},
+    {"keyword": "保险科技", "category_hint": "industry", "page_size": 10},
     {"keyword": "人身险", "category_hint": "product", "page_size": 5},
     {"keyword": "健康险", "category_hint": "product", "page_size": 5},
     {"keyword": "养老保险", "category_hint": "product", "page_size": 5},
@@ -110,18 +110,20 @@ FALLBACK_DATA = [
      "source": "中国银行保险报", "category": "industry"},
     {"title": "保险科技公司水滴完成D轮融资",
      "url": SOURCE_URLS["36氪"], "snippet": "水滴公司完成3亿美元D轮融资。",
-     "source": "36氪", "category": "research"},
+     "source": "36氪", "category": "industry"},
     {"title": "保险业上半年罚单破亿，虚假材料成重灾区",
      "url": SOURCE_URLS["中国银行保险报"], "snippet": "保险业累计罚单金额突破1.2亿元。",
      "source": "中国银行保险报", "category": "claims"},
 ]
 
 # ===== 分类关键词 =====
+# research 分类不再用于日常新闻，改为专门收录权威研究报告（data/research_reports.json）
+# 原 research 的科技类关键词迁移到 industry
 CATEGORY_KEYWORDS = {
     "regulation": ["监管", "政策", "合规", "银保监", "金融监管", "处罚", "牌照", "偿付能力", "准备金", "通知", "管理办法", "约谈", "新规", "行政处罚", "立案调查", "指导"],
     "product": ["产品", "上线", "费率", "保费", "承保", "保险产品", "条款", "保障", "投保", "车险", "健康险", "寿险", "养老金", "农险", "分红", "万能险"],
-    "industry": ["保险行业", "市场", "并购", "重组", "上市", "业绩", "保费收入", "融资", "估值", "经营", "成绩单", "总资产", "增长"],
-    "research": ["研究", "精算", "模型", "风险", "保险科技", "InsurTech", "AI", "大数据", "人工智能", "算法", "科技保险", "数字"],
+    "industry": ["保险行业", "市场", "并购", "重组", "上市", "业绩", "保费收入", "融资", "估值", "经营", "成绩单", "总资产", "增长",
+                 "研究", "精算", "模型", "风险", "保险科技", "InsurTech", "AI", "大数据", "人工智能", "算法", "科技保险", "数字"],
     "claims": ["理赔", "拒赔", "纠纷", "诉讼", "判例", "欺诈", "反欺诈", "消费者", "投诉", "调解", "赔付", "赔付率"],
 }
 
@@ -490,7 +492,8 @@ def extract_date_from_text(text: str) -> str | None:
 
 
 def assign_category(title: str, content: str, hint: str = "") -> str:
-    if hint:
+    # research 分类保留给权威研究报告，日常新闻不使用此分类
+    if hint and hint != "research":
         return hint
     text = (title + " " + content).lower()
     scores = {cat: sum(1 for kw in kws if kw.lower() in text) for cat, kws in CATEGORY_KEYWORDS.items()}
@@ -1105,7 +1108,7 @@ SOGOU_WECHAT_KEYWORDS = [
     {"keyword": "保险", "category_hint": ""},
     {"keyword": "保险监管", "category_hint": "regulation"},
     {"keyword": "保险产品", "category_hint": "product"},
-    {"keyword": "保险科技", "category_hint": "research"},
+    {"keyword": "保险科技", "category_hint": "industry"},
     {"keyword": "健康险", "category_hint": "product"},
     {"keyword": "养老保险", "category_hint": "product"},
 ]
@@ -1549,6 +1552,9 @@ lang: zh
     for old_item in old_news:
         old_url = old_item.get("source_url", "")
         if old_url and old_url not in seen_urls:
+            # 迁移旧 research 日常新闻到 industry（research 现仅收录权威研究报告）
+            if old_item.get("category") == "research" and not old_item.get("is_research_report", False):
+                old_item["category"] = "industry"
             old_date = old_item.get("published_at", "")[:10]
             if old_item.get("date_verified", False):
                 # 已验证条目：检查3天窗口
@@ -1565,17 +1571,72 @@ lang: zh
                 merged.append(old_item)
                 seen_urls.add(old_url)
             # 无日期的未验证条目：不保留（无任何时间信息，无法判断新旧）
-    # 限制总量100条
-    merged = merged[:100]
+
+    # ===== 注入权威研究报告到 research 分类 =====
+    # research 分类专门收录 data/research_reports.json 中的权威研究报告
+    # 日常新闻不会进入此分类，实现"日常新闻 vs 深度研究报告"的分层
+    research_reports_path = PROJECT_ROOT / "data" / "research_reports.json"
+    try:
+        if research_reports_path.exists():
+            rr_data = json.loads(research_reports_path.read_text("utf-8"))
+            LAYER_LABELS = {
+                "reinsurance": "国际再保险巨头",
+                "consulting": "全球咨询机构",
+                "domestic": "国内研究机构",
+            }
+            TOPIC_LABELS = rr_data.get("topics", {})
+            for rpt in rr_data.get("reports", []):
+                rpt_url = validate_url(rpt.get("url", "")) or "#"
+                # 跳过已存在的URL
+                if rpt_url in seen_urls:
+                    continue
+                key_data = rpt.get("key_data", [])
+                key_insight = rpt.get("key_insight", "")
+                summary_parts = []
+                if key_insight:
+                    summary_parts.append(key_insight)
+                if key_data:
+                    summary_parts.append("关键数据：" + "；".join(key_data[:3]))
+                topic_label = TOPIC_LABELS.get(rpt.get("topic", ""), "")
+                merged.append({
+                    "id": 0,  # 将在下方重新分配
+                    "title": rpt.get("title", ""),
+                    "summary": " ".join(summary_parts)[:300],
+                    "source_name": rpt.get("institution_cn", rpt.get("institution", "")),
+                    "source_type": LAYER_LABELS.get(rpt.get("layer", ""), "研究机构"),
+                    "source_url": rpt_url,
+                    "ai_score": 95,  # 权威研究报告固定高分
+                    "tags": topic_label,
+                    "category": "research",
+                    "published_at": rpt.get("publish_date", ""),
+                    "date_verified": True,
+                    "research_topic": rpt.get("topic", ""),
+                    "is_research_report": True,
+                    "reason": f"权威研究报告：{rpt.get('institution_cn', '')}发布的深度研究，提供{LAYER_LABELS.get(rpt.get('layer', ''), '行业')}视角。",
+                })
+                seen_urls.add(rpt_url)
+            print(f"  📚 已注入 {len([r for r in rr_data.get('reports', []) if validate_url(r.get('url', ''))])} 份权威研究报告到 research 分类")
+    except Exception as e:
+        print(f"  ⚠️ 加载研究报告失败: {e}")
+
+    # 限制总量100条（为研究报告预留空间：日常新闻最多81条 + 19份研究报告 = 100）
+    research_items = [m for m in merged if m.get("category") == "research"]
+    daily_items = [m for m in merged if m.get("category") != "research"]
+    merged = daily_items[:81] + research_items[:19]
     # 重新分配唯一ID（防止增量合并导致ID重复）
     for idx, item in enumerate(merged):
         item["id"] = idx + 1
     data["news"] = merged
 
+    # 统计分类分布（含注入的研究报告）
+    cat_counts = {c: len(ci) for c, ci in by_cat.items()}
+    research_count = sum(1 for m in merged if m.get("category") == "research")
+    if research_count:
+        cat_counts["research"] = research_count
     data["days"][target_date] = {
         "total": len(items), "curated": len(curated), "highlights": len(highlights),
         "avg_score": round(sum(i.get("ai_score", 0) for i in curated) / max(len(curated), 1), 1),
-        "categories": {c: len(ci) for c, ci in by_cat.items()},
+        "categories": cat_counts,
         "sources": list(set(i["source_name"] for i in items)),
     }
     data["last_updated"] = datetime.now().isoformat()
