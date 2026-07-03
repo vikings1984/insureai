@@ -1566,7 +1566,11 @@ lang: zh
                 seen_urls.add(old_url)
             # 无日期的未验证条目：不保留（无任何时间信息，无法判断新旧）
     # 限制总量100条
-    data["news"] = merged[:100]
+    merged = merged[:100]
+    # 重新分配唯一ID（防止增量合并导致ID重复）
+    for idx, item in enumerate(merged):
+        item["id"] = idx + 1
+    data["news"] = merged
 
     data["days"][target_date] = {
         "total": len(items), "curated": len(curated), "highlights": len(highlights),

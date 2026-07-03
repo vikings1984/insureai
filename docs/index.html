@@ -1187,7 +1187,7 @@
     // ===== Deduplication =====
     function deduplicateData(data) {
       const seen = new Set();
-      return data.filter(item => {
+      const result = data.filter(item => {
         const normalizedTitle = item.title.toLowerCase()
           .replace(/[\s\p{P}]/gu, '')
           .replace(/\d+/g, '');
@@ -1199,6 +1199,9 @@
         seen.add(normalizedTitle);
         return true;
       });
+      // 重新分配唯一ID（防止增量合并导致ID重复）
+      result.forEach((item, idx) => { item.id = idx + 1; });
+      return result;
     }
 
     function calculateSimilarity(a, b) {
