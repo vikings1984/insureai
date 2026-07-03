@@ -325,6 +325,87 @@
       vertical-align: middle;
     }
 
+    /* ===== Research Report Cards ===== */
+    .research-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 16px;
+      padding: 4px 0;
+    }
+    .report-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 18px 20px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .report-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 16px rgba(255, 120, 73, 0.1);
+    }
+    .report-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .report-layer-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+    .report-layer-badge.reinsurance { background: rgba(46, 160, 67, 0.12); color: var(--accent-green); }
+    .report-layer-badge.consulting { background: rgba(255, 120, 73, 0.12); color: var(--accent); }
+    .report-layer-badge.domestic { background: rgba(58, 123, 213, 0.12); color: #3a7bd5; }
+    .report-card-institution {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .report-card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+    .report-card-title:hover { color: var(--accent); }
+    .report-card-summary {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .report-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: auto;
+    }
+    .report-card-topic {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: var(--bg-tertiary);
+      padding: 2px 8px;
+      border-radius: 3px;
+    }
+    .report-card-link {
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .report-card-link:hover { text-decoration: underline; }
+
     .card-summary { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 10px; }
     .card-summary.collapsed {
       display: -webkit-box;
@@ -893,7 +974,7 @@
           <button class="category-tab" data-category="regulation">监管</button>
           <button class="category-tab" data-category="product">产品</button>
           <button class="category-tab" data-category="industry">行业</button>
-          <button class="category-tab" data-category="research">研究</button>
+          <button class="category-tab" data-category="research">研究报告</button>
           <button class="category-tab" data-category="claims">理赔</button>
         </div>
         <div class="search-bar">
@@ -915,7 +996,7 @@
           <button class="category-tab" data-category="regulation">监管</button>
           <button class="category-tab" data-category="product">产品</button>
           <button class="category-tab" data-category="industry">行业</button>
-          <button class="category-tab" data-category="research">研究</button>
+          <button class="category-tab" data-category="research">研究报告</button>
           <button class="category-tab" data-category="claims">理赔</button>
         </div>
         <div class="search-bar">
@@ -1247,8 +1328,9 @@
     function renderHotTopics(data) {
       const container = document.getElementById('hot-topics');
       if (!container) return;
-      // Take top 3-5 items with highest ai_score as hot topics
-      const hot = data.slice(0, 5);
+      // 研究报告不参与热点排行
+      const hotData = data.filter(item => item.category !== 'research');
+      const hot = hotData.slice(0, 5);
       if (!hot.length) { container.innerHTML = ''; return; }
       container.innerHTML = hot.map((item, i) => {
         const catNames = { regulation: '监管', product: '产品', industry: '行业', research: '研究', claims: '理赔' };
@@ -1269,6 +1351,14 @@
     // ===== Render Featured =====
     function renderFeatured() {
       let data = filterData(state.featured.keyword, state.featured.category);
+      // 研究分类：独立展示，不使用新闻时间线
+      if (state.featured.category === 'research') {
+        renderResearchReports('timeline-featured', data);
+        document.getElementById('hot-topics').innerHTML = '';
+        return;
+      }
+      // 非研究分类：从数据中排除研究报告，避免在新闻流中混入
+      data = data.filter(item => item.category !== 'research');
       data = data.filter(item => item.ai_score >= 60);
       data.sort((a, b) => b.ai_score - a.ai_score || new Date(b.published_at) - new Date(a.published_at));
       renderHotTopics(data);
@@ -1279,6 +1369,14 @@
     // ===== Render All =====
     function renderAll() {
       let data = filterData(state.all.keyword, state.all.category);
+      // 研究分类：独立展示，不使用新闻时间线
+      if (state.all.category === 'research') {
+        renderResearchReports('timeline-all', data);
+        document.getElementById('pagination-all').style.display = 'none';
+        return;
+      }
+      // 非研究分类：从数据中排除研究报告
+      data = data.filter(item => item.category !== 'research');
       data.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
       const totalPages = Math.ceil(data.length / state.all.pageSize);
       if (state.all.page > totalPages) state.all.page = totalPages || 1;
@@ -1298,6 +1396,57 @@
         <span class="pagination-info">第 ${page} / ${totalPages} 页 · 共 ${totalItems} 条</span>
         <button class="pagination-btn ${page >= totalPages ? 'disabled' : ''}" onclick="goPage(${page + 1})" ${page >= totalPages ? 'disabled' : ''}>下一页</button>
       `;
+    }
+
+    // ===== Render Research Reports (独立展示，不使用新闻时间线) =====
+    function renderResearchReports(containerId, data) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      if (!data.length) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128218;</div><p>暂无研究报告</p></div>';
+        return;
+      }
+      const LAYER_LABELS = {
+        reinsurance: '国际再保险',
+        consulting: '全球咨询',
+        domestic: '国内研究',
+      };
+      // 按层级排序：再保险 → 咨询 → 国内
+      const layerOrder = { reinsurance: 0, consulting: 1, domestic: 2 };
+      data.sort((a, b) => {
+        const la = layerOrder[a.research_topic] !== undefined ? a.research_topic : 'domestic';
+        const lb = layerOrder[b.research_topic] !== undefined ? b.research_topic : 'domestic';
+        return layerOrder[la] - layerOrder[lb];
+      });
+      let html = '<div class="research-grid">';
+      data.forEach(item => {
+        const safeHref = safeUrl(item.source_url);
+        const hasUrl = safeHref && safeHref !== '#';
+        // 从 source_type 推断层级
+        const st = item.source_type || '';
+        let layer = 'domestic';
+        if (st.includes('再保险')) layer = 'reinsurance';
+        else if (st.includes('咨询')) layer = 'consulting';
+        else if (st.includes('国内')) layer = 'domestic';
+        const layerLabel = LAYER_LABELS[layer] || '研究机构';
+        const topicLabel = item.tags || '';
+        html += `
+          <div class="report-card" onclick="showDetail(${item.id})">
+            <div class="report-card-header">
+              <span class="report-layer-badge ${layer}">${esc(layerLabel)}</span>
+              <span class="report-card-institution">${esc(item.source_name)}</span>
+            </div>
+            <div class="report-card-title">${esc(item.title)}</div>
+            <div class="report-card-summary">${esc(item.summary || '')}</div>
+            <div class="report-card-footer">
+              ${topicLabel ? `<span class="report-card-topic">${esc(topicLabel)}</span>` : '<span></span>'}
+              ${hasUrl ? `<a class="report-card-link" href="${esc(safeHref)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">查看报告 &rarr;</a>` : ''}
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      container.innerHTML = html;
     }
 
     // ===== Render Timeline =====
@@ -1399,6 +1548,46 @@
       Object.keys(cats).forEach((key, idx) => {
         const cat = cats[key];
         if (!cat.items.length) return;
+
+        // 研究分类在日报中用独立卡片展示（非新闻列表格式）
+        if (key === 'research') {
+          html += `
+            <div class="daily-section">
+              <div class="daily-section-header">
+                <span class="daily-section-num">0${idx + 1}</span>
+                <span class="daily-section-name">${cat.name}</span>
+                <span class="daily-section-count">${cat.items.length} 份报告</span>
+              </div>
+              <div class="research-grid" style="margin-top:12px">
+          `;
+          cat.items.forEach(item => {
+            const hasSource = item.source_url && item.source_url !== '#';
+            const safeHref = safeUrl(item.source_url);
+            const st = item.source_type || '';
+            let layer = 'domestic';
+            if (st.includes('再保险')) layer = 'reinsurance';
+            else if (st.includes('咨询')) layer = 'consulting';
+            const layerLabels = { reinsurance: '国际再保险', consulting: '全球咨询', domestic: '国内研究' };
+            html += `
+              <div class="report-card" onclick="showDetail(${item.id})">
+                <div class="report-card-header">
+                  <span class="report-layer-badge ${layer}">${esc(layerLabels[layer] || '研究机构')}</span>
+                  <span class="report-card-institution">${esc(item.source_name)}</span>
+                </div>
+                <div class="report-card-title">${esc(item.title)}</div>
+                <div class="report-card-summary">${esc(item.summary || '')}</div>
+                <div class="report-card-footer">
+                  ${item.tags ? `<span class="report-card-topic">${esc(item.tags)}</span>` : '<span></span>'}
+                  ${hasSource ? `<a class="report-card-link" href="${esc(safeHref)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">查看报告 &rarr;</a>` : ''}
+                </div>
+              </div>
+            `;
+          });
+          html += '</div></div>';
+          return;
+        }
+
+        // 其他分类用新闻列表格式
         html += `
           <div class="daily-section">
             <div class="daily-section-header">
