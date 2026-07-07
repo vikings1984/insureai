@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-tests/test_dedup.py — InsureScope 采集管道去重逻辑单测（零依赖，仅标准库）
+tests/test_dedup.py — InsureAI 采集管道去重逻辑单测（零依赖，仅标准库）
 
 验证 Levenshtein 相似度与 is_dup 判定在中英文标题下均符合预期阈值（默认 0.82）。
 

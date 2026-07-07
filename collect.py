@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-InsureScope 自动采集管道 (collect.py)
+InsureAI 自动采集管道 (collect.py)
 =====================================
 零依赖（仅 Python 标准库）。让"发布资讯"的成本趋近于零。
 
@@ -40,7 +40,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(HERE, "data.json")
 INBOX_PATH = os.path.join(HERE, "inbox.json")
 TIMEOUT = 12
-UA = "Mozilla/5.0 (compatible; InsureScopeBot/1.0; +https://github.com/vikings1984/insureai)"
+UA = "Mozilla/5.0 (compatible; InsureAIBot/1.0; +https://github.com/vikings1984/insureai)"
 
 # RSS 信源（真实可用地址；国内保险站点普遍无公开 RSS，故以国际权威信源为主通道）
 # 如需中文内容，请把文章链接放入 inbox.json 走收件箱通道（最可靠）。
@@ -431,7 +431,7 @@ if __name__ == "__main__":
     for a in sys.argv:
         if a.startswith("--limit="):
             limit = int(a.split("=")[1])
-    print(f"=== InsureScope 采集管道 (dry={dry}, limit={limit}) ===")
+    print(f"=== InsureAI 采集管道 (dry={dry}, limit={limit}) ===")
     t0 = time.time()
     run(dry_run=dry, per_source_limit=limit)
     print(f"耗时 {time.time() - t0:.1f}s")

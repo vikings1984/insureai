@@ -31,6 +31,22 @@
       set: (k, v) => localStorage.setItem(k, JSON.stringify(v))
     };
 
+    // ===== 项目名统一：旧 localStorage 键迁移到 insureai_*（保留用户已读/收藏/提报数据） =====
+    const STORAGE_KEY_MIGRATION = {
+      'insurescope_read': 'insureai_read',
+      'insurescope_fav': 'insureai_fav',
+      'insurescope_sources': 'insureai_sources',
+      'insurescope_feedback': 'insureai_feedback',
+    };
+    (function migrateStorageKeys() {
+      for (const [oldK, newK] of Object.entries(STORAGE_KEY_MIGRATION)) {
+        const v = localStorage.getItem(oldK);
+        if (v == null) continue;
+        if (localStorage.getItem(newK) == null) localStorage.setItem(newK, v);
+        localStorage.removeItem(oldK);
+      }
+    })();
+
     // ===== State =====
     const RESEARCH_TOPIC_LABELS = {
       ai_intelligent: 'AI智能化',
@@ -47,8 +63,8 @@
       featured: { category: 'all', keyword: '' },
       all: { category: 'all', keyword: '', page: 1, pageSize: 20 },
       research: { topic: 'all' },
-      read: storage.get('insurescope_read'),
-      fav: storage.get('insurescope_fav'),
+      read: storage.get('insureai_read'),
+      fav: storage.get('insureai_fav'),
       feedbackType: 'bug'
     };
 
@@ -385,7 +401,7 @@
       const wall = document.getElementById('source-wall');
       const container = document.getElementById('source-wall-container');
       if (!wall || !container) return;
-      const sources = JSON.parse(localStorage.getItem('insurescope_sources') || '[]');
+      const sources = JSON.parse(localStorage.getItem('insureai_sources') || '[]');
       if (!sources.length) { wall.style.display = 'none'; return; }
       wall.style.display = 'block';
       const typeLabels = { media: '保险垂直媒体', company: '保险公司官方', regulator: '监管机构', research: '研究机构', academic: '学术机构' };
@@ -611,16 +627,16 @@
         '- **信源类型**: ' + (typeLabels[type] || type) + '\n' +
         '- **推荐理由**: ' + reason + '\n' +
         '- **提报时间**: ' + new Date().toISOString() + '\n\n' +
-        '---\n*此 Issue 由 InsureScope 信源提报页面自动生成*'
+        '---\n*此 Issue 由 InsureAI 信源提报页面自动生成*'
       );
       const ghRepo = (document.querySelector('meta[name="github-repo"]')?.content || 'vikings1984/insureai').trim();
       const issueUrl = 'https://github.com/' + ghRepo + '/issues/new?title=' + title + '&body=' + body + '&labels=信源提报';
       window.open(issueUrl, '_blank');
       // 同时保存到 localStorage 作为备份
       const data = { url, name, type, reason, timestamp: new Date().toISOString() };
-      const existing = JSON.parse(localStorage.getItem('insurescope_sources') || '[]');
+      const existing = JSON.parse(localStorage.getItem('insureai_sources') || '[]');
       existing.push(data);
-      localStorage.setItem('insurescope_sources', JSON.stringify(existing));
+      localStorage.setItem('insureai_sources', JSON.stringify(existing));
       document.getElementById('source-url').value = '';
       document.getElementById('source-name').value = '';
       document.getElementById('source-type').value = '';
@@ -640,16 +656,16 @@
         '- **联系方式**: ' + (contact || '未填写') + '\n' +
         '- **提交时间**: ' + new Date().toISOString() + '\n\n' +
         '## 反馈内容\n' + content + '\n\n' +
-        '---\n*此 Issue 由 InsureScope 反馈页面自动生成*'
+        '---\n*此 Issue 由 InsureAI 反馈页面自动生成*'
       );
       const ghRepo = (document.querySelector('meta[name="github-repo"]')?.content || 'vikings1984/insureai').trim();
       const issueUrl = 'https://github.com/' + ghRepo + '/issues/new?title=' + title + '&body=' + body + '&labels=反馈';
       window.open(issueUrl, '_blank');
       // 同时保存到 localStorage 作为备份
       const data = { type: state.feedbackType, content, contact, timestamp: new Date().toISOString() };
-      const existing = JSON.parse(localStorage.getItem('insurescope_feedback') || '[]');
+      const existing = JSON.parse(localStorage.getItem('insureai_feedback') || '[]');
       existing.push(data);
-      localStorage.setItem('insurescope_feedback', JSON.stringify(existing));
+      localStorage.setItem('insureai_feedback', JSON.stringify(existing));
       document.getElementById('feedback-content').value = '';
       document.getElementById('feedback-contact').value = '';
     });
@@ -667,9 +683,9 @@
         const content = document.getElementById('feedback-content').value.trim();
         const contact = document.getElementById('feedback-contact').value.trim();
         if (!content) { alert('请先填写反馈内容'); return; }
-        const subject = 'InsureScope 反馈: ' + content.substring(0, 40);
+        const subject = 'InsureAI 反馈: ' + content.substring(0, 40);
         const body = '反馈类型: ' + state.feedbackType + '\n联系方式: ' + (contact || '未填写') +
-          '\n\n' + content + '\n\n---\n此邮件由 InsureScope 反馈页面生成';
+          '\n\n' + content + '\n\n---\n此邮件由 InsureAI 反馈页面生成';
         window.location.href = 'mailto:' + email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
       });
     })();
@@ -689,7 +705,7 @@
       if (!news) return;
       // Mark as read
       state.read[id] = true;
-      storage.set('insurescope_read', state.read);
+      storage.set('insureai_read', state.read);
       const el = document.querySelector(`.timeline-item[data-id="${id}"]`);
       if (el) el.classList.add('is-read');
 

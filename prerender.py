@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-prerender.py — InsureScope 纯静态 SPA 的 SEO 预渲染器（零依赖）
+prerender.py — InsureAI 纯静态 SPA 的 SEO 预渲染器（零依赖）
 
 读取 data.json，为搜索引擎/爬虫生成可抓取的静态内容：
   1. JSON-LD（WebSite + ItemList）注入 index.html 的 <!--SEO_JSONLD_START/END-->
@@ -42,7 +42,7 @@ def build_jsonld(data, site_url):
     item_list = {
         "@context": "https://schema.org",
         "@type": "ItemList",
-        "name": "InsureScope 保险行业精选资讯",
+        "name": "InsureAI 保险行业精选资讯",
         "itemListElement": [
             {
                 "@type": "ListItem",
@@ -62,7 +62,7 @@ def build_jsonld(data, site_url):
     website = {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "name": "InsureScope",
+        "name": "InsureAI",
         "url": site_url,
         "description": "保险行业动态资讯聚合平台：每日精选监管政策、产品发布、行业动态、研究洞察与理赔案例。",
         "potentialAction": {
@@ -89,7 +89,7 @@ def build_fallback(data, site_url):
         '<div id="seo-fallback" aria-hidden="true" '
         'style="position:absolute;width:1px;height:1px;overflow:hidden;'
         'clip:rect(0 0 0 0);">'
-        "<h1>InsureScope 保险行业动态资讯</h1>"
+        "<h1>InsureAI 保险行业动态资讯</h1>"
         f'<ul>{"".join(items)}</ul></div>'
     )
 

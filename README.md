@@ -1,4 +1,4 @@
-# InsureScope
+# InsureAI
 
 保险行业动态资讯聚合平台，纯静态 SPA，零后端依赖。
 
@@ -91,7 +91,7 @@ python3 prerender.py --site-url https://your.domain   # 指定正式域名
 
 ```html
 <meta name="github-repo" content="your-org/your-repo">
-<meta name="feedback-email" content="insurescope@example.com">
+<meta name="feedback-email" content="insureai@example.com">
 ```
 
 ## 去重测试（P2-10）
@@ -113,7 +113,7 @@ CSP 保持 `script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'`
 
 ## 同步到 GitHub
 
-项目托管在 `vikings1984/insureai` 仓库的 **`insurescope` 分支**（保留 `main` 原始 insureai 内容不动）。
+项目托管在 `vikings1984/insureai` 仓库的 **`insureai` 分支**（保留 `main` 原始 insureai 内容不动）。
 
 本机 `~/.gitconfig` 配了 `gh-proxy.com` 代理，且当前环境**直连 `github.com:443` 被墙**；公开代理匿名 `push` 会被拒（403）。
 实测可用路径：**经 `gh-proxy` 透传 `gh` 令牌**（`gh-proxy` 的 upload-pack 带令牌返回 200）。
@@ -122,7 +122,7 @@ CSP 保持 `script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'`
 ```bash
 # 1. 提交本地改动
 git add -A && git commit -m "feat: ..."
-# 2. 一键同步到 insurescope 分支（经 gh-proxy + gh 令牌）
+# 2. 一键同步到 insureai 分支（经 gh-proxy + gh 令牌）
 make sync
 ```
 
@@ -131,11 +131,11 @@ make sync
 ```bash
 TOKEN=$(gh auth token)
 REMOTE="https://${TOKEN}@gh-proxy.com/https://github.com/vikings1984/insureai.git"
-git -c credential.helper= -c http.version=HTTP/1.1 push "$REMOTE" HEAD:insurescope
+git -c credential.helper= -c http.version=HTTP/1.1 push "$REMOTE" HEAD:insureai
 ```
 
 > 推送前请先 `git add -A && git commit -m "..."`。`main` 分支为上游原始项目，请勿直接覆盖；
-> 如需把 InsureScope 并回 `main`，可在 GitHub 上从 `insurescope` 向 `main` 开 Pull Request。
+> 如需把 InsureAI 并回 `main`，可在 GitHub 上从 `insureai` 向 `main` 开 Pull Request。
 > 日常请勿使用裸 `git push`（会因代理缺令牌而失败），统一用 `make sync`。
 
 
