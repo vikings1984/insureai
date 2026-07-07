@@ -4,6 +4,9 @@ name: Daily Insurance News Collect
 # 任务内部切换到 insurescope 分支执行采集；提交 data.json 后，把 index.html 的 data-url
 # 刷新为最新提交 SHA（jsDelivr 对 SHA 引用即时生效、无分支缓存延迟），并 purge 该 SHA 的 CDN，
 # 使任何拉取该 index.html 的预览自动获得最新数据。
+#
+# 预览宿主：GitHub Pages（源 = insurescope 分支根目录）。本工作流 push 到 insurescope 会
+# 自动触发 Pages 重新部署 —— 实现"零接触自动刷新"，无需手动重新部署任何静态托管。
 on:
   schedule:
     - cron: '0 0 * * *'        # 每日 UTC 00:00 = 北京时间 08:00
@@ -11,6 +14,9 @@ on:
 
 permissions:
   contents: write
+
+env:
+  SITE_URL: "https://vikings1984.github.io/insureai"
 
 jobs:
   collect:
@@ -30,19 +36,21 @@ jobs:
       - name: Run collector
         run: python3 collect.py
 
-      - name: Commit data.json if changed
+      - name: Prerender SEO (site = GitHub Pages)
+        run: python3 prerender.py --site-url "$SITE_URL"
+
+      - name: Commit data + SEO
         run: |
           git config user.name "insurescope-bot"
           git config user.email "bot@insurescope.local"
-          if [ -n "$(git status --porcelain data.json)" ]; then
-            git add data.json
-            git commit -m "chore: auto-collect insurance news $(date +%F)"
-            git push origin insurescope
+          if [ -n "$(git status --porcelain data.json index.html sitemap.xml)" ]; then
+            git add data.json index.html sitemap.xml
+            git commit -m "chore: auto-collect + prerender $(date +%F)"
           else
             echo "no changes to data.json"
           fi
 
-      - name: Pin data-url to new commit SHA
+      - name: Pin data-url to latest commit SHA
         run: |
           git config user.name "insurescope-bot"
           git config user.email "bot@insurescope.local"
@@ -51,10 +59,12 @@ jobs:
           if [ -n "$(git status --porcelain index.html)" ]; then
             git add index.html
             git commit -m "chore: pin data-url to ${SHA}"
-            git push origin insurescope
           else
             echo "data-url 已是最新 SHA"
           fi
+
+      - name: Push (triggers GitHub Pages redeploy)
+        run: git push origin insurescope
 
       - name: Purge jsDelivr cache
         run: |

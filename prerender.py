@@ -13,7 +13,7 @@ prerender.py — InsureScope 纯静态 SPA 的 SEO 预渲染器（零依赖）
 用法：
     python3 prerender.py [--site-url URL] [--out DIR]
 环境变量：
-    SITE_URL  站点正式域名（默认使用 CloudStudio 部署地址）
+    SITE_URL  站点正式域名（默认 GitHub Pages 地址）
 """
 import json
 import re
@@ -25,7 +25,7 @@ import argparse
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data.json")
 INDEX = os.path.join(HERE, "index.html")
-DEFAULT_SITE = "https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work"
+DEFAULT_SITE = "https://vikings1984.github.io/insureai"
 
 
 def esc(s):
