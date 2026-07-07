@@ -94,6 +94,8 @@ STRONG_INSURANCE_TERMS = [
     "险资", "银保", "核保", "责任险", "财险", "寿险", "健康险", "车险", "农险",
     "投保人", "被保险人", "保险人", "精算", "经纪", "中介", "养老", "养老金",
     "代理", "投保", "给付", "免赔", "免责", "险企", "险业", "保险业", "再保",
+    "惠民保", "参保", "保险资金", "险资", "保险科技", "智能核保", "智能理赔",
+    "互联网保险", "保险代理人", "新能源车险", "健康险", "责任险", "财产险",
 ]
 
 
@@ -176,6 +178,7 @@ def extract_page(url):
 # ===================== 中文保险资讯源（东方财富搜索 API） =====================
 # 零额外依赖（标准库 urllib）。中文保险站点普遍无公开 RSS，故用搜索 API 补齐中文内容，
 # 解决默认英文 RSS 与中文“保险日报”标题的错位。用 is_insurance_relevant 双重门控防噪声。
+# 关键词覆盖全部 8 大研究主题 + 主要产品线，确保中文内容分类均衡、无主题盲区。
 EASTMONEY_KEYWORDS = [
     ("保险", "industry"),
     ("再保险", "capital_reinsurance"),
@@ -185,6 +188,14 @@ EASTMONEY_KEYWORDS = [
     ("保险监管", "regulation"),
     ("保险科技", "digital_transformation"),
     ("巨灾保险", "climate_catastrophe"),
+    ("农业保险", "industry"),                # 农险领域
+    ("保险资金", "capital_reinsurance"),     # 资管/投资维度
+    ("保险AI", "ai_intelligent"),            # AI 智能化
+    ("智能核保", "ai_intelligent"),          # AI 智能化（核保场景）
+    ("互联网保险", "channel_transformation"),# 渠道转型
+    ("保险代理人", "channel_transformation"),# 渠道转型（代理人）
+    ("惠民保", "product_innovation"),        # 产品创新（城市定制医疗险）
+    ("新能源车险", "product_innovation"),    # 产品创新（新能源车）
 ]
 EASTMONEY_API = "https://search-api-web.eastmoney.com/search/jsonp?cb=jQuery&param="
 
@@ -215,6 +226,10 @@ def fetch_eastmoney(per_kw=3):
                 if not title or len(title) < 6:
                     continue
                 content = clean_text(a.get("content", ""))
+                # 搜索召回噪声二次门控：搜索 API 会返回与关键词弱相关的结果
+                # （如「智能核保」召回「星尘智能完成股改」），须含强保险信号才入册。
+                if not is_insurance_relevant(title, content):
+                    continue
                 pub = (a.get("date", "") or "")[:10]
                 pub_iso = (pub + "T00:00:00+08:00") if pub else to_iso(None)
                 items.append({
@@ -348,7 +363,7 @@ def run(dry_run=False, per_source_limit=10):
 
     # 通道 3：中文搜索 API（东方财富，零额外依赖）— 补齐中文内容，解决中英文错位
     try:
-        zh_items = fetch_eastmoney()
+        zh_items = fetch_eastmoney(per_kw=3)
         for it in zh_items:
             _ingest(it["title"], it["summary"], it["url"], it["source_name"], it["source_type"],
                     it["authority"], it["published_at"], existing_titles, collected,
