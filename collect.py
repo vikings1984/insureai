@@ -515,12 +515,31 @@ def run(dry_run=False, per_source_limit=10):
     print(f"   days 天数: {len(days)}；source_health 信源: {len(data.get('source_health', {}))}")
 
 
+# ---- 自动推荐理由生成（替代千篇一律的占位文案）----
+_CATEGORY_CN = {
+    "regulation": "监管动态",
+    "product": "产品创新",
+    "industry": "行业动态",
+    "research": "研究洞察",
+    "claims": "理赔服务",
+}
+
+def auto_reason(stype, category, ai_score):
+    """为自动采集条目生成具体、有信息量的推荐理由（每条不同，含分类/来源/评分）。"""
+    cat_cn = _CATEGORY_CN.get(category, "行业动态")
+    return (f"系统按保险领域强信号自动采集，属{cat_cn}方向，"
+            f"来源类型：{stype or '未知'}，AI 相关性评分 {ai_score}。"
+            f"建议人工复核内容后提升为精选。")
+
+
 def _ingest(title, summary, url, sname, stype, authority, published, existing_titles, collected, reason=None, require_topic=False):
     if not title or is_dup(title, existing_titles + [c["title"] for c in collected]):
         return
     topic = infer_topic(title, summary)
     if require_topic and not is_insurance_relevant(title, summary):
         return  # RSS 噪声过滤：不含强保险领域信号则不收录（剔除非保险新闻）
+    cat = _category(title, summary)
+    sc = score_item(title, summary, authority)
     collected.append({
         "id": 0,
         "title": title,
@@ -529,11 +548,11 @@ def _ingest(title, summary, url, sname, stype, authority, published, existing_ti
         "source_type": stype,
         "source_url": url,
         "importance": 4,
-        "ai_score": score_item(title, summary, authority),
+        "ai_score": sc,
         "tags": "",
-        "category": _category(title, summary),
+        "category": cat,
         "published_at": published,
-        "reason": reason or "由自动采集管道生成，建议人工复核后提升为精选。",
+        "reason": reason or auto_reason(stype, cat, sc),
         "date_verified": False,
         "research_topic": topic or "product_innovation",
         "is_research_report": stype in ("研究机构", "咨询"),
