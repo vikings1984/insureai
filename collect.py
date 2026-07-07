@@ -368,17 +368,29 @@ def is_dup(title, existing_titles, threshold=0.82):
 
 
 def _category(title, summary):
+    """分类逻辑（5 类）。industry 为兜底类——任何未命中具体规则的内容归入 industry，
+    故具体类关键词必须足够精准，避免 industry 过度膨胀（分类均衡优化）。"""
     text = (title + " " + summary).lower()
+    # 1) 监管（最具体，优先避免误归类）
     if any(k in text for k in ["监管", "办法", "指引", "处罚", "合规", "政策", "regulation", "compliance",
-                               "regulator", "fine", "ifrs"]):
+                               "regulator", "fine", "ifrs", "行政处罚", "金融监管总局"]):
         return "regulation"
-    if any(k in text for k in ["研报", "报告", "研究表明", "sigma", "白皮书", "咨询", "report", "research",
-                               "whitepaper", "study"]):
-        return "research"
-    if any(k in text for k in ["产品", "首发", "推出", "上线", "launch", "unveils", "introduces", "product"]):
-        return "product"
-    if any(k in text for k in ["理赔", "案例", "纠纷", "判决", "claim", "lawsuit", "settlement", "verdict"]):
+    # 2) 理赔（保险实务核心；用精准词，避免"案例/纠纷/判决"等泛词误命中）
+    if any(k in text for k in ["理赔", "赔付", "赔款", "索偿", "保险欺诈", "反欺诈", "车险理赔",
+                               "健康险理赔", "医疗险理赔", "理赔服务", "理赔案例", "理赔纠纷",
+                               "理赔时效", "快赔", "claim", "lawsuit", "settlement", "verdict", "claims"]):
         return "claims"
+    # 3) 产品（产品创新/上市/备案）
+    if any(k in text for k in ["产品", "首发", "推出", "上线", "惠民保", "新能源车险", "重疾险",
+                               "百万医疗", "养老年金", "防癌险", "宠物险", "专属商业养老",
+                               "创新型产品", "备案", "新品", "产品升级", "产品上市",
+                               "launch", "unveils", "introduces", "product"]):
+        return "product"
+    # 4) 研究（研报/分析/趋势）
+    if any(k in text for k in ["研报", "报告", "研究表明", "sigma", "白皮书", "咨询", "咨询报告",
+                               "分析", "洞察", "趋势", "展望", "解读", "深度", "测算", "研究",
+                               "report", "research", "whitepaper", "study"]):
+        return "research"
     return "industry"
 
 
@@ -461,6 +473,10 @@ def run(dry_run=False, per_source_limit=10):
     # 合并
     merged = existing + collected
     merged.sort(key=lambda x: x.get("published_at", ""), reverse=True)
+    # 分类均衡优化：用最新 _category 逻辑对所有条目重跑分类，
+    # 使历史条目的分类随逻辑改进而修正（改进可持久化到每日 CI）。
+    for n in merged:
+        n["category"] = _category(n.get("title", ""), n.get("summary", ""))
     for i, n in enumerate(merged, 1):
         n["id"] = i
 
