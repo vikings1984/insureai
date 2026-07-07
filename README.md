@@ -61,7 +61,7 @@ python3 -m http.server 8000
 ```bash
 make collect        # 采集并合并，写回 data.json
 make collect-dry    # 仅预览将新增的条目，不写文件
-python3 collect.py --limit 10   # 每个 RSS 信源最多取 10 条
+python3 collect.py --limit=10   # 每个 RSS 信源最多取 10 条（注意用 = 连接）
 ```
 
 **自动化部署**：`.github/workflows/daily-collect.yml` 每日北京时间 08:00 运行采集，
