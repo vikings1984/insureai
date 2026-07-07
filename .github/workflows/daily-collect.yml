@@ -36,13 +36,16 @@ jobs:
       - name: Prerender SEO (site = GitHub Pages)
         run: python3 prerender.py --site-url "$SITE_URL"
 
-      - name: Commit data + SEO
+      - name: 采集质量自动评分 (ce-optimize)
+        run: python3 scripts/quality_score.py
+
+      - name: Commit data + SEO + 质量评分
         run: |
           git config user.name "insureai-bot"
           git config user.email "bot@insureai.local"
-          if [ -n "$(git status --porcelain data.json index.html sitemap.xml research.json)" ]; then
-            git add data.json index.html sitemap.xml research.json
-            git commit -m "chore: auto-collect + prerender $(date +%F)"
+          if [ -n "$(git status --porcelain data.json index.html sitemap.xml research.json data/quality)" ]; then
+            git add data.json index.html sitemap.xml research.json data/quality
+            git commit -m "chore: auto-collect + prerender + quality-score $(date +%F)"
           else
             echo "no changes"
           fi
