@@ -1,0 +1,48 @@
+{
+  "project": {
+    "name": "InsureAI",
+    "description": "AI 驱动的保险行业智能资讯聚合平台",
+    "timezone": "Asia/Shanghai",
+    "daily_schedule": "0 0 * * * (UTC) = 08:00 Beijing"
+  },
+  "data_sources": {
+    "primary": {
+      "name": "东方财富搜索 API",
+      "type": "json_api",
+      "keywords": ["保险", "保险监管", "保险产品", "保险理赔", "保险科技"]
+    },
+    "secondary": {
+      "name": "中国保险行业协会",
+      "type": "web_scrape",
+      "columns": [22, 24]
+    },
+    "supplementary": [
+      {
+        "name": "AkShare stock_news_em",
+        "type": "python_lib",
+        "symbols": ["601318", "601628", "601601", "601336", "601319"]
+      },
+      {
+        "name": "AkShare news_cctv",
+        "type": "python_lib",
+        "filter_keywords": ["保险", "金融监管", "银保监", "偿付能力", "农险", "养老金"]
+      }
+    ]
+  },
+  "scoring": {
+    "base_score": 3.0,
+    "curated_threshold": 6.0,
+    "highlight_threshold": 7.0,
+    "freshness_days": 14,
+    "max_items": 25,
+    "freshness_bonus": {
+      "today": 3.5,
+      "1day": 2.0,
+      "3days": 1.0,
+      "7days": 0.5,
+      "14days": 0.3
+    },
+    "max_theoretical_score": 10.0
+  },
+  "categories": ["regulation", "product", "industry", "research", "claims"]
+}

@@ -1,0 +1,47 @@
+name: Auto Update Pipeline
+
+on:
+  schedule:
+    # 每6小时运行一次（UTC 00:00, 06:00, 12:00, 18:00 = 北京时间 08:00, 14:00, 20:00, 02:00）
+    - cron: '0 0,6,12,18 * * *'
+  workflow_dispatch:
+    inputs:
+      date:
+        description: '指定日期 (YYYY-MM-DD)，留空为今天'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-pipeline
+  cancel-in-progress: false
+
+jobs:
+  collect-and-update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run collection
+        run: python run_collect.py
+      - name: Commit and push
+        run: |
+          git config user.name "InsureAI Bot"
+          git config user.email "bot@insureai.dev"
+          git add data/summaries/ docs/_posts/ docs/data.json
+          git diff --staged --quiet || git commit -m "📊 Update: $(date -u '+%Y-%m-%d %H:%M') UTC"
+          git push
