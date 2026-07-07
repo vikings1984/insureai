@@ -1,0 +1,73 @@
+name: category-balance
+description: |
+  优化 InsureAI 资讯采集的「分类均衡度」。当前 industry 类占 45%（53 条），而 claims 仅 6 条、
+  product 16 条，分类严重不均衡（根因：_category() 以 industry 为默认兜底类）。
+  通过改进 _category() 分类逻辑（让既有 industry 兜底项被正确分到 claims/product/research）、
+  扩充弱分类专属关键词、并让 run() 对所有条目重跑分类（改进可持久化到每日 CI），
+  提升「最小分类条目数(min_category_count)」，压低最大类占比，实现更均衡的资讯覆盖。
+
+metric:
+  primary:
+    type: hard
+    name: min_category_count
+    direction: maximize
+    target: 15
+  degenerate_gates:
+    - name: category_diversity
+      check: ">= 5"
+      description: 5 类分类体系不能丢失任何一类
+    - name: max_single_source_pct
+      check: "<= 40"
+      description: 单源占比不得恶化超过 40%（与现有 ce-optimize 门禁一致）
+    - name: stock_noise_count
+      check: "== 0"
+      description: 不得引入股市噪声（板块拉升/涨停等）
+    - name: total_items
+      check: ">= 100"
+      description: 总条目不得大幅缩水（基线 118）
+  diagnostics:
+    - name: max_category_pct
+    - name: category_diversity
+    - name: avg_score
+    - name: source_diversity
+
+measurement:
+  command: "python3 scripts/evaluate_balance.py --run"
+  timeout_seconds: 300
+  working_directory: "."
+  stability:
+    mode: stable
+    noise_threshold: 2.0
+
+scope:
+  mutable:
+    - collect.py
+  immutable:
+    - scripts/evaluate_balance.py
+    - data.baseline.json
+    - scripts/quality_score.py
+    - index.html
+    - css/style.css
+    - .github/workflows/daily-collect.yml
+    - .context/compound-engineering/ce-optimize/collection-comprehensiveness/
+    - .context/compound-engineering/ce-optimize/source-diversification/
+
+execution:
+  mode: serial
+  backend: worktree
+  max_concurrent: 1
+
+dependencies:
+  approved: []
+
+constraints:
+  - "保持强信号门控(is_insurance_relevant)，不可为追求均衡而引入非保险内容"
+  - "不得降低 avg_score 或引入股市噪声"
+  - "分类名称沿用现有 5 类：regulation/product/industry/research/claims"
+  - "零额外依赖（仅 Python 标准库）"
+
+stopping:
+  max_iterations: 4
+  max_hours: 1
+  plateau_iterations: 3
+  target_reached: true
