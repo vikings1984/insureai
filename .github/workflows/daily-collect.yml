@@ -1,0 +1,47 @@
+name: Daily Insurance News Collect
+
+# 重要：GitHub 的 schedule 定时任务只在仓库【默认分支(main)】上生效，
+# 因此本工作流文件必须提交到 main 分支。任务内部会切换到 insurescope 分支
+# 执行采集，并把结果提交回 insurescope；预览(jsDelivr CDN)随之自动刷新。
+on:
+  schedule:
+    - cron: '0 0 * * *'        # 每日 UTC 00:00 = 北京时间 08:00
+  workflow_dispatch:           # 支持手动触发
+
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout insurescope branch
+        uses: actions/checkout@v4
+        with:
+          ref: insurescope
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run collector
+        run: python3 collect.py
+
+      - name: Commit & push to insurescope
+        run: |
+          git config user.name "insurescope-bot"
+          git config user.email "bot@insurescope.local"
+          if [ -n "$(git status --porcelain data.json)" ]; then
+            git add data.json
+            git commit -m "chore: auto-collect insurance news $(date +%F)"
+            git push origin insurescope
+          else
+            echo "no changes to data.json"
+          fi
+
+      - name: Purge jsDelivr cache
+        run: |
+          curl -s -X GET "https://purge.jsdelivr.net/gh/vikings1984/insureai@insurescope/data.json" || true
+          curl -s -X GET "https://gcore.jsdelivr.net/gh/vikings1984/insureai@insurescope/data.json?purge=true" || true
