@@ -114,22 +114,29 @@ CSP 保持 `script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'`
 ## 同步到 GitHub
 
 项目托管在 `vikings1984/insureai` 仓库的 **`insurescope` 分支**（保留 `main` 原始 insureai 内容不动）。
-本机 `~/.gitconfig` 配了 `gh-proxy.com` 代理，直连推送需绕过代理并用 `gh` 凭证助手认证，
-已封装为 `make sync`：
+
+本机 `~/.gitconfig` 配了 `gh-proxy.com` 代理，且当前环境**直连 `github.com:443` 被墙**；公开代理匿名 `push` 会被拒（403）。
+实测可用路径：**经 `gh-proxy` 透传 `gh` 令牌**（`gh-proxy` 的 upload-pack 带令牌返回 200）。
+`make sync` 已封装该路径——令牌仅在运行时由 `gh auth token` 获取并嵌入代理 URL，**不落盘、不写入 git 配置**：
 
 ```bash
-# 首次或日常同步（提交后）
+# 1. 提交本地改动
+git add -A && git commit -m "feat: ..."
+# 2. 一键同步到 insurescope 分支（经 gh-proxy + gh 令牌）
 make sync
-# 等价展开命令（供参考/排错）：
-#   cp ~/.gitconfig .gitconfig.tmp && sed -i '' '/gh-proxy/d' .gitconfig.tmp
-#   GIT_CONFIG_GLOBAL=$(PWD)/.gitconfig.tmp git -c credential.helper= \
-#     -c 'credential.https://github.com.helper=!gh auth git-credential' \
-#     push -u https://github.com/vikings1984/insureai.git HEAD:insurescope
-#   rm -f .gitconfig.tmp
+```
+
+等价展开命令（供参考/排错）：
+
+```bash
+TOKEN=$(gh auth token)
+REMOTE="https://${TOKEN}@gh-proxy.com/https://github.com/vikings1984/insureai.git"
+git -c credential.helper= -c http.version=HTTP/1.1 push "$REMOTE" HEAD:insurescope
 ```
 
 > 推送前请先 `git add -A && git commit -m "..."`。`main` 分支为上游原始项目，请勿直接覆盖；
 > 如需把 InsureScope 并回 `main`，可在 GitHub 上从 `insurescope` 向 `main` 开 Pull Request。
+> 日常请勿使用裸 `git push`（会因代理缺令牌而失败），统一用 `make sync`。
 
 
 ## 功能特性

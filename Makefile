@@ -19,7 +19,7 @@ deploy:  ## 提示：通过 WorkBuddy CloudStudio 部署当前目录（data.json
 	@echo "请使用 WorkBuddy 的部署功能（CloudStudio）上传本目录。"
 	@echo "日常更新只需重跑 collect 后重新部署，index.html 通常无需改动。"
 
-sync:  ## 同步到 GitHub insurescope 分支（绕过本机 gh-proxy，使用 gh 凭证助手）
-	@cp ~/.gitconfig .gitconfig.tmp && sed -i '' '/gh-proxy/d' .gitconfig.tmp && \
-	GIT_CONFIG_GLOBAL=$(PWD)/.gitconfig.tmp git -c credential.helper= -c 'credential.https://github.com.helper=!gh auth git-credential' push -u https://github.com/vikings1984/insureai.git HEAD:insurescope && \
-	rm -f .gitconfig.tmp
+sync:  ## 同步到 GitHub insurescope 分支（经 gh-proxy 透传 gh 令牌，令牌仅运行时获取不落盘）
+	@TOKEN=$$(gh auth token); \
+	REMOTE="https://$${TOKEN}@gh-proxy.com/https://github.com/vikings1984/insureai.git"; \
+	git -c credential.helper= -c http.version=HTTP/1.1 push "$$REMOTE" HEAD:insurescope
