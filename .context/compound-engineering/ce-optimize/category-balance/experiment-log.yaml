@@ -1,0 +1,132 @@
+spec:
+  name: category-balance
+  description: 优化 InsureAI 资讯采集的分类均衡度（提升 min_category_count，压低 industry 主导）
+  primary_metric: min_category_count
+  direction: maximize
+  target: 15
+  type: hard
+
+run_id: "2026-07-07T17:58:00+08:00"
+started_at: "2026-07-07T17:58:00+08:00"
+
+baseline:
+  timestamp: "2026-07-07T17:58:00+08:00"
+  gates:
+    category_diversity: 5
+    max_single_source_pct: 14.2
+    stock_noise_count: 0
+    total_items: 120
+  diagnostics:
+    min_category_count: 6
+    max_category_pct: 44.2
+    avg_score: 85.6
+    source_diversity: 49
+  category_distribution:
+    industry: 53
+    regulation: 26
+    research: 18
+    product: 17
+    claims: 6
+  notes: >
+    受控重置到 data.baseline.json(118条) 后实时采集仅新增 2 条，说明新条目采集近饱和、
+    去重率高。均衡改善主杠杆为改进 _category() 分类逻辑并对既有条目重跑（确定性），
+    而非靠新增采集。min=6(claims) 为绑定约束，industry 53(44.2%) 为最大类。
+
+experiments:
+  - iteration: 1
+    hypothesis: "综合 _category 重平衡：扩充 claims/product/research 检测词 + 调整判定优先级(regulation→claims→product→research→industry 兜底) + run() 对所有 merged 条目重跑分类"
+    category: signal-extraction
+    outcome: measured
+    gates:
+      category_diversity: 5
+      max_single_source_pct: 13.8
+      stock_noise_count: 0
+      total_items: 123
+    diagnostics:
+      min_category_count: 16
+      max_category_pct: 34.1
+      avg_score: 85.7
+      source_diversity: 49
+    category_distribution:
+      industry: 42
+      regulation: 26
+      product: 23
+      claims: 16
+      research: 16
+    improvement: 10
+    learnings: |
+      重跑分类使 11 条 industry 兜底项被正确归位：claims 6→16(+10)、product 17→23(+6)，
+      industry 53→42(-11)，max_category_pct 44.2%→34.1%。min 6→16 已超 target 15。
+      avg_score 无回归(85.6→85.7)，股市噪声 0，单源 13.8%。判定优先级与精准词是关键杠杆。
+
+  - iteration: 2
+    hypothesis: "弱分类关键词加权(H4)：新增 保险理赔/重疾险/百万医疗/养老年金/防癌险 搜索词，EASTMONEY_KW_WEIGHT 对弱分类(理赔/产品)设更高 per_kw"
+    category: parameter-tuning
+    outcome: kept
+    gates:
+      category_diversity: 5
+      max_single_source_pct: 11.9
+      stock_noise_count: 0
+      total_items: 143
+    diagnostics:
+      min_category_count: 16
+      max_category_pct: 32.2
+      avg_score: 85.6
+      source_diversity: 56
+    category_distribution:
+      industry: 46
+      regulation: 30
+      product: 29
+      claims: 22
+      research: 16
+    improvement: 0
+    learnings: |
+      主指标 min 持平于 16（claims 16→22，但 research 成新绑定约束 16）；二级指标显著改善：
+      max_category_pct 34.1%→32.2%、source_diversity 49→56、product 23→29、claims 16→22，
+      全门禁通过、avg_score 无回归、股市噪声 0。弱分类加权提升覆盖，整体更均衡，故保留。
+
+best:
+  iteration: 2
+  source: experiment-2
+  metrics:
+    min_category_count: 16
+    max_category_pct: 32.2
+    category_diversity: 5
+    max_single_source_pct: 11.9
+    stock_noise_count: 0
+    total_items: 143
+    avg_score: 85.6
+    source_diversity: 56
+  category_distribution:
+    industry: 46
+    regulation: 30
+    product: 29
+    claims: 22
+    research: 16
+
+hypothesis_backlog:
+  - description: "让 run() 对所有 merged 条目重跑 _category()；扩充 claims 检测词（理赔/赔付/赔款/索偿/保险欺诈/反欺诈/车险理赔/健康险理赔/医疗险理赔/理赔服务/理赔案例），把 industry 兜底里的真实理赔内容归位。"
+    category: signal-extraction
+    priority: high
+    dep_status: approved
+    required_deps: []
+  - description: "扩充 product 检测词（惠民保/新能源车险/重疾险/百万医疗/养老年金/防癌险/宠物险/专属商业养老/创新型产品/备案），提升 product 占比。"
+    category: signal-extraction
+    priority: high
+    dep_status: approved
+    required_deps: []
+  - description: "扩充 research 检测词（研报/分析/洞察/趋势/展望/解读/深度/白皮书/咨询报告/测算），让研究类内容准确归 research 而非 industry。"
+    category: signal-extraction
+    priority: medium
+    dep_status: approved
+    required_deps: []
+  - description: "EASTMONEY_KEYWORDS 为弱分类(claims/product)关键词设更高 per_kw，并补充弱分类专属搜索词（如 保险理赔/惠民保 理赔/重疾险 新品）。"
+    category: parameter-tuning
+    priority: medium
+    dep_status: approved
+    required_deps: []
+  - description: "调整 _category 判定优先级顺序：claims/product/research 先于 industry 兜底，减少 industry 抢占本属其他类的内容。"
+    category: signal-extraction
+    priority: low
+    dep_status: approved
+    required_deps: []
