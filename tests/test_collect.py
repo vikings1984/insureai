@@ -29,6 +29,7 @@ from collect import (
     clean_text,
     _category,
     fetch_eastmoney,
+    fetch_iachina,
 )
 
 
@@ -158,6 +159,24 @@ class TestFetchEastmoney(unittest.TestCase):
             self.assertIn("published_at", it)
             self.assertTrue(is_insurance_relevant(it["title"], it.get("summary", "")),
                             f"中文源返回非保险内容: {it['title']}")
+
+
+class TestFetchIachina(unittest.TestCase):
+    """中国保险行业协会官网源（权威一手源，独立于东方财富聚合）。"""
+
+    def test_returns_list_and_schema(self):
+        items = fetch_iachina(per_art=3)
+        self.assertIsInstance(items, list)
+        for it in items:
+            self.assertIn("title", it)
+            self.assertIn("url", it)
+            self.assertIn("published_at", it)
+            self.assertEqual(it["source_name"], "中国保险行业协会")
+            self.assertEqual(it["source_type"], "行业协会")
+            self.assertTrue(it["url"].startswith("https://www.iachina.cn/art/"),
+                            f"URL 应为协会官网文章: {it['url']}")
+            self.assertTrue(is_insurance_relevant(it["title"], it.get("summary", "")),
+                            f"协会源返回非保险内容: {it['title']}")
 
 
 if __name__ == "__main__":

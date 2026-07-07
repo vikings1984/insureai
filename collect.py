@@ -247,6 +247,77 @@ def fetch_eastmoney(per_kw=3):
     return items
 
 
+# ===================== 中文权威行业源（中国保险行业协会官网） =====================
+# 独立于东方财富的「聚合」模式，直接抓取保险行业协会官网（行业协会/监管一手信源）。
+# 标准库 urllib，零额外依赖；首页即保险资讯流，文章页 <meta description> 可作摘要。
+# 与东方财富形成「聚合媒体 + 一手行业源」的真正渠道多样化。
+IACHINA_HOME = "https://www.iachina.cn/"
+IACHINA_HOST = "https://www.iachina.cn"
+
+
+def _iachina_summary(url):
+    """抓取协会文章页 <meta name=description> 作为摘要（失败则回退空串）。"""
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": UA, "Referer": IACHINA_HOME})
+        with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+            t = r.read().decode("utf-8", "ignore")
+        m = re.search(r'<meta[^>]+name=["\']description["\'][^>]+content=["\']([^"\']+)["\']', t, re.I)
+        if m:
+            s = html.unescape(m.group(1)).strip()
+            if len(s) >= 10:
+                return s[:220]
+    except Exception:
+        pass
+    return ""
+
+
+def fetch_iachina(per_art=10):
+    """中国保险行业协会官网（权威行业源）。返回标准条目字典列表。"""
+    items = []
+    seen_paths = set()
+    try:
+        req = urllib.request.Request(IACHINA_HOME, headers={"User-Agent": UA, "Referer": IACHINA_HOME})
+        with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+            home = r.read().decode("utf-8", "ignore")
+    except Exception as e:
+        print(f"  ⚠ 中国保险行业协会首页获取失败: {e}")
+        return items
+    # 仅取官网内部 /art/ 文章链接（排除首页混入的 nfra 等外链）
+    links = re.findall(
+        r'<a[^>]+href="(?:https?://www\.iachina\.cn)?(/art/[^"]+\.html)"[^>]*>(.*?)</a>',
+        home, re.S)
+    candidates = []
+    for path, raw in links:
+        if path in seen_paths:
+            continue
+        seen_paths.add(path)
+        title = clean_text(raw)
+        if len(title) < 10:
+            continue
+        # 协会官网几乎全为保险内容，仍用强信号二次门控防菜单/导航噪声
+        if not is_insurance_relevant(title, ""):
+            continue
+        # 发布日期直接来自 URL 路径 /art/YYYY/M/D/
+        dm = re.search(r'/art/(\d{4})/(\d{1,2})/(\d{1,2})/', path)
+        pub_iso = (f"{int(dm.group(1)):04d}-{int(dm.group(2)):02d}-{int(dm.group(3)):02d}"
+                   f"T00:00:00+08:00") if dm else to_iso(None)
+        candidates.append({"title": title, "url": IACHINA_HOST + path, "published_at": pub_iso})
+    # 取前 per_art 条，抓正文摘要（按首页顺序，大致最新在前）
+    for c in candidates[:per_art]:
+        summary = _iachina_summary(c["url"]) or c["title"]
+        items.append({
+            "title": c["title"],
+            "summary": summary,
+            "url": c["url"],
+            "source_name": "中国保险行业协会",
+            "source_type": "行业协会",
+            "authority": 90,
+            "published_at": c["published_at"],
+            "language": "zh",
+        })
+    return items
+
+
 def to_iso(pub):
     if not pub:
         return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
@@ -373,6 +444,19 @@ def run(dry_run=False, per_source_limit=10):
     except Exception as e:
         source_health["东方财富搜索"] = {"count": 0, "ok": False}
         print(f"  ⚠ 中文源采集失败: {e}")
+
+    # 通道 4：中国保险行业协会官网（权威行业一手源，独立于东方财富聚合）
+    try:
+        ia_items = fetch_iachina(per_art=10)
+        for it in ia_items:
+            _ingest(it["title"], it["summary"], it["url"], it["source_name"], it["source_type"],
+                    it["authority"], it["published_at"], existing_titles, collected,
+                    require_topic=True)
+        source_health["中国保险行业协会"] = {"count": len(ia_items), "ok": True}
+        print(f"  🏛 中文源(保险行业协会): {len(ia_items)} 条")
+    except Exception as e:
+        source_health["中国保险行业协会"] = {"count": 0, "ok": False}
+        print(f"  ⚠ 保险行业协会采集失败: {e}")
 
     # 合并
     merged = existing + collected
