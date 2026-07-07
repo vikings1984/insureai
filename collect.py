@@ -78,6 +78,30 @@ SCORE_BOOST = [
     (["产品", "渠道", "数字化", "product", "digital"], 2),
 ]
 
+# 强保险领域信号词（RSS 入册门控，剔除非保险新闻：泛事故/政务/体育等）
+# 刻意排除 policy/claim/report/data/product/digital/capital 等过于泛化的词，
+# 因为它们会误命中 "claims three lives"(船只倾覆)、"training requirement"(地方政务) 等噪声。
+STRONG_INSURANCE_TERMS = [
+    "insurance", "insurer", "insurers", "insured", "reinsurance", "reinsurer",
+    "reinsurers", "underwrit", "premium", "premiums", "annuity", "annuities",
+    "solvency", "insurtech", "parametric", "broker", "underwriter", "underwriters",
+    "actuary", "actuaries", "catastrophe", "catastrophic", "ils", "captive",
+    "treaty", "retrocession", "mga", "loss ratio", "combined ratio", "policyholder",
+    "policyholders", "bancassurance", "indemnity", "ceding", "cedent",
+    "facultative", "proportional", "excess of loss", "insurable", "broking",
+    "peril", "lapse", "subrogation", "binding authority", "insurability",
+    "保险", "再保险", "承保", "理赔", "保费", "保单", "偿付能力", "年金", "巨灾",
+    "险资", "银保", "核保", "责任险", "财险", "寿险", "健康险", "车险", "农险",
+    "投保人", "被保险人", "保险人", "精算", "经纪", "中介", "养老", "养老金",
+    "代理", "投保", "给付", "免赔", "免责", "险企", "险业", "保险业", "再保",
+]
+
+
+def is_insurance_relevant(title, summary):
+    """RSS 入册门控：标题/摘要须含强保险领域信号，否则视为噪声不入册。"""
+    text = (title + " " + summary).lower()
+    return any(t in text for t in STRONG_INSURANCE_TERMS)
+
 
 # ===================== 工具函数 =====================
 def fetch_url(url):
@@ -288,8 +312,8 @@ def _ingest(title, summary, url, sname, stype, authority, published, existing_ti
     if not title or is_dup(title, existing_titles + [c["title"] for c in collected]):
         return
     topic = infer_topic(title, summary)
-    if require_topic and topic is None:
-        return  # RSS 噪声过滤：未命中任何保险主题关键词则不收录
+    if require_topic and not is_insurance_relevant(title, summary):
+        return  # RSS 噪声过滤：不含强保险领域信号则不收录（剔除非保险新闻）
     collected.append({
         "id": 0,
         "title": title,

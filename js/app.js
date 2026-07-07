@@ -5,6 +5,7 @@
     // ===== Data (loaded from data.json) =====
     let NEWS_DATA = [];
     let SOURCES_DATA = [];
+    let RESEARCH_DATA = [];
 
     // ===== XSS Protection: HTML escape for all dynamic content =====
     function esc(str) {
@@ -45,50 +46,46 @@
       page: 'featured',
       featured: { category: 'all', keyword: '' },
       all: { category: 'all', keyword: '', page: 1, pageSize: 20 },
+      research: { topic: 'all' },
       read: storage.get('insurescope_read'),
       fav: storage.get('insurescope_fav'),
       feedbackType: 'bug'
     };
 
     // ===== Load Data =====
-    // 加载顺序：meta[data-url] 主源(通常固定到 GitHub 提交 SHA，CDN 即时生效) →
-    //           同 ref 的 jsDelivr 各镜像 → 本地部署快照(data.json) → 内嵌备用数据
-    // 远程 CDN 不加缓存戳（SHA 引用本身即时）；本地回退加戳避免浏览器缓存陈旧快照。
+    // 同源加载：data-url 默认指向同仓库 data.json。GitHub Pages 每次 push 自动重部署，
+    // 数据即最新，无需 jsDelivr CDN / SHA pin / purge。fetch 加缓存戳避免浏览器陈旧缓存。
+    // 研究数据从同源 research.json 加载（源自 InsureAI 知识库的中文研究报告）。
     async function loadData() {
       const primary = document.querySelector('meta[name="data-url"]')?.content || 'data.json';
-      const candidates = [];
-      if (primary && primary !== 'data.json') candidates.push(primary);
-      // 从主源解析 owner/repo@ref/filepath，构造同 ref 的 CDN 镜像作为兜底
-      const m = primary.match(/gh\/([^@]+)@([^/]+)\/(.+)$/) || primary.match(/github\.com\/([^@]+)@([^/]+)\/(.+)$/);
-      if (m) {
-        const repo = m[1], ref = m[2], file = m[3];
-        for (const host of ['cdn.jsdelivr.net', 'fastly.jsdelivr.net', 'gcore.jsdelivr.net']) {
-          const u = `https://${host}/gh/${repo}@${ref}/${file}`;
-          if (!candidates.includes(u)) candidates.push(u);
-        }
+      const finalUrl = primary.startsWith('http') ? primary : (primary + '?t=' + Date.now());
+      try {
+        const res = await fetch(finalUrl);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        if (!data || !Array.isArray(data.news)) throw new Error('bad payload');
+        NEWS_DATA = deduplicateData(data.news || []);
+        SOURCES_DATA = data.sources || [];
+      } catch (e) {
+        console.warn('loadData 主源失败，回退内嵌备用数据:', e);
+        NEWS_DATA = deduplicateData(BACKUP_DATA.news || []);
+        SOURCES_DATA = BACKUP_DATA.sources || [];
       }
-      if (!candidates.includes('data.json')) candidates.push('data.json');
-
-      for (const url of candidates) {
-        try {
-          const finalUrl = url.startsWith('http') ? url : (url + '?t=' + Date.now());
-          const res = await fetch(finalUrl);
-          if (!res.ok) throw new Error('HTTP ' + res.status);
-          const data = await res.json();
-          if (!data || !Array.isArray(data.news)) throw new Error('bad payload');
-          NEWS_DATA = deduplicateData(data.news || []);
-          SOURCES_DATA = data.sources || [];
-          initApp();
-          return;
-        } catch (e) {
-          console.warn('loadData 失败，尝试下一数据源:', url, e.message || e);
-        }
-      }
-      // 所有数据源均不可用：回退内嵌备用数据，保证页面不白屏
-      console.warn('所有数据源均不可用，使用内嵌备用数据');
-      NEWS_DATA = deduplicateData(BACKUP_DATA.news || []);
-      SOURCES_DATA = BACKUP_DATA.sources || [];
+      await loadResearch();
       initApp();
+    }
+
+    async function loadResearch() {
+      try {
+        const res = await fetch('research.json?t=' + Date.now());
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        RESEARCH_DATA = Array.isArray(data.reports) ? data.reports
+                       : (Array.isArray(data) ? data : []);
+      } catch (e) {
+        console.warn('loadResearch 失败（研究版块将留空）:', e);
+        RESEARCH_DATA = [];
+      }
     }
 
     // ===== Deduplication =====
@@ -487,6 +484,37 @@
       renderFeatured();
     };
 
+    // ===== Research Rendering (深度研究) =====
+    function renderResearch() {
+      const grid = document.getElementById('research-grid');
+      if (!grid) return;
+      const topic = state.research ? state.research.topic : 'all';
+      let list = RESEARCH_DATA || [];
+      if (topic && topic !== 'all') list = list.filter(r => r && r.topic === topic);
+      if (!list.length) {
+        grid.innerHTML = '<div class="empty-state">暂无研究报告数据。</div>';
+        return;
+      }
+      const layerLabels = { reinsurance: '国际再保险', consulting: '全球咨询', domestic: '国内研究' };
+      grid.innerHTML = list.map(r => {
+        const topicLabel = RESEARCH_TOPIC_LABELS[r.topic] || r.topic || '';
+        const layer = layerLabels[r.layer] || r.source_type || '';
+        const keyData = Array.isArray(r.key_data) ? r.key_data.map(k => `<li>${esc(k)}</li>`).join('') : '';
+        const url = safeUrl(r.url);
+        return `<div class="research-card">
+          <div class="research-card-head">
+            <span class="research-layer">${esc(layer)}</span>
+            <span class="topic-badge">${esc(topicLabel)}</span>
+          </div>
+          <div class="research-inst">${esc(r.institution_cn || r.institution || '')}</div>
+          <h3 class="research-title">${url ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(r.title)}</a>` : esc(r.title)}</h3>
+          <div class="research-date">${esc(r.publish_date || '')}</div>
+          ${keyData ? `<ul class="research-keydata">${keyData}</ul>` : ''}
+          ${r.key_insight ? `<div class="research-insight"><span class="reason-label">核心洞察：</span>${esc(r.key_insight)}</div>` : ''}
+        </div>`;
+      }).join('');
+    }
+
     // ===== Page Switching =====
     function switchPage(page) {
       state.page = page;
@@ -504,6 +532,7 @@
       if (page === 'featured') renderFeatured();
       if (page === 'all') renderAll();
       if (page === 'daily') renderDaily();
+      if (page === 'research') renderResearch();
     }
 
     // ===== Events =====
@@ -530,6 +559,15 @@
         state.all.category = tab.dataset.category;
         state.all.page = 1;
         renderAll();
+      });
+    });
+
+    document.querySelectorAll('#research-tabs .category-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('#research-tabs .category-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        state.research.topic = tab.dataset.topic;
+        renderResearch();
       });
     });
 

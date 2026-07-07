@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https:;">
   <!-- 数据地址：固定到 GitHub 提交 SHA（jsDelivr 对 SHA 引用即时生效，无分支缓存延迟） -->
   <!-- 每日采集后由 GitHub Actions 自动把此处刷新为最新提交 SHA；本地部署快照 data.json 作为兜底 -->
-  <meta name="data-url" content="https://gcore.jsdelivr.net/gh/vikings1984/insureai@f32cc88093f35f5e039934e2830981598e80f3ad/data.json">
+  <meta name="data-url" content="data.json">
   <link rel="preconnect" href="https://gcore.jsdelivr.net">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
@@ -72,6 +72,10 @@
             <span class="cal-date" id="cal-date"></span>
           </span>
           <span>保险日报</span>
+        </div>
+        <div class="nav-item" data-nav="research">
+          <span class="nav-icon">&#128218;</span>
+          <span>深度研究</span>
         </div>
         <div class="nav-group-label">参与</div>
         <div class="nav-item" data-nav="submit">
@@ -151,6 +155,26 @@
           <p class="subtitle">DAILY BRIEFING</p>
         </div>
         <div id="daily-content"><div class="loading"><div class="loading-spinner"></div><p style="margin-top:12px">加载中...</p></div></div>
+      </div>
+
+      <!-- ===== PAGE: Research (深度研究) ===== -->
+      <div class="page" id="page-research">
+        <div class="page-header">
+          <h1>深度研究</h1>
+          <p class="subtitle">权威机构保险行业研究报告精选（源自 InsureAI 知识库）</p>
+        </div>
+        <div class="category-tabs" id="research-tabs">
+          <button class="category-tab active" data-topic="all">全部</button>
+          <button class="category-tab" data-topic="ai_intelligent">AI智能化</button>
+          <button class="category-tab" data-topic="pension_finance">养老金融</button>
+          <button class="category-tab" data-topic="product_innovation">产品创新</button>
+          <button class="category-tab" data-topic="channel_transformation">渠道变革</button>
+          <button class="category-tab" data-topic="capital_reinsurance">资本与再保险</button>
+          <button class="category-tab" data-topic="climate_catastrophe">气候与巨灾</button>
+          <button class="category-tab" data-topic="digital_transformation">数字化转型</button>
+          <button class="category-tab" data-topic="regulatory_change">监管变革</button>
+        </div>
+        <div class="research-grid" id="research-grid"><div class="loading"><div class="loading-spinner"></div><p style="margin-top:12px">加载中...</p></div></div>
       </div>
 
       <!-- ===== PAGE: Submit ===== -->
@@ -424,6 +448,10 @@
       <div class="mobile-nav-item" data-nav="daily">
         <span class="mn-icon">&#128197;</span>
         <span>日报</span>
+      </div>
+      <div class="mobile-nav-item" data-nav="research">
+        <span class="mn-icon">&#128218;</span>
+        <span>研究</span>
       </div>
       <div class="mobile-nav-item" data-nav="submit">
         <span class="mn-icon">&#9993;</span>

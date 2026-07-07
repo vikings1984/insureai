@@ -1,12 +1,9 @@
 name: Daily Insurance News Collect
 
-# 本仓库已坍缩为单分支：insurescope 既是默认分支，也是唯一应用分支。
-# GitHub 的 schedule 定时任务只在【默认分支】生效，现默认分支即 insurescope，
-# 故本文件直接提交在 insurescope 上、操作自身分支即可，无需跨分支 checkout。
-#
-# 流程：采集 → prerender(SEO) → 提交 data.json → 把 index.html 的 data-url
-# 刷新为最新提交 SHA（jsDelivr 对 SHA 引用即时生效、无分支缓存延迟）→ push。
-# push 触发 GitHub Pages（源 = insurescope 分支根目录）自动重新部署，实现零接触刷新。
+# 单分支架构：insurescope 既是默认分支也是唯一应用分支。
+# 流程：采集 → prerender(SEO) → 提交 data.json(+SEO) → push。
+# data-url 指向同源 data.json（GitHub Pages 每次 push 自动重部署，数据即最新），
+# 无需 jsDelivr CDN / SHA pin / purge —— 少三个脆弱环节，零接触刷新不变。
 on:
   schedule:
     - cron: '0 0 * * *'        # 每日 UTC 00:00 = 北京时间 08:00
@@ -22,7 +19,7 @@ jobs:
   collect:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout current branch (default = insurescope)
+      - name: Checkout (default = insurescope)
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
@@ -43,31 +40,12 @@ jobs:
         run: |
           git config user.name "insurescope-bot"
           git config user.email "bot@insurescope.local"
-          if [ -n "$(git status --porcelain data.json index.html sitemap.xml)" ]; then
-            git add data.json index.html sitemap.xml
+          if [ -n "$(git status --porcelain data.json index.html sitemap.xml research.json)" ]; then
+            git add data.json index.html sitemap.xml research.json
             git commit -m "chore: auto-collect + prerender $(date +%F)"
           else
-            echo "no changes to data.json"
-          fi
-
-      - name: Pin data-url to latest commit SHA
-        run: |
-          git config user.name "insurescope-bot"
-          git config user.email "bot@insurescope.local"
-          SHA=$(git rev-parse HEAD)
-          sed -i -E "s#(gh/vikings1984/insureai@)[^\"/]+?(/data.json)#\1${SHA}\2#" index.html
-          if [ -n "$(git status --porcelain index.html)" ]; then
-            git add index.html
-            git commit -m "chore: pin data-url to ${SHA}"
-          else
-            echo "data-url 已是最新 SHA"
+            echo "no changes"
           fi
 
       - name: Push (triggers GitHub Pages redeploy)
         run: git push origin HEAD:${{ github.ref_name }}
-
-      - name: Purge jsDelivr cache
-        run: |
-          SHA=$(git rev-parse HEAD)
-          curl -s -X GET "https://purge.jsdelivr.net/gh/vikings1984/insureai@${SHA}/data.json" || true
-          curl -s -X GET "https://gcore.jsdelivr.net/gh/vikings1984/insureai@${SHA}/data.json?purge=true" || true
