@@ -28,6 +28,7 @@ python3 -m http.server 8000
 ├── inbox.example.json      # 收件箱格式示例
 ├── sitemap.xml             # 由 prerender.py 生成（部署前跑一次）
 ├── tests/
+│   ├── test_collect.py     # 采集管道单测（相关性门控/分类/评分/去重/iachina，18 用例）
 │   └── test_dedup.py       # 去重逻辑单测（标准库 unittest）
 ├── Makefile                # 运维命令：make collect / collect-dry / seo / deploy
 ├── .github/
@@ -41,9 +42,11 @@ python3 -m http.server 8000
 
 聚合的前提是自动获取。本项目通过 `collect.py`（仅用 Python 标准库，零依赖）实现：
 
-**两条采集通道**
-1. **RSS/Atom 信源**：在 `collect.py` 的 `SOURCES` 中填入真实可用的订阅地址。
+**四条采集通道**
+1. **RSS/Atom 信源**：在 `collect.py` 的 `SOURCES` 中填入真实可用的订阅地址（当前含 insurancejournal / reinsurancene.ws / artemis.bm 等国际保险信源）。
 2. **收件箱 ingestion（主通道）**：把你想收录的真实文章链接放进 `inbox.json`：
+3. **东方财富搜索 API**：`collect.py` 内置 `fetch_eastmoney()`，按保险关键词检索权威媒体（21 世纪经济报道 / 上海证券报 / 中国保险行业协会等），零额外依赖。
+4. **中国保险行业协会官网 iachina.cn**：`fetch_iachina()` 抓取协会一手行业资讯（`source_type=行业协会`，`authority=90`）。
    ```json
    [
      { "url": "https://...", "source_name": "慧保天下", "source_type": "媒体", "authority": 89 }
@@ -105,6 +108,8 @@ python3 prerender.py --site-url https://your.domain   # 指定正式域名
 python3 -m unittest tests/test_dedup.py -v
 ```
 
+采集管道另有 `tests/test_collect.py`（18 用例，覆盖保险相关性门控 / 分类 / 评分 / 去重 / iachina 抓取），运行：`python3 -m unittest tests/test_collect.py -v`。
+
 ## 工程结构（P3-11 拆分）
 
 `index.html` 已从"HTML+CSS+JS 三合一"拆分为 `css/style.css` + `js/app.js`，便于长期维护。
@@ -113,7 +118,7 @@ CSP 保持 `script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'`
 
 ## 同步到 GitHub
 
-项目托管在 `vikings1984/insureai` 仓库的 **`insureai` 分支**（保留 `main` 原始 insureai 内容不动）。
+项目托管在 GitHub 仓库 [`vikings1984/insureai`](https://github.com/vikings1984/insureai)，**默认分支 `insureai`（单分支项目）**。原 `main` / `insureai-legacy` / `insurescope` 分支已于 2026-07-07 整合归档/删除，旧版文件保留在 `archive/main/`。
 
 本机 `~/.gitconfig` 配了 `gh-proxy.com` 代理，且当前环境**直连 `github.com:443` 被墙**；公开代理匿名 `push` 会被拒（403）。
 实测可用路径：**经 `gh-proxy` 透传 `gh` 令牌**（`gh-proxy` 的 upload-pack 带令牌返回 200）。
@@ -134,9 +139,7 @@ REMOTE="https://${TOKEN}@gh-proxy.com/https://github.com/vikings1984/insureai.gi
 git -c credential.helper= -c http.version=HTTP/1.1 push "$REMOTE" HEAD:insureai
 ```
 
-> 推送前请先 `git add -A && git commit -m "..."`。`main` 分支为上游原始项目，请勿直接覆盖；
-> 如需把 InsureAI 并回 `main`，可在 GitHub 上从 `insureai` 向 `main` 开 Pull Request。
-> 日常请勿使用裸 `git push`（会因代理缺令牌而失败），统一用 `make sync`。
+> 推送前请先 `git add -A && git commit -m "..."`。日常请勿使用裸 `git push`（会因代理缺令牌而失败），统一用 `make sync`（推送到默认分支 `insureai`）。
 
 
 ## 功能特性
@@ -164,8 +167,8 @@ git -c credential.helper= -c http.version=HTTP/1.1 push "$REMOTE" HEAD:insureai
   "sources": [{...}],
   "days": {...},
   "source_health": {...},
-  "version": "2.2.3",
-  "last_updated": "2026-07-07T09:30:00+08:00"
+  "version": "2.2.13",
+  "last_updated": "2026-07-07T23:00:00+08:00"
 }
 ```
 
@@ -184,15 +187,18 @@ git -c credential.helper= -c http.version=HTTP/1.1 push "$REMOTE" HEAD:insureai
 
 ## 部署
 
-托管于 CloudStudio。推荐发布流程：
+主站托管于 **GitHub Pages**：`https://vikings1984.github.io/insureai/`。
+每日北京时间 08:00，`daily-collect.yml` 自动采集 → 提交 `data.json` → Pages 自动重部署（**零接触自动刷新**）。
+
+手动更新流程：
 
 ```bash
-make collect     # 更新资讯（可选）
-make seo         # 刷新 SEO 资产
-# 重新部署到 CloudStudio（整目录上传 index.html + css/ + js/ + data.json + sitemap.xml）
+make collect     # 更新资讯（日常由 CI 自动完成，本地调试用）
+make seo         # 刷新 SEO 资产（index.html / sitemap.xml）
+make sync        # 推送到 GitHub，触发 Pages 自动部署
 ```
 
-index.html 通常无需改动；若改动了 `index.html`，重新运行 `make seo` 再部署。
+> 早期曾用 CloudStudio 静态托管，现已弃用（静态快照不会随 push 自动刷新）。
 
 ## 更新日志
 
