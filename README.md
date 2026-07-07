@@ -111,6 +111,27 @@ python3 -m unittest tests/test_dedup.py -v
 CSP 保持 `script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'`，外链资源经 `'self'`
 加载；部署时整个目录上传，引用自动生效（无需改动 index.html）。
 
+## 同步到 GitHub
+
+项目托管在 `vikings1984/insureai` 仓库的 **`insurescope` 分支**（保留 `main` 原始 insureai 内容不动）。
+本机 `~/.gitconfig` 配了 `gh-proxy.com` 代理，直连推送需绕过代理并用 `gh` 凭证助手认证，
+已封装为 `make sync`：
+
+```bash
+# 首次或日常同步（提交后）
+make sync
+# 等价展开命令（供参考/排错）：
+#   cp ~/.gitconfig .gitconfig.tmp && sed -i '' '/gh-proxy/d' .gitconfig.tmp
+#   GIT_CONFIG_GLOBAL=$(PWD)/.gitconfig.tmp git -c credential.helper= \
+#     -c 'credential.https://github.com.helper=!gh auth git-credential' \
+#     push -u https://github.com/vikings1984/insureai.git HEAD:insurescope
+#   rm -f .gitconfig.tmp
+```
+
+> 推送前请先 `git add -A && git commit -m "..."`。`main` 分支为上游原始项目，请勿直接覆盖；
+> 如需把 InsureScope 并回 `main`，可在 GitHub 上从 `insurescope` 向 `main` 开 Pull Request。
+
+
 ## 功能特性
 
 - **7 个完整页面**：精选、全部动态、保险日报、信源提报、关于、更新日志、反馈
