@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https:;">
+  <!-- 数据地址可配置：默认同目录 data.json；若指向远程数据，请将 connect-src 改为允许该 host -->
+  <meta name="data-url" content="data.json">
+  <link rel="preconnect" href="https://raw.githubusercontent.com">
+
+  <title>InsureScope - 保险行业动态资讯聚合</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- ===== SEO / 社交分享 ===== -->
+  <meta name="description" content="InsureScope — 保险行业动态资讯聚合平台。每日精选监管政策、产品发布、行业动态、研究洞察、理赔案例五大分类的高价值内容，覆盖 AI 智能化、养老金融、气候巨灾等八大研究主题。">
+  <meta property="og:title" content="InsureScope — 保险行业动态资讯聚合">
+  <meta property="og:type" content="website">
+  <meta property="og:description" content="保险从业者每日必看的行业资讯过滤器：AI 评分精选、研究主题标签、权威报告徽章。">
+  <meta property="og:url" content="https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work">
+  <meta property="og:image" content="https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="InsureScope — 保险行业动态资讯聚合">
+  <meta name="twitter:description" content="保险从业者每日必看的行业资讯过滤器。">
+  <link rel="canonical" href="https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work">
+  <!-- 反馈闭环配置：GitHub 仓库（Issue 提交目标）与反馈邮箱 -->
+  <meta name="github-repo" content="vikings1984/insureai">
+  <meta name="feedback-email" content="157247839@qq.com">
+  <!-- SEO 预渲染注入点（由 prerender.py 填充 JSON-LD） -->
+  <!--SEO_JSONLD_START--><script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "InsureScope", "url": "https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work", "description": "保险行业动态资讯聚合平台：每日精选监管政策、产品发布、行业动态、研究洞察与理赔案例。", "potentialAction": {"@type": "SearchAction", "target": "https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/search?q={search_term_string}", "query-input": "required name=search_term_string"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ItemList", "name": "InsureScope 保险行业精选资讯", "itemListElement": [{"@type": "ListItem", "position": 1, "item": {"@type": "NewsArticle", "headline": "人保健康推出'长期护理保险+居家养老'融合产品，覆盖失能等级评估到服务对接全流程", "url": "https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/1", "datePublished": "2026-07-02T13:45:00Z", "articleSection": "product", "author": {"@type": "Organization", "name": "人保健康"}}}, {"@type": "ListItem", "position": 2, "item": {"@type": "NewsArticle", "headline": "深圳银保监局：互联网保险中介渠道保费收入占比首超20%", "url": "https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/2", "datePublished": "2026-07-02T11:30:00Z", "articleSection": "industry", "author": {"@type": "Organization", "name": "深圳银保监局"}}}, {"@type": "ListItem", "position": 3, "item": {"@type": "NewsArticle", "headline": "太保寿险发布'太保芯'智能核保引擎，核保时效缩短至30秒", "url": "https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/3", "datePublished": "2026-07-02T10:15:00Z", "articleSection": "product", "author": {"@type": "Organization", "name": "中国太平洋保险"}}}, {"@type": "ListItem", "position": 4, "item": {"@type": "NewsArticle", "headline": "瑞士再保险：2026年全球自然灾害保险损失已达480亿美元，创近十年同期新高", "url": "https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/4", "datePublished": "2026-07-02T09:00:00Z", "articleSection": "research", "author": {"@type": "Organization", "name": "瑞士再保险"}}}, {"@type": "ListItem", "position": 5, "item": {"@type": "NewsArticle", "headline": "金融监管总局：2026年二季度保险业偿付能力充足率保持行业高位", "url": "https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/5", "datePublished": "2026-07-02T08:00:00Z", "articleSection": "regulation", "author": {"@type": "Organization", "name": "国家金融监督管理总局"}}}, {"@type": "ListItem", "position": 6, "item": {"@type": "NewsArticle", "headline": "艾瑞咨询：2026年中国保险科技市场规模预计达587亿元，AI应用占比超35%", "url": "https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/6", "datePublished": "2026-07-02T07:30:00Z", "articleSection": "research", "author": {"@type": "Organization", "name": "艾瑞咨询"}}}, {"@type": "ListItem", "position": 7, "item": {"@type": "NewsArticle", "headline": "中国人保首发'气候风险指数保险'，覆盖极端天气农业损失", "url": "https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/7", "datePublished": "2026-06-12T14:00:00Z", "articleSection": "product", "author": {"@type": "Organization", "name": "中国人保财险"}}}, {"@type": "ListItem", "position": 8, "item": {"@type": "NewsArticle", "headline": "深圳率先试点'跨境医疗保险直付'，港澳居民内地就医无缝结算", "url": "https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/8", "datePublished": "2026-06-12T11:45:00Z", "articleSection": "regulation", "author": {"@type": "Organization", "name": "深圳市医保局"}}}, {"@type": "ListItem", "position": 9, "item": {"@type": "NewsArticle", "headline": "个人养老金保险产品扩容至180款，累计开户数突破8000万", "url": "https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/9", "datePublished": "2026-06-12T10:30:00Z", "articleSection": "industry", "author": {"@type": "Organization", "name": "国家社保公共服务平台"}}}, {"@type": "ListItem", "position": 10, "item": {"@type": "NewsArticle", "headline": "国家金融监督管理总局：全面推进保险行业AI大模型合规应用指引", "url": "https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/10", "datePublished": "2026-06-12T09:00:00Z", "articleSection": "regulation", "author": {"@type": "Organization", "name": "国家金融监督管理总局"}}}, {"@type": "ListItem", "position": 11, "item": {"@type": "NewsArticle", "headline": "麦肯锡报告：保险Agent（智能体）将替代30%的核保理赔人工操作", "url": "https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/11", "datePublished": "2026-06-12T08:15:00Z", "articleSection": "research", "author": {"@type": "Organization", "name": "麦肯锡"}}}, {"@type": "ListItem", "position": 12, "item": {"@type": "NewsArticle", "headline": "中国平安推出智能核保系统2.0，核保时效缩短至30秒", "url": "https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/12", "datePublished": "2024-06-09T11:00:00Z", "articleSection": "product", "author": {"@type": "Organization", "name": "平安人寿"}}}]}</script><!--SEO_JSONLD_END-->
+
+</head>
+<body>
+  <!-- SEO 预渲染注入点（由 prerender.py 填充首屏静态列表，供搜索引擎抓取） -->
+  <!--SEO_FALLBACK_START--><div id="seo-fallback" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);"><h1>InsureScope 保险行业动态资讯</h1><ul><li><a href="https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/1">人保健康推出&#x27;长期护理保险+居家养老&#x27;融合产品，覆盖失能等级评估到服务对接全流程</a> — 人保健康<br>该产品将长护险的失能评估、护理服务与居家养老的智能监测、紧急呼叫、上门照护整合，通过政府长护险基金+商业保险+个人自费三级支付体系运行。</li><li><a href="https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/2">深圳银保监局：互联网保险中介渠道保费收入占比首超20%</a> — 深圳银保监局<br>2026年上半年深圳地区互联网保险中介渠道保费收入达187亿元，占行业总保费21.3%，同比增长28%。微保、水滴保、蚂蚁保等平台贡献主要增量。</li><li><a href="https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/3">太保寿险发布&#x27;太保芯&#x27;智能核保引擎，核保时效缩短至30秒</a> — 中国太平洋保险<br>该引擎整合医疗大数据、穿戴设备健康数据、体检报告等多元数据源，通过深度学习模型实现动态风险评估，覆盖重疾、医疗、寿险等150个产品。</li><li><a href="https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/4">瑞士再保险：2026年全球自然灾害保险损失已达480亿美元，创近十年同期新高</a> — 瑞士再保险<br>《sigma》半年度报告显示，极端天气事件频发导致2026年上半年全球自然灾害保险损失同比增长34%，其中洪水和热带气旋为主要驱动因素。</li><li><a href="https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/5">金融监管总局：2026年二季度保险业偿付能力充足率保持行业高位</a> — 国家金融监督管理总局<br>2026年第二季度偿付能力报告显示，人身险公司平均综合偿付能力充足率为198.4%，财产险公司为215.7%，均高于监管警戒线（100%）和重点关注线（120%）。</li><li><a href="https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/6">艾瑞咨询：2026年中国保险科技市场规模预计达587亿元，AI应用占比超35%</a> — 艾瑞咨询<br>《2026中国保险科技行业研究报告》指出，AI大模型在保险领域的渗透率从2024年的12%快速提升至2026年的35%，智能客服、智能核保、理赔反欺诈为三大高渗透场景。</li><li><a href="https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/7">中国人保首发&#x27;气候风险指数保险&#x27;，覆盖极端天气农业损失</a> — 中国人保财险<br>该产品以气象卫星数据和区域气候模型为基础，当气温、降水等指标突破预设阈值时自动触发理赔，无需现场查勘，首批覆盖河南、山东等6个粮食主产省。</li><li><a href="https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/8">深圳率先试点&#x27;跨境医疗保险直付&#x27;，港澳居民内地就医无缝结算</a> — 深圳市医保局<br>深圳市医保局联合平安健康、友邦保险推出跨境医疗直付服务，港澳参保人在深圳指定医院就医可实现&#x27;免垫付、免单据、即时结算&#x27;，首批覆盖37家三甲医院。</li><li><a href="https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/9">个人养老金保险产品扩容至180款，累计开户数突破8000万</a> — 国家社保公共服务平台<br>国家社保公共服务平台数据显示，个人养老金制度试点三年以来，保险产品数量从首批的7款增至180款，专属商业养老保险结算利率稳定在3.5%-4.2%区间。</li><li><a href="https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/10">国家金融监督管理总局：全面推进保险行业AI大模型合规应用指引</a> — 国家金融监督管理总局<br>监管总局发布《保险行业人工智能大模型应用合规指引（征求意见稿）》，明确大模型在核保、理赔、客服、精算等环节的应用边界，要求保险公司建立AI决策可解释性机制与人工复核制度。</li><li><a href="https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/11">麦肯锡报告：保险Agent（智能体）将替代30%的核保理赔人工操作</a> — 麦肯锡<br>《2026全球保险科技展望》指出，基于多智能体协作的保险Agent系统已进入商用阶段，头部险企在核保、理赔、反欺诈环节的自动化率已达65%，预计2028年将提升至85%。</li><li><a href="https://fa3575c82b8945b9bfa40aa4f6bceafc.app.codebuddy.work/#/news/12">中国平安推出智能核保系统2.0，核保时效缩短至30秒</a> — 平安人寿<br>平安人寿发布新一代AI核保引擎，整合医疗大数据与深度学习模型，实现92%的标准体保单自动核保通过，复杂案件人工介入率降至8%。</li></ul></div><!--SEO_FALLBACK_END-->
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 100 100" style="width:100%;height:100%">
+            <defs><linearGradient id="lg" x1="20%" y1="0%" x2="80%" y2="100%"><stop offset="0%" stop-color="#F97316"/><stop offset="100%" stop-color="#EF4444"/></linearGradient></defs>
+            <g fill="none" stroke="url(#lg)" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="50,20 76,35 76,65 50,80 24,65 24,35" stroke-width="3.5"/>
+              <polygon points="50,4 76,19 76,49 50,64 24,49 24,19" stroke-width="1.6" opacity="0.45"/>
+              <polygon points="24,51 50,36 50,64 24,79 0,65 0,35" stroke-width="1.6" opacity="0.45"/>
+              <polygon points="76,51 100,36 100,64 76,79 50,64 50,36" stroke-width="1.6" opacity="0.45"/>
+            </g>
+            <polygon points="50,33 64,57 36,57" fill="url(#lg)"/>
+            <g fill="url(#lg)"><circle cx="50" cy="20" r="2.5"/><circle cx="76" cy="35" r="2.5"/><circle cx="76" cy="65" r="2.5"/><circle cx="50" cy="80" r="2.5"/><circle cx="24" cy="65" r="2.5"/><circle cx="24" cy="35" r="2.5"/></g>
+          </svg>
+        </div>
+        <div class="logo-text">Insure<span>AI</span></div>
+      </div>
+
+      <nav class="nav-group">
+        <div class="nav-group-label">内容</div>
+        <div class="nav-item active" data-nav="featured">
+          <span class="nav-icon">&#9734;</span>
+          <span>精选</span>
+        </div>
+        <div class="nav-item" data-nav="all">
+          <span class="nav-icon">&#9734;</span>
+          <span>全部动态</span>
+        </div>
+        <div class="nav-item" data-nav="daily">
+          <span class="nav-icon cal-icon">
+            <span class="cal-top"></span>
+            <span class="cal-body"></span>
+            <span class="cal-date" id="cal-date"></span>
+          </span>
+          <span>保险日报</span>
+        </div>
+        <div class="nav-group-label">参与</div>
+        <div class="nav-item" data-nav="submit">
+          <span class="nav-icon">&#9993;</span>
+          <span>信源提报</span>
+        </div>
+        <div class="nav-item" data-nav="feedback">
+          <span class="nav-icon">&#128172;</span>
+          <span>反馈</span>
+        </div>
+        <div class="nav-group-label">更多</div>
+        <div class="nav-item" data-nav="about">
+          <span class="nav-icon">&#9432;</span>
+          <span>关于</span>
+        </div>
+        <div class="nav-item" data-nav="log">
+          <span class="nav-icon">&#8635;</span>
+          <span>更新日志</span>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="icon-btn" id="theme-toggle" title="切换主题">&#9788;</div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- ===== PAGE: Featured ===== -->
+      <div class="page active" id="page-featured">
+        <div class="page-header">
+          <h1>精选</h1>
+          <p class="subtitle">保险行业高价值内容聚合</p>
+        </div>
+        <div class="category-tabs" id="featured-tabs">
+          <button class="category-tab active" data-category="all">全部</button>
+          <button class="category-tab" data-category="regulation">监管</button>
+          <button class="category-tab" data-category="product">产品</button>
+          <button class="category-tab" data-category="industry">行业</button>
+          <button class="category-tab" data-category="research">研究</button>
+          <button class="category-tab" data-category="claims">理赔</button>
+        </div>
+        <div class="search-bar">
+          <input type="text" id="search-featured" placeholder="搜索标题/摘要/标签..." autocomplete="off">
+          <button id="search-btn-featured">搜索</button>
+        </div>
+        <div class="hot-topics" id="hot-topics"></div>
+        <div class="timeline" id="timeline-featured"><div class="loading"><div class="loading-spinner"></div><p style="margin-top:12px">加载中...</p></div></div>
+      </div>
+
+      <!-- ===== PAGE: All News ===== -->
+      <div class="page" id="page-all">
+        <div class="page-header">
+          <h1>全部保险动态</h1>
+          <p class="subtitle">按时间排序的完整资讯流</p>
+        </div>
+        <div class="category-tabs" id="all-tabs">
+          <button class="category-tab active" data-category="all">全部</button>
+          <button class="category-tab" data-category="regulation">监管</button>
+          <button class="category-tab" data-category="product">产品</button>
+          <button class="category-tab" data-category="industry">行业</button>
+          <button class="category-tab" data-category="research">研究</button>
+          <button class="category-tab" data-category="claims">理赔</button>
+        </div>
+        <div class="search-bar">
+          <input type="text" id="search-all" placeholder="搜索标题/摘要..." autocomplete="off">
+          <button id="search-btn-all">搜索</button>
+        </div>
+        <div class="timeline all-news" id="timeline-all"><div class="loading"><div class="loading-spinner"></div><p style="margin-top:12px">加载中...</p></div></div>
+        <div class="pagination" id="pagination-all" style="display:none"></div>
+      </div>
+
+      <!-- ===== PAGE: Daily ===== -->
+      <div class="page" id="page-daily">
+        <div class="daily-header">
+          <h1>保险日报</h1>
+          <p class="subtitle">DAILY BRIEFING</p>
+        </div>
+        <div id="daily-content"><div class="loading"><div class="loading-spinner"></div><p style="margin-top:12px">加载中...</p></div></div>
+      </div>
+
+      <!-- ===== PAGE: Submit ===== -->
+      <div class="page" id="page-submit">
+        <div class="page-header">
+          <h1>信源提报</h1>
+          <p class="subtitle">推荐优质保险行业信息源</p>
+        </div>
+        <div class="submit-form">
+          <div class="form-group">
+            <label>信源 URL</label>
+            <input type="url" placeholder="https://..." id="source-url">
+          </div>
+          <div class="form-group">
+            <label>信源名称</label>
+            <input type="text" placeholder="例如：慧保天下" id="source-name">
+          </div>
+          <div class="form-group">
+            <label>信源类型</label>
+            <select id="source-type">
+              <option value="">请选择</option>
+              <option value="media">保险垂直媒体</option>
+              <option value="company">保险公司官方</option>
+              <option value="regulator">监管机构</option>
+              <option value="research">研究机构</option>
+              <option value="academic">学术机构</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>推荐理由（至少15字）</label>
+            <textarea placeholder="为什么这个信源值得追踪？内容质量如何？更新频率怎样？" id="source-reason"></textarea>
+          </div>
+          <button class="submit-btn" id="submit-source">提交提报</button>
+        </div>
+
+        <div class="source-list">
+          <h3>优质信源推荐</h3>
+          <div id="source-list-container"></div>
+        </div>
+
+        <div class="source-list" id="source-wall" style="display:none">
+          <h3>社区提报信源</h3>
+          <div id="source-wall-container"></div>
+        </div>
+      </div>
+
+      <!-- ===== PAGE: About ===== -->
+      <div class="page" id="page-about">
+        <div class="about-hero">
+          <h1>你好，保险从业者</h1>
+          <div class="greeting">
+            <p>我是 InsureScope，一个专注于保险行业的资讯聚合平台。</p>
+            <p>从监管机构、保险公司、行业媒体、研究机构等公开渠道中，<br>筛选出对保险从业者最有价值的内容，帮你高效获取行业动态。</p>
+            <p>不做搬运工，只做过滤器——让真正值得读的内容浮出水面。</p>
+            <p style="margin-top:12px;font-size:0.85rem;color:var(--text-muted)">本项目参考 <a href="https://github.com/vikings1984/insureai" target="_blank" style="color:var(--accent-blue)">InsureAI</a> 开源项目实现。</p>
+          </div>
+          <div class="signature">— <span>InsureScope</span> 团队</div>
+        </div>
+        <div class="about-section">
+          <h2>数据概览</h2>
+          <div class="about-stats">
+            <div class="about-stat">
+              <div class="about-stat-num" id="stat-sources">15+</div>
+              <div class="about-stat-label">优质信源</div>
+            </div>
+            <div class="about-stat">
+              <div class="about-stat-num" id="stat-news">--</div>
+              <div class="about-stat-label">采集资讯</div>
+            </div>
+            <div class="about-stat">
+              <div class="about-stat-num">5</div>
+              <div class="about-stat-label">内容分类</div>
+            </div>
+          </div>
+        </div>
+        <div class="about-section">
+          <h2>数据说明</h2>
+          <p>所有内容均来自公开渠道，包括监管机构官网、保险公司公告、行业媒体、研究机构报告等。我们不对内容真实性负责，但会尽力确保来源可靠。</p>
+          <p>AI 评分基于保险相关度、时效性、行业影响力、内容质量四个维度综合计算，仅供参考。</p>
+        </div>
+        <div class="about-section">
+          <h2>RSS 订阅</h2>
+          <p>在 Reeder、Folo、Inoreader 等 RSS 阅读器中订阅以下地址，不遗漏每日更新。</p>
+          <div id="rss-links" style="display:flex;flex-direction:column;gap:8px;margin-top:12px"></div>
+        </div>
+      </div>
+
+      <!-- ===== PAGE: Log ===== -->
+      <div class="page" id="page-log">
+        <div class="changelog-header">
+          <div class="changelog-brand">INSUREAI</div>
+          <h1>CHANGELOG</h1>
+          <div class="changelog-sub">更新日志</div>
+          <div class="changelog-desc">最近发生了什么 — 新功能、调整、下线，都写在这里。</div>
+        </div>
+
+        <div class="changelog-date-group">
+          <div class="changelog-date">2026 年 7 月 7 日 周一</div>
+
+          <div class="changelog-entry">
+            <div class="changelog-meta">
+              <span class="changelog-time">09:30</span>
+              <span class="changelog-tag tag-optimize">优化</span>
+            </div>
+            <div class="changelog-title">第一性原理重构：自动采集管道上线</div>
+            <div class="changelog-body">
+              <p>围绕"如何让保险从业者以最低成本持续获取高价值资讯"这一本质目标，完成两项关键升级：</p>
+              <ul>
+                <li><strong>数据失真修复（P1）</strong>：统一 ai_score 为 0-100 制；依据发布日期真实重算 days 统计；删除硬编码假 source_health；刷新信源更新时间；资讯按时间倒序重编 id。</li>
+                <li><strong>自动采集管道（P0）</strong>：新增零依赖 <code>collect.py</code>，支持 RSS 信源 + 收件箱 ingestion（inbox.json）双通道，自动评分、研究主题分类、Levenshtein 去重、增量合并，并依据真实数据重生 source_health。</li>
+                <li><strong>数据与前端解耦</strong>：data.json 地址经 <code>&lt;meta name="data-url"&gt;</code> 可配置；新增 GitHub Actions 每日定时运行采集并提交 data.json，使"发布资讯"成本趋近于零。</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="changelog-date-group">
+          <div class="changelog-date">2026 年 7 月 2 日 周四</div>
+
+          <div class="changelog-entry">
+            <div class="changelog-meta">
+              <span class="changelog-time">14:00</span>
+              <span class="changelog-tag tag-optimize">优化</span>
+            </div>
+            <div class="changelog-title">同步 InsureAI 远程仓库更新</div>
+            <div class="changelog-body">
+              <p>与 <a href="https://github.com/vikings1984/insureai" target="_blank">vikings1984/insureai</a> 仓库同步，引入多项功能升级：</p>
+              <ul>
+                <li><strong>深色/浅色双主题</strong>：CSS Variables 驱动的完整主题系统，支持自动跟随系统偏好</li>
+                <li><strong>8 大研究主题标签</strong>：AI智能化、养老金融、产品创新、渠道变革、资本与再保险、气候与巨灾、数字化转型、监管变革</li>
+                <li><strong>日期验证徽章</strong>：已验证发布日期的文章显示绿色对勾标记</li>
+                <li><strong>权威研究报告徽章</strong>：来自咨询机构/再保险巨头/研究智库的文章显示书本标记</li>
+                <li><strong>热点话题卡片</strong>：精选页面顶部展示 Top 5 热点资讯</li>
+                <li><strong>分享链接功能</strong>：详情弹窗支持一键复制分享链接</li>
+                <li><strong>Levenshtein 去重算法</strong>：基于标题相似度的智能去重</li>
+                <li><strong>移动端底部导航</strong>：适配手机端的底部 Tab 导航</li>
+                <li><strong>数据格式升级</strong>：新增 date_verified、research_topic、is_research_report 字段</li>
+                <li><strong>增量更新结构</strong>：支持 days、source_health 等根级字段</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="changelog-date-group">
+          <div class="changelog-date">2026 年 6 月 12 日 周五</div>
+
+          <div class="changelog-entry">
+            <div class="changelog-meta">
+              <span class="changelog-time">14:00</span>
+              <span class="changelog-tag tag-update">更新</span>
+            </div>
+            <div class="changelog-title">更新今日资讯数据</div>
+            <div class="changelog-body">
+              <p>新增 5 条保险行业动态资讯：</p>
+              <ul>
+                <li>国家金融监督管理总局发布AI大模型合规应用指引（ai_score: 88）</li>
+                <li>个人养老金保险产品扩容至180款，开户突破8000万（ai_score: 84）</li>
+                <li>中国人保首发气候风险指数保险（ai_score: 81）</li>
+                <li>麦肯锡报告：保险Agent将替代30%人工操作（ai_score: 79）</li>
+                <li>深圳试点跨境医疗保险直付（ai_score: 77）</li>
+              </ul>
+              <p>资讯总数从 15 条增至 20 条，版本升级至 2.1.1。</p>
+            </div>
+          </div>
+
+          <div class="changelog-entry">
+            <div class="changelog-meta">
+              <span class="changelog-time">10:00</span>
+              <span class="changelog-tag tag-update">更新</span>
+            </div>
+            <div class="changelog-title">Skill 同步更新至 v2.1.0</div>
+            <div class="changelog-body">
+              <p>将 <code>insure-scope</code> skill 从 v2.0.0 更新至 v2.1.0，主要变更：</p>
+              <ul>
+                <li>架构描述从"单文件内嵌数据"更新为"单 HTML + data.json 分离加载"</li>
+                <li>新增 7 个页面完整列表与 localStorage 持久化说明</li>
+                <li>新增深色模式、日报图表、数据格式规范说明</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="changelog-date-group">
+          <div class="changelog-date">2026 年 6 月 9 日 周二</div>
+
+          <div class="changelog-entry">
+            <div class="changelog-meta">
+              <span class="changelog-time">17:00</span>
+              <span class="changelog-tag tag-update">更新</span>
+            </div>
+            <div class="changelog-title">三阶段优化完成</div>
+            <div class="changelog-body">
+              <p>完成全部三阶段优化：</p>
+              <ul>
+                <li><strong>阶段一</strong>：数据分离(data.json) + 本地存储 + 信源健康度</li>
+                <li><strong>阶段二</strong>：阅读进度 + 日报图表 + 深色模式</li>
+                <li><strong>阶段三</strong>：个性化推荐 + 邮件订阅</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="changelog-entry">
+            <div class="changelog-meta">
+              <span class="changelog-time">14:00</span>
+              <span class="changelog-tag tag-update">更新</span>
+            </div>
+            <div class="changelog-title">扩展至 7 个完整页面</div>
+            <div class="changelog-body">
+              <p>新增页面：精选、全部保险动态、保险日报、信源提报、关于、更新日志、反馈。</p>
+              <p>15 条保险动态数据 + 15 个优质信源推荐。</p>
+            </div>
+          </div>
+
+          <div class="changelog-entry">
+            <div class="changelog-meta">
+              <span class="changelog-time">10:00</span>
+              <span class="changelog-tag tag-announce">公告</span>
+            </div>
+            <div class="changelog-title">InsureScope 正式上线</div>
+            <div class="changelog-body">
+              <p>InsureScope — 保险行业动态资讯聚合平台，今日正式上线。</p>
+              <p>参考 aihot.virxact.com 设计风格，纯静态 HTML 单文件架构，零外部依赖。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="changelog-footer">更多更新即将到来，欢迎通过反馈告知我们您的需求。</div>
+
+        <footer class="site-footer"><p>InsureScope - 保险行业动态资讯聚合</p></footer>
+      </div>
+
+      <!-- ===== PAGE: Feedback ===== -->
+      <div class="page" id="page-feedback">
+        <div class="page-header">
+          <h1>反馈</h1>
+          <p class="subtitle">帮助我们做得更好</p>
+        </div>
+        <div class="feedback-types">
+          <div class="feedback-type active" data-type="bug">Bug 反馈</div>
+          <div class="feedback-type" data-type="feature">功能建议</div>
+          <div class="feedback-type" data-type="content">内容问题</div>
+          <div class="feedback-type" data-type="other">其他</div>
+        </div>
+        <div class="submit-form">
+          <div class="form-group">
+            <label>反馈内容</label>
+            <textarea placeholder="请详细描述您遇到的问题或建议..." id="feedback-content"></textarea>
+          </div>
+          <div class="form-group">
+            <label>联系方式（选填）</label>
+            <input type="text" placeholder="邮箱或微信，方便我们跟进" id="feedback-contact">
+          </div>
+          <button class="submit-btn" id="submit-feedback">提交反馈</button>
+          <a class="submit-btn secondary" id="feedback-mail" style="display:none; text-align:center; text-decoration:none;">改用邮件提交</a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="mobile-nav">
+    <div class="mobile-nav-items">
+      <div class="mobile-nav-item active" data-nav="featured">
+        <span class="mn-icon">&#9734;</span>
+        <span>精选</span>
+      </div>
+      <div class="mobile-nav-item" data-nav="all">
+        <span class="mn-icon">&#9734;</span>
+        <span>全部</span>
+      </div>
+      <div class="mobile-nav-item" data-nav="daily">
+        <span class="mn-icon">&#128197;</span>
+        <span>日报</span>
+      </div>
+      <div class="mobile-nav-item" data-nav="submit">
+        <span class="mn-icon">&#9993;</span>
+        <span>提报</span>
+      </div>
+      <div class="mobile-nav-item" data-nav="about">
+        <span class="mn-icon">&#9432;</span>
+        <span>关于</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="modal-title">详情</div>
+        <div class="modal-close" id="modal-close">&times;</div>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
