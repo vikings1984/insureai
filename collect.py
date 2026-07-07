@@ -196,19 +196,34 @@ EASTMONEY_KEYWORDS = [
     ("保险代理人", "channel_transformation"),# 渠道转型（代理人）
     ("惠民保", "product_innovation"),        # 产品创新（城市定制医疗险）
     ("新能源车险", "product_innovation"),    # 产品创新（新能源车）
+    # —— 弱分类专属搜索词（claims/product 占比偏低，加权提升覆盖）——
+    ("保险理赔", "claims"),                  # 理赔实务（弱分类）
+    ("重疾险", "product_innovation"),        # 产品创新
+    ("百万医疗", "product_innovation"),       # 产品创新
+    ("养老年金", "pension_finance"),         # 养老
+    ("防癌险", "product_innovation"),         # 产品创新
 ]
+
+# 分类均衡优化：弱分类(理赔/产品)搜索词加权，提升其采集覆盖（默认 per_kw=3）。
+EASTMONEY_KW_WEIGHT = {
+    "惠民保": 5, "新能源车险": 5, "保险理赔": 6, "重疾险": 5,
+    "百万医疗": 5, "养老年金": 5, "防癌险": 5,
+    "健康险": 4, "车险": 4, "养老金融": 4,
+}
 EASTMONEY_API = "https://search-api-web.eastmoney.com/search/jsonp?cb=jQuery&param="
 
 
 def fetch_eastmoney(per_kw=3):
-    """通过东方财富搜索 API 获取中文保险资讯。返回标准条目字典列表。"""
+    """通过东方财富搜索 API 获取中文保险资讯。返回标准条目字典列表。
+    每个关键词的每页条数由 EASTMONEY_KW_WEIGHT 覆盖（弱分类加权）。"""
     items = []
     for kw, _hint in EASTMONEY_KEYWORDS:
+        kw_per = EASTMONEY_KW_WEIGHT.get(kw, per_kw)
         param = json.dumps({
             "uid": "", "keyword": kw, "type": ["cmsArticleWebOld"],
             "client": "web", "clientType": "web", "clientVersion": "curr",
             "param": {"cmsArticleWebOld": {"searchScope": "default", "sort": "default",
-                       "pageIndex": 1, "pageSize": per_kw, "preTag": "", "postTag": ""}}
+                       "pageIndex": 1, "pageSize": kw_per, "preTag": "", "postTag": ""}}
         }, ensure_ascii=False)
         url = EASTMONEY_API + urllib.parse.quote(param)
         try:
