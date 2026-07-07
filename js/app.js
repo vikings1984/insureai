@@ -51,20 +51,23 @@
     };
 
     // ===== Load Data =====
-    // 加载顺序：meta[data-url] 主源 → jsDelivr 各镜像 → 本地部署快照(data.json) → 内嵌备用数据
-    // 远程 CDN 不加缓存戳（依赖仓库更新后 purge）；本地回退加戳避免浏览器缓存陈旧快照。
+    // 加载顺序：meta[data-url] 主源(通常固定到 GitHub 提交 SHA，CDN 即时生效) →
+    //           同 ref 的 jsDelivr 各镜像 → 本地部署快照(data.json) → 内嵌备用数据
+    // 远程 CDN 不加缓存戳（SHA 引用本身即时）；本地回退加戳避免浏览器缓存陈旧快照。
     async function loadData() {
       const primary = document.querySelector('meta[name="data-url"]')?.content || 'data.json';
-      const CDN_BASE = 'https://vikings1984/insureai@insurescope/data.json';
-      const FALLBACKS = [
-        'https://cdn.jsdelivr.net/gh/' + CDN_BASE,
-        'https://fastly.jsdelivr.net/gh/' + CDN_BASE,
-        'https://gcore.jsdelivr.net/gh/' + CDN_BASE,
-        'data.json'
-      ];
       const candidates = [];
       if (primary && primary !== 'data.json') candidates.push(primary);
-      for (const c of FALLBACKS) if (!candidates.includes(c)) candidates.push(c);
+      // 从主源解析 owner/repo@ref/filepath，构造同 ref 的 CDN 镜像作为兜底
+      const m = primary.match(/gh\/([^@]+)@([^/]+)\/(.+)$/) || primary.match(/github\.com\/([^@]+)@([^/]+)\/(.+)$/);
+      if (m) {
+        const repo = m[1], ref = m[2], file = m[3];
+        for (const host of ['cdn.jsdelivr.net', 'fastly.jsdelivr.net', 'gcore.jsdelivr.net']) {
+          const u = `https://${host}/gh/${repo}@${ref}/${file}`;
+          if (!candidates.includes(u)) candidates.push(u);
+        }
+      }
+      if (!candidates.includes('data.json')) candidates.push('data.json');
 
       for (const url of candidates) {
         try {

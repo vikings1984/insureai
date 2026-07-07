@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https:;">
-  <!-- 数据地址：默认从 jsDelivr CDN 拉取 GitHub insurescope 分支最新 data.json，实现预览自动刷新 -->
-  <!-- 如需离线/自建，可改回相对路径 data.json（此时以 CloudStudio 部署快照为准） -->
-  <meta name="data-url" content="https://gcore.jsdelivr.net/gh/vikings1984/insureai@insurescope/data.json">
+  <!-- 数据地址：固定到 GitHub 提交 SHA（jsDelivr 对 SHA 引用即时生效，无分支缓存延迟） -->
+  <!-- 每日采集后由 GitHub Actions 自动把此处刷新为最新提交 SHA；本地部署快照 data.json 作为兜底 -->
+  <meta name="data-url" content="https://gcore.jsdelivr.net/gh/vikings1984/insureai@d3bc1a0/data.json">
   <link rel="preconnect" href="https://gcore.jsdelivr.net">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
 

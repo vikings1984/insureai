@@ -1,8 +1,9 @@
 name: Daily Insurance News Collect
 
-# 重要：GitHub 的 schedule 定时任务只在仓库【默认分支(main)】上生效，
-# 因此本工作流文件必须提交到 main 分支。任务内部会切换到 insurescope 分支
-# 执行采集，并把结果提交回 insurescope；预览(jsDelivr CDN)随之自动刷新。
+# 重要：GitHub 的 schedule 定时任务只在仓库【默认分支(main)】上生效，故本文件须提交到 main。
+# 任务内部切换到 insurescope 分支执行采集；提交 data.json 后，把 index.html 的 data-url
+# 刷新为最新提交 SHA（jsDelivr 对 SHA 引用即时生效、无分支缓存延迟），并 purge 该 SHA 的 CDN，
+# 使任何拉取该 index.html 的预览自动获得最新数据。
 on:
   schedule:
     - cron: '0 0 * * *'        # 每日 UTC 00:00 = 北京时间 08:00
@@ -29,7 +30,7 @@ jobs:
       - name: Run collector
         run: python3 collect.py
 
-      - name: Commit & push to insurescope
+      - name: Commit data.json if changed
         run: |
           git config user.name "insurescope-bot"
           git config user.email "bot@insurescope.local"
@@ -41,7 +42,22 @@ jobs:
             echo "no changes to data.json"
           fi
 
+      - name: Pin data-url to new commit SHA
+        run: |
+          git config user.name "insurescope-bot"
+          git config user.email "bot@insurescope.local"
+          SHA=$(git rev-parse HEAD)
+          sed -i -E "s#(gh/vikings1984/insureai@)[^\"/]+?(/data.json)#\1${SHA}\2#" index.html
+          if [ -n "$(git status --porcelain index.html)" ]; then
+            git add index.html
+            git commit -m "chore: pin data-url to ${SHA}"
+            git push origin insurescope
+          else
+            echo "data-url 已是最新 SHA"
+          fi
+
       - name: Purge jsDelivr cache
         run: |
-          curl -s -X GET "https://purge.jsdelivr.net/gh/vikings1984/insureai@insurescope/data.json" || true
-          curl -s -X GET "https://gcore.jsdelivr.net/gh/vikings1984/insureai@insurescope/data.json?purge=true" || true
+          SHA=$(git rev-parse HEAD)
+          curl -s -X GET "https://purge.jsdelivr.net/gh/vikings1984/insureai@${SHA}/data.json" || true
+          curl -s -X GET "https://gcore.jsdelivr.net/gh/vikings1984/insureai@${SHA}/data.json?purge=true" || true
