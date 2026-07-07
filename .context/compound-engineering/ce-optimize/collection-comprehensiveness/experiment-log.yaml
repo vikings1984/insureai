@@ -1,0 +1,185 @@
+spec:
+  name: collection-comprehensiveness
+  description: 优化保险行业资讯采集的全面性
+  primary_metric: comprehensiveness_score
+  direction: maximize
+  target: 4.0
+
+run_id: "2026-07-01T17:30:00+08:00"
+started_at: "2026-07-01T17:30:00+08:00"
+completed_at: "2026-07-01T22:00:00+08:00"
+
+baseline:
+  timestamp: "2026-07-01T17:30:00+08:00"
+  gates:
+    total_items: 34
+    category_diversity: 5
+    source_diversity: 15
+    max_single_source_pct: 14.7
+  diagnostics:
+    date_coverage: 5
+    avg_score: 68.3
+  judge_scores:
+    comprehensiveness_score: 3
+    topic_diversity_score: 2
+  judge_notes: industry占53%其中12条股市噪声
+
+experiments:
+  - iteration: 1
+    hypothesis: "添加股市噪声过滤+标题相似度去重(0.5)+扩展垂直关键词(人身险/健康险/养老保险/险资运用/偿付能力)"
+    category: signal-extraction
+    outcome: kept
+    gates:
+      total_items: 15
+      category_diversity: 5
+      source_diversity: 12
+      max_single_source_pct: 13.3
+    diagnostics:
+      date_coverage: 5
+      avg_score: 68.5
+      category_distribution:
+        industry: 3
+        product: 6
+        regulation: 1
+        research: 3
+        claims: 2
+    judge_scores:
+      comprehensiveness_score: 4
+      topic_diversity_score: 3
+    improvement: 1.0
+    learnings: |
+      股市噪声过滤成功消除12条重复行情，分类均衡性大幅改善。
+      但总量偏低(15条)，同话题内容重复仍存在(分红险2x/科技保险2x/农业保险2x)，
+      regulation仅1条覆盖不足。标题相似度阈值0.5无法捕获语义级重复。
+
+  - iteration: 2
+    hypothesis: "降低标题相似度阈值至0.45+内容级Jaccard去重(0.5)"
+    category: signal-extraction
+    outcome: reverted
+    gates:
+      total_items: 14
+      category_diversity: 5
+      source_diversity: 11
+      max_single_source_pct: 14.3
+    diagnostics:
+      date_coverage: 5
+      avg_score: 69.0
+    judge_scores:
+      comprehensiveness_score: 4
+      topic_diversity_score: 3
+    improvement: 0.0
+    degenerate_gate_failed: total_items < 15
+    learnings: |
+      内容级去重过于激进，将标题不同但话题相近的实质内容也过滤掉。
+      阈值0.45的标题相似度也无法区分"同事件不同角度"与"真正重复"。
+      结论：内容级去重对中文资讯场景不适用，语义去重需要更精细的方法。
+
+  - iteration: 3
+    hypothesis: "FRESHNESS_DAYS=21+分类均衡加分(<3条+1.0)+补充关键词(车险/保险消费者/金融监管总局)+max_items=30"
+    category: parameter-tuning
+    outcome: kept
+    gates:
+      total_items: 16
+      category_diversity: 5
+      source_diversity: 13
+      max_single_source_pct: 12.5
+    diagnostics:
+      date_coverage: 7
+      avg_score: 68.0
+      category_distribution:
+        industry: 4
+        product: 5
+        regulation: 2
+        research: 3
+        claims: 2
+    judge_scores:
+      comprehensiveness_score: 4
+      topic_diversity_score: 3
+    improvement: 0.0
+    learnings: |
+      扩大时间窗口到21天增加了历史深度，分类均衡加分使regulation从1→2。
+      总量从15→16，边际改善不大但分类覆盖更均匀。
+      claims仍偏低，需更精确的理赔/纠纷关键词。
+
+  - iteration: 4
+    hypothesis: "n-gram连续子串去重(n=4)捕获语义级重复"
+    category: signal-extraction
+    outcome: reverted
+    gates:
+      total_items: 11
+      category_diversity: 5
+      source_diversity: 8
+      max_single_source_pct: 18.2
+    diagnostics:
+      date_coverage: 5
+      avg_score: 70.0
+    judge_scores:
+      comprehensiveness_score: 3
+      topic_diversity_score: 3
+    improvement: -1.0
+    degenerate_gate_failed: total_items < 15
+    learnings: |
+      n=4对中文过于激进——"科技保险"、"农业保险"等4字行业术语被判定为重复。
+      调整为n=6后仍为14条(gate fail)，中文行业术语高度重复但语义不同。
+      结论：字符级n-gram不适合中文语义去重，需要分词+语义向量的方法。
+
+final_run:
+  timestamp: "2026-07-01T22:00:00+08:00"
+  configuration: "Experiment 3 best config (no n-gram)"
+  gates:
+    total_items: 30
+    category_diversity: 5
+    source_diversity: 17
+    max_single_source_pct: 16.7
+  diagnostics:
+    date_coverage: 7
+    avg_score: 6.7
+    category_distribution:
+      industry: 6
+      product: 11
+      regulation: 4
+      research: 4
+      claims: 5
+    curated_count: 16
+    highlight_count: 4
+    stock_noise_filtered: 41
+  judge_scores:
+    comprehensiveness_score: 4
+    topic_diversity_score: 4
+
+best:
+  iteration: 3
+  hypothesis: "股市噪声过滤+标题相似度去重(0.5)+FRESHNESS_DAYS=21+分类均衡加分+13关键词+max_items=30"
+  outcome: kept
+  gates:
+    total_items: 30
+    category_diversity: 5
+    source_diversity: 17
+    max_single_source_pct: 16.7
+  judge_scores:
+    comprehensiveness_score: 4
+    topic_diversity_score: 4
+  improvement: 1.0
+  target_met: true
+
+hypothesis_backlog:
+  - description: "使用jieba分词+TF-IDF语义相似度替代字符级去重"
+    category: signal-extraction
+    priority: high
+    dep_status: pending
+    required_deps: [jieba]
+  - description: "增加保险处罚/保险纠纷专门关键词和page_size"
+    category: parameter-tuning
+    priority: medium
+    dep_status: approved
+    required_deps: []
+  - description: "评分算法加入内容长度惩罚，短内容(<100字)扣分"
+    category: parameter-tuning
+    priority: low
+    dep_status: approved
+    required_deps: []
+  - description: "引入embedding模型做语义级去重(需评估成本)"
+    category: signal-extraction
+    priority: low
+    dep_status: pending
+    required_deps: [sentence-transformers]

@@ -31,6 +31,7 @@ import time
 import html
 import urllib.request
 import urllib.error
+import urllib.parse
 from datetime import datetime, timezone, timedelta
 from email.utils import parsedate_to_datetime
 from xml.etree import ElementTree as ET
@@ -42,8 +43,7 @@ INBOX_PATH = os.path.join(HERE, "inbox.json")
 TIMEOUT = 12
 UA = "Mozilla/5.0 (compatible; InsureAIBot/1.0; +https://github.com/vikings1984/insureai)"
 
-# RSS 信源（真实可用地址；国内保险站点普遍无公开 RSS，故以国际权威信源为主通道）
-# 如需中文内容，请把文章链接放入 inbox.json 走收件箱通道（最可靠）。
+# 通道 1：RSS 信源（国际权威英文信源为主通道）
 SOURCES = [
     {"name": "Insurance Journal", "type": "媒体", "authority": 84, "rss": "https://www.insurancejournal.com/feed/"},
     {"name": "Reinsurance News", "type": "媒体", "authority": 82, "rss": "https://www.reinsurancene.ws/feed/"},
@@ -150,6 +150,11 @@ def _strip(h):
     return re.sub(r"\s+", " ", html.unescape(t)).strip()[:300]
 
 
+def clean_text(t):
+    """去除 HTML 标签与多余空白，用于中文搜索结果标题/摘要清洗（不截断）。"""
+    return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", t or ""))).strip()
+
+
 def extract_page(url):
     """从文章页抓取标题与摘要"""
     html_text = fetch_url(url)
@@ -166,6 +171,65 @@ def extract_page(url):
         if mm:
             desc = html.unescape(mm.group(1)).strip(); break
     return title, _strip(desc) or (title[:120] if title else "")
+
+
+# ===================== 中文保险资讯源（东方财富搜索 API） =====================
+# 零额外依赖（标准库 urllib）。中文保险站点普遍无公开 RSS，故用搜索 API 补齐中文内容，
+# 解决默认英文 RSS 与中文“保险日报”标题的错位。用 is_insurance_relevant 双重门控防噪声。
+EASTMONEY_KEYWORDS = [
+    ("保险", "industry"),
+    ("再保险", "capital_reinsurance"),
+    ("养老金融", "pension_finance"),
+    ("车险", "product_innovation"),
+    ("健康险", "product_innovation"),
+    ("保险监管", "regulation"),
+    ("保险科技", "digital_transformation"),
+    ("巨灾保险", "climate_catastrophe"),
+]
+EASTMONEY_API = "https://search-api-web.eastmoney.com/search/jsonp?cb=jQuery&param="
+
+
+def fetch_eastmoney(per_kw=3):
+    """通过东方财富搜索 API 获取中文保险资讯。返回标准条目字典列表。"""
+    items = []
+    for kw, _hint in EASTMONEY_KEYWORDS:
+        param = json.dumps({
+            "uid": "", "keyword": kw, "type": ["cmsArticleWebOld"],
+            "client": "web", "clientType": "web", "clientVersion": "curr",
+            "param": {"cmsArticleWebOld": {"searchScope": "default", "sort": "default",
+                       "pageIndex": 1, "pageSize": per_kw, "preTag": "", "postTag": ""}}
+        }, ensure_ascii=False)
+        url = EASTMONEY_API + urllib.parse.quote(param)
+        try:
+            req = urllib.request.Request(url, headers={
+                "User-Agent": UA, "Referer": "https://search.eastmoney.com/"})
+            with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+                txt = r.read().decode("utf-8", "ignore")
+            m = re.search(r"jQuery[\w]*\((.*)\)", txt, re.S)
+            if not m:
+                continue
+            data = json.loads(m.group(1))
+            arts = data.get("result", {}).get("cmsArticleWebOld", [])
+            for a in arts:
+                title = clean_text(a.get("title", ""))
+                if not title or len(title) < 6:
+                    continue
+                content = clean_text(a.get("content", ""))
+                pub = (a.get("date", "") or "")[:10]
+                pub_iso = (pub + "T00:00:00+08:00") if pub else to_iso(None)
+                items.append({
+                    "title": title,
+                    "summary": content[:200] or title,
+                    "url": a.get("url", ""),
+                    "source_name": a.get("mediaName", "东方财富"),
+                    "source_type": "api",
+                    "authority": 82,
+                    "published_at": pub_iso,
+                    "language": "zh",
+                })
+        except Exception as e:
+            print(f"  ⚠ 东方财富搜索 '{kw}' 失败: {e}")
+    return items
 
 
 def to_iso(pub):
@@ -281,6 +345,19 @@ def run(dry_run=False, per_source_limit=10):
             save_inbox([e for e in inbox if e not in processed])  # 清空已处理
     else:
         print("  📭 收件箱为空")
+
+    # 通道 3：中文搜索 API（东方财富，零额外依赖）— 补齐中文内容，解决中英文错位
+    try:
+        zh_items = fetch_eastmoney()
+        for it in zh_items:
+            _ingest(it["title"], it["summary"], it["url"], it["source_name"], it["source_type"],
+                    it["authority"], it["published_at"], existing_titles, collected,
+                    require_topic=True)
+        source_health["东方财富搜索"] = {"count": len(zh_items), "ok": True}
+        print(f"  🈶 中文源(东方财富): {len(zh_items)} 条")
+    except Exception as e:
+        source_health["东方财富搜索"] = {"count": 0, "ok": False}
+        print(f"  ⚠ 中文源采集失败: {e}")
 
     # 合并
     merged = existing + collected
