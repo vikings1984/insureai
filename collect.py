@@ -42,30 +42,40 @@ INBOX_PATH = os.path.join(HERE, "inbox.json")
 TIMEOUT = 12
 UA = "Mozilla/5.0 (compatible; InsureScopeBot/1.0; +https://github.com/vikings1984/insureai)"
 
-# RSS 信源（请替换为真实可用地址；留空列表则只用收件箱通道）
+# RSS 信源（真实可用地址；国内保险站点普遍无公开 RSS，故以国际权威信源为主通道）
+# 如需中文内容，请把文章链接放入 inbox.json 走收件箱通道（最可靠）。
 SOURCES = [
-    # {"name": "中国保险行业协会", "type": "协会", "authority": 92, "rss": "https://example.com/feed.xml"},
+    {"name": "Insurance Journal", "type": "媒体", "authority": 84, "rss": "https://www.insurancejournal.com/feed/"},
+    {"name": "Reinsurance News", "type": "媒体", "authority": 82, "rss": "https://www.reinsurancene.ws/feed/"},
+    {"name": "Artemis (ILS)", "type": "媒体", "authority": 83, "rss": "https://www.artemis.bm/feed/"},
 ]
 
 # 研究主题关键词
 RESEARCH_TOPICS = {
-    "ai_intelligent": ["人工智能", "AI", "大模型", "智能核保", "智能理赔", "智能体", "Agent", "数字化", "科技"],
-    "pension_finance": ["养老", "年金", "退休", "养老金", "第三支柱", "个人养老金"],
+    "ai_intelligent": ["人工智能", "AI", "大模型", "智能核保", "智能理赔", "智能体", "Agent", "数字化", "科技",
+                        "artificial intelligence", "generative ai", "insurtech", "automation"],
+    "pension_finance": ["养老", "年金", "退休", "养老金", "第三支柱", "个人养老金", "pension", "annuity", "retirement"],
     "product_innovation": ["产品", "创新", "UBI", "惠民保", "参数化", "健康险", "医疗险", "重疾险", "车险",
-                            "医疗", "医保", "保单", "寿险", "慢病"],
-    "channel_transformation": ["代理人", "银保", "渠道", "互联网保险", "线上化", "中介"],
-    "capital_reinsurance": ["再保险", "巨灾", "偿付能力", "ILS", "续转", "资本", "并购", "投资", "险资", "资管"],
-    "climate_catastrophe": ["气候", "自然灾害", "台风", "洪灾", "极端天气", "巨灾保险", "农业保险", "指数"],
-    "digital_transformation": ["数字化", "保险科技", "InsurTech", "核心系统", "区块链", "数据中台"],
-    "regulatory_change": ["监管", "合规", "C-ROSS", "IFRS 17", "金融监管总局", "行政处罚", "政策", "处罚"],
+                            "医疗", "医保", "保单", "寿险", "慢病", "product", "launch", "parametric",
+                            "health insurance", "motor", "life insurance"],
+    "channel_transformation": ["代理人", "银保", "渠道", "互联网保险", "线上化", "中介", "agent", "broker",
+                                "distribution", "digital"],
+    "capital_reinsurance": ["再保险", "巨灾", "偿付能力", "ILS", "续转", "资本", "并购", "投资", "险资", "资管",
+                             "reinsurance", "catastrophe", "capital", "merger", "investment", "solvency"],
+    "climate_catastrophe": ["气候", "自然灾害", "台风", "洪灾", "极端天气", "巨灾保险", "农业保险", "指数",
+                             "climate", "natural catastrophe", "flood", "wildfire", "hurricane", "parametric"],
+    "digital_transformation": ["数字化", "保险科技", "InsurTech", "核心系统", "区块链", "数据中台", "digital",
+                                "blockchain", "core system", "data"],
+    "regulatory_change": ["监管", "合规", "C-ROSS", "IFRS 17", "金融监管总局", "行政处罚", "政策", "处罚",
+                           "regulation", "compliance", "regulator", "ifrs 17", "policy", "fine"],
 }
 
 SCORE_BOOST = [
-    (["人工智能", "AI", "大模型", "智能体", "Agent"], 6),
-    (["养老", "巨灾", "偿付能力", "气候", "碳中和"], 5),
-    (["监管", "合规", "处罚", "办法", "指引"], 4),
-    (["创新", "首发", "首个", "突破"], 3),
-    (["产品", "渠道", "数字化"], 2),
+    (["人工智能", "AI", "大模型", "智能体", "Agent", "insurtech", "generative ai"], 6),
+    (["养老", "巨灾", "偿付能力", "气候", "碳中和", "reinsurance", "catastrophe", "solvency", "ils"], 5),
+    (["监管", "合规", "处罚", "办法", "指引", "regulation", "compliance", "regulator", "fine"], 4),
+    (["创新", "首发", "首个", "突破", "launch", "unveils", "parametric"], 3),
+    (["产品", "渠道", "数字化", "product", "digital"], 2),
 ]
 
 
@@ -150,7 +160,7 @@ def infer_topic(title, summary):
     text = (title + " " + summary).lower()
     scores = {t: sum(1 for kw in kws if kw.lower() in text) for t, kws in RESEARCH_TOPICS.items()}
     scores = {t: c for t, c in scores.items() if c}
-    return max(scores, key=scores.get) if scores else "product_innovation"
+    return max(scores, key=scores.get) if scores else None
 
 
 def score_item(title, summary, authority):
@@ -184,20 +194,22 @@ def is_dup(title, existing_titles, threshold=0.82):
 
 
 def _category(title, summary):
-    text = title + " " + summary
-    if any(k in text for k in ["监管", "办法", "指引", "处罚", "合规", "政策"]):
+    text = (title + " " + summary).lower()
+    if any(k in text for k in ["监管", "办法", "指引", "处罚", "合规", "政策", "regulation", "compliance",
+                               "regulator", "fine", "ifrs"]):
         return "regulation"
-    if any(k in text for k in ["研报", "报告", "研究表明", "sigma", "白皮书", "咨询"]):
+    if any(k in text for k in ["研报", "报告", "研究表明", "sigma", "白皮书", "咨询", "report", "research",
+                               "whitepaper", "study"]):
         return "research"
-    if any(k in text for k in ["产品", "首发", "推出", "上线"]):
+    if any(k in text for k in ["产品", "首发", "推出", "上线", "launch", "unveils", "introduces", "product"]):
         return "product"
-    if any(k in text for k in ["理赔", "案例", "纠纷", "判决"]):
+    if any(k in text for k in ["理赔", "案例", "纠纷", "判决", "claim", "lawsuit", "settlement", "verdict"]):
         return "claims"
     return "industry"
 
 
 # ===================== 主流程 =====================
-def run(dry_run=False, per_source_limit=20):
+def run(dry_run=False, per_source_limit=10):
     data = load_existing()
     existing = data.get("news", [])
     existing_titles = [n.get("title", "") for n in existing]
@@ -217,7 +229,8 @@ def run(dry_run=False, per_source_limit=20):
         source_health[name] = {"count": len(raw), "ok": ok}
         for it in raw[:per_source_limit]:
             _ingest(it["title"], it["summary"], it["link"], src["name"], src["type"],
-                    src["authority"], to_iso(it["published"]), existing_titles, collected)
+                    src["authority"], to_iso(it["published"]), existing_titles, collected,
+                    require_topic=True)
             next_id += 1
 
     # 通道 2：收件箱
@@ -271,9 +284,12 @@ def run(dry_run=False, per_source_limit=20):
     print(f"   days 天数: {len(days)}；source_health 信源: {len(data.get('source_health', {}))}")
 
 
-def _ingest(title, summary, url, sname, stype, authority, published, existing_titles, collected, reason=None):
+def _ingest(title, summary, url, sname, stype, authority, published, existing_titles, collected, reason=None, require_topic=False):
     if not title or is_dup(title, existing_titles + [c["title"] for c in collected]):
         return
+    topic = infer_topic(title, summary)
+    if require_topic and topic is None:
+        return  # RSS 噪声过滤：未命中任何保险主题关键词则不收录
     collected.append({
         "id": 0,
         "title": title,
@@ -288,7 +304,7 @@ def _ingest(title, summary, url, sname, stype, authority, published, existing_ti
         "published_at": published,
         "reason": reason or "由自动采集管道生成，建议人工复核后提升为精选。",
         "date_verified": False,
-        "research_topic": infer_topic(title, summary),
+        "research_topic": topic or "product_innovation",
         "is_research_report": stype in ("研究机构", "咨询"),
     })
     existing_titles.append(title)
@@ -387,7 +403,7 @@ def bump_version(v):
 
 if __name__ == "__main__":
     dry = "--dry-run" in sys.argv
-    limit = 20
+    limit = 10
     for a in sys.argv:
         if a.startswith("--limit="):
             limit = int(a.split("=")[1])

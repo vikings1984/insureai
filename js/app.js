@@ -51,23 +51,41 @@
     };
 
     // ===== Load Data =====
+    // 加载顺序：meta[data-url] 主源 → jsDelivr 各镜像 → 本地部署快照(data.json) → 内嵌备用数据
+    // 远程 CDN 不加缓存戳（依赖仓库更新后 purge）；本地回退加戳避免浏览器缓存陈旧快照。
     async function loadData() {
-      try {
-        const DATA_URL = document.querySelector('meta[name="data-url"]')?.content || 'data.json';
-        const res = await fetch(DATA_URL + '?t=' + Date.now());
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const data = await res.json();
-        NEWS_DATA = data.news || [];
-        NEWS_DATA = deduplicateData(NEWS_DATA);
-        SOURCES_DATA = data.sources || [];
-        initApp();
-      } catch (e) {
-        console.warn('Failed to load data.json, using backup data:', e);
-        NEWS_DATA = BACKUP_DATA.news || [];
-        NEWS_DATA = deduplicateData(NEWS_DATA);
-        SOURCES_DATA = BACKUP_DATA.sources || [];
-        initApp();
+      const primary = document.querySelector('meta[name="data-url"]')?.content || 'data.json';
+      const CDN_BASE = 'https://vikings1984/insureai@insurescope/data.json';
+      const FALLBACKS = [
+        'https://cdn.jsdelivr.net/gh/' + CDN_BASE,
+        'https://fastly.jsdelivr.net/gh/' + CDN_BASE,
+        'https://gcore.jsdelivr.net/gh/' + CDN_BASE,
+        'data.json'
+      ];
+      const candidates = [];
+      if (primary && primary !== 'data.json') candidates.push(primary);
+      for (const c of FALLBACKS) if (!candidates.includes(c)) candidates.push(c);
+
+      for (const url of candidates) {
+        try {
+          const finalUrl = url.startsWith('http') ? url : (url + '?t=' + Date.now());
+          const res = await fetch(finalUrl);
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const data = await res.json();
+          if (!data || !Array.isArray(data.news)) throw new Error('bad payload');
+          NEWS_DATA = deduplicateData(data.news || []);
+          SOURCES_DATA = data.sources || [];
+          initApp();
+          return;
+        } catch (e) {
+          console.warn('loadData 失败，尝试下一数据源:', url, e.message || e);
+        }
       }
+      // 所有数据源均不可用：回退内嵌备用数据，保证页面不白屏
+      console.warn('所有数据源均不可用，使用内嵌备用数据');
+      NEWS_DATA = deduplicateData(BACKUP_DATA.news || []);
+      SOURCES_DATA = BACKUP_DATA.sources || [];
+      initApp();
     }
 
     // ===== Deduplication =====
@@ -153,7 +171,12 @@
     function renderFeatured() {
       let data = filterData(state.featured.keyword, state.featured.category);
       data = data.filter(item => item.ai_score >= 60);
-      data.sort((a, b) => b.ai_score - a.ai_score || new Date(b.published_at) - new Date(a.published_at));
+      // 人工核验(精选)条目优先置顶；自动采集(date_verified=false)沉到其后，仍可在"全部"页查看
+      data.sort((a, b) => {
+        const dv = (b.date_verified ? 1 : 0) - (a.date_verified ? 1 : 0);
+        if (dv !== 0) return dv;
+        return b.ai_score - a.ai_score || new Date(b.published_at) - new Date(a.published_at);
+      });
       renderHotTopics(data);
       renderTimeline('timeline-featured', data, true, true);
       renderRecommendations();
