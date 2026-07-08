@@ -430,7 +430,12 @@
     function renderRSSLinks() {
       const container = document.getElementById('rss-links');
       if (!container) return;
-      container.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text-muted);font-size:0.85rem">📡 RSS 订阅功能开发中（参考 InsureAI 架构）</div>';
+      const feedUrl = window.location.origin + '/rss.xml';
+      container.innerHTML = `
+        <a href="${esc(feedUrl)}" target="_blank" rel="noopener noreferrer"
+           style="display:inline-flex;align-items:center;gap:6px;padding:10px 14px;background:var(--accent);color:#fff;border-radius:8px;text-decoration:none;font-weight:600">📡 订阅 InsureAI RSS</a>
+        <div style="margin-top:8px;font-size:0.8rem;color:var(--text-muted)">复制以下地址到 Reeder / Folo / Inoreader 订阅：<br><code style="user-select:all">${esc(feedUrl)}</code></div>
+      `;
     }
 
     // ===== Filter =====
@@ -533,7 +538,7 @@
     }
 
     // ===== Page Switching =====
-    function switchPage(page) {
+    function switchPage(page, fromHash) {
       state.page = page;
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       const targetPage = document.getElementById('page-' + page);
@@ -550,7 +555,43 @@
       if (page === 'all') renderAll();
       if (page === 'daily') renderDaily();
       if (page === 'research') renderResearch();
+
+      // 同步地址栏 hash，使深链可分享/可后退（fromHash=true 时不再回写，避免与 hashchange 互触发）
+      if (!fromHash) {
+        const target = '#/' + page;
+        if (location.hash !== target) {
+          location.hash = target;   // 触发 hashchange -> applyRouteFromHash -> switchPage(page, true)
+          return;
+        }
+      }
     }
+
+    // ===== Hash Router (深链 / 分享 / 后退) =====
+    function applyRouteFromHash() {
+      const hash = location.hash || '';
+      if (!hash) return;   // 无 hash 时保持默认精选页（已在 initApp 渲染）
+      const m = hash.match(/^#\/news\/(\d+)/);
+      if (m) {
+        const id = parseInt(m[1], 10);
+        switchPage('featured', true);   // 不改变 hash，保持 #/news/N 可分享
+        showDetail(id);
+        return;
+      }
+      const sm = hash.match(/^#\/search\?(.*)$/);
+      if (sm) {
+        const q = new URLSearchParams(sm[1]).get('q') || '';
+        const box = document.getElementById('search-featured');
+        if (box) box.value = q;
+        state.featured.keyword = q;
+        switchPage('featured', true);
+        renderFeatured();
+        return;
+      }
+      const page = hash.replace(/^#\//, '').split('?')[0];
+      const valid = ['featured', 'all', 'daily', 'research', 'submit', 'about', 'log', 'feedback'];
+      switchPage(valid.includes(page) ? page : 'featured', true);
+    }
+    window.addEventListener('hashchange', applyRouteFromHash);
 
     // ===== Events =====
     document.querySelectorAll('.nav-item').forEach(item => {
@@ -783,6 +824,8 @@
       const statNews = document.getElementById('stat-news');
       if (statSources) statSources.textContent = (SOURCES_DATA.length || 15) + '+';
       if (statNews) statNews.textContent = NEWS_DATA.length;
+      // 处理初始深链（如直接打开 #/news/N 或 #/log）
+      applyRouteFromHash();
     }
 
     loadData();
