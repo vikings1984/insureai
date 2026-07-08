@@ -515,7 +515,7 @@ def run(dry_run=False, per_source_limit=10):
     print(f"   days 天数: {len(days)}；source_health 信源: {len(data.get('source_health', {}))}")
 
 
-# ---- 自动推荐理由生成（替代千篇一律的占位文案）----
+# ---- 自动推荐理由生成（内容感知、低模板化）----
 _CATEGORY_CN = {
     "regulation": "监管动态",
     "product": "产品创新",
@@ -524,12 +524,119 @@ _CATEGORY_CN = {
     "claims": "理赔服务",
 }
 
-def auto_reason(stype, category, ai_score):
-    """为自动采集条目生成具体、有信息量的推荐理由（每条不同，含分类/来源/评分）。"""
+# 主题关键词 -> (短标签, 价值说明从句，无句末标点)。
+# 命中不同关键词即生成不同理由，避免千篇一律；从句尽量点出“为什么值得看”。
+_THEME_HINTS = [
+    (("惠民保", "城市定制"), "惠民保等城市定制型医疗险", "降低投保门槛、扩大保障覆盖，是多层次医保衔接的关键抓手"),
+    (("新能源车险", "新能源汽车", "EV", "electric", "motor"), "新能源车险", "新能源车的赔付结构与风险特征不同于燃油车，定价与风控模型正在重构"),
+    (("养老", "养老金", "年金", "长护", "专属商业养老", "第三支柱", "pension", "retirement", "annuity", "longevity"), "养老与长期护理", "应对人口老龄化的第三支柱与长护险制度建设进入加速期"),
+    (("健康险", "医疗险", "重疾", "百万医疗", "防癌", "带病体", "health", "medical", "life"), "健康险", "健康险从规模扩张转向精细化定价、带病体拓展与健康管理服务"),
+    (("巨灾", "农险", "指数保险", "农业保险", "气候风险", "参数化", "catastrophe", "nat cat", "cat bond", "parametric", "climate", "flood", "hurricane", "wildfire", "cyclone"), "巨灾与农业保险", "气候风险上升推动指数化、参数化理赔在农险与巨灾险中普及"),
+    (("偿付能力", "资本", "充足率", "风险综合评级", "solvency", "capital"), "偿付能力", "资本约束直接决定险企的展业空间与产品设计节奏"),
+    (("大模型", "智能体", "人工智能", "智能核保", "智能理赔", "保险科技", "数字化", "insurtech", "automation"), "保险科技与 AI", "大模型与智能体正重塑核保、理赔与客户服务的作业方式"),
+    (("监管", "办法", "指引", "行政处罚", "合规", "金融监管总局", "监管规则", "regulat", "compliance", "law", "ruling", "法案"), "监管合规", "监管规则持续细化，划定业务创新的合规边界"),
+    (("理赔", "赔付", "反欺诈", "欺诈", "快赔", "代位", "claims", "settlement", "lawsuit", "fraud"), "理赔服务", "理赔时效与反欺诈能力是客户体验与险企风控的核心"),
+    (("渠道", "中介", "代理人", "银保", "互联网保险", "broker", "agency"), "渠道变革", "互联网与中介渠道占比提升，倒逼传统代理人渠道转型"),
+    (("再保险", "sigma", "瑞再", "慕再", "reinsurance", "retro", "treaty", "retrocession"), "再保险", "再保险续约价格与资本供需，决定直保公司的风险转移成本"),
+    (("出口信用", "信用保险", "一带一路", "credit insurance", "trade credit"), "信用保险", "信用保险为外贸与跨境投资提供风险缓冲"),
+    (("康养", "居家养老", "医养"), "康养与医养结合", "康养与医养结合正成为“保险+服务”生态的主要落地方向"),
+    (("ILS", "cat bond", "spread", "层"), "保险连接证券(ILS)", "巨灾债券与参数化转移工具，为再保险资本提供另类供给"),
+    (("cyber", "勒索", "网络安全"), "网络安全保险", "勒索与数据风险上升，推动网络安全险承保规则重构"),
+    (("ESG", "green", "sustainab", "绿色"), "气候与 ESG", "气候与 ESG 议题正重塑保险资金投向与风险敞口"),
+    (("insurtech", "startup", "融资", "funding", "venture"), "保险科技融资", "保险科技创企与融资动向，反映行业数字化投入方向"),
+]
+
+# 分类兜底价值说明（未命中具体主题时使用）
+_CAT_VALUE = {
+    "regulation": "对行业合规经营与业务边界具有指引意义",
+    "product": "反映保险产品在保障责任与形态上的创新方向",
+    "claims": "关乎理赔体验与保险欺诈治理的实务进展",
+    "research": "提供数据与方法论，可作为研判行业走势的参考",
+    "industry": "反映保险市场格局与经营环境的最新变化",
+}
+
+# 来源级主题提示：对标题/摘要未命中关键词、但来源本身有稳定定位的条目（如英文聚合源）兜底，避免落入泛化分类句。
+_SOURCE_HINTS = {
+    "Reinsurance News": ("再保险", "再保险续约价格与资本供需，决定直保公司的风险转移成本"),
+    "Artemis (ILS)": ("保险连接证券(ILS)", "巨灾债券与参数化工具，为再保险资本提供另类供给"),
+    "Insurance Journal": ("美国财险市场", "美国财产险市场的费率、承保与诉讼环境变化，具跨境参照价值"),
+    "Swiss Re": ("再保险", "瑞再的 sigma 报告与巨灾数据，是直保产品设计的风向标"),
+    "Munich Re": ("再保险", "慕再的巨灾与定价观点，对再保险周期有指示意义"),
+}
+
+# 多种开篇句式，按标题稳定校验和选择，保证重跑幂等、且不同条目句式不一
+_OPENERS_THEME = [
+    "本文聚焦{label}，{clause}。",
+    "围绕{label}，{clause}。",
+    "{label}是本期值得关注的方向：{clause}。",
+    "从{label}切入，{clause}。",
+]
+_OPENERS_CAT = [
+    "这是一条{ccat}资讯，{clause}。",
+    "{ccat}方面，{clause}。",
+    "本期{ccat}值得留意：{clause}。",
+]
+
+# 高相关度时的关注提示（仅高分添加；用句式池避免每条都出现造成新模板）
+_ATTENTION_HIGH = [
+    "内容相关度高，建议优先关注。",
+    "信息密度高，值得重点阅读。",
+    "对把握行业动向具有较高价值。",
+]
+_ATTENTION_MID = [
+    "具有较高行业参考价值。",
+    "可作为了解行业动态的切入。",
+    "值得从业人员留意。",
+]
+
+
+def _stable_idx(s, n=4):
+    """稳定校验和（不依赖 hash seed），保证脚本多次运行选择一致、CI 幂等。"""
+    return sum(ord(c) for c in s) % n
+
+
+def _match_theme(title, summary):
+    text = title + " " + (summary or "")
+    for kws, label, clause in _THEME_HINTS:
+        if any(k in text for k in kws):
+            return label, clause
+    return None, None
+
+
+def _source_prefix(sname, stype):
+    """为权威/一手来源生成自然的前置表述；普通媒体省略以免模板化。"""
+    if not sname:
+        return ""
+    notable = (stype in ("监管机构", "监管", "协会", "研究机构", "咨询")
+               or any(k in sname for k in ("总局", "协会", "研究院", "再保险", "学会", "银保监")))
+    return f"据{sname}披露，" if notable else ""
+
+
+def auto_reason(title, summary, sname, stype, category, ai_score, topic=None):
+    """为自动采集条目生成内容感知、低模板化的推荐理由。
+
+    以文章标题/摘要中的真实主题词驱动，配合分类价值与来源可信度；
+    句式按标题稳定校验和变化，保证 CI 重跑幂等、且不同条目读感不一。
+    """
     cat_cn = _CATEGORY_CN.get(category, "行业动态")
-    return (f"系统按保险领域强信号自动采集，属{cat_cn}方向，"
-            f"来源类型：{stype or '未知'}，AI 相关性评分 {ai_score}。"
-            f"建议人工复核内容后提升为精选。")
+    label, clause = _match_theme(title, summary)
+    if not label:
+        sh = _SOURCE_HINTS.get(sname)
+        if sh:
+            label, clause = sh
+    if label:
+        lead = _OPENERS_THEME[_stable_idx(title, len(_OPENERS_THEME))].format(label=label, clause=clause)
+    else:
+        lead = _OPENERS_CAT[_stable_idx(title, len(_OPENERS_CAT))].format(
+            ccat=cat_cn, clause=_CAT_VALUE.get(category, _CAT_VALUE["industry"]))
+    prefix = _source_prefix(sname, stype)
+    if ai_score >= 88:
+        tail = _ATTENTION_HIGH[_stable_idx(title, len(_ATTENTION_HIGH))]
+    elif ai_score >= 80:
+        tail = _ATTENTION_MID[_stable_idx(title, len(_ATTENTION_MID))]
+    else:
+        tail = ""
+    return (prefix + lead + tail).strip()
 
 
 def _ingest(title, summary, url, sname, stype, authority, published, existing_titles, collected, reason=None, require_topic=False):
@@ -552,7 +659,7 @@ def _ingest(title, summary, url, sname, stype, authority, published, existing_ti
         "tags": "",
         "category": cat,
         "published_at": published,
-        "reason": reason or auto_reason(stype, cat, sc),
+        "reason": reason or auto_reason(title, summary, sname, stype, cat, sc, topic),
         "date_verified": False,
         "research_topic": topic or "product_innovation",
         "is_research_report": stype in ("研究机构", "咨询"),
