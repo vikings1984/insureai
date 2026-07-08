@@ -523,10 +523,14 @@
         const layer = layerLabels[r.layer] || r.source_type || '';
         const keyData = Array.isArray(r.key_data) ? r.key_data.map(k => `<li>${esc(k)}</li>`).join('') : '';
         const url = safeUrl(r.url);
+        const badge = (r.auto && !r.curated)
+          ? '<span class="auto-badge" title="由 collect_research.py 自动发现，核心数据与洞察待人工精炼">⚙ 自动收录·待精炼</span>'
+          : (r.curated ? '<span class="curated-badge" title="人工精编内容">✓ 精编</span>' : '');
         return `<div class="research-card">
           <div class="research-card-head">
             <span class="research-layer">${esc(layer)}</span>
             <span class="topic-badge">${esc(topicLabel)}</span>
+            ${badge}
           </div>
           <div class="research-inst">${esc(r.institution_cn || r.institution || '')}</div>
           <h3 class="research-title">${url ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(r.title)}</a>` : esc(r.title)}</h3>

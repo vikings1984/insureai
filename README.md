@@ -67,6 +67,20 @@ python3 collect.py --limit=10   # 每个 RSS 信源最多取 10 条（注意用 
 **自动化部署**：`.github/workflows/daily-collect.yml` 每日北京时间 08:00 运行采集，
 若有新内容则自动提交 `data.json`，使"发布资讯"成本趋近于零。
 
+## 深度研究页持续更新（半自动闭环）
+
+深度研究页（研究洞察）与每日资讯采用不同策略：研究报告低频、高价值、需结构化提炼，
+不能完全靠新闻管道，因此采用「**自动发现 + 人工精炼**」闭环：
+
+- `collect_research.py`（零依赖，复用 `collect.py` 工具）维护 `RESEARCH_SOURCES` 机构报告源清单
+  （国际再保险 / 全球咨询 / 国内研究 / 监管机构 四层），经保险信号门控与研究关键词
+  （report / whitepaper / sigma / 展望 / 报告 …）自动发现新报告。
+- `.github/workflows/weekly-research.yml` 每周一北京时间 08:00 运行：自动发现的新报告标
+  `auto=True`、`key_data/key_insight` 留空写入 `research.json`（待精炼）；人工精炼后把条目标
+  `curated=True`，CI 即不再改动它。历史无 `auto` 字段的人工条也视为 `curated`，永不覆盖。
+- 研究卡片据此显示「⚙ 自动收录·待精炼」或「✓ 精编」徽标，待精炼状态一目了然。
+- 本地调试：`python3 collect_research.py --dry-run`（预览候选，不写文件）。
+
 ## SEO 预渲染（P2-8）
 
 纯静态 SPA 内容经 `fetch` 渲染，搜索引擎/爬虫无法直接抓取正文。新增零依赖 `prerender.py`，

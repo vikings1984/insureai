@@ -21,6 +21,7 @@
 - `.github/workflows/daily-collect.yml`：每日北京时间 08:00（UTC 00:00）自动运行 + `workflow_dispatch` 手动触发。
 - 流程：checkout(insureai) → Run collector → Prerender SEO → 采集质量自动评分(ce-optimize) → Commit data+SEO+质量评分 → Push。
 - 最近一次手动验证 run `28876165712` 结论 **success**。
+- 另 `.github/workflows/weekly-research.yml`：每周一北京时间 08:00（UTC 周一 00:00）自动运行 + `workflow_dispatch`；跑 `collect_research.py` 更新 `research.json`（深度研究页半自动闭环，详见下）。
 
 ## 推送规则（红线）
 - 本机 `~/.gitconfig` 走 `gh-proxy.com` 代理，直连 `github.com:443` 被墙；公开代理匿名 push 被拒。
@@ -30,9 +31,10 @@
 ## 关键文件与职责
 - `collect.py`：零依赖采集管道（4 通道见下）；决定 `data.json` 内容。
 - `prerender.py`：生成 JSON-LD / 首屏静态列表 / `sitemap.xml`。
+- `collect_research.py`：深度研究页半自动采集（零依赖，复用 `collect.py` 工具）；维护 `research.json`，每周 CI 触发。
 - `scripts/quality_score.py`：CI 中跑采集质量评分，写 `data/quality/`。
 - `data.json`：前端加载的资讯数据（**由管道生成，勿大段手改**；当前 ~147 条 / v2.2.13）。
-- `research.json`：权威研究报告（来自上游归档）。
+- `research.json`：权威研究报告（深度研究页数据源）。**半自动闭环**：`collect_research.py` 每周自动发现机构新报告并标 `auto=True` 写入；人工精炼 `key_data/key_insight` 后把条目标 `curated=True`（CI 永不覆盖）；无 `auto` 字段的历史人工条也视为 `curated`。`renderResearch` 据此显示「⚙ 自动收录·待精炼」或「✓ 精编」徽标。
 - `index.html`：SPA 骨架；`<meta name="data-url" content="data.json">` 同源加载；`feedback-email=157247839@qq.com` 已配置。
 - `tests/test_collect.py`（18 用例）+ `tests/test_dedup.py`：标准库 unittest。
 

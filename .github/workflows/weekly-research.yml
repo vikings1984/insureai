@@ -1,0 +1,47 @@
+name: Weekly Research Collect
+
+# 深度研究页「半自动闭环」：每周一北京时间 08:00（UTC 周一 00:00）自动发现机构新报告，
+# 标 auto=True 写入 research.json；人工精炼后把条目标 curated=True 即不被覆盖。
+# 容错：单源失败不影响其他；全部失败则仅刷新 last_updated，不破坏既有数据。
+on:
+  schedule:
+    - cron: '0 0 * * 1'          # 每周一 UTC 00:00 = 北京时间周一 08:00
+  workflow_dispatch:             # 支持手动触发
+
+permissions:
+  contents: write
+
+env:
+  SITE_URL: "https://vikings1984.github.io/insureai"
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (default = insureai)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Collect research reports
+        run: python3 collect_research.py
+
+      - name: Commit research.json
+        run: |
+          git config user.name "insureai-bot"
+          git config user.email "bot@insureai.local"
+          if [ -n "$(git status --porcelain research.json)" ]; then
+            git add research.json
+            git commit -m "chore: auto-collect research reports $(date +%F)"
+          else
+            echo "no changes"
+          fi
+
+      - name: Push (triggers GitHub Pages redeploy)
+        run: git push origin HEAD:${{ github.ref_name }}
