@@ -527,7 +527,10 @@ _CATEGORY_CN = {
 # 主题关键词 -> (短标签, 价值说明从句，无句末标点)。
 # 命中不同关键词即生成不同理由，避免千篇一律；从句尽量点出“为什么值得看”。
 _THEME_HINTS = [
-    (("惠民保", "城市定制"), "惠民保等城市定制型医疗险", "降低投保门槛、扩大保障覆盖，是多层次医保衔接的关键抓手"),
+    (("评级", "outlook", "outlook to", "credit rating", "downgrade", "upgrade", "revised", "affirmed", "stable", "negative", "positive", "AM Best", "Moody's", "S&P", "Fitch", "标普", "穆迪", "惠誉"), "评级与信用观察", "评级机构对保险公司的信用与展望调整，直接影响融资成本与市场信心"),
+    (("war", "conflict", "attack", "military", "Hormuz", "Strait", "vessel", "shipping", "geopolitical", "sanctions", "naval", "maritime"), "地缘政治与战争风险", "地缘冲突与航运袭击事件考验特殊风险与战争险的定价及承保边界"),
+    (("mutual", "mutuals", "reciprocal", "brotherhood"), "相互保险", "相互保险组织的资本结构与会员治理模式，为中小险企提供差异化参照"),
+    (("美国财险", "美国财产险", "US property", "commercial insurance", "property insurance", "property and casualty"), "美国财险市场", "美国财产险市场的费率、承保与诉讼环境变化，具跨境参照价值"),
     (("新能源车险", "新能源汽车", "EV", "electric", "motor"), "新能源车险", "新能源车的赔付结构与风险特征不同于燃油车，定价与风控模型正在重构"),
     (("养老", "养老金", "年金", "长护", "专属商业养老", "第三支柱", "pension", "retirement", "annuity", "longevity"), "养老与长期护理", "应对人口老龄化的第三支柱与长护险制度建设进入加速期"),
     (("健康险", "医疗险", "重疾", "百万医疗", "防癌", "带病体", "health", "medical", "life"), "健康险", "健康险从规模扩张转向精细化定价、带病体拓展与健康管理服务"),
@@ -555,12 +558,12 @@ _CAT_VALUE = {
     "industry": "反映保险市场格局与经营环境的最新变化",
 }
 
-# 来源级主题提示：对标题/摘要未命中关键词、但来源本身有稳定定位的条目（如英文聚合源）兜底，避免落入泛化分类句。
+# 来源级主题提示：对标题/摘要未命中关键词、但来源本身有稳定定位的条目（如英文聚合源）兜底，
+# 避免落入泛化分类句。只给定位高度聚焦的来源兜底；综合性门户不兜底，防止千篇一律。
 _SOURCE_HINTS = {
     "Reinsurance News": ("再保险", "再保险续约价格与资本供需，决定直保公司的风险转移成本"),
     "Artemis (ILS)": ("保险连接证券(ILS)", "巨灾债券与参数化工具，为再保险资本提供另类供给"),
-    "Insurance Journal": ("美国财险市场", "美国财产险市场的费率、承保与诉讼环境变化，具跨境参照价值"),
-    "Swiss Re": ("再保险", "瑞再的 sigma 报告与巨灾数据，是直保产品设计的风向标"),
+    "Swiss Re": ("再保险", "瑞再的 sigma 报告与巨灾数据，是直保产品设计的风标"),
     "Munich Re": ("再保险", "慕再的巨灾与定价观点，对再保险周期有指示意义"),
 }
 
@@ -596,9 +599,9 @@ def _stable_idx(s, n=4):
 
 
 def _match_theme(title, summary):
-    text = title + " " + (summary or "")
+    text = (title + " " + (summary or "")).lower()
     for kws, label, clause in _THEME_HINTS:
-        if any(k in text for k in kws):
+        if any(k.lower() in text for k in kws):
             return label, clause
     return None, None
 
