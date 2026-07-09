@@ -382,27 +382,40 @@ def is_dup(title, existing_titles, threshold=0.82):
     return any(lev_ratio(title, t) >= threshold for t in existing_titles)
 
 
+# 短英文/易歧义词用「词边界」匹配，避免子串误命中：
+# "law"→lawyer/lawsuit、"life"→lifestyle/lifecycle、"motor"→motorway、
+# "green"→greenhouse、"fine"→finance/define。CJK 关键词仍用子串匹配。
+_BOUNDARY_KWS = {"law", "life", "motor", "green", "fine"}
+
+
+def _kw_in(kw, text):
+    kw = kw.lower()
+    if kw in _BOUNDARY_KWS:
+        return re.search(r"\b" + re.escape(kw) + r"\b", text) is not None
+    return kw in text
+
+
 def _category(title, summary):
     """分类逻辑（5 类）。industry 为兜底类——任何未命中具体规则的内容归入 industry，
     故具体类关键词必须足够精准，避免 industry 过度膨胀（分类均衡优化）。"""
     text = (title + " " + summary).lower()
     # 1) 监管（最具体，优先避免误归类）
-    if any(k in text for k in ["监管", "办法", "指引", "处罚", "合规", "政策", "regulation", "compliance",
+    if any(_kw_in(k, text) for k in ["监管", "办法", "指引", "处罚", "合规", "政策", "regulation", "compliance",
                                "regulator", "fine", "ifrs", "行政处罚", "金融监管总局"]):
         return "regulation"
     # 2) 理赔（保险实务核心；用精准词，避免"案例/纠纷/判决"等泛词误命中）
-    if any(k in text for k in ["理赔", "赔付", "赔款", "索偿", "保险欺诈", "反欺诈", "车险理赔",
+    if any(_kw_in(k, text) for k in ["理赔", "赔付", "赔款", "索偿", "保险欺诈", "反欺诈", "车险理赔",
                                "健康险理赔", "医疗险理赔", "理赔服务", "理赔案例", "理赔纠纷",
                                "理赔时效", "快赔", "claim", "lawsuit", "settlement", "verdict", "claims"]):
         return "claims"
     # 3) 产品（产品创新/上市/备案）
-    if any(k in text for k in ["产品", "首发", "推出", "上线", "惠民保", "新能源车险", "重疾险",
+    if any(_kw_in(k, text) for k in ["产品", "首发", "推出", "上线", "惠民保", "新能源车险", "重疾险",
                                "百万医疗", "养老年金", "防癌险", "宠物险", "专属商业养老",
                                "创新型产品", "备案", "新品", "产品升级", "产品上市",
                                "launch", "unveils", "introduces", "product"]):
         return "product"
     # 4) 研究（研报/分析/趋势）
-    if any(k in text for k in ["研报", "报告", "研究表明", "sigma", "白皮书", "咨询", "咨询报告",
+    if any(_kw_in(k, text) for k in ["研报", "报告", "研究表明", "sigma", "白皮书", "咨询", "咨询报告",
                                "分析", "洞察", "趋势", "展望", "解读", "深度", "测算", "研究",
                                "report", "research", "whitepaper", "study"]):
         return "research"
@@ -524,29 +537,111 @@ _CATEGORY_CN = {
     "claims": "理赔服务",
 }
 
-# 主题关键词 -> (短标签, 价值说明从句，无句末标点)。
-# 命中不同关键词即生成不同理由，避免千篇一律；从句尽量点出“为什么值得看”。
+# 主题关键词 -> (短标签, [价值说明从句池，无句末标点])。
+# 命中不同关键词即生成不同理由；同一主题给 2–3 句从句池，按标题稳定校验和选句，
+# 避免“同一主题千篇一律”。从句尽量点出“为什么值得看”。
+# 顺序即优先级：理赔服务置于监管合规之前，避免 "lawsuit" 被 "law" 子串误标为监管。
 _THEME_HINTS = [
-    (("评级", "outlook", "outlook to", "credit rating", "downgrade", "upgrade", "revised", "affirmed", "stable", "negative", "positive", "AM Best", "Moody's", "S&P", "Fitch", "标普", "穆迪", "惠誉"), "评级与信用观察", "评级机构对保险公司的信用与展望调整，直接影响融资成本与市场信心"),
-    (("war", "conflict", "attack", "military", "Hormuz", "Strait", "vessel", "shipping", "geopolitical", "sanctions", "naval", "maritime"), "地缘政治与战争风险", "地缘冲突与航运袭击事件考验特殊风险与战争险的定价及承保边界"),
-    (("mutual", "mutuals", "reciprocal", "brotherhood"), "相互保险", "相互保险组织的资本结构与会员治理模式，为中小险企提供差异化参照"),
-    (("美国财险", "美国财产险", "US property", "commercial insurance", "property insurance", "property and casualty"), "美国财险市场", "美国财产险市场的费率、承保与诉讼环境变化，具跨境参照价值"),
-    (("新能源车险", "新能源汽车", "EV", "electric", "motor"), "新能源车险", "新能源车的赔付结构与风险特征不同于燃油车，定价与风控模型正在重构"),
-    (("养老", "养老金", "年金", "长护", "专属商业养老", "第三支柱", "pension", "retirement", "annuity", "longevity"), "养老与长期护理", "应对人口老龄化的第三支柱与长护险制度建设进入加速期"),
-    (("健康险", "医疗险", "重疾", "百万医疗", "防癌", "带病体", "health", "medical", "life"), "健康险", "健康险从规模扩张转向精细化定价、带病体拓展与健康管理服务"),
-    (("巨灾", "农险", "指数保险", "农业保险", "气候风险", "参数化", "catastrophe", "nat cat", "cat bond", "parametric", "climate", "flood", "hurricane", "wildfire", "cyclone"), "巨灾与农业保险", "气候风险上升推动指数化、参数化理赔在农险与巨灾险中普及"),
-    (("偿付能力", "资本", "充足率", "风险综合评级", "solvency", "capital"), "偿付能力", "资本约束直接决定险企的展业空间与产品设计节奏"),
-    (("大模型", "智能体", "人工智能", "智能核保", "智能理赔", "保险科技", "数字化", "insurtech", "automation"), "保险科技与 AI", "大模型与智能体正重塑核保、理赔与客户服务的作业方式"),
-    (("监管", "办法", "指引", "行政处罚", "合规", "金融监管总局", "监管规则", "regulat", "compliance", "law", "ruling", "法案"), "监管合规", "监管规则持续细化，划定业务创新的合规边界"),
-    (("理赔", "赔付", "反欺诈", "欺诈", "快赔", "代位", "claims", "settlement", "lawsuit", "fraud"), "理赔服务", "理赔时效与反欺诈能力是客户体验与险企风控的核心"),
-    (("渠道", "中介", "代理人", "银保", "互联网保险", "broker", "agency"), "渠道变革", "互联网与中介渠道占比提升，倒逼传统代理人渠道转型"),
-    (("再保险", "sigma", "瑞再", "慕再", "reinsurance", "retro", "treaty", "retrocession"), "再保险", "再保险续约价格与资本供需，决定直保公司的风险转移成本"),
-    (("出口信用", "信用保险", "一带一路", "credit insurance", "trade credit"), "信用保险", "信用保险为外贸与跨境投资提供风险缓冲"),
-    (("康养", "居家养老", "医养"), "康养与医养结合", "康养与医养结合正成为“保险+服务”生态的主要落地方向"),
-    (("ILS", "cat bond", "spread", "层"), "保险连接证券(ILS)", "巨灾债券与参数化转移工具，为再保险资本提供另类供给"),
-    (("cyber", "勒索", "网络安全"), "网络安全保险", "勒索与数据风险上升，推动网络安全险承保规则重构"),
-    (("ESG", "green", "sustainab", "绿色"), "气候与 ESG", "气候与 ESG 议题正重塑保险资金投向与风险敞口"),
-    (("insurtech", "startup", "融资", "funding", "venture"), "保险科技融资", "保险科技创企与融资动向，反映行业数字化投入方向"),
+    (("评级", "outlook", "outlook to", "credit rating", "downgrade", "upgrade", "revised", "affirmed", "stable", "negative", "positive", "AM Best", "Moody's", "S&P", "Fitch", "标普", "穆迪", "惠誉"), "评级与信用观察", [
+        "评级机构对保险公司的信用与展望调整，直接影响融资成本与市场信心",
+        "信用展望的下调或上调，往往预示险企资本与盈利端的边际变化",
+        "评级行动是观察行业信用风险与资本充足度的重要窗口",
+    ]),
+    (("war", "conflict", "attack", "military", "Hormuz", "Strait", "vessel", "shipping", "geopolitical", "sanctions", "naval", "maritime"), "地缘政治与战争风险", [
+        "地缘冲突与航运袭击事件考验特殊风险与战争险的定价及承保边界",
+        "区域性冲突推高航运与能源风险，特殊险种的供给与价格随之波动",
+        "战争与制裁风险外溢，倒逼再保险与货主重新审视风险敞口",
+    ]),
+    (("mutual", "mutuals", "reciprocal", "brotherhood"), "相互保险", [
+        "相互保险组织的资本结构与会员治理模式，为中小险企提供差异化参照",
+        "会员制治理下的盈余分配机制，影响相互保险的长期经营稳定性",
+        "相互保险在农险、信保等细分领域展现出独特的风控优势",
+    ]),
+    (("美国财险", "美国财产险", "US property", "commercial insurance", "property insurance", "property and casualty"), "美国财险市场", [
+        "美国财产险市场的费率、承保与诉讼环境变化，具跨境参照价值",
+        "美国巨灾与责任险的费率周期，常领先反映全球财险定价趋势",
+        "美国各州诉讼环境与监管取向，影响财险承保利润与产品供给",
+    ]),
+    (("新能源车险", "新能源汽车", "EV", "electric", "motor"), "新能源车险", [
+        "新能源车的赔付结构与风险特征不同于燃油车，定价与风控模型正在重构",
+        "三电系统与自动驾驶数据，正在重塑车险的定价与理赔逻辑",
+        "新能源车险的高赔付率，倒逼险企重构精算与渠道策略",
+    ]),
+    (("养老", "养老金", "年金", "长护", "专属商业养老", "第三支柱", "pension", "retirement", "annuity", "longevity"), "养老与长期护理", [
+        "应对人口老龄化的第三支柱与长护险制度建设进入加速期",
+        "个人养老金与商业长护的税优与产品供给，决定银发金融的覆盖深度",
+        "长寿风险与照护成本上升，推动养老与健康管理服务加速融合",
+    ]),
+    (("健康险", "医疗险", "重疾", "百万医疗", "防癌", "带病体", "health", "medical", "life"), "健康险", [
+        "健康险从规模扩张转向精细化定价、带病体拓展与健康管理服务",
+        "医保外补充保障与带病体产品，是健康险下一个增长锚点",
+        "健康险正从赔付款转向“保险+健康服务”的全周期经营",
+    ]),
+    (("巨灾", "农险", "指数保险", "农业保险", "气候风险", "参数化", "catastrophe", "nat cat", "cat bond", "parametric", "climate", "flood", "hurricane", "wildfire", "cyclone"), "巨灾与农业保险", [
+        "气候风险上升推动指数化、参数化理赔在农险与巨灾险中普及",
+        "极端天气频发抬升巨灾损失，再保资本与公共机制亟需协同",
+        "参数化理赔以触发即赔替代定损，显著提升农险与巨灾的时效性",
+    ]),
+    (("偿付能力", "资本", "充足率", "风险综合评级", "solvency", "capital"), "偿付能力", [
+        "资本约束直接决定险企的展业空间与产品设计节奏",
+        "偿付能力充足率波动，折射出险企资产配置与风险偏好的变化",
+        "偿二代二期下资本口径收紧，倒逼险企优化业务结构与投资",
+    ]),
+    (("理赔", "赔付", "反欺诈", "欺诈", "快赔", "代位", "claims", "settlement", "lawsuit", "fraud"), "理赔服务", [
+        "理赔时效与反欺诈能力是客户体验与险企风控的核心",
+        "快赔与线上理赔重塑客户触点，也考验险企的数据与风控底座",
+        "理赔反欺诈从规则走向模型，直接改善综合成本率",
+    ]),
+    (("大模型", "智能体", "人工智能", "智能核保", "智能理赔", "保险科技", "数字化", "insurtech", "automation"), "保险科技与 AI", [
+        "大模型与智能体正重塑核保、理赔与客户服务的作业方式",
+        "AI 在反欺诈与精算中的应用，正在压缩保险作业的边际成本",
+        "保险科技从渠道线上化走向核心作业智能化",
+    ]),
+    (("监管", "办法", "指引", "行政处罚", "合规", "金融监管总局", "监管规则", "regulat", "compliance", "law", "ruling", "法案"), "监管合规", [
+        "监管规则持续细化，划定业务创新的合规边界",
+        "行政处罚与合规检查趋严，倒逼险企夯实内控与消保",
+        "监管沙盒与规则更新，为产品创新留出边际空间",
+    ]),
+    (("渠道", "中介", "代理人", "银保", "互联网保险", "broker", "agency"), "渠道变革", [
+        "互联网与中介渠道占比提升，倒逼传统代理人渠道转型",
+        "银保与经代渠道的利益重构，改变保费结构与费差贡献",
+        "短视频与内容化获客，正在改写保险销售渠道的流量逻辑",
+    ]),
+    (("再保险", "sigma", "瑞再", "慕再", "reinsurance", "retro", "treaty", "retrocession"), "再保险", [
+        "再保险续约价格与资本供需，决定直保公司的风险转移成本",
+        "再保险周期的松紧，直接传导到直保的承保能力与费率",
+        "巨灾损失累积推动再保条款收紧，影响直保资本效率",
+    ]),
+    (("出口信用", "信用保险", "一带一路", "credit insurance", "trade credit"), "信用保险", [
+        "信用保险为外贸与跨境投资提供风险缓冲",
+        "全球贸易摩擦与买方违约上升，抬升出口信保的赔付与需求",
+        "政策性出口信保的覆盖面，关系外贸企业的接单信心",
+    ]),
+    (("康养", "居家养老", "医养"), "康养与医养结合", [
+        "康养与医养结合正成为“保险+服务”生态的主要落地方向",
+        "养老社区与居家照护的支付闭环，是险企布局康养的关键",
+        "保险资金对接康养设施，形成长周期资产负债联动",
+    ]),
+    (("ILS", "cat bond", "spread", "层"), "保险连接证券(ILS)", [
+        "巨灾债券与参数化转移工具，为再保险资本提供另类供给",
+        "ILS 市场扩容，为巨灾风险提供传统再保之外的资本出口",
+        "参数化与侧挂车等结构化工具，提升巨灾资本的流动性",
+    ]),
+    (("cyber", "勒索", "网络安全"), "网络安全保险", [
+        "勒索与数据风险上升，推动网络安全险承保规则重构",
+        "关键基础设施频遭攻击，网络安全险的保单条款持续收紧",
+        "网安险从责任补偿走向“保险+安全服务”的前置防御",
+    ]),
+    (("ESG", "green", "sustainab", "绿色"), "气候与 ESG", [
+        "气候与 ESG 议题正重塑保险资金投向与风险敞口",
+        "绿色资产与转型风险定价，成为险资配置的新约束",
+        "ESG 披露趋严，倒逼险企把可持续纳入承保与投资全流程",
+    ]),
+    (("insurtech", "startup", "融资", "funding", "venture"), "保险科技融资", [
+        "保险科技创企与融资动向，反映行业数字化投入方向",
+        "创企融资冷暖，是保险科技商业化拐点的先行指标",
+        "资本向特定赛道集中，预示下一阶段数字化的重点场景",
+    ]),
 ]
 
 # 分类兜底价值说明（未命中具体主题时使用）
@@ -563,8 +658,8 @@ _CAT_VALUE = {
 _SOURCE_HINTS = {
     "Reinsurance News": ("再保险", "再保险续约价格与资本供需，决定直保公司的风险转移成本"),
     "Artemis (ILS)": ("保险连接证券(ILS)", "巨灾债券与参数化工具，为再保险资本提供另类供给"),
-    "Swiss Re": ("再保险", "瑞再的 sigma 报告与巨灾数据，是直保产品设计的风标"),
-    "Munich Re": ("再保险", "慕再的巨灾与定价观点，对再保险周期有指示意义"),
+    "瑞士再保险": ("再保险", "瑞再的 sigma 报告与巨灾数据，是直保产品设计的风标"),
+    "慕尼黑再保险": ("再保险", "慕再的巨灾与定价观点，对再保险周期有指示意义"),
 }
 
 # 多种开篇句式，按标题稳定校验和选择，保证重跑幂等、且不同条目句式不一
@@ -573,11 +668,14 @@ _OPENERS_THEME = [
     "围绕{label}，{clause}。",
     "{label}是本期值得关注的方向：{clause}。",
     "从{label}切入，{clause}。",
+    "聚焦{label}这一议题，{clause}。",
+    "就{label}而言，{clause}。",
 ]
 _OPENERS_CAT = [
     "这是一条{ccat}资讯，{clause}。",
     "{ccat}方面，{clause}。",
     "本期{ccat}值得留意：{clause}。",
+    "从{ccat}视角看，{clause}。",
 ]
 
 # 高相关度时的关注提示（仅高分添加；用句式池避免每条都出现造成新模板）
@@ -600,8 +698,9 @@ def _stable_idx(s, n=4):
 
 def _match_theme(title, summary):
     text = (title + " " + (summary or "")).lower()
-    for kws, label, clause in _THEME_HINTS:
-        if any(k.lower() in text for k in kws):
+    for kws, label, clauses in _THEME_HINTS:
+        if any(_kw_in(k, text) for k in kws):
+            clause = clauses[_stable_idx(title, len(clauses))]
             return label, clause
     return None, None
 
@@ -633,10 +732,9 @@ def auto_reason(title, summary, sname, stype, category, ai_score, topic=None):
         lead = _OPENERS_CAT[_stable_idx(title, len(_OPENERS_CAT))].format(
             ccat=cat_cn, clause=_CAT_VALUE.get(category, _CAT_VALUE["industry"]))
     prefix = _source_prefix(sname, stype)
-    if ai_score >= 88:
+    # 关注尾句仅留给真正高分条目（>=92，约前 12%），避免逐条出现沦为模板噪声。
+    if ai_score >= 92:
         tail = _ATTENTION_HIGH[_stable_idx(title, len(_ATTENTION_HIGH))]
-    elif ai_score >= 80:
-        tail = _ATTENTION_MID[_stable_idx(title, len(_ATTENTION_MID))]
     else:
         tail = ""
     return (prefix + lead + tail).strip()
