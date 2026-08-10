@@ -6,8 +6,12 @@ name: Daily Insurance News Collect
 # 无需 jsDelivr CDN / SHA pin / purge —— 少三个脆弱环节，零接触刷新不变。
 on:
   schedule:
-    - cron: '0 0 * * *'        # 每日 UTC 00:00 = 北京时间 08:00
+    - cron: '0 0,6,12,18 * * *'  # 每6小时：UTC 00/06/12/18 = 北京时间 08/14/20/02
   workflow_dispatch:           # 支持手动触发
+
+concurrency:
+  group: daily-collect
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -33,6 +37,23 @@ jobs:
       - name: Run collector
         run: python3 collect.py
 
+      - name: Data validation
+        run: |
+          python3 -c "
+          import json, sys
+          d = json.load(open('data.json'))
+          news = d.get('news', [])
+          assert len(news) > 0, 'data.json news is empty!'
+          assert isinstance(news, list), 'news is not a list'
+          for n in news:
+              assert 'title' in n and n['title'], f'missing title: {n}'
+              assert 'published_at' in n, f'missing published_at: {n.get(\"title\",\"\")}'
+          print(f'✅ Data validation passed: {len(news)} items')
+          "
+
+      - name: Run tests
+        run: python3 -m pytest tests/ -v --tb=short || python3 -m unittest discover tests/ -v
+
       - name: Prerender SEO (site = GitHub Pages)
         run: python3 prerender.py --site-url "$SITE_URL"
 
@@ -52,3 +73,16 @@ jobs:
 
       - name: Push (triggers GitHub Pages redeploy)
         run: git push origin HEAD:${{ github.ref_name }}
+
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚨 CI Failed: ${{ github.run_id }}`,
+              body: `采集管道运行失败，请检查：https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\n\n时间: ${new Date().toISOString()}`,
+              labels: ['ci-failure', 'auto-generated']
+            })

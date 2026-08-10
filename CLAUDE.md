@@ -18,9 +18,9 @@
 - 旧 CloudStudio 托管已弃用。
 
 ## CI（已验证可运行）
-- `.github/workflows/daily-collect.yml`：每日北京时间 08:00（UTC 00:00）自动运行 + `workflow_dispatch` 手动触发。
-- 流程：checkout(insureai) → Run collector → Prerender SEO → 采集质量自动评分(ce-optimize) → Commit data+SEO+质量评分 → Push。
-- 最近一次手动验证 run `28876165712` 结论 **success**。
+- `.github/workflows/daily-collect.yml`：每 6 小时自动运行（UTC 00/06/12/18 = 北京时间 08/14/20/02）+ `workflow_dispatch` 手动触发。
+- 并发控制：`concurrency.group=daily-collect`，`cancel-in-progress=false`。
+- 流程：checkout(insureai) → Run collector → **Data validation** → **Run tests** → Prerender SEO → 采集质量自动评分(ce-optimize) → Commit data+SEO+质量评分 → Push → **Notify on failure**（失败时自动创建 Issue）。
 - 另 `.github/workflows/weekly-research.yml`：每周一北京时间 08:00（UTC 周一 00:00）自动运行 + `workflow_dispatch`；跑 `collect_research.py` 更新 `research.json`（深度研究页半自动闭环，详见下）。
 
 ## 推送规则（红线）
@@ -33,10 +33,11 @@
 - `prerender.py`：生成 JSON-LD / 首屏静态列表 / `sitemap.xml`。
 - `collect_research.py`：深度研究页半自动采集（零依赖，复用 `collect.py` 工具）；维护 `research.json`，每周 CI 触发。
 - `scripts/quality_score.py`：CI 中跑采集质量评分，写 `data/quality/`。
-- `data.json`：前端加载的资讯数据（**由管道生成，勿大段手改**；当前 ~147 条 / v2.2.13）。
+- `data.json`：前端加载的资讯数据（**由管道生成，勿大段手改**；当前 ~900 条 / v2.3.x）。
 - `research.json`：权威研究报告（深度研究页数据源）。**半自动闭环**：`collect_research.py` 每周自动发现机构新报告并标 `auto=True` 写入；人工精炼 `key_data/key_insight` 后把条目标 `curated=True`（CI 永不覆盖）；无 `auto` 字段的历史人工条也视为 `curated`。`renderResearch` 据此显示「⚙ 自动收录·待精炼」或「✓ 精编」徽标。
-- `index.html`：SPA 骨架；`<meta name="data-url" content="data.json">` 同源加载；`feedback-email=157247839@qq.com` 已配置。
-- `tests/test_collect.py`（18 用例）+ `tests/test_dedup.py`：标准库 unittest。
+- `index.html`：SPA 骨架；`<meta name="data-url" content="data.json">` 同源加载；`feedback-email=157247839@qq.com` 已配置。含骨架屏动画、ARIA 可访问性标签、localStorage LRU 自动清理。
+- `tests/test_collect.py`（18 用例）+ `tests/test_dedup.py`（7 用例）+ `tests/test_stock_noise.py`（22 用例）：标准库 unittest。
+- 旧 `config.json` 已废弃（配置内嵌于 `collect.py` 常量中），归档于 `archive/main/data/config.json`。
 
 ## 采集通道（4 条）
 1. RSS/Atom（`SOURCES`，含 insurancejournal / reinsurancene.ws / artemis.bm）
@@ -51,6 +52,8 @@
 - 去重阈值 0.82；长句话题相似但文字差异大（~0.71）保守不误删。
 - 中文强信号词须覆盖险种专名（惠民保 / 参保 / 新能源车险 …），泛词（如「智能」）不可单独作为信号。
 - 分类均衡靠确定性重分类（`run()` 对所有条目重跑 `_category`），非靠新采集。
+- 股市行情噪声过滤（`is_stock_noise()`）：强信号（板块行情/涨跌停/资金流向/收评）+ 弱信号组合（股价词+股市上下文词）双重判定，仅检查标题避免误删深度分析。`_ingest()` 入册门控 + `run()` 存量清洗双层防护。
+- 研究主题关键词需定期扩充：`digital_transformation` 和 `ai_intelligent` 的"数字化"归属后者，已从前者移除避免冲突。
 
 ## 深入文档
 - 人类接入 / 部署 / 用法 → `README.md`

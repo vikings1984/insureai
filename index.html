@@ -11,6 +11,20 @@
   <link rel="icon" type="image/svg+xml" href="assets/logo/logo.svg">
   <link rel="apple-touch-icon" href="assets/logo/logo.svg">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* 加载骨架屏动画 */
+    .skeleton {
+      background: linear-gradient(90deg, var(--card) 25%, var(--card-hover) 50%, var(--card) 75%);
+      background-size: 200% 100%;
+      animation: skeleton-loading 1.5s infinite;
+      border-radius: 8px;
+    }
+    @keyframes skeleton-loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .skeleton-card { height: 120px; margin-bottom: 12px; border-radius: 12px; }
+  </style>
 
   <!-- ===== SEO / 社交分享 ===== -->
   <meta name="description" content="InsureAI — 保险行业动态资讯聚合平台。每日精选监管政策、产品发布、行业动态、研究洞察、理赔案例五大分类的高价值内容，覆盖 AI 智能化、养老金融、气候巨灾等八大研究主题。">
@@ -29,12 +43,12 @@
   <meta name="feedback-email" content="157247839@qq.com">
   <!-- SEO 预渲染注入点（由 prerender.py 填充 JSON-LD） -->
   <!--SEO_JSONLD_START--><script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "InsureAI", "url": "https://vikings1984.github.io/insureai", "description": "保险行业动态资讯聚合平台：每日精选监管政策、产品发布、行业动态、研究洞察与理赔案例。", "potentialAction": {"@type": "SearchAction", "target": "https://vikings1984.github.io/insureai/#/search?q={search_term_string}", "query-input": "required name=search_term_string"}}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ItemList", "name": "InsureAI 保险行业精选资讯", "itemListElement": [{"@type": "ListItem", "position": 1, "item": {"@type": "NewsArticle", "headline": "瑞众保险：全面启动内部核查与自查自纠工作", "url": "https://vikings1984.github.io/insureai/#/news/1", "datePublished": "2026-08-10T00:00:00+08:00", "articleSection": "regulation", "author": {"@type": "Organization", "name": "南方财经网"}}}, {"@type": "ListItem", "position": 2, "item": {"@type": "NewsArticle", "headline": "劳动关系不明、社保缴纳缺位、保险理赔困难等问题成梗阻—— 为骑手设计一份合适的工伤保障（金台视线）", "url": "https://vikings1984.github.io/insureai/#/news/2", "datePublished": "2026-08-10T00:00:00+08:00", "articleSection": "claims", "author": {"@type": "Organization", "name": "人民日报"}}}, {"@type": "ListItem", "position": 3, "item": {"@type": "NewsArticle", "headline": "医保个人账户里的钱如何用在刀刃上？", "url": "https://vikings1984.github.io/insureai/#/news/3", "datePublished": "2026-08-10T00:00:00+08:00", "articleSection": "product", "author": {"@type": "Organization", "name": "工人日报"}}}, {"@type": "ListItem", "position": 4, "item": {"@type": "NewsArticle", "headline": "港资再加码 李泽楷旗下公司布局内地保险经纪牌照", "url": "https://vikings1984.github.io/insureai/#/news/4", "datePublished": "2026-08-10T00:00:00+08:00", "articleSection": "regulation", "author": {"@type": "Organization", "name": "中国经营报"}}}, {"@type": "ListItem", "position": 5, "item": {"@type": "NewsArticle", "headline": "知名保险巨头被员工实名举报：虚构国补、承诺高息等诱导老人买保险 有人维权就让员工“背锅”", "url": "https://vikings1984.github.io/insureai/#/news/5", "datePublished": "2026-08-09T00:00:00+08:00", "articleSection": "industry", "author": {"@type": "Organization", "name": "每日经济新闻"}}}, {"@type": "ListItem", "position": 6, "item": {"@type": "NewsArticle", "headline": "Berkshire Hathaway P&C reinsurance boosted by Tokio Marine deal, as property volumes fall", "url": "https://vikings1984.github.io/insureai/#/news/6", "datePublished": "2026-08-08T16:22:11Z", "articleSection": "research", "author": {"@type": "Organization", "name": "Reinsurance News"}}}, {"@type": "ListItem", "position": 7, "item": {"@type": "NewsArticle", "headline": "专业能力评估，让养老保障更贴心（编辑手记）", "url": "https://vikings1984.github.io/insureai/#/news/7", "datePublished": "2026-08-08T00:00:00+08:00", "articleSection": "regulation", "author": {"@type": "Organization", "name": "人民日报"}}}, {"@type": "ListItem", "position": 8, "item": {"@type": "NewsArticle", "headline": "险企竞逐3.2亿人长护险市场", "url": "https://vikings1984.github.io/insureai/#/news/8", "datePublished": "2026-08-08T00:00:00+08:00", "articleSection": "regulation", "author": {"@type": "Organization", "name": "中国经营网"}}}, {"@type": "ListItem", "position": 9, "item": {"@type": "NewsArticle", "headline": "海外长护险怎么做？多元筹资、照护预防、居家养老", "url": "https://vikings1984.github.io/insureai/#/news/9", "datePublished": "2026-08-08T00:00:00+08:00", "articleSection": "regulation", "author": {"@type": "Organization", "name": "中国经营网"}}}, {"@type": "ListItem", "position": 10, "item": {"@type": "NewsArticle", "headline": "香港保监局：密切关注内地有关金融产品税务安排", "url": "https://vikings1984.github.io/insureai/#/news/10", "datePublished": "2026-08-08T00:00:00+08:00", "articleSection": "regulation", "author": {"@type": "Organization", "name": "财联社"}}}, {"@type": "ListItem", "position": 11, "item": {"@type": "NewsArticle", "headline": "开放客厅与养老院！深圳200亿元具身独角兽APEC发声", "url": "https://vikings1984.github.io/insureai/#/news/11", "datePublished": "2026-08-08T00:00:00+08:00", "articleSection": "industry", "author": {"@type": "Organization", "name": "21世纪经济报道"}}}, {"@type": "ListItem", "position": 12, "item": {"@type": "NewsArticle", "headline": "人民健康保险天津分公司被罚28万，涉欺骗投保人", "url": "https://vikings1984.github.io/insureai/#/news/12", "datePublished": "2026-08-08T00:00:00+08:00", "articleSection": "regulation", "author": {"@type": "Organization", "name": "蓝鲸财经"}}}]}</script><!--SEO_JSONLD_END-->
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ItemList", "name": "InsureAI 保险行业精选资讯", "itemListElement": [{"@type": "ListItem", "position": 1, "item": {"@type": "NewsArticle", "headline": "Accredited selects Hellenic Hull as first dedicated ocean marine MGA partner", "url": "https://vikings1984.github.io/insureai/#/news/1", "datePublished": "2026-08-10T07:00:40Z", "articleSection": "industry", "author": {"@type": "Organization", "name": "Reinsurance News"}}}, {"@type": "ListItem", "position": 2, "item": {"@type": "NewsArticle", "headline": "REVO submits binding offer to acquire Eurocaution in planned Benelux expansion", "url": "https://vikings1984.github.io/insureai/#/news/2", "datePublished": "2026-08-10T06:30:21Z", "articleSection": "industry", "author": {"@type": "Organization", "name": "Reinsurance News"}}}, {"@type": "ListItem", "position": 3, "item": {"@type": "NewsArticle", "headline": "DAC Beachcroft expands Cyber team with three new partners", "url": "https://vikings1984.github.io/insureai/#/news/3", "datePublished": "2026-08-10T06:00:32Z", "articleSection": "industry", "author": {"@type": "Organization", "name": "Reinsurance News"}}}, {"@type": "ListItem", "position": 4, "item": {"@type": "NewsArticle", "headline": "Starwind Specialty expands private client offering with new underwriting platform", "url": "https://vikings1984.github.io/insureai/#/news/4", "datePublished": "2026-08-10T05:30:14Z", "articleSection": "industry", "author": {"@type": "Organization", "name": "Reinsurance News"}}}, {"@type": "ListItem", "position": 5, "item": {"@type": "NewsArticle", "headline": "Alabama Courthouse Workers Smelled a Rat. Court Must Decide if Insurer Defends Suit", "url": "https://vikings1984.github.io/insureai/#/news/5", "datePublished": "2026-08-10T05:03:31Z", "articleSection": "industry", "author": {"@type": "Organization", "name": "Insurance Journal"}}}, {"@type": "ListItem", "position": 6, "item": {"@type": "NewsArticle", "headline": "Teva Seeks to Keep Israel Ties From Philadelphia Jury, Cites Gaza War", "url": "https://vikings1984.github.io/insureai/#/news/6", "datePublished": "2026-08-10T05:00:58Z", "articleSection": "industry", "author": {"@type": "Organization", "name": "Insurance Journal"}}}, {"@type": "ListItem", "position": 7, "item": {"@type": "NewsArticle", "headline": "Markel Insurance names Nguyen as Managing Director, Specialty for London Market", "url": "https://vikings1984.github.io/insureai/#/news/7", "datePublished": "2026-08-10T05:00:02Z", "articleSection": "industry", "author": {"@type": "Organization", "name": "Reinsurance News"}}}, {"@type": "ListItem", "position": 8, "item": {"@type": "NewsArticle", "headline": "瑞众保险：全面启动内部核查与自查自纠工作", "url": "https://vikings1984.github.io/insureai/#/news/8", "datePublished": "2026-08-10T00:00:00+08:00", "articleSection": "regulation", "author": {"@type": "Organization", "name": "南方财经网"}}}, {"@type": "ListItem", "position": 9, "item": {"@type": "NewsArticle", "headline": "劳动关系不明、社保缴纳缺位、保险理赔困难等问题成梗阻—— 为骑手设计一份合适的工伤保障（金台视线）", "url": "https://vikings1984.github.io/insureai/#/news/9", "datePublished": "2026-08-10T00:00:00+08:00", "articleSection": "claims", "author": {"@type": "Organization", "name": "人民日报"}}}, {"@type": "ListItem", "position": 10, "item": {"@type": "NewsArticle", "headline": "医保个人账户里的钱如何用在刀刃上？", "url": "https://vikings1984.github.io/insureai/#/news/10", "datePublished": "2026-08-10T00:00:00+08:00", "articleSection": "product", "author": {"@type": "Organization", "name": "工人日报"}}}, {"@type": "ListItem", "position": 11, "item": {"@type": "NewsArticle", "headline": "港资再加码 李泽楷旗下公司布局内地保险经纪牌照", "url": "https://vikings1984.github.io/insureai/#/news/11", "datePublished": "2026-08-10T00:00:00+08:00", "articleSection": "regulation", "author": {"@type": "Organization", "name": "中国经营报"}}}, {"@type": "ListItem", "position": 12, "item": {"@type": "NewsArticle", "headline": "瑞众保险回应员工实名举报：已成立专项工作组启动内部核查", "url": "https://vikings1984.github.io/insureai/#/news/12", "datePublished": "2026-08-10T00:00:00+08:00", "articleSection": "regulation", "author": {"@type": "Organization", "name": "新京报"}}}]}</script><!--SEO_JSONLD_END-->
 
 </head>
 <body>
   <!-- SEO 预渲染注入点（由 prerender.py 填充首屏静态列表，供搜索引擎抓取） -->
-  <!--SEO_FALLBACK_START--><div id="seo-fallback" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);"><h1>InsureAI 保险行业动态资讯</h1><ul><li><a href="https://vikings1984.github.io/insureai/#/news/1">瑞众保险：全面启动内部核查与自查自纠工作</a> — 南方财经网<br>近日，瑞众保险陕西分公司因内部人员反映销售环节存在问题引起关注。对此，瑞众保险回应21世纪经济报道记者称，目前公司已成立专项工作组，全面启动内部核查与自查自纠工作。 保险销售适当性管理与消费者权益保护一直是行业合规建设的核心领域。</li><li><a href="https://vikings1984.github.io/insureai/#/news/2">劳动关系不明、社保缴纳缺位、保险理赔困难等问题成梗阻—— 为骑手设计一份合适的工伤保障（金台视线）</a> — 人民日报<br>由于工作的灵活性与不确定性，新就业群体的劳动保障不尽如人意，劳动关系不明、社保缴纳缺位、保险理赔困难，是他们维护权益中经常面临的问题。</li><li><a href="https://vikings1984.github.io/insureai/#/news/3">医保个人账户里的钱如何用在刀刃上？</a> — 工人日报<br>目前，上海、广州、深圳、浙江、福州、苏州等多地已明确支持职工使用医保个人账户余额购买“惠民保”等城市定制型商业医疗保险，或者经医保部门备案的重疾险、医疗险等。相当于把沉淀资金转化为家庭健康保障杠杆，日常有医保兜底，大病有商保补充。 门诊统筹</li><li><a href="https://vikings1984.github.io/insureai/#/news/4">港资再加码 李泽楷旗下公司布局内地保险经纪牌照</a> — 中国经营报<br>“客户内地化是港资加码内地中介的核心动因，内地保险中介布局又反向稳固香港保险内地客群基本盘。”李芬珍子也表示，同时，两地监管持续整治非法跨境售险，倒逼部分港资保险机构从灰色转介转向持牌中介正规经营。</li><li><a href="https://vikings1984.github.io/insureai/#/news/5">知名保险巨头被员工实名举报：虚构国补、承诺高息等诱导老人买保险 有人维权就让员工“背锅”</a> — 每日经济新闻<br>瑞众保险公司以礼品、返利、虚假补贴等物质利益换取客户投保，该行为违反《保险法》第一百一十六条第四项（保险公司及其工作人员在保险业务活动中不得“给予或者承诺给予投保人、被保险人、受益人保险合同约定以外的保险费回扣或者其他利益”）及第一百三十一</li><li><a href="https://vikings1984.github.io/insureai/#/news/6">Berkshire Hathaway P&amp;C reinsurance boosted by Tokio Marine deal, as property volumes fall</a> — Reinsurance News<br>Berkshire Hathaway, the American multinational conglomerate holding company, reported that its recently entered into who</li><li><a href="https://vikings1984.github.io/insureai/#/news/7">专业能力评估，让养老保障更贴心（编辑手记）</a> — 人民日报<br>他们开出的“生活处方”，不仅是王爷爷等老年人申领补贴的依据，也使养老院的护理工作更有针对性。 养老服务的高质量发展，既需要政策兜底，也离不开专业支撑。当越来越多如胡涛一样的评估师奔走在一线，用细致入微的评估摸清需求，养老保障将更加贴心、温暖</li><li><a href="https://vikings1984.github.io/insureai/#/news/8">险企竞逐3.2亿人长护险市场</a> — 中国经营网<br>基于上述判断，大部分保险机构对政策性长护险与商业长护险实行双向发力、协同推进策略。 太保寿险方面称，其正探索“政策性长护险+商业补充护理保险+健康管理服务”三层产品体系，将商业长护险定位为“基本保障的延伸层”和“品质需求的供给层”。</li><li><a href="https://vikings1984.github.io/insureai/#/news/9">海外长护险怎么做？多元筹资、照护预防、居家养老</a> — 中国经营网<br>有险企披露的数据则显示，护理险、失能险合计保费规模突破900亿元，在健康险大盘当中占比9%，同比增速回落至5%左右。 政策性长护险的全面落地究竟会给商业长护险带来怎样的影响？</li><li><a href="https://vikings1984.github.io/insureai/#/news/10">香港保监局：密切关注内地有关金融产品税务安排</a> — 财联社<br>近期报道称中国内地税务居民购买香港保险的收益被纳入征税范围。对此，香港保险监管局回应财联社记者称，政府和保监局正密切注意内地有关金融产品税务安排的最新发展，同时会与业界保持紧密沟通。中国居民就境外投资收益必须依法申报及缴税的要求一直存在，市</li><li><a href="https://vikings1984.github.io/insureai/#/news/11">开放客厅与养老院！深圳200亿元具身独角兽APEC发声</a> — 21世纪经济报道<br>该机构主要接收深圳户籍重度失能及以上等级老年人，“0755号”作为养老护理员，真正参与了日常巡查、物品递送、语音陪伴等工作。 这种政企联动模式，是深圳“人工智能赋能千行百业”的缩影。</li><li><a href="https://vikings1984.github.io/insureai/#/news/12">人民健康保险天津分公司被罚28万，涉欺骗投保人</a> — 蓝鲸财经<br>蓝鲸新闻8月8日讯，近日，国家金融监督管理总局天津监管局发布行政处罚决定书，剑指中国人民健康保险股份有限公司天津分公司及相关责任人。 罚单显示，中国人民健康保险股份有限公司天津分公司的主要违法违规行为是：欺骗投保人。</li></ul></div><!--SEO_FALLBACK_END-->
+  <!--SEO_FALLBACK_START--><div id="seo-fallback" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);"><h1>InsureAI 保险行业动态资讯</h1><ul><li><a href="https://vikings1984.github.io/insureai/#/news/1">Accredited selects Hellenic Hull as first dedicated ocean marine MGA partner</a> — Reinsurance News<br>Accredited Insurance (Europe) Limited (Accredited) and Hellenic Hull Management (HM Insurance Agencies) Ltd (Hellenic Hu</li><li><a href="https://vikings1984.github.io/insureai/#/news/2">REVO submits binding offer to acquire Eurocaution in planned Benelux expansion</a> — Reinsurance News<br>REVO Insurance S.p.A., an Italian speciality non-life insurer, has announced the submission of a binding offer to acquir</li><li><a href="https://vikings1984.github.io/insureai/#/news/3">DAC Beachcroft expands Cyber team with three new partners</a> — Reinsurance News<br>International law firm DAC Beachcroft has bolstered its Cyber and Data Risk practice with the appointment of three speci</li><li><a href="https://vikings1984.github.io/insureai/#/news/4">Starwind Specialty expands private client offering with new underwriting platform</a> — Reinsurance News<br>Starwind Specialty, a North American programme management company and one of the region’s largest programme management o</li><li><a href="https://vikings1984.github.io/insureai/#/news/5">Alabama Courthouse Workers Smelled a Rat. Court Must Decide if Insurer Defends Suit</a> — Insurance Journal<br>A group of 32 county workers in Greene County, Alabama, became so fed up with what they said were rats, faulty air-condi</li><li><a href="https://vikings1984.github.io/insureai/#/news/6">Teva Seeks to Keep Israel Ties From Philadelphia Jury, Cites Gaza War</a> — Insurance Journal<br>Teva Pharmaceuticals has asked a U.S. judge to prevent insurer Humana from telling jurors it is an Israeli company at a </li><li><a href="https://vikings1984.github.io/insureai/#/news/7">Markel Insurance names Nguyen as Managing Director, Specialty for London Market</a> — Reinsurance News<br>Markel Insurance, the insurance operation within Markel Group Inc., has appointed Doan Nguyen as Managing Director of Sp</li><li><a href="https://vikings1984.github.io/insureai/#/news/8">瑞众保险：全面启动内部核查与自查自纠工作</a> — 南方财经网<br>近日，瑞众保险陕西分公司因内部人员反映销售环节存在问题引起关注。对此，瑞众保险回应21世纪经济报道记者称，目前公司已成立专项工作组，全面启动内部核查与自查自纠工作。 保险销售适当性管理与消费者权益保护一直是行业合规建设的核心领域。</li><li><a href="https://vikings1984.github.io/insureai/#/news/9">劳动关系不明、社保缴纳缺位、保险理赔困难等问题成梗阻—— 为骑手设计一份合适的工伤保障（金台视线）</a> — 人民日报<br>由于工作的灵活性与不确定性，新就业群体的劳动保障不尽如人意，劳动关系不明、社保缴纳缺位、保险理赔困难，是他们维护权益中经常面临的问题。</li><li><a href="https://vikings1984.github.io/insureai/#/news/10">医保个人账户里的钱如何用在刀刃上？</a> — 工人日报<br>目前，上海、广州、深圳、浙江、福州、苏州等多地已明确支持职工使用医保个人账户余额购买“惠民保”等城市定制型商业医疗保险，或者经医保部门备案的重疾险、医疗险等。相当于把沉淀资金转化为家庭健康保障杠杆，日常有医保兜底，大病有商保补充。 门诊统筹</li><li><a href="https://vikings1984.github.io/insureai/#/news/11">港资再加码 李泽楷旗下公司布局内地保险经纪牌照</a> — 中国经营报<br>“客户内地化是港资加码内地中介的核心动因，内地保险中介布局又反向稳固香港保险内地客群基本盘。”李芬珍子也表示，同时，两地监管持续整治非法跨境售险，倒逼部分港资保险机构从灰色转介转向持牌中介正规经营。</li><li><a href="https://vikings1984.github.io/insureai/#/news/12">瑞众保险回应员工实名举报：已成立专项工作组启动内部核查</a> — 新京报<br>公开资料显示，瑞众保险成立于2023年6月，是一家国有制全国性人寿保险公司。 针对此次反映的问题，瑞众保险表示，公司始终坚持依法合规开展销售，一经查实存在违规将从严处理、坚决整改，保障消费者合法权益。</li></ul></div><!--SEO_FALLBACK_END-->
   <div class="app-layout">
     <!-- Sidebar -->
     <aside class="sidebar">
@@ -98,7 +112,7 @@
       </nav>
 
       <div class="sidebar-footer">
-        <div class="icon-btn" id="theme-toggle" title="切换主题">&#9788;</div>
+        <div class="icon-btn" id="theme-toggle" title="切换主题" aria-label="切换暗色模式">&#9788;</div>
       </div>
     </aside>
 
@@ -110,7 +124,7 @@
           <h1>精选</h1>
           <p class="subtitle">保险行业高价值内容聚合</p>
         </div>
-        <div class="category-tabs" id="featured-tabs">
+        <div class="category-tabs" id="featured-tabs" aria-label="按分类筛选">
           <button class="category-tab active" data-category="all">全部</button>
           <button class="category-tab" data-category="regulation">监管</button>
           <button class="category-tab" data-category="product">产品</button>
@@ -119,7 +133,7 @@
           <button class="category-tab" data-category="claims">理赔</button>
         </div>
         <div class="search-bar">
-          <input type="text" id="search-featured" placeholder="搜索标题/摘要/标签..." autocomplete="off">
+          <input type="text" id="search-featured" placeholder="搜索标题/摘要/标签..." autocomplete="off" aria-label="搜索新闻">
           <button id="search-btn-featured">搜索</button>
         </div>
         <div class="hot-topics" id="hot-topics"></div>
@@ -132,7 +146,7 @@
           <h1>全部保险动态</h1>
           <p class="subtitle">按时间排序的完整资讯流</p>
         </div>
-        <div class="category-tabs" id="all-tabs">
+        <div class="category-tabs" id="all-tabs" aria-label="按分类筛选">
           <button class="category-tab active" data-category="all">全部</button>
           <button class="category-tab" data-category="regulation">监管</button>
           <button class="category-tab" data-category="product">产品</button>
@@ -141,7 +155,7 @@
           <button class="category-tab" data-category="claims">理赔</button>
         </div>
         <div class="search-bar">
-          <input type="text" id="search-all" placeholder="搜索标题/摘要..." autocomplete="off">
+          <input type="text" id="search-all" placeholder="搜索标题/摘要..." autocomplete="off" aria-label="搜索新闻">
           <button id="search-btn-all">搜索</button>
         </div>
         <div class="timeline all-news" id="timeline-all"><div class="loading"><div class="loading-spinner"></div><p style="margin-top:12px">加载中...</p></div></div>
@@ -163,7 +177,7 @@
           <h1>深度研究</h1>
           <p class="subtitle">权威机构保险行业研究报告精选（源自 InsureAI 知识库）</p>
         </div>
-        <div class="category-tabs" id="research-tabs">
+        <div class="category-tabs" id="research-tabs" aria-label="按分类筛选">
           <button class="category-tab active" data-topic="all">全部</button>
           <button class="category-tab" data-topic="ai_intelligent">AI智能化</button>
           <button class="category-tab" data-topic="pension_finance">养老金融</button>
@@ -245,7 +259,7 @@
               <div class="about-stat-label">采集资讯</div>
             </div>
             <div class="about-stat">
-              <div class="about-stat-num">5</div>
+              <div class="about-stat-num" id="stat-categories">5</div>
               <div class="about-stat-label">内容分类</div>
             </div>
           </div>
@@ -466,7 +480,7 @@
 
   <!-- Modal -->
   <div class="modal-overlay" id="modal-overlay">
-    <div class="modal">
+    <div class="modal" role="dialog" aria-modal="true">
       <div class="modal-header">
         <div class="modal-title" id="modal-title">详情</div>
         <div class="modal-close" id="modal-close">&times;</div>
@@ -475,6 +489,55 @@
     </div>
   </div>
 
+  <script>
+    // ===== localStorage LRU 清理 =====
+    // 条目超过 maxItems 时删除最旧的，保持存储在合理范围内
+    function cleanLocalStorage(key, maxItems = 200) {
+      try {
+        const data = JSON.parse(localStorage.getItem(key) || '[]');
+        if (data.length > maxItems) {
+          localStorage.setItem(key, JSON.stringify(data.slice(-maxItems)));
+        }
+      } catch(e) {}
+    }
+    // 暴露为全局工具函数，供 app.js 及其他模块调用
+    window.cleanLocalStorage = cleanLocalStorage;
+
+    // Hook localStorage.setItem：写入数组型数据时自动执行 LRU 清理
+    (function() {
+      var _originalSetItem = localStorage.setItem.bind(localStorage);
+      localStorage.setItem = function(key, value) {
+        _originalSetItem(key, value);
+        try {
+          var parsed = JSON.parse(value);
+          if (Array.isArray(parsed) && parsed.length > 200) {
+            _originalSetItem(key, JSON.stringify(parsed.slice(-200)));
+          }
+        } catch(e) {}
+      };
+    })();
+
+    // ===== 日报页/关于页动态分类数 =====
+    // 从 data.json 动态计算分类数量，替换硬编码的 "5"
+    (function() {
+      var meta = document.querySelector('meta[name="data-url"]');
+      if (!meta) return;
+      var url = meta.getAttribute('content');
+      fetch(url)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          var news = data.news || data.items || [];
+          if (Array.isArray(news) && news.length > 0) {
+            var categoryCount = new Set(news.map(function(n) { return n.category; })).size;
+            var el = document.getElementById('stat-categories');
+            if (el && categoryCount > 0) {
+              el.textContent = String(categoryCount);
+            }
+          }
+        })
+        .catch(function() {});
+    })();
+  </script>
   <script src="js/app.js"></script>
 </body>
 </html>

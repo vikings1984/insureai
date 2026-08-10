@@ -52,22 +52,33 @@ SOURCES = [
 
 # 研究主题关键词
 RESEARCH_TOPICS = {
-    "ai_intelligent": ["人工智能", "AI", "大模型", "智能核保", "智能理赔", "智能体", "Agent", "数字化", "科技",
+    "ai_intelligent": ["人工智能", "AI", "大模型", "智能核保", "智能理赔", "智能体", "Agent", "科技",
                         "artificial intelligence", "generative ai", "insurtech", "automation"],
     "pension_finance": ["养老", "年金", "退休", "养老金", "第三支柱", "个人养老金", "pension", "annuity", "retirement"],
     "product_innovation": ["产品", "创新", "UBI", "惠民保", "参数化", "健康险", "医疗险", "重疾险", "车险",
                             "医疗", "医保", "保单", "寿险", "慢病", "product", "launch", "parametric",
                             "health insurance", "motor", "life insurance"],
     "channel_transformation": ["代理人", "银保", "渠道", "互联网保险", "线上化", "中介", "agent", "broker",
-                                "distribution", "digital"],
+                                "distribution", "digital", "经代", "网销", "电销", "保险超市", "直播带货",
+                                "短视频", "内容营销", "私域", "社群", "bancassurance", "online sales",
+                                "telesales"],
     "capital_reinsurance": ["再保险", "巨灾", "偿付能力", "ILS", "续转", "资本", "并购", "投资", "险资", "资管",
                              "reinsurance", "catastrophe", "capital", "merger", "investment", "solvency"],
     "climate_catastrophe": ["气候", "自然灾害", "台风", "洪灾", "极端天气", "巨灾保险", "农业保险", "指数",
-                             "climate", "natural catastrophe", "flood", "wildfire", "hurricane", "parametric"],
+                             "climate", "natural catastrophe", "flood", "wildfire", "hurricane", "parametric",
+                             "地震", "旱灾", "雪灾", "冰冻", "海啸", "泥石流", "山火", "高温", "寒潮",
+                             "防灾", "减灾", "应急", "灾害预警", "巨灾模型", "灾害管理",
+                             "drought", "earthquake", "tsunami"],
     "digital_transformation": ["数字化", "保险科技", "InsurTech", "核心系统", "区块链", "数据中台", "digital",
-                                "blockchain", "core system", "data"],
+                                "blockchain", "core system", "data",
+                                "云计算", "大数据", "信息系统", "线上化", "电子化", "无纸化", "智能合约",
+                                "SaaS", "云原生", "微服务", "数字转型", "数字保险", "科技赋能", "上云",
+                                "DevOps", "IT架构", "中台", "数字化转型", "数字化建设", "数字化升级",
+                                "信息化", "技术架构", "科技投入"],
     "regulatory_change": ["监管", "合规", "C-ROSS", "IFRS 17", "金融监管总局", "行政处罚", "政策", "处罚",
-                           "regulation", "compliance", "regulator", "ifrs 17", "policy", "fine"],
+                           "regulation", "compliance", "regulator", "ifrs 17", "policy", "fine",
+                           "偿二代", "消费者权益保护", "消保", "反洗钱", "AML", "公司治理", "关联交易",
+                           "内控", "合规管理", "监管科技", "RegTech", "consumer protection"],
 }
 
 SCORE_BOOST = [
