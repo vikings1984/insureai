@@ -105,6 +105,48 @@ def is_insurance_relevant(title, summary):
     return any(t in text for t in STRONG_INSURANCE_TERMS)
 
 
+# ===================== 股市行情噪声过滤 =====================
+# 这类内容以股价涨跌 / 资金流向为主题，仅因提及"保险板块"而被采集，
+# 对保险从业者无业务参考价值，应在入册时即剔除。
+# 关键词与 evaluate_sources.py 的 STOCK_NOISE_KEYWORDS 保持同步并扩展。
+
+# 强信号：标题中出现即判定为行情噪声（无需组合）
+STOCK_NOISE_STRONG = [
+    # 板块行情
+    "板块拉升", "板块走强", "板块反弹", "板块震荡", "板块大涨", "板块下跌",
+    "板块暴涨", "板块暴跌", "板块异动", "板块飘红", "板块走低",
+    # 涨跌停
+    "涨停", "跌停",
+    # 资金流向
+    "融资客", "主力资金", "净买入", "净卖出", "净流入", "净流出",
+    # 行情收评
+    "收评", "A股收评", "A股收报",
+]
+
+# 弱信号组合：需同时命中「股价语境词」+「股市上下文词」才判定
+STOCK_NOISE_PRICE = ["涨幅", "跌幅", "涨超", "跌超", "暴涨", "暴跌", "飘红", "走低", "拉升"]
+STOCK_NOISE_CONTEXT = ["保险板块", "保险股", "保险概念", "险企个股", "创业板", "A股", "盘面"]
+
+
+def is_stock_noise(title, summary=""):
+    """检测是否为股市行情噪声。
+
+    判定逻辑：
+    1) 标题含强噪声关键词（板块行情 / 涨跌停 / 资金流向 / 收评）→ 直接判定
+    2) 标题同时含「股价语境词」和「股市上下文词」→ 判定为行情噪声
+
+    仅检查标题——行情噪声集中在标题中，避免误删摘要中提及股市的深度分析。
+    """
+    text = title or ""
+    # 强信号
+    if any(kw in text for kw in STOCK_NOISE_STRONG):
+        return True
+    # 弱信号组合
+    has_price = any(kw in text for kw in STOCK_NOISE_PRICE)
+    has_context = any(kw in text for kw in STOCK_NOISE_CONTEXT)
+    return has_price and has_context
+
+
 # ===================== 工具函数 =====================
 def fetch_url(url):
     req = urllib.request.Request(url, headers={"User-Agent": UA})
@@ -500,6 +542,12 @@ def run(dry_run=False, per_source_limit=10):
 
     # 合并
     merged = existing + collected
+    # 存量噪声清洗：剔除历史采集的股市行情噪声（板块行情/涨跌停/资金流向/收评）
+    before_noise = len(merged)
+    merged = [n for n in merged if not is_stock_noise(n.get("title", ""), n.get("summary", ""))]
+    removed_noise = before_noise - len(merged)
+    if removed_noise:
+        print(f"  🗑 股市行情噪声清洗: 剔除 {removed_noise} 条")
     merged.sort(key=lambda x: x.get("published_at", ""), reverse=True)
     # 分类均衡优化：用最新 _category 逻辑对所有条目重跑分类，
     # 使历史条目的分类随逻辑改进而修正（改进可持久化到每日 CI）。
@@ -742,6 +790,9 @@ def auto_reason(title, summary, sname, stype, category, ai_score, topic=None):
 
 def _ingest(title, summary, url, sname, stype, authority, published, existing_titles, collected, reason=None, require_topic=False):
     if not title or is_dup(title, existing_titles + [c["title"] for c in collected]):
+        return
+    # 股市行情噪声过滤：剔除板块行情/涨跌停/资金流向/收评等非业务资讯
+    if is_stock_noise(title, summary):
         return
     topic = infer_topic(title, summary)
     if require_topic and not is_insurance_relevant(title, summary):
