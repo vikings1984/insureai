@@ -15,6 +15,7 @@ concurrency:
 
 permissions:
   contents: write
+  issues: write
 
 env:
   SITE_URL: "https://vikings1984.github.io/insureai"
@@ -52,7 +53,12 @@ jobs:
           "
 
       - name: Run tests
-        run: python3 -m pytest tests/ -v --tb=short || python3 -m unittest discover tests/ -v
+        run: |
+          if command -v pytest >/dev/null 2>&1; then
+            python3 -m pytest tests/ -v --tb=short
+          else
+            python3 -m unittest discover tests/ -v
+          fi
 
       - name: Prerender SEO (site = GitHub Pages)
         run: python3 prerender.py --site-url "$SITE_URL"
@@ -79,10 +85,27 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            github.rest.issues.create({
+            const { data: issues } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `🚨 CI Failed: ${{ github.run_id }}`,
-              body: `采集管道运行失败，请检查：https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\n\n时间: ${new Date().toISOString()}`,
-              labels: ['ci-failure', 'auto-generated']
-            })
+              state: 'open',
+              labels: 'ci-failure'
+            });
+            const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
+            const timestamp = new Date().toISOString();
+            if (issues.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issues[0].number,
+                body: `采集管道再次失败：${runUrl}\n\n时间: ${timestamp}`
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `🚨 CI Failed: 采集管道运行失败`,
+                body: `采集管道运行失败，请检查：${runUrl}\n\n时间: ${timestamp}`,
+                labels: ['ci-failure']
+              });
+            }

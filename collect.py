@@ -71,14 +71,14 @@ RESEARCH_TOPICS = {
                              "drought", "earthquake", "tsunami"],
     "digital_transformation": ["数字化", "保险科技", "InsurTech", "核心系统", "区块链", "数据中台", "digital",
                                 "blockchain", "core system", "data",
-                                "云计算", "大数据", "信息系统", "线上化", "电子化", "无纸化", "智能合约",
+                                "云计算", "大数据", "信息系统", "电子化", "无纸化", "智能合约",
                                 "SaaS", "云原生", "微服务", "数字转型", "数字保险", "科技赋能", "上云",
-                                "DevOps", "IT架构", "中台", "数字化转型", "数字化建设", "数字化升级",
+                                "DevOps", "IT架构",
                                 "信息化", "技术架构", "科技投入"],
     "regulatory_change": ["监管", "合规", "C-ROSS", "IFRS 17", "金融监管总局", "行政处罚", "政策", "处罚",
                            "regulation", "compliance", "regulator", "ifrs 17", "policy", "fine",
                            "偿二代", "消费者权益保护", "消保", "反洗钱", "AML", "公司治理", "关联交易",
-                           "内控", "合规管理", "监管科技", "RegTech", "consumer protection"],
+                           "内控", "监管科技", "RegTech", "consumer protection"],
 }
 
 SCORE_BOOST = [
