@@ -88,8 +88,27 @@ python3 collect.py --limit=10   # 每个 RSS 信源最多取 10 条（注意用 
 - `.github/workflows/weekly-research.yml` 每周一北京时间 08:00 运行：自动发现的新报告标
   `auto=True`、`key_data/key_insight` 留空写入 `research.json`（待精炼）；人工精炼后把条目标
   `curated=True`，CI 即不再改动它。历史无 `auto` 字段的人工条也视为 `curated`，永不覆盖。
+- **方向驱动补充**：每次运行统计 8 个研究方向（AI/养老/产品/渠道/资本/气候/数字化/监管）
+  的报告数，低于目标（每方向 ≥3 条）的方向自动触发「方向主题页 + 搜狗定向搜索」补缺，
+  尾部输出方向覆盖报告；补不齐的方向提示经 inbox/MCP 辅助人工补充 —— 研究内容随设定方向持续更新。
 - 研究卡片据此显示「⚙ 自动收录·待精炼」或「✓ 精编」徽标，待精炼状态一目了然。
 - 本地调试：`python3 collect_research.py --dry-run`（预览候选，不写文件）。
+
+## 微信公众号内容补充（MCP 辅助人工）
+
+CI 管道已内置搜狗微信搜索通道（`fetch_wechat()`，免费无 key）。若需更深度的人工补充，
+可在本地 AI 助手（TRAE / Claude Desktop / Cursor 等）中接入微信公众号搜索 MCP：
+
+| 方案 | 说明 |
+| --- | --- |
+| `weixin_search_mcp`（lobehub） | 基于搜狗微信搜索，支持关键词搜索/真实链接提取/全文抓取 |
+| `wechatskill`（GitHub） | 提供 search_articles / search_accounts / get_article_content 三工具 |
+| `MCPWeChatOfficialAccounts`（ModelScope） | Selenium 爬虫版，需本地浏览器环境 |
+
+**推荐工作流**：AI 助手里用 MCP 搜索行业报告关键词（如"养老保险 白皮书"）→ 筛选权威机构
+文章 → 链接填入 `inbox.json`（资讯类）或人工精编进 `research.json`（报告类）。
+注意：企业微信官方 MCP（2026-08 开放）面向消息/文档/会议等办公能力，需企业账号，
+**不是行业资讯内容源**，与本场景无关。
 
 ## SEO 预渲染（P2-8）
 

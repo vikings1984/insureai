@@ -32,12 +32,12 @@
 - `collect.py`：零依赖采集管道（6 通道见下）；决定 `data.json` 内容。
 - `translate.py`：免费英译中模块（Google gtx + MyMemory 双端点回退 + SHA-1 持久缓存 `data/translation_cache.json`）。`collect.py` 采集尾部按预算（budget=40）翻译英文条目，写 `title_zh` / `summary_zh` 字段；缓存命中零请求，CI 已纳入提交。
 - `prerender.py`：生成 JSON-LD / 首屏静态列表 / `sitemap.xml`。
-- `collect_research.py`：深度研究页半自动采集（零依赖，复用 `collect.py` 工具）；维护 `research.json`，每周 CI 触发。白皮书聚焦版三重门控：①机构域名白名单 `RESEARCH_DOMAINS`（媒体网站不算研究报告）②财报噪声排除 `EARNINGS_NOISE_RE` ③标题须含报告型名词（报告/白皮书/研报/展望/report/whitepaper/sigma…）；`--clean` 可清洗历史 auto 条目（curated 条目永不动）。
+- `collect_research.py`：深度研究页半自动采集（零依赖，复用 `collect.py` 工具）；维护 `research.json`，每周 CI 触发。白皮书聚焦版三重门控：①机构域名白名单 `RESEARCH_DOMAINS`（媒体网站不算研究报告）②财报噪声排除 `EARNINGS_NOISE_RE` ③标题须含报告型名词（报告/白皮书/研报/展望/report/whitepaper/sigma…）；`--clean` 可清洗历史 auto 条目（curated 条目永不动）。**方向驱动补充**：每次运行统计 8 方向报告数，低于 `RESEARCH_TOPIC_MIN=3` 的方向自动触发「方向主题页 `TOPIC_SOURCES` + 搜狗定向搜索」，尾部输出方向覆盖报告，缺口提示人工经 inbox/MCP 补充。
 - `scripts/quality_score.py`：CI 中跑采集质量评分，写 `data/quality/`。
 - `data.json`：前端加载的资讯数据（**由管道生成，勿大段手改**；当前 ~900 条 / v2.3.x）。
 - `research.json`：权威研究报告（深度研究页数据源）。**半自动闭环**：`collect_research.py` 每周自动发现机构新报告并标 `auto=True` 写入；人工精炼 `key_data/key_insight` 后把条目标 `curated=True`（CI 永不覆盖）；无 `auto` 字段的历史人工条也视为 `curated`。`renderResearch` 据此显示「⚙ 自动收录·待精炼」或「✓ 精编」徽标。
 - `index.html`：SPA 骨架；`<meta name="data-url" content="data.json">` 同源加载；`feedback-email=157247839@qq.com` 已配置。含 ARIA 可访问性标签、localStorage LRU 自动清理（含配额耗尽降级）。
-- `tests/`：标准库 unittest，共 130 用例 —— `test_collect.py`(18) / `test_dedup.py`(9) / `test_stock_noise.py`(22) / `test_research_topics_v2.py`(18) / `test_research_filter.py`（财报噪声/白名单门控）/ `test_sogou_sources.py`（搜狗解析/轮换/链接解析）/ `test_translate.py`（双端点解析/缓存/预算）。
+- `tests/`：标准库 unittest，共 136 用例 —— `test_collect.py`(18) / `test_dedup.py`(9) / `test_stock_noise.py`(22) / `test_research_topics_v2.py`(18) / `test_research_filter.py`（财报噪声/白名单门控/方向补充缺口检测）/ `test_sogou_sources.py`（搜狗解析/轮换/链接解析）/ `test_translate.py`（双端点解析/缓存/预算）。
 - 旧 `config.json` 已废弃（配置内嵌于 `collect.py` 常量中），归档于 `archive/main/data/config.json`。
 
 ## 采集通道（6 条）

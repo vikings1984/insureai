@@ -142,5 +142,46 @@ class TestClean(unittest.TestCase):
         self.assertEqual(len(removed), 1)
 
 
+class TestTopicSupplement(unittest.TestCase):
+    """方向驱动补充：缺口检测 + 方向词命中 + topic_override"""
+
+    def test_topic_coverage_counts(self):
+        reports = [
+            {"topic": "ai_intelligent"}, {"topic": "ai_intelligent"},
+            {"topic": "pension_finance"}, {"topic": "unknown_topic"},  # 未定义方向忽略
+        ]
+        cov = cr.topic_coverage(reports)
+        self.assertEqual(cov["ai_intelligent"], 2)
+        self.assertEqual(cov["pension_finance"], 1)
+        self.assertNotIn("unknown_topic", cov)
+
+    def test_weak_topics_below_min(self):
+        reports = [{"topic": "ai_intelligent"}] * 3 + [{"topic": "pension_finance"}]
+        weak = cr.weak_topics(reports)
+        self.assertIn("pension_finance", weak)
+        self.assertNotIn("ai_intelligent", weak)  # 达标方向不在缺口
+        self.assertIn("climate_catastrophe", weak)  # 零覆盖方向在缺口
+
+    def test_hits_topic_chinese(self):
+        self.assertTrue(cr._hits_topic("个人养老金制度研究报告", "pension_finance"))
+        self.assertTrue(cr._hits_topic("巨灾保险试点白皮书", "climate_catastrophe"))
+
+    def test_hits_topic_english(self):
+        self.assertTrue(cr._hits_topic("Pension Markets in Focus report", "pension_finance"))
+        self.assertFalse(cr._hits_topic("Retail insurance trends report", "pension_finance"))
+
+    def test_short_ai_keyword_not_substring_matched(self):
+        # "ai" 不可作为关键词（detail/main 都含 ai），必须用完整词
+        self.assertFalse(cr._hits_topic("Retail insurance distribution report", "ai_intelligent"))
+        self.assertTrue(cr._hits_topic("Artificial intelligence in underwriting report", "ai_intelligent"))
+
+    def test_build_report_topic_override(self):
+        cands = [{"title": "个人养老金研究报告", "link": "https://www.iachina.cn/report/x",
+                  "summary": "", "published": ""}]
+        out = cr.build_report(cands, {"name": "direction"}, topic_override="pension_finance")
+        self.assertEqual(len(out), 1)
+        self.assertEqual(out[0]["topic"], "pension_finance")
+
+
 if __name__ == "__main__":
     unittest.main()
