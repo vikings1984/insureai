@@ -386,6 +386,164 @@ def fetch_iachina(per_art=10):
     return items
 
 
+# ===================== 搜狗搜索通道（联网资讯搜索 + 微信公众号文章） =====================
+# 搜狗是唯一深度索引微信公众号文章的搜索引擎；资讯垂直频道补充聚合媒体之外的
+# 独立报道。零依赖（标准库 urllib + CookieJar 会话），国内/CI 均可达。
+# 与东方财富（聚合媒体）、协会官网（一手行业源）形成第三类「搜索引擎发现」渠道。
+# 反爬要点：搜索页与跳转页须共享 Cookie（SNUID 等）；跳转页真实 URL 由 JS 片段拼接。
+
+SOGOU_NEWS_QUERIES = [
+    "保险 监管 政策", "保险公司 产品 发布", "保险 理赔 服务",
+    "养老保险 金", "健康险 新规", "车险 改革", "再保险 巨灾", "保险科技 数字化",
+]
+SOGOU_WECHAT_QUERIES = [
+    "保险 深度 观察", "巨灾保险 试点", "养老保险 个人养老金",
+    "保险科技 人工智能", "保险 理赔 案例", "保险资管 投资",
+]
+SOGOU_UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/120.0 Safari/537.36")
+
+
+def _sogou_session():
+    """带 Cookie 的会话 opener（搜索页与 /link 跳转页须共享 Cookie）。"""
+    import http.cookiejar
+    cj = http.cookiejar.CookieJar()
+    opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cj))
+    opener.addheaders = [("User-Agent", SOGOU_UA), ("Accept-Language", "zh-CN,zh;q=0.9")]
+    return opener
+
+
+def parse_sogou_results(page):
+    """解析搜狗结果页 <h3><a> 标题块。返回 [(href, title)]，href 为相对 /link 跳转地址。"""
+    out = []
+    for href, inner in re.findall(
+            r'<h3[^>]*>\s*<a[^>]+href="([^"]+)"[^>]*>(.*?)</a>', page, re.S):
+        # 高亮标签替换会在中文字间引入空格，须剔除还原完整词组
+        title = re.sub(r'(?<=[\u4e00-\u9fff])\s+(?=[\u4e00-\u9fff])', '',
+                       clean_text(html.unescape(inner)))
+        # 过滤空/过短与导航项
+        if len(title) >= 8 and "搜狗" not in title[:6]:
+            out.append((html.unescape(href).replace(" ", "%20"), title))
+    return out
+
+
+def resolve_sogou_link(opener, href, referer):
+    """跟随搜狗 /link 跳转页，拼接 JS 片段得到真实文章 URL。失败返回空串。"""
+    link_url = "https://weixin.sogou.com" + href if href.startswith("/") else href
+    req = urllib.request.Request(link_url, headers={"Referer": referer})
+    page = opener.open(req, timeout=TIMEOUT).read().decode("utf-8", "ignore")
+    url = "".join(re.findall(r"url \+= '([^']*)'", page))
+    return url if url.startswith("http") else ""
+
+
+def parse_wechat_article(page):
+    """解析微信公众号文章页。返回 (title, summary, account, date)。"""
+    def _og(prop):
+        m = re.search(r'property=["\']og:' + prop + r'["\'][^>]+content=["\']([^"\']+)["\']', page) or \
+            re.search(r'content=["\']([^"\']+)["\'][^>]+property=["\']og:' + prop + r'["\']', page)
+        return html.unescape(m.group(1)).strip() if m else ""
+    title = _og("title")
+    summary = _og("description")
+    m = re.search(r'id="js_name"[^>]*>\s*([^<]+?)\s*<', page)
+    account = clean_text(m.group(1)) if m else ""
+    dm = re.search(r"createTime\s*=\s*'(\d{4}-\d{2}-\d{2})", page) or \
+        re.search(r'published_time["\']\s*content=["\'](\d{4}-\d{2}-\d{2})', page)
+    date = dm.group(1) if dm else ""
+    return title, summary, account, date
+
+
+def _rotate_queries(queries, count):
+    """按天轮换查询词：每次运行只取 count 个，起点随日期偏移。
+
+    降低单次请求量（防搜狗 IP 限流），跨天自动覆盖全部关键词。
+    CI 每天 4 次运行，全部词组约 2 天轮完一遍。
+    """
+    day = time.gmtime().tm_yday
+    start = day % len(queries)
+    return (queries[start:] + queries[:start])[:count]
+
+
+def fetch_sogou_news(per_q=3):
+    """搜狗资讯垂直搜索。返回标准条目字典列表（真实源 URL，来源取域名）。"""
+    opener = _sogou_session()
+    items = []
+    for kw in _rotate_queries(SOGOU_NEWS_QUERIES, 3):
+        try:
+            url = "https://news.sogou.com/news?query=" + urllib.parse.quote_plus(kw)
+            page = opener.open(url, timeout=TIMEOUT).read().decode("utf-8", "ignore")
+            if "验证码" in page or "antispider" in page:
+                print("  ⚠ 搜狗资讯触发反爬验证，跳过该通道")
+                break
+            for href, title in parse_sogou_results(page)[:per_q]:
+                if not is_insurance_relevant(title, "") or is_stock_noise(title):
+                    continue
+                real = resolve_sogou_link(opener, href, url)
+                if not real:
+                    continue
+                items.append({
+                    "title": title,
+                    "summary": title,          # 资讯页摘要不稳定，标题兜底
+                    "url": real,
+                    "source_name": _host(real),
+                    "source_type": "媒体",
+                    "authority": 76,
+                    "published_at": to_iso(None),
+                    "language": "zh",
+                })
+            time.sleep(0.5)
+        except Exception as e:
+            print(f"  ⚠ 搜狗资讯 '{kw}' 失败: {e}")
+    return items
+
+
+def fetch_wechat(per_q=2):
+    """搜狗微信搜索：发现微信公众号深度文章。返回标准条目字典列表。
+
+    链路：搜索页 → /link 跳转（JS 片段拼接真实 URL）→ 文章页
+    og:title / og:description / 公众号账号名（js_name）。
+    """
+    opener = _sogou_session()
+    items = []
+    for kw in SOGOU_WECHAT_QUERIES:
+        try:
+            url = "https://weixin.sogou.com/weixin?type=2&query=" + urllib.parse.quote_plus(kw)
+            page = opener.open(url, timeout=TIMEOUT).read().decode("utf-8", "ignore")
+            if "验证码" in page or "antispider" in page:
+                print("  ⚠ 搜狗微信触发反爬验证，跳过该通道")
+                break
+            for href, title in parse_sogou_results(page)[:per_q + 2]:
+                if not is_insurance_relevant(title, "") or is_stock_noise(title):
+                    continue
+                real = resolve_sogou_link(opener, href, url)
+                if not real.startswith("https://mp.weixin.qq.com"):
+                    continue
+                art_title, desc, account, date = "", "", "", ""
+                try:
+                    art = opener.open(real, timeout=TIMEOUT).read().decode("utf-8", "ignore")
+                    art_title, desc, account, date = parse_wechat_article(art)
+                except Exception:
+                    continue
+                # 以文章页 og 元数据为准（搜索页标题可能被截断）
+                final_title = art_title or title
+                if len(final_title) < 8:
+                    continue
+                pub = f"{date}T00:00:00+08:00" if date else to_iso(None)
+                items.append({
+                    "title": final_title,
+                    "summary": desc[:200] or final_title,
+                    "url": real,
+                    "source_name": account or "微信公众号",
+                    "source_type": "微信公众号",
+                    "authority": 78,
+                    "published_at": pub,
+                    "language": "zh",
+                })
+            time.sleep(0.5)
+        except Exception as e:
+            print(f"  ⚠ 搜狗微信 '{kw}' 失败: {e}")
+    return items
+
+
 def to_iso(pub):
     if not pub:
         return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
@@ -551,6 +709,32 @@ def run(dry_run=False, per_source_limit=10):
         source_health["中国保险行业协会"] = {"count": 0, "ok": False}
         print(f"  ⚠ 保险行业协会采集失败: {e}")
 
+    # 通道 5：搜狗资讯搜索（联网搜索发现的独立报道，域名级来源）
+    try:
+        sg_items = fetch_sogou_news(per_q=3)
+        for it in sg_items:
+            _ingest(it["title"], it["summary"], it["url"], it["source_name"], it["source_type"],
+                    it["authority"], it["published_at"], existing_titles, collected,
+                    require_topic=True)
+        source_health["搜狗资讯搜索"] = {"count": len(sg_items), "ok": True}
+        print(f"  🔎 联网源(搜狗资讯): {len(sg_items)} 条")
+    except Exception as e:
+        source_health["搜狗资讯搜索"] = {"count": 0, "ok": False}
+        print(f"  ⚠ 搜狗资讯采集失败: {e}")
+
+    # 通道 6：搜狗微信搜索（公众号深度文章，来源=公众号账号名）
+    try:
+        wx_items = fetch_wechat(per_q=2)
+        for it in wx_items:
+            _ingest(it["title"], it["summary"], it["url"], it["source_name"], it["source_type"],
+                    it["authority"], it["published_at"], existing_titles, collected,
+                    require_topic=True)
+        source_health["微信公众号搜索"] = {"count": len(wx_items), "ok": True}
+        print(f"  💬 微信公众号: {len(wx_items)} 条")
+    except Exception as e:
+        source_health["微信公众号搜索"] = {"count": 0, "ok": False}
+        print(f"  ⚠ 微信公众号采集失败: {e}")
+
     # 合并
     merged = existing + collected
     # 存量噪声清洗：剔除历史采集的股市行情噪声（板块行情/涨跌停/资金流向/收评）
@@ -576,6 +760,13 @@ def run(dry_run=False, per_source_limit=10):
         for c in collected[:12]:
             print(f"  + [{c['ai_score']}] {c['title'][:42]}")
         return
+
+    # 英文资讯免费翻译为中文（标题/摘要补充 title_zh/summary_zh，带持久化缓存）
+    try:
+        import translate
+        translate.translate_news(merged, budget=40)
+    except Exception as e:
+        print(f"  ⚠ 翻译通道失败（不影响采集）: {e}")
 
     data["news"] = merged
     data["days"] = days

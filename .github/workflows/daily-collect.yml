@@ -70,8 +70,8 @@ jobs:
         run: |
           git config user.name "insureai-bot"
           git config user.email "bot@insureai.local"
-          if [ -n "$(git status --porcelain data.json index.html sitemap.xml research.json data/quality)" ]; then
-            git add data.json index.html sitemap.xml research.json data/quality
+          if [ -n "$(git status --porcelain data.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
+            git add data.json index.html sitemap.xml research.json data/quality data/translation_cache.json
             git commit -m "chore: auto-collect + prerender + quality-score $(date +%F)"
           else
             echo "no changes"

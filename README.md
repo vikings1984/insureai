@@ -22,18 +22,21 @@ python3 -m http.server 8000
 ├── css/style.css           # 全部样式
 ├── js/app.js               # 全部业务逻辑（路由/渲染/交互）
 ├── data.json               # 资讯数据 + 信源数据（前端异步加载）
-├── collect.py              # 零依赖自动采集管道（RSS + 收件箱 ingestion）
+├── collect.py              # 零依赖自动采集管道（RSS + 收件箱 + 搜索引擎 6 通道）
+├── translate.py            # 免费英译中（gtx + MyMemory 双端点回退 + 持久缓存）
+├── collect_research.py     # 研究报告采集（白皮书三重门控，周更 research.json）
 ├── prerender.py            # SEO 预渲染（JSON-LD + 首屏列表 + sitemap.xml）
 ├── inbox.json              # 待收录文章收件箱（空数组，填入真实链接即可）
 ├── inbox.example.json      # 收件箱格式示例
+├── research.json           # 权威机构研究报告数据（深度研究页）
 ├── sitemap.xml             # 由 prerender.py 生成（部署前跑一次）
-├── tests/
-│   ├── test_collect.py     # 采集管道单测（相关性门控/分类/评分/去重/iachina，18 用例）
-│   └── test_dedup.py       # 去重逻辑单测（标准库 unittest）
+├── tests/                  # 标准库 unittest，130 用例（采集/去重/噪声过滤/
+│                           #   研究门控/搜狗解析/翻译）
 ├── Makefile                # 运维命令：make collect / collect-dry / seo / deploy
 ├── .github/
 │   └── workflows/
-│       └── daily-collect.yml  # GitHub Actions 每日定时采集并提交 data.json
+│       ├── daily-collect.yml    # 每 6 小时定时采集并提交 data.json
+│       └── weekly-research.yml  # 每周一采集研究报告更新 research.json
 ├── OPTIMIZATION_PROPOSAL.md   # 第一性原理检视与优化建议
 └── README.md
 ```
@@ -42,20 +45,25 @@ python3 -m http.server 8000
 
 聚合的前提是自动获取。本项目通过 `collect.py`（仅用 Python 标准库，零依赖）实现：
 
-**四条采集通道**
+**六条采集通道**
 1. **RSS/Atom 信源**：在 `collect.py` 的 `SOURCES` 中填入真实可用的订阅地址（当前含 insurancejournal / reinsurancene.ws / artemis.bm 等国际保险信源）。
-2. **收件箱 ingestion（主通道）**：把你想收录的真实文章链接放进 `inbox.json`：
+2. **收件箱 ingestion**：把你想收录的真实文章链接放进 `inbox.json`（格式见 `inbox.example.json`），管道会自动抓取标题/摘要、评分、分类、去重并合并。
 3. **东方财富搜索 API**：`collect.py` 内置 `fetch_eastmoney()`，按保险关键词检索权威媒体（21 世纪经济报道 / 上海证券报 / 中国保险行业协会等），零额外依赖。
 4. **中国保险行业协会官网 iachina.cn**：`fetch_iachina()` 抓取协会一手行业资讯（`source_type=行业协会`，`authority=90`）。
-   ```json
-   [
-     { "url": "https://...", "source_name": "慧保天下", "source_type": "媒体", "authority": 89 }
-   ]
-   ```
-   管道会自动抓取标题/摘要、评分、分类、去重并合并。
+5. **搜狗资讯垂直搜索**：`fetch_sogou_news()` 补充聚合媒体之外的独立报道；关键词按天轮换（每日 3 词）防 IP 限流，触发反爬验证自动跳过。
+6. **搜狗微信公众号搜索**：`fetch_wechat()`（`source_type=微信公众号`）——搜狗是唯一深度索引公众号文章的搜索引擎，覆盖「慧保天下」等行业深度号内容。
 
 **处理流程**：抓取 → 评分(0-100) → 研究主题分类 → Levenshtein 去重(相似度≥0.82)
-→ 增量合并(不覆盖既有精选) → 重算 `days` / `source_health` → 写回 `data.json`。
+→ 增量合并(不覆盖既有精选) → 英文条目免费翻译（见下）→ 重算 `days` / `source_health` → 写回 `data.json`。
+
+## 免费英译中（translate.py）
+
+英文资讯自动翻译为中文，全程零成本：
+
+- **双端点回退**：Google gtx（`translate.googleapis.com`，免费无 key）→ MyMemory API 兜底；译文校验含中文且非原文回显才采纳。
+- **持久缓存**：`data/translation_cache.json` 按 SHA-1 键缓存，命中零请求；CI 跨次运行复用，长期成本趋近于零。
+- **预算控制**：每次采集最多翻译 40 条（缓存命中不占预算），翻译失败静默跳过，绝不阻塞采集主流程。
+- **前端展示**：英文条目卡片显示中文标题副行，摘要优先中文；详情弹窗可展开英文原文；搜索同时匹配中英文字段。
 
 **用法**
 ```bash
@@ -73,8 +81,10 @@ python3 collect.py --limit=10   # 每个 RSS 信源最多取 10 条（注意用 
 不能完全靠新闻管道，因此采用「**自动发现 + 人工精炼**」闭环：
 
 - `collect_research.py`（零依赖，复用 `collect.py` 工具）维护 `RESEARCH_SOURCES` 机构报告源清单
-  （国际再保险 / 全球咨询 / 国内研究 / 监管机构 四层），经保险信号门控与研究关键词
-  （report / whitepaper / sigma / 展望 / 报告 …）自动发现新报告。
+  （国际再保险 / 全球咨询 / 国内研究 / 监管机构 四层），采用**白皮书三重门控**聚焦高质量报告：
+  ① 候选 URL 必须命中机构域名白名单（瑞再/慕再/麦肯锡/德勤等一手信源，媒体文章一律不算研究报告）
+  ② 财报噪声排除（"Munich Re posts Q2 net profit" 类季报通稿不收录）
+  ③ 标题须含报告型名词（报告/白皮书/研报/展望/report/whitepaper/sigma…）且通过保险信号门控。
 - `.github/workflows/weekly-research.yml` 每周一北京时间 08:00 运行：自动发现的新报告标
   `auto=True`、`key_data/key_insight` 留空写入 `research.json`（待精炼）；人工精炼后把条目标
   `curated=True`，CI 即不再改动它。历史无 `auto` 字段的人工条也视为 `curated`，永不覆盖。
@@ -122,7 +132,14 @@ python3 prerender.py --site-url https://your.domain   # 指定正式域名
 python3 -m unittest tests/test_dedup.py -v
 ```
 
-采集管道另有 `tests/test_collect.py`（18 用例，覆盖保险相关性门控 / 分类 / 评分 / 去重 / iachina 抓取），运行：`python3 -m unittest tests/test_collect.py -v`。
+采集管道另有 `tests/test_collect.py`（18 用例，覆盖保险相关性门控 / 分类 / 评分 / 去重 / iachina 抓取）。
+本次三项优化配套新增：`tests/test_research_filter.py`（财报噪声/白名单门控）、
+`tests/test_sogou_sources.py`（搜狗解析/关键词轮换/链接解析）、`tests/test_translate.py`（双端点解析/缓存/预算），
+全量 130 用例：
+
+```bash
+python3 -m unittest discover -s tests -v
+```
 
 ## 工程结构（P3-11 拆分）
 
@@ -163,6 +180,7 @@ git -c credential.helper= -c http.version=HTTP/1.1 push "$REMOTE" HEAD:insureai
 - **8 大研究主题标签**：AI智能化、养老金融、产品创新、渠道变革、资本与再保险、气候与巨灾、数字化转型、监管变革
 - **日期验证徽章**：已验证发布日期的文章显示绿色对勾标记
 - **权威研究报告徽章**：来自咨询机构/再保险巨头/研究智库的文章显示书本标记
+- **英文资讯中文化**：免费双端点翻译 + 持久缓存，英文条目中文优先展示、原文可折叠
 - **热点话题卡片**：精选页面顶部展示 Top 5 热点资讯
 - **分享链接**：详情弹窗支持一键复制分享链接
 - **Levenshtein 去重**：基于标题相似度的智能去重（阈值 0.82）

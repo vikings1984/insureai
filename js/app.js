@@ -155,6 +155,8 @@
         data = data.filter(item =>
           item.title.toLowerCase().includes(kw) ||
           item.summary.toLowerCase().includes(kw) ||
+          (item.title_zh && item.title_zh.toLowerCase().includes(kw)) ||
+          (item.summary_zh && item.summary_zh.toLowerCase().includes(kw)) ||
           (item.tags && item.tags.toLowerCase().includes(kw)) ||
           (item.source_name && item.source_name.toLowerCase().includes(kw))
         );
@@ -174,7 +176,7 @@
         return `
           <div class="hot-topic-card" onclick="showDetail(${item.id})">
             <div class="hot-topic-rank">#${i + 1} 热点</div>
-            <div class="hot-topic-title">${esc(item.title)}</div>
+            <div class="hot-topic-title">${esc(item.title_zh || item.title)}</div>
             <div class="hot-topic-meta">
               <span>${esc(item.source_name) || ''}</span>
               <span>· ${esc(catNames[item.category] || item.category)}</span>
@@ -262,6 +264,9 @@
           const tags = news.tags ? news.tags.split(',').map(t => `<span class="card-tag" data-tag="${esc(t.trim())}" onclick="event.stopPropagation();searchTag(this.dataset.tag)">${esc(t.trim())}</span>`).join('') : '';
           const summaryClass = news.summary && news.summary.length > 80 ? 'collapsed' : '';
           const toggleBtn = news.summary && news.summary.length > 80 ? `<span class="summary-toggle" onclick="event.stopPropagation();toggleSummary(this)">展开</span>` : '';
+          // 英文条目以中文翻译为主展示（标题副行 + 摘要优先中文）
+          const titleZhBlock = news.title_zh ? `<div class="card-title-zh">${esc(news.title_zh)}</div>` : '';
+          const summaryMain = news.summary_zh || news.summary || '';
 
           html += `
             <div class="timeline-item ${isRead ? 'is-read' : ''} ${isFav ? 'is-fav' : ''}" data-id="${news.id}" onclick="showDetail(${news.id})" style="cursor:pointer">
@@ -277,7 +282,8 @@
                   <div class="card-title" data-id="${news.id}">${esc(news.title)}</div>
                   ${scoreBadge}
                 </div>
-                <div class="card-summary ${summaryClass}">${esc(news.summary) || ''}${toggleBtn}</div>
+                ${titleZhBlock}
+                <div class="card-summary ${summaryClass}">${esc(summaryMain)}${toggleBtn}</div>
                 <div class="card-tags">${tags}</div>
                 ${reasonBlock}
               </div>
@@ -761,9 +767,12 @@
       // Build share URL (current page URL with anchor)
       const shareUrl = window.location.origin + window.location.pathname + '?id=' + id;
 
-      document.getElementById('modal-title').textContent = news.title;
+      document.getElementById('modal-title').textContent = news.title_zh || news.title;
+      const modalTitleEn = news.title_zh && news.title_zh !== news.title
+        ? `<div class="modal-title-en">${esc(news.title)}</div>` : '';
       const safeHref = safeUrl(news.source_url);
       document.getElementById('modal-body').innerHTML = `
+        ${modalTitleEn}
         <div class="modal-meta">
           <span>${esc(news.source_name) || '未知来源'}</span>
           ${news.source_type ? `<span class="source-sub">${esc(news.source_type)}</span>` : ''}
@@ -773,7 +782,12 @@
           ${news.ai_score ? `<span class="score-badge" style="display:inline-flex;vertical-align:middle;margin-left:4px">&#9733; <span class="score-num">${esc(news.ai_score)}</span></span>` : ''}
         </div>
         ${news.reason ? `<div class="card-reason" style="margin-bottom:16px"><div class="reason-text"><span class="reason-label">推荐理由：</span>${esc(news.reason)}</div></div>` : ''}
-        <p style="white-space:pre-wrap;line-height:1.8">${esc(news.summary) || '暂无摘要'}</p>
+        <p style="white-space:pre-wrap;line-height:1.8">${esc(news.summary_zh || news.summary) || '暂无摘要'}</p>
+        ${news.summary_zh && news.summary && news.summary_zh !== news.summary ? `
+          <details style="margin-top:4px">
+            <summary style="cursor:pointer;color:var(--text-secondary,#718096);font-size:12px">英文原文</summary>
+            <p style="white-space:pre-wrap;line-height:1.7;color:var(--text-secondary,#718096);font-size:13px">${esc(news.summary)}</p>
+          </details>` : ''}
         <div style="margin-top:12px">${tags}</div>
         <div class="modal-actions">
           ${safeHref ? `<a href="${esc(safeHref)}" target="_blank" rel="noopener noreferrer" class="modal-btn primary">阅读原文 &#8599;</a>` : ''}
