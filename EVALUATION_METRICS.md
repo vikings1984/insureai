@@ -21,6 +21,10 @@
 
 当前基准覆盖：事件聚类、Claim→Evidence、Temporal、Decision 四层。
 
+## Production Replay
+
+`production_replay.py` 使用真实 `data.json` 进行分层抽样回放，并通过改变输入顺序验证 Event Partition 稳定性；当真实数据为空时输出 `unavailable`，不伪造质量结果。
+
 ## Gate
 
 CI 对 `macro_quality` 设置 0.95 下限。任何指标恶化都应先解释原因，再决定是否修改算法或扩充基准集。
