@@ -1,7 +1,7 @@
 (function () {
   const escapeHtml = (value) => String(value == null ? '' : value)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    .replace(/\"/g, '&quot;').replace(/'/g, '&#39;');
 
   fetch('owner_risk_view.json').then(r => r.ok ? r.json() : null).then(data => {
     if (!data) return;
@@ -13,6 +13,21 @@
       '<p>只读展示：负责人、截止时间和下一步均需人工确认；不会自动执行行动。</p>' +
       '<div><strong>整体可信度：</strong>' + escapeHtml(credibility.status || 'unknown') + '</div>' +
       '<div><strong>可信度原因：</strong>' + escapeHtml(reasons) + '</div>';
+
+    const signals = Array.isArray(credibility.signal_details) ? credibility.signal_details : [];
+    if (signals.length) {
+      const detail = document.createElement('div');
+      detail.innerHTML = '<strong>触发信号：</strong>';
+      signals.forEach(signal => {
+        const passed = signal.result ? '通过' : '未通过';
+        const actual = typeof signal.actual === 'object' ? JSON.stringify(signal.actual) : signal.actual;
+        const threshold = typeof signal.threshold === 'object' ? JSON.stringify(signal.threshold) : signal.threshold;
+        const row = document.createElement('div');
+        row.textContent = `${signal.signal}: actual=${actual} ${signal.comparator} threshold=${threshold} · ${passed} · source=${signal.source || 'unknown'}`;
+        detail.appendChild(row);
+      });
+      host.appendChild(detail);
+    }
 
     data.items.slice(0, 12).forEach(item => {
       const card = document.createElement('article');
