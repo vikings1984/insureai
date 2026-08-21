@@ -74,6 +74,8 @@ jobs:
         run: python3 optimization_backlog.py
       - name: Build daily risk radar
         run: python3 daily_risk_radar.py
+      - name: Build owner-facing risk view
+        run: python3 owner_risk_view.py
       - name: Data validation
         run: |
           python3 -c "
@@ -87,6 +89,8 @@ jobs:
           sh=json.load(open('decision_history.json')); assert sh.get('version') == 1 and isinstance(sh.get('snapshots'),list) and len(sh['snapshots']) <= 90
           cred=json.load(open('decision_credibility.json')); assert cred.get('version') == 2 and cred.get('status') in {'ready','review','caution','blocked'} and isinstance(cred.get('provenance'),dict) and isinstance(cred.get('reasons'),list)
           radar=json.load(open('daily_risk_radar.json')); assert radar.get('version') == 1 and isinstance(radar.get('items'),list) and radar.get('status') in {'ready','review','caution','blocked','unknown'}
+          owner=json.load(open('owner_risk_view.json')); assert owner.get('version') == 1 and isinstance(owner.get('items'),list) and owner.get('item_count', 0) >= len(owner['items'])
+          for item in owner['items']: assert item.get('automation') == 'advisory_only' and item.get('owners') and item.get('deadline') and item.get('next_step')
           q=json.load(open('review_queue.json')); assert q.get('version') == 1 and isinstance(q.get('items'),list)
           imp=json.load(open('change_impact.json')); assert imp.get('version') == 1 and isinstance(imp.get('impacted_events'),list) and isinstance(imp.get('baseline_available'),bool)
           ledger=json.load(open('audit_ledger.json')); assert ledger.get('version') == 1 and ledger.get('privacy') == 'hashes_and_metadata_only'
@@ -97,7 +101,7 @@ jobs:
           ob=json.load(open('optimization_backlog.json')); assert ob.get('version') == 3 and isinstance(ob.get('items'),list)
           hist=json.load(open('optimization_backlog_history.json')); assert hist.get('version') == 2 and isinstance(hist.get('snapshots'),list) and len(hist['snapshots']) <= 90
           for item in ob['items']: assert item.get('status') in {'open','recovering','resolved','regressed'}
-          print(f'Validation passed: news={len(news)} events={len(i["events"])} stability={len(s["results"])} credibility={cred["status"]} radar={len(radar["items"])} review={len(q["items"])} impacts={imp["impacted_count"]} backlog={len(ob["items"])} baseline={mt["baseline_available"]}')
+          print(f'Validation passed: news={len(news)} events={len(i["events"])} stability={len(s["results"])} credibility={cred["status"]} radar={len(radar["items"])} owner_view={len(owner["items"])} review={len(q["items"])} impacts={imp["impacted_count"]} backlog={len(ob["items"])} baseline={mt["baseline_available"]}')
           "
       - name: Run tests
         run: python3 -m unittest discover tests/ -v
@@ -138,9 +142,9 @@ jobs:
       - name: Commit data + quality artifacts
         run: |
           git config user.name "insureai-bot"; git config user.email "bot@insureai.local"
-          if [ -n "$(git status --porcelain data.json intelligence.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json optimization_backlog.json optimization_backlog_history.json release_manifest.json decision_stability.json decision_history.json decision_credibility.json daily_risk_radar.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
-            git add data.json intelligence.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json optimization_backlog.json optimization_backlog_history.json release_manifest.json decision_stability.json decision_history.json decision_credibility.json daily_risk_radar.json index.html sitemap.xml research.json data/quality data/translation_cache.json
-            git commit -m "chore: auto-collect + intelligence + quality + radar $(date +%F)"
+          if [ -n "$(git status --porcelain data.json intelligence.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json optimization_backlog.json optimization_backlog_history.json release_manifest.json decision_stability.json decision_history.json decision_credibility.json daily_risk_radar.json owner_risk_view.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
+            git add data.json intelligence.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json optimization_backlog.json optimization_backlog_history.json release_manifest.json decision_stability.json decision_history.json decision_credibility.json daily_risk_radar.json owner_risk_view.json index.html sitemap.xml research.json data/quality data/translation_cache.json
+            git commit -m "chore: auto-collect + intelligence + quality + owner view $(date +%F)"
           else echo "no changes"; fi
       - name: Push (triggers GitHub Pages redeploy)
         run: git push origin HEAD:${{ github.ref_name }}
