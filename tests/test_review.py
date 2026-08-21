@@ -31,6 +31,29 @@ class TestReviewQueue(unittest.TestCase):
         self.assertIn("evidence", reason_types)
         self.assertIn("decision", reason_types)
 
+    def test_low_input_availability_adds_review_reason_without_changing_decision(self):
+        data = {
+            "events": [{
+                "event_id": "evt3",
+                "title": "Evidence-limited event",
+                "scores": {"intelligence_score": 60},
+                "trust": {"level": "high", "conflict": False},
+                "claims": {"coverage": 100},
+                "article_count": 3,
+                "article_ids": ["a1", "a2", "a3"],
+                "source_count": 3,
+            }],
+            "decisions": [{"event_id": "evt3", "urgency": "watch", "action": "watch"}],
+            "temporal": {"topic_signals": []},
+        }
+        result = build_review_queue(data, evidence_availability={"level": "low", "reason": "input is stale"})
+        self.assertEqual(result["generated_count"], 1)
+        item = result["items"][0]
+        self.assertEqual(item["decision"]["urgency"], "watch")
+        self.assertEqual(item["decision"]["action"], "watch")
+        self.assertIn("input_quality", {x["type"] for x in item["reasons"]})
+        self.assertEqual(item["evidence_availability"]["level"], "low")
+
     def test_clean_low_impact_event_is_not_queued(self):
         data = {
             "events": [{
