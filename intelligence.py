@@ -13,6 +13,8 @@ from collections import Counter
 from datetime import datetime, timezone
 from urllib.parse import urlparse
 
+from radar import build_radar
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(HERE, "data.json")
 OUTPUT_PATH = os.path.join(HERE, "intelligence.json")
@@ -120,14 +122,13 @@ def _event_similarity(a, b):
     token = _token_similarity(ta, tb)
     entity = _entity_similarity(a, b)
     type_bonus = 0.15 if _event_type(a) == _event_type(b) else 0.0
-    # 实体优先：对于“Munich Re buys At-Bay”与“Munich Re agrees to acquire At-Bay”这类标题，
-    # 相同主体比字面词更能说明它们是同一事件。
     return min(1.0, 0.55 * token + 0.30 * entity + type_bonus)
 
 
 def _within_window(a, b, hours=96):
     ta, tb = _timestamp(a), _timestamp(b)
-    if ta == datetime.min.replace(tzinfo=timezone.utc) or tb == datetime.min.replace(tzinfo=timezone.utc):
+    minimum = datetime.min.replace(tzinfo=timezone.utc)
+    if ta == minimum or tb == minimum:
         return True
     return abs((ta - tb).total_seconds()) <= hours * 3600
 
@@ -264,11 +265,12 @@ def build(data):
     daily = [e for e in events if (e.get("published_at") or "").startswith(today)][:5] or events[:5]
     event_types = Counter(e["event_type"] for e in events)
     return {
-        "version": 2,
+        "version": 3,
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "principle": "发现值得行动的变化，而不是堆积更多新闻",
         "events": events,
         "daily_brief": daily,
+        "radar": build_radar(events),
         "stats": {
             "news_count": len(news),
             "event_count": len(events),
@@ -287,7 +289,7 @@ def main():
         json.dump(result, f, ensure_ascii=False, indent=2)
         f.write("\n")
     os.replace(tmp, OUTPUT_PATH)
-    print(f"Intelligence engine: {result['stats']['news_count']} news -> {result['stats']['event_count']} events; daily brief={len(result['daily_brief'])}")
+    print(f"Intelligence engine: {result['stats']['news_count']} news -> {result['stats']['event_count']} events; daily brief={len(result['daily_brief'])}; radar={result['radar']['stats']['entities']} entities")
 
 
 if __name__ == "__main__":
