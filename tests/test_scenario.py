@@ -19,7 +19,9 @@ class TestScenarioIntelligence(unittest.TestCase):
         result = build_scenarios(data)
         names = {x["scenario"] for x in result["scenarios"]}
         self.assertIn("regulation_leads", names)
-        self.assertTrue(all("not a forecast" in x["disclaimer"] for x in result["scenarios"]))
+        for row in result["scenarios"]:
+            self.assertIn("不是预测", row["disclaimer"])
+            self.assertNotEqual(row["support_level"], None)
 
     def test_low_signal_is_not_promoted(self):
         data = {

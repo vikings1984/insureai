@@ -1,7 +1,7 @@
 name: Daily Insurance News Collect
 
 # 单分支架构：insureai 既是默认分支也是唯一应用分支。
-# 流程：采集 → intelligence engine → trust layer → claim/evidence → temporal → calibration → decision → counterfactual → contract → evaluation → metrics → replay → human review → radar/trends → prerender → UI → 质量评分 → push。
+# 流程：采集 → intelligence → trust → claims → temporal → calibration → decision → counterfactual → scenario → contract → evaluation → metrics → replay → review → publish。
 on:
   schedule:
     - cron: '0 0,6,12,18 * * *'
@@ -41,6 +41,8 @@ jobs:
         run: python3 decision_build.py
       - name: Run counterfactual robustness analysis
         run: python3 counterfactual.py
+      - name: Run bounded scenario intelligence
+        run: python3 scenario.py
       - name: Validate and stamp data contract
         run: python3 contract.py
       - name: Evaluate intelligence quality
@@ -72,7 +74,10 @@ jobs:
           cf = json.load(open('counterfactual.json'))
           assert cf.get('version') == 1
           assert 0 <= float(cf.get('fragility_rate', 0)) <= 1
-          print(f'Validation passed: {len(news)} news -> {len(i["events"])} events; review={len(q["items"])}; calibration={cal["status"]}; fragility={cf["fragility_rate"]}')
+          sc = json.load(open('scenario.json'))
+          assert sc.get('version') == 1
+          assert isinstance(sc.get('scenarios'), list)
+          print(f'Validation passed: {len(news)} news -> {len(i["events"])} events; review={len(q["items"])}; calibration={cal["status"]}; fragility={cf["fragility_rate"]}; scenarios={len(sc["scenarios"])}')
           "
       - name: Run tests
         run: python3 -m unittest discover tests/ -v
@@ -94,13 +99,13 @@ jobs:
         run: python3 scripts/inject_review_ui.py
       - name: 采集质量自动评分 (ce-optimize)
         run: python3 scripts/quality_score.py
-      - name: Commit data + intelligence + calibration + counterfactual + review queue + SEO + 质量评分
+      - name: Commit data + intelligence + calibration + counterfactual + scenario + review queue + SEO + 质量评分
         run: |
           git config user.name "insureai-bot"
           git config user.email "bot@insureai.local"
-          if [ -n "$(git status --porcelain data.json intelligence.json calibration.json counterfactual.json review_queue.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
-            git add data.json intelligence.json calibration.json counterfactual.json review_queue.json index.html sitemap.xml research.json data/quality data/translation_cache.json
-            git commit -m "chore: auto-collect + intelligence + calibration + counterfactual + review + evaluation + replay + trust + claims + temporal + decision $(date +%F)"
+          if [ -n "$(git status --porcelain data.json intelligence.json calibration.json counterfactual.json scenario.json review_queue.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
+            git add data.json intelligence.json calibration.json counterfactual.json scenario.json review_queue.json index.html sitemap.xml research.json data/quality data/translation_cache.json
+            git commit -m "chore: auto-collect + intelligence + calibration + counterfactual + scenario + review + evaluation + replay + trust + claims + temporal + decision $(date +%F)"
           else
             echo "no changes"
           fi
