@@ -70,6 +70,8 @@ def build_review_queue(data: dict) -> dict:
         candidates.append({
             "event_id": event.get("event_id"),
             "title": event.get("title"),
+            "event_type": event.get("event_type") or "industry_update",
+            "topic": event.get("topic"),
             "priority": _priority(event, decision),
             "status": "pending",
             "reasons": reasons[:5],

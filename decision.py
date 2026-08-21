@@ -3,6 +3,9 @@
 """Decision intelligence: bounded, evidence-linked action guidance."""
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 ROLE_ACTIONS = {
     "executive": {"acquisition": "评估战略与资本影响", "regulatory": "检查监管暴露与经营影响", "capital": "复核资本配置与竞争格局", "market_entry": "评估市场与竞争响应"},
     "product": {"product": "评估产品机会、条款与定价影响", "regulatory": "检查产品合规与审批路径", "market_entry": "评估竞争产品与渠道响应"},
@@ -16,10 +19,31 @@ ROLE_ACTIONS = {
 
 URGENCY = {"accelerating": "now", "forming": "soon", "cooling": "watch", "isolated": "watch"}
 LABELS = {"now": "高", "soon": "中", "watch": "低"}
+RANK = {"watch": 0, "soon": 1, "now": 2}
+CALIBRATION = Path(__file__).resolve().parent / "calibration.json"
 
 
-def build_decisions(events: list[dict], temporal: dict | None = None, role: str = "executive") -> list[dict]:
+def _load_calibration() -> dict:
+    if not CALIBRATION.exists():
+        return {"status": "neutral", "overrides": {}}
+    try:
+        data = json.loads(CALIBRATION.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {"status": "neutral", "overrides": {}}
+    except Exception:
+        return {"status": "neutral", "overrides": {}}
+
+
+def _apply_calibration(urgency: str, event_type: str, calibration: dict) -> str:
+    override = (calibration.get("overrides") or {}).get(event_type) or {}
+    cap = override.get("max_urgency")
+    if cap in RANK and RANK[urgency] > RANK[cap]:
+        return cap
+    return urgency
+
+
+def build_decisions(events: list[dict], temporal: dict | None = None, role: str = "executive", calibration: dict | None = None) -> list[dict]:
     temporal = temporal or {}
+    calibration = calibration if calibration is not None else _load_calibration()
     topic_phase = {x.get("topic"): x for x in temporal.get("topic_signals", [])}
     actions = ROLE_ACTIONS.get(role, ROLE_ACTIONS["executive"])
     out = []
@@ -29,10 +53,10 @@ def build_decisions(events: list[dict], temporal: dict | None = None, role: str 
         conflict = bool(event.get("trust", {}).get("conflict"))
         phase_row = topic_phase.get(event.get("topic")) or {}
         phase = phase_row.get("phase", "isolated")
-        action = actions.get(event.get("event_type")) or "保持跟踪，等待更多独立证据或业务信号"
+        event_type = event.get("event_type") or "industry_update"
+        action = actions.get(event_type) or "保持跟踪，等待更多独立证据或业务信号"
 
-        # Safety rule: any unresolved source conflict or low trust must never escalate
-        # to an action-taking urgency, even when score/trend is otherwise strong.
+        # Safety rule: conflict/low-trust must never escalate to action-taking urgency.
         if conflict or trust == "low":
             urgency = "watch"
         elif score >= 82 and trust == "high" and phase == "accelerating":
@@ -42,14 +66,26 @@ def build_decisions(events: list[dict], temporal: dict | None = None, role: str 
         else:
             urgency = URGENCY.get(phase, "watch")
 
+        before_calibration = urgency
+        urgency = _apply_calibration(urgency, event_type, calibration)
+        calibration_applied = urgency != before_calibration
+
         out.append({
             "event_id": event.get("event_id"),
             "role": role,
             "action": action,
             "urgency": urgency,
             "urgency_label": LABELS[urgency],
-            "basis": {"intelligence_score": score, "trust_level": trust, "temporal_phase": phase, "signal_strength": phase_row.get("signal_strength", 0), "conflict": conflict},
+            "basis": {
+                "intelligence_score": score,
+                "trust_level": trust,
+                "temporal_phase": phase,
+                "signal_strength": phase_row.get("signal_strength", 0),
+                "conflict": conflict,
+                "pre_calibration_urgency": before_calibration,
+                "calibration_applied": calibration_applied,
+                "calibration_status": calibration.get("status", "neutral"),
+            },
             "guardrail": "这是情报辅助建议，不替代承保、投资、合规或管理决策。",
         })
-    rank = {"watch": 0, "soon": 1, "now": 2}
-    return sorted(out, key=lambda x: (rank[x["urgency"]], x["basis"]["intelligence_score"]), reverse=True)
+    return sorted(out, key=lambda x: (RANK[x["urgency"]], x["basis"]["intelligence_score"]), reverse=True)
