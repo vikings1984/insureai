@@ -4,6 +4,7 @@
 from __future__ import annotations
 import json
 from pathlib import Path
+from trend_attribution import build_attribution
 ROOT = Path(__file__).resolve().parent
 INTEL = ROOT / 'intelligence.json'
 QUEUE = ROOT / 'review_queue.json'
@@ -29,13 +30,8 @@ def _priority(event, decision, counterfactual=None, impact=None, evidence_availa
     elif level == 'medium': priority += 5
     classification = (trend_attribution or {}).get('classification')
     priority += {
-        'persistent_worsening': 15,
-        'regressed': 15,
-        'single_spike': -10,
-        'recovering': -5,
-        'recovered': -10,
-        'stable': -5,
-        'baseline': 0,
+        'persistent_worsening': 15, 'regressed': 15, 'single_spike': -10,
+        'recovering': -5, 'recovered': -10, 'stable': -5, 'baseline': 0,
     }.get(classification, 0)
     return max(0, min(priority, 100))
 
@@ -51,11 +47,10 @@ def _candidate_reasons(event, decision, temporal, counterfactual, impact=None, e
     if counterfactual and counterfactual.get('changed'): reasons.append({'type':'counterfactual','reason':f"decision changes when {counterfactual.get('scenario')} is removed"})
     if impact and impact.get('impact') in {'judgement_changed','event_set_changed'}: reasons.append({'type':'change_impact','reason':f"downstream judgement changed; risk={impact.get('risk','unknown')}"})
     level = (evidence_availability or {}).get('level')
-    if level in {'low','unavailable'}:
-        reasons.append({'type':'input_quality','reason':(evidence_availability or {}).get('reason','evidence availability is limited')})
+    if level in {'low','unavailable'}: reasons.append({'type':'input_quality','reason':(evidence_availability or {}).get('reason','evidence availability is limited')})
     if trend_attribution:
         classification = trend_attribution.get('classification')
-        if classification in {'persistent_worsening', 'regressed'}:
+        if classification in {'persistent_worsening','regressed'}:
             reasons.append({'type':'trend_persistence','reason':trend_attribution.get('reason','persistent module deterioration')})
         elif classification == 'single_spike':
             reasons.append({'type':'trend_noise_guard','reason':trend_attribution.get('reason','single-period spike; persistence not established')})
@@ -67,8 +62,11 @@ def build_review_queue(data, counterfactual_cases=None, impact_cases=None, evide
         if row.get('changed'): cf_by_event.setdefault(str(row.get('event_id')), row)
     impact_by_event={str(row.get('event_id')):row for row in impact_cases or [] if row.get('event_id')}
     candidates=[]; events=data.get('events',[]) if isinstance(data.get('events'),list) else []
+    modules=(trend_attribution or {}).get('modules', {}) if isinstance(trend_attribution,dict) else {}
     for event in events:
-        event_id=str(event.get('event_id')); decision=decisions.get(event_id); cf=cf_by_event.get(event_id); impact=impact_by_event.get(event_id); module_attr=(trend_attribution or {}).get('modules', {}).get(str(event.get('module') or event.get('event_type') or ''))
+        event_id=str(event.get('event_id')); decision=decisions.get(event_id); cf=cf_by_event.get(event_id); impact=impact_by_event.get(event_id)
+        module_name=str(event.get('module') or event.get('event_type') or '')
+        module_attr=modules.get(module_name)
         reasons=_candidate_reasons(event,decision,temporal,cf,impact,evidence_availability,module_attr)
         if not reasons: continue
         candidates.append({'event_id':event.get('event_id'),'title':event.get('title'),'event_type':event.get('event_type') or 'industry_update','topic':event.get('topic'),'priority':_priority(event,decision,cf,impact,evidence_availability,module_attr),'status':'pending','reasons':reasons[:6],'article_ids':event.get('article_ids',[]),'source_count':event.get('source_count',0),'trust_level':(event.get('trust') or {}).get('level','low'),'intelligence_score':(event.get('scores') or {}).get('intelligence_score',0),'decision':{'urgency':decision.get('urgency'),'action':decision.get('action')} if decision else None,'change_impact':impact if impact else None,'evidence_availability':evidence_availability if evidence_availability else None,'trend_attribution':module_attr if module_attr else None})
@@ -83,7 +81,10 @@ def _read_optional(path: Path, key: str | None = None):
     except (json.JSONDecodeError,OSError): return {}
 
 def write_queue(data):
-    cases=_read_optional(COUNTERFACTUAL,'cases'); impacts=_read_optional(CHANGE_IMPACT,'impacted_events'); evidence=_read_optional(EVIDENCE_AVAILABILITY); trend=_read_optional(TREND_ATTRIBUTION)
+    cases=_read_optional(COUNTERFACTUAL,'cases'); impacts=_read_optional(CHANGE_IMPACT,'impacted_events'); evidence=_read_optional(EVIDENCE_AVAILABILITY)
+    trend=_read_optional(TREND_ATTRIBUTION)
+    if not trend.get('modules'):
+        trend=build_attribution()
     queue=build_review_queue(data,cases,impacts,evidence,trend); QUEUE.write_text(json.dumps(queue,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); return queue
 
 def main():
