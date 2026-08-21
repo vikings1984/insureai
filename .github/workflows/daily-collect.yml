@@ -1,7 +1,7 @@
 name: Daily Insurance News Collect
 
 # 单分支架构：insureai 既是默认分支也是唯一应用分支。
-# 流程：采集 → intelligence engine → radar/trends → prerender(SEO) → UI 注入 → 质量评分 → push。
+# 流程：采集 → intelligence engine → trust layer → radar/trends → prerender(SEO) → UI 注入 → 质量评分 → push。
 on:
   schedule:
     - cron: '0 0,6,12,18 * * *'
@@ -39,6 +39,9 @@ jobs:
       - name: Build event-based intelligence
         run: python3 intelligence.py
 
+      - name: Build evidence trust layer
+        run: python3 trust_build.py
+
       - name: Data validation
         run: |
           python3 -c "
@@ -50,12 +53,13 @@ jobs:
               assert n.get('title'), f'missing title: {n}'
               assert 'published_at' in n, f'missing published_at: {n.get(\"title\",\"\")}'
           i = json.load(open('intelligence.json'))
-          assert i.get('version') == 3
+          assert i.get('version') == 4
           assert isinstance(i.get('events'), list) and i['events']
           assert 1 <= len(i.get('daily_brief', [])) <= 5
           radar = i.get('radar', {})
           assert isinstance(radar.get('entity_radar'), list)
           assert isinstance(radar.get('topic_trends'), list)
+          assert isinstance(i.get('trust_stats'), dict)
           for e in i['events']:
               s = e.get('scores', {})
               for k in ('relevance','impact','novelty','actionability','confidence','intelligence_score'):
@@ -63,7 +67,10 @@ jobs:
               assert e.get('event_type'), f'missing event_type: {e}'
               assert isinstance(e.get('entities'), list)
               assert e.get('insight', {}).get('evidence') is not None
-          print(f'Validation passed: {len(news)} news -> {len(i[\"events\"])} events; radar={len(radar.get(\"entity_radar\", []))}')
+              t = e.get('trust', {})
+              assert t.get('level') in ('high','medium','low')
+              assert isinstance(t.get('evidence'), list)
+          print(f'Validation passed: {len(news)} news -> {len(i[\"events\"])} events; trust={i[\"trust_stats\"]}')
           "
 
       - name: Run tests
@@ -92,7 +99,7 @@ jobs:
           git config user.email "bot@insureai.local"
           if [ -n "$(git status --porcelain data.json intelligence.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
             git add data.json intelligence.json index.html sitemap.xml research.json data/quality data/translation_cache.json
-            git commit -m "chore: auto-collect + intelligence + radar + personal UI $(date +%F)"
+            git commit -m "chore: auto-collect + intelligence + trust + radar + personal UI $(date +%F)"
           else
             echo "no changes"
           fi
