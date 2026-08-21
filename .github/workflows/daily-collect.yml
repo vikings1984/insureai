@@ -87,10 +87,10 @@ jobs:
           i=json.load(open('intelligence.json')); errors=validate(i); assert not errors, 'contract errors: ' + '; '.join(errors[:10])
           s=json.load(open('decision_stability.json')); assert s.get('version') == 1 and isinstance(s.get('results'),list)
           sh=json.load(open('decision_history.json')); assert sh.get('version') == 1 and isinstance(sh.get('snapshots'),list) and len(sh['snapshots']) <= 90
-          cred=json.load(open('decision_credibility.json')); assert cred.get('version') == 2 and cred.get('status') in {'ready','review','caution','blocked'} and isinstance(cred.get('provenance'),dict) and isinstance(cred.get('reasons'),list)
+          cred=json.load(open('decision_credibility.json')); assert cred.get('version') == 3 and cred.get('status') in {'ready','review','caution','blocked'} and isinstance(cred.get('provenance'),dict) and isinstance(cred.get('reasons'),list) and len(cred.get('signal_details',[])) == 5
           radar=json.load(open('daily_risk_radar.json')); assert radar.get('version') == 1 and isinstance(radar.get('items'),list) and radar.get('status') in {'ready','review','caution','blocked','unknown'}
           owner=json.load(open('owner_risk_view.json')); assert owner.get('version') == 2 and isinstance(owner.get('items'),list) and owner.get('item_count', 0) >= len(owner['items']) and isinstance(owner.get('credibility'),dict)
-          assert owner['credibility'].get('status') in {'ready','review','caution','blocked','unknown'} and isinstance(owner['credibility'].get('reasons'),list) and isinstance(owner['credibility'].get('provenance'),dict)
+          assert owner['credibility'].get('status') in {'ready','review','caution','blocked','unknown'} and isinstance(owner['credibility'].get('reasons'),list) and isinstance(owner['credibility'].get('provenance'),dict) and len(owner['credibility'].get('signal_details',[])) == 5
           for item in owner['items']: assert item.get('automation') == 'advisory_only' and item.get('owners') and item.get('deadline') and item.get('next_step')
           q=json.load(open('review_queue.json')); assert q.get('version') == 1 and isinstance(q.get('items'),list)
           imp=json.load(open('change_impact.json')); assert imp.get('version') == 1 and isinstance(imp.get('impacted_events'),list) and isinstance(imp.get('baseline_available'),bool)

@@ -58,8 +58,51 @@ def build_credibility() -> dict:
         status = "ready"
 
     generated_at = datetime.now(timezone.utc).isoformat()
+    signal_details = [
+        {
+            "signal": "quality_status",
+            "actual": quality_status,
+            "comparator": "==",
+            "threshold": "passed",
+            "result": quality_status == "passed",
+            "source": "release_manifest.json",
+        },
+        {
+            "signal": "deployment_status",
+            "actual": deployment_status,
+            "comparator": "in",
+            "threshold": ["verified", "pending"],
+            "result": deployment_status in {"verified", "pending"},
+            "source": "release_manifest.json",
+        },
+        {
+            "signal": "decision_jitter_events",
+            "actual": jitter,
+            "comparator": ">",
+            "threshold": 0,
+            "result": jitter == 0,
+            "source": "decision_stability.json",
+        },
+        {
+            "signal": "low_or_unavailable_evidence",
+            "actual": low_availability,
+            "comparator": ">",
+            "threshold": 0,
+            "result": low_availability == 0,
+            "source": "evidence_availability.json",
+        },
+        {
+            "signal": "macro_quality",
+            "actual": macro_quality,
+            "comparator": ">=",
+            "threshold": 0.95,
+            "result": macro_quality is not None and macro_quality >= 0.95,
+            "source": "evaluation_metrics.json",
+        },
+    ]
+
     return {
-        "version": 2,
+        "version": 3,
         "status": status,
         "principle": "可信度摘要只汇总已有质量信号，不重新评分，也不修改原始决策。",
         "quality": {"status": quality_status, "macro_quality": macro_quality},
@@ -81,6 +124,7 @@ def build_credibility() -> dict:
             "metrics": _source("evaluation_metrics.json", metrics),
             "auditability": "source_files_are_named_and_missing_inputs_are_explicit",
         },
+        "signal_details": signal_details,
         "reasons": [
             "quality_not_passed" if quality_status != "passed" else None,
             "deployment_not_verified" if deployment_status != "verified" else None,
