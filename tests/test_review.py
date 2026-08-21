@@ -30,4 +30,5 @@ class TestReviewQueue(unittest.TestCase):
         result=build_review_queue(data,trend_attribution=attr); item=result['items'][0]
         self.assertIn('trend_noise_guard',{x['type'] for x in item['reasons']})
 
+# CI retrigger only; no runtime behavior change.
 if __name__=='__main__': unittest.main()
