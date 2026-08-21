@@ -10,6 +10,21 @@ class ModuleHealthTests(unittest.TestCase):
         self.assertGreaterEqual(trust['optimization_priority'], 60)
         self.assertEqual(out['priority_order'][0], 'trust')
 
+    def test_dict_module_contract_is_supported(self):
+        doc = {
+            'reviewed_count': 8,
+            'modules': {
+                'trust': {'error_count': 5, 'error_rate': 0.625},
+                'claims': {'error_count': 1, 'error_rate': 0.125},
+            },
+        }
+        out = build_health(doc)
+        trust = next(x for x in out['modules'] if x['module'] == 'trust')
+        claims = next(x for x in out['modules'] if x['module'] == 'claims')
+        self.assertEqual(trust['health'], 'critical')
+        self.assertEqual(trust['review_count'], 8)
+        self.assertEqual(claims['health'], 'healthy')
+
     def test_no_feedback_does_not_claim_health(self):
         out = build_health({'modules': []})
         row = next(x for x in out['modules'] if x['module'] == 'event')
