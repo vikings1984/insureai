@@ -80,6 +80,9 @@ jobs:
       - name: Inject Daily Intelligence UI
         run: python3 scripts/inject_intelligence_ui.py
 
+      - name: Inject Personal Intelligence UI
+        run: python3 scripts/inject_personalization_ui.py
+
       - name: 采集质量自动评分 (ce-optimize)
         run: python3 scripts/quality_score.py
 
@@ -89,7 +92,7 @@ jobs:
           git config user.email "bot@insureai.local"
           if [ -n "$(git status --porcelain data.json intelligence.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
             git add data.json intelligence.json index.html sitemap.xml research.json data/quality data/translation_cache.json
-            git commit -m "chore: auto-collect + intelligence + radar + prerender $(date +%F)"
+            git commit -m "chore: auto-collect + intelligence + radar + personal UI $(date +%F)"
           else
             echo "no changes"
           fi
