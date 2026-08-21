@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Claim -> evidence mapping for InsureAI.
-
-第一性原理：可信的情报必须把“结论”拆成可验证的最小事实单元。
-"""
+"""Claim -> evidence mapping for InsureAI."""
 from __future__ import annotations
 
 import re
@@ -60,13 +57,13 @@ def extract_claims(items: list[dict], event: dict) -> list[dict]:
         claims.append({"claim_id": "main", "type": "event", "text": title, "status": "supported"})
     ents = sorted({e for item in items for e in _entities(item)})
     if ents:
-        claims.append({"claim_id": "entities", "type": "entities", "text": "涉及主体：" + "、".join(ents[:8]), "status": "supported"})
+        claims.append({"claim_id": "entities", "type": "entities", "entities": ents[:8], "text": "涉及主体：" + "、".join(ents[:8]), "status": "supported"})
     nums = sorted({n for item in items for n in _numbers(_text(item))})
     if nums:
-        claims.append({"claim_id": "numeric_facts", "type": "numeric", "text": "可观察数字事实：" + "、".join(nums[:8]), "status": "supported"})
+        claims.append({"claim_id": "numeric_facts", "type": "numeric", "numbers": nums[:8], "text": "可观察数字事实：" + "、".join(nums[:8]), "status": "supported"})
     dates = sorted({_date(item) for item in items if _date(item)})
     if dates:
-        claims.append({"claim_id": "dates", "type": "date", "text": "来源日期：" + "、".join(dates[:8]), "status": "supported"})
+        claims.append({"claim_id": "dates", "type": "date", "dates": dates[:8], "text": "来源日期：" + "、".join(dates[:8]), "status": "supported"})
     return claims
 
 
@@ -78,9 +75,11 @@ def attach_evidence(claims: list[dict], items: list[dict]) -> list[dict]:
             text = _text(item)
             related = True
             if claim["type"] == "numeric":
-                related = bool(set(_numbers(text)) & set(re.findall(r"\b\d+(?:[.,]\d+)?(?:%|m|bn|million|billion|亿|万)?\b", claim["text"].lower())))
+                related = bool(set(_numbers(text)) & set(claim.get("numbers", [])))
             elif claim["type"] == "entities":
-                related = bool(set(_entities(item)) & set(_entities({"title": claim["text"], "tags": claim["text"]})))
+                related = bool(set(_entities(item)) & set(claim.get("entities", [])))
+            elif claim["type"] == "date":
+                related = _date(item) in set(claim.get("dates", []))
             if not related:
                 continue
             evidence.append({
@@ -106,10 +105,4 @@ def build_claims(items: list[dict], event: dict) -> dict:
     unsupported = sum(1 for x in claims if x["status"] == "uncorroborated")
     cross_checked = sum(1 for x in claims if x["status"] == "cross_checked")
     coverage = round(100 * (len(claims) - unsupported) / len(claims)) if claims else 0
-    return {
-        "version": 1,
-        "claims": claims,
-        "coverage": coverage,
-        "cross_checked": cross_checked,
-        "unsupported": unsupported,
-    }
+    return {"version": 1, "claims": claims, "coverage": coverage, "cross_checked": cross_checked, "unsupported": unsupported}
