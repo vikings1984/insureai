@@ -30,10 +30,34 @@ def _readiness_by_key(readiness: dict) -> dict:
     for row in readiness.get("results", []) or []:
         if not isinstance(row, dict):
             continue
-        key = (str(row.get("event_id") or ""), str(row.get("action_id") or ""))
-        if key[0] and key[1]:
-            result[key] = row
+        event_id = str(row.get("event_id") or "")
+        action_id = str(row.get("action_id") or "")
+        if event_id and action_id:
+            result[(event_id, action_id)] = row
     return result
+
+
+def _readiness_by_event(readiness: dict) -> dict[str, list[dict]]:
+    result: dict[str, list[dict]] = {}
+    for row in readiness.get("results", []) or []:
+        if not isinstance(row, dict):
+            continue
+        event_id = str(row.get("event_id") or "")
+        if event_id:
+            result.setdefault(event_id, []).append(row)
+    return result
+
+
+def _resolve_readiness(item: dict, by_key: dict, by_event: dict[str, list[dict]]) -> dict | None:
+    event_id = str(item.get("event_id") or "")
+    action_id = str(item.get("action_id") or "")
+    direct = by_key.get((event_id, action_id))
+    if direct:
+        return direct
+    candidates = by_event.get(event_id, [])
+    if len(candidates) == 1:
+        return candidates[0]
+    return None
 
 
 def _next_step(item: dict, readiness: dict | None) -> str:
@@ -54,7 +78,8 @@ def _next_step(item: dict, readiness: dict | None) -> str:
 def build_owner_view(radar: dict | None = None, readiness: dict | None = None) -> dict:
     radar = _load("daily_risk_radar.json", {}) if radar is None else radar
     readiness = _load("execution_readiness.json", {}) if readiness is None else readiness
-    readiness_map = _readiness_by_key(readiness)
+    readiness_by_key = _readiness_by_key(readiness)
+    readiness_by_event = _readiness_by_event(readiness)
 
     items = []
     for rank, item in enumerate(radar.get("items", []) or [], start=1):
@@ -62,12 +87,14 @@ def build_owner_view(radar: dict | None = None, readiness: dict | None = None) -
             continue
         event_id = str(item.get("event_id") or "")
         action_id = str(item.get("action_id") or "")
-        ready = readiness_map.get((event_id, action_id))
-        owners = (ready or {}).get("owner_roles") or DEFAULT_OWNER_BY_ACTION.get(action_id, ["risk_review_owner"])
+        ready = _resolve_readiness(item, readiness_by_key, readiness_by_event)
+        resolved_action = str((ready or {}).get("action_id") or action_id)
+        owners = (ready or {}).get("owner_roles") or DEFAULT_OWNER_BY_ACTION.get(resolved_action, ["risk_review_owner"])
         deadline = (ready or {}).get("deadline") or "next_review_cycle"
         items.append({
             "rank": rank,
             "event_id": event_id,
+            "action_id": resolved_action or None,
             "title": item.get("title") or event_id,
             "attention_score": int(item.get("attention_score") or 0),
             "urgency": item.get("urgency"),
