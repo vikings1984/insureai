@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "cases": [
+    {"id":"evt.same-event.v1","type":"event_clustering","expected":{"same_event":true}},
+    {"id":"evt.same-entity-different-event.v1","type":"event_clustering","expected":{"same_event":false}},
+    {"id":"claim.multi-source.v1","type":"claim_evidence","expected":{"cross_checked":true}},
+    {"id":"claim.single-source.v1","type":"claim_evidence","expected":{"cross_checked":false}},
+    {"id":"temporal.no-date.v1","type":"temporal","expected":{"signal_count":0}},
+    {"id":"temporal.accelerating.v1","type":"temporal","expected":{"phase":"accelerating"}},
+    {"id":"decision.guardrail.v1","type":"decision","expected":{"urgency":"now","guardrail":true}},
+    {"id":"decision.conflict.v1","type":"decision","expected":{"urgency":"watch"}}
+  ]
+}
