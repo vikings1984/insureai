@@ -14,13 +14,21 @@ class TestIntelligence(unittest.TestCase):
             {"id": 1, "title": "Munich Re to acquire At-Bay", "summary": "Munich Re announced acquisition of cyber insurance company At-Bay.", "source_name": "Reuters", "source_url": "https://reuters.example/a", "published_at": "2026-08-21T08:00:00+00:00", "ai_score": 90, "research_topic": "capital_reinsurance", "source_authority": 95, "date_verified": True},
             {"id": 2, "title": "Munich Re agrees to buy At-Bay", "summary": "The reinsurer will acquire At-Bay, expanding cyber insurance capabilities.", "source_name": "Insurance Journal", "source_url": "https://insurance.example/b", "published_at": "2026-08-21T07:30:00+00:00", "ai_score": 86, "research_topic": "capital_reinsurance", "source_authority": 84, "date_verified": True},
         ]}
-        result = I.build(data)
-        self.assertEqual(result["stats"]["event_count"], 1)
-        event = result["events"][0]
+        event = I.build(data)["events"][0]
         self.assertEqual(event["source_count"], 2)
         self.assertEqual(event["article_count"], 2)
-        self.assertIn("what_happened", event["insight"])
+        self.assertEqual(event["event_type"], "acquisition")
+        self.assertTrue(any("munich" in entity for entity in event["entities"]))
+        self.assertTrue(any("at-bay" in entity for entity in event["entities"]))
         self.assertGreaterEqual(event["scores"]["confidence"], 70)
+
+    def test_same_company_different_old_event_is_not_merged(self):
+        data = {"news": [
+            {"id": 1, "title": "Munich Re to acquire At-Bay", "summary": "acquisition of cyber insurance company At-Bay", "source_name": "Reuters", "source_url": "https://reuters.example/a", "published_at": "2026-08-21T08:00:00+00:00", "ai_score": 90, "research_topic": "capital_reinsurance", "source_authority": 95},
+            {"id": 2, "title": "Munich Re exits legacy portfolio", "summary": "Munich Re announces a separate portfolio transaction", "source_name": "Insurance Journal", "source_url": "https://insurance.example/b", "published_at": "2026-08-16T08:00:00+00:00", "ai_score": 82, "research_topic": "capital_reinsurance", "source_authority": 84},
+        ]}
+        result = I.build(data)
+        self.assertEqual(result["stats"]["event_count"], 2)
 
     def test_personnel_event_is_less_actionable(self):
         data = {"news": [{
@@ -35,6 +43,7 @@ class TestIntelligence(unittest.TestCase):
             "source_authority": 82,
         }]}
         event = I.build(data)["events"][0]
+        self.assertEqual(event["event_type"], "personnel")
         self.assertLessEqual(event["scores"]["actionability"], 42)
         self.assertLessEqual(event["scores"]["impact"], 55)
 
@@ -52,6 +61,7 @@ class TestIntelligence(unittest.TestCase):
             "date_verified": True,
         }]})
         event = result["events"][0]
+        self.assertEqual(event["event_type"], "regulatory")
         for key in ("relevance", "impact", "novelty", "actionability", "confidence", "intelligence_score"):
             self.assertIn(key, event["scores"])
         for key in ("what_happened", "why_it_matters", "who_is_affected", "what_to_watch", "evidence", "confidence"):
