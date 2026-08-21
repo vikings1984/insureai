@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Human-in-the-loop review queue for InsureAI intelligence.
-
-第一性原理：人工精力应该优先花在模型最不确定、最可能造成错误决策的样本上。
-该模块只生成可复核队列，不自动改变生产结论。
-"""
+"""Human-in-the-loop review queue for InsureAI intelligence."""
 from __future__ import annotations
 
 import json
@@ -13,9 +9,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 INTEL = ROOT / "intelligence.json"
 QUEUE = ROOT / "review_queue.json"
+COUNTERFACTUAL = ROOT / "counterfactual.json"
 
 
-def _priority(event: dict, decision: dict | None) -> int:
+def _priority(event: dict, decision: dict | None, counterfactual: dict | None = None) -> int:
     score = int(event.get("scores", {}).get("intelligence_score") or 0)
     trust = (event.get("trust") or {}).get("level", "low")
     priority = 20
@@ -33,10 +30,12 @@ def _priority(event: dict, decision: dict | None) -> int:
         priority += 20
     if decision and decision.get("urgency") == "now" and trust != "high":
         priority += 30
+    if counterfactual and counterfactual.get("changed"):
+        priority += 15
     return min(priority, 100)
 
 
-def _candidate_reasons(event: dict, decision: dict | None, temporal: dict | None) -> list[dict]:
+def _candidate_reasons(event: dict, decision: dict | None, temporal: dict | None, counterfactual: dict | None) -> list[dict]:
     reasons: list[dict] = []
     trust = event.get("trust") or {}
     claims = event.get("claims") or {}
@@ -54,17 +53,24 @@ def _candidate_reasons(event: dict, decision: dict | None, temporal: dict | None
         reasons.append({"type": "trend", "reason": "trend phase has fewer than 3 current-period events"})
     if int(event.get("article_count") or 0) == 1 and int(scores.get("intelligence_score") or 0) >= 80:
         reasons.append({"type": "event_cluster", "reason": "high-impact single-article event; review cluster boundary"})
+    if counterfactual and counterfactual.get("changed"):
+        reasons.append({"type": "counterfactual", "reason": f"decision changes when {counterfactual.get('scenario')} is removed"})
     return reasons
 
 
-def build_review_queue(data: dict) -> dict:
+def build_review_queue(data: dict, counterfactual_cases: list[dict] | None = None) -> dict:
     decisions = {str(x.get("event_id")): x for x in data.get("decisions", []) if x.get("event_id")}
     temporal = data.get("temporal") or {}
+    cf_by_event = {}
+    for row in counterfactual_cases or []:
+        if row.get("changed"):
+            cf_by_event.setdefault(str(row.get("event_id")), row)
     candidates = []
     events = data.get("events", []) if isinstance(data.get("events"), list) else []
     for event in events:
         decision = decisions.get(str(event.get("event_id")))
-        reasons = _candidate_reasons(event, decision, temporal)
+        cf = cf_by_event.get(str(event.get("event_id")))
+        reasons = _candidate_reasons(event, decision, temporal, cf)
         if not reasons:
             continue
         candidates.append({
@@ -72,7 +78,7 @@ def build_review_queue(data: dict) -> dict:
             "title": event.get("title"),
             "event_type": event.get("event_type") or "industry_update",
             "topic": event.get("topic"),
-            "priority": _priority(event, decision),
+            "priority": _priority(event, decision, cf),
             "status": "pending",
             "reasons": reasons[:5],
             "article_ids": event.get("article_ids", []),
@@ -91,7 +97,13 @@ def build_review_queue(data: dict) -> dict:
 
 
 def write_queue(data: dict) -> dict:
-    queue = build_review_queue(data)
+    counterfactual_cases = []
+    if COUNTERFACTUAL.exists():
+        try:
+            counterfactual_cases = json.loads(COUNTERFACTUAL.read_text(encoding="utf-8")).get("cases", [])
+        except (json.JSONDecodeError, OSError):
+            counterfactual_cases = []
+    queue = build_review_queue(data, counterfactual_cases)
     QUEUE.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return queue
 
