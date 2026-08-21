@@ -112,6 +112,8 @@ jobs:
         run: python3 scripts/inject_decision_ui.py
       - name: Inject Human Review UI
         run: python3 scripts/inject_review_ui.py
+      - name: Inject Action Trigger UI
+        run: python3 scripts/inject_action_triggers_ui.py
       - name: 采集质量自动评分 (ce-optimize)
         run: python3 scripts/quality_score.py
       - name: Commit data + intelligence + calibration + counterfactual + scenario + scenario matrix + action triggers + review queue + SEO + 质量评分
