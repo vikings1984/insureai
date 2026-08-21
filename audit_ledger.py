@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Create a privacy-preserving lineage ledger for each intelligence build."""
+"""Create a privacy-preserving lineage ledger for the analytical build."""
 from __future__ import annotations
 import hashlib, json
 from datetime import datetime, timezone
@@ -14,11 +14,26 @@ STAGES = (
     ("claims", "intelligence.json", "claims"),
     ("temporal", "intelligence.json", "temporal"),
     ("decision", "intelligence.json", "decision"),
+    ("decision_stability", "decision_stability.json", "decision_stability"),
+    ("decision_credibility", "decision_credibility.json", "decision_credibility"),
     ("counterfactual", "counterfactual.json", "counterfactual"),
     ("scenario", "scenario.json", "scenario"),
     ("scenario_matrix", "scenario_matrix.json", "scenario_matrix"),
     ("action_triggers", "action_triggers.json", "action_triggers"),
     ("execution_readiness", "execution_readiness.json", "execution_readiness"),
+    ("change_impact", "change_impact.json", "change_impact"),
+    ("freshness", "freshness.json", "freshness"),
+    ("evidence_availability", "evidence_availability.json", "evidence_availability"),
+    ("review_queue", "review_queue.json", "human_review"),
+    ("feedback_attribution", "feedback_attribution.json", "feedback_attribution"),
+    ("module_health", "module_health.json", "module_health"),
+    ("module_health_history", "module_health_history.json", "module_health"),
+    ("module_health_trend", "module_health_trend.json", "module_health_trend"),
+    ("trend_attribution", "trend_attribution.json", "trend_attribution"),
+    ("optimization_backlog", "optimization_backlog.json", "optimization_backlog"),
+    ("optimization_backlog_history", "optimization_backlog_history.json", "optimization_backlog"),
+    ("daily_risk_radar", "daily_risk_radar.json", "daily_risk_radar"),
+    ("owner_risk_view", "owner_risk_view.json", "owner_risk_view"),
 )
 
 def sha256_file(path: Path) -> str:
@@ -35,10 +50,12 @@ def _counts(path: Path) -> dict:
         return {}
     counts = {}
     if isinstance(data, dict):
-        for key in ("news", "events", "results", "scenarios", "items"):
+        for key in ("news", "events", "results", "scenarios", "items", "modules", "snapshots"):
             value = data.get(key)
             if isinstance(value, list):
                 counts[key] = len(value)
+            elif isinstance(value, dict):
+                counts[f"{key}_keys"] = len(value)
         if data.get("version") is not None:
             counts["version"] = data["version"]
     return counts
@@ -60,6 +77,7 @@ def build_ledger() -> dict:
         "schema_version": "audit-ledger-v1",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "privacy": "hashes_and_metadata_only",
+        "coverage_principle": "ledger is generated after all analytical quality artifacts so it never verifies a stale pre-quality snapshot",
         "stages": records,
     }
 
