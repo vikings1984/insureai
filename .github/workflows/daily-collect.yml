@@ -1,7 +1,7 @@
 name: Daily Insurance News Collect
 
 # 单分支架构：insureai 既是默认分支也是唯一应用分支。
-# 流程：采集 → intelligence → trust → claims → temporal → calibration → decision → counterfactual → scenario → scenario matrix → action triggers → execution readiness → audit ledger → change impact → contract → evaluation → metrics → replay → review → publish。
+# 流程：采集 → intelligence → trust → claims → temporal → calibration → decision → counterfactual → scenario → scenario matrix → action triggers → execution readiness → audit ledger → change impact → contract → evaluation → metrics → replay → review → module health → trend → optimization backlog → publish。
 on:
   schedule:
     - cron: '0 0,6,12,18 * * *'
@@ -63,20 +63,32 @@ jobs:
         run: python3 production_replay.py
       - name: Build human review queue with change-impact priority
         run: python3 review.py
+      - name: Attribute review feedback to modules
+        run: python3 feedback_attribution.py
+      - name: Build module health profile
+        run: python3 module_health.py
+      - name: Build module health trend
+        run: python3 module_health_trend.py
+      - name: Build optimization backlog
+        run: python3 optimization_backlog.py
       - name: Data validation
         run: |
           python3 -c "
           import json
           from contract import validate
-          d = json.load(open('data.json')); news = d.get('news', [])
-          assert isinstance(news, list) and news, 'data.json news is empty!'
+          d=json.load(open('data.json')); news=d.get('news',[])
+          assert isinstance(news,list) and news, 'data.json news is empty!'
           for n in news: assert n.get('title') and 'published_at' in n
-          i = json.load(open('intelligence.json')); errors = validate(i); assert not errors, 'contract errors: ' + '; '.join(errors[:10])
-          q = json.load(open('review_queue.json')); assert q.get('version') == 1 and isinstance(q.get('items'), list)
-          imp = json.load(open('change_impact.json')); assert imp.get('version') == 1 and isinstance(imp.get('impacted_events'), list); assert isinstance(imp.get('baseline_available'), bool)
-          ledger = json.load(open('audit_ledger.json')); assert ledger.get('version') == 1 and ledger.get('privacy') == 'hashes_and_metadata_only'
-          for row in ledger.get('stages', []): assert len(row.get('sha256', '')) == 64 and 'title' not in row and 'url' not in row and 'body' not in row
-          print(f'Validation passed: {len(news)} news -> {len(i["events"])} events; review={len(q["items"])}; impacts={imp["impacted_count"]}; baseline={imp["baseline_available"]}; audit_stages={len(ledger["stages"])}')
+          i=json.load(open('intelligence.json')); errors=validate(i); assert not errors, 'contract errors: ' + '; '.join(errors[:10])
+          q=json.load(open('review_queue.json')); assert q.get('version') == 1 and isinstance(q.get('items'),list)
+          imp=json.load(open('change_impact.json')); assert imp.get('version') == 1 and isinstance(imp.get('impacted_events'),list) and isinstance(imp.get('baseline_available'),bool)
+          ledger=json.load(open('audit_ledger.json')); assert ledger.get('version') == 1 and ledger.get('privacy') == 'hashes_and_metadata_only'
+          for row in ledger.get('stages',[]): assert len(row.get('sha256','')) == 64 and 'title' not in row and 'url' not in row and 'body' not in row
+          fb=json.load(open('feedback_attribution.json')); assert fb.get('version') == 1 and isinstance(fb.get('modules'),dict)
+          mh=json.load(open('module_health.json')); assert mh.get('version') == 1 and isinstance(mh.get('modules'),list)
+          mt=json.load(open('module_health_trend.json')); assert mt.get('version') == 1 and isinstance(mt.get('modules'),dict)
+          ob=json.load(open('optimization_backlog.json')); assert ob.get('version') == 1 and isinstance(ob.get('items'),list)
+          print(f'Validation passed: news={len(news)} events={len(i["events"])} review={len(q["items"])} impacts={imp["impacted_count"]} backlog={len(ob["items"])} baseline={mt["baseline_available"]}')
           "
       - name: Run tests
         run: python3 -m unittest discover tests/ -v
@@ -102,12 +114,12 @@ jobs:
         run: python3 scripts/inject_execution_readiness_ui.py
       - name: 采集质量自动评分 (ce-optimize)
         run: python3 scripts/quality_score.py
-      - name: Commit data + intelligence + audit + impact + review + SEO
+      - name: Commit data + intelligence + quality profile + SEO
         run: |
           git config user.name "insureai-bot"; git config user.email "bot@insureai.local"
-          if [ -n "$(git status --porcelain data.json intelligence.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
-            git add data.json intelligence.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json index.html sitemap.xml research.json data/quality data/translation_cache.json
-            git commit -m "chore: auto-collect + intelligence + audit + impact + review $(date +%F)"
+          if [ -n "$(git status --porcelain data.json intelligence.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json optimization_backlog.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
+            git add data.json intelligence.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json optimization_backlog.json index.html sitemap.xml research.json data/quality data/translation_cache.json
+            git commit -m "chore: auto-collect + intelligence + quality profile $(date +%F)"
           else echo "no changes"; fi
       - name: Push (triggers GitHub Pages redeploy)
         run: git push origin HEAD:${{ github.ref_name }}
