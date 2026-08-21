@@ -3,6 +3,7 @@
 import os
 import sys
 import unittest
+from datetime import datetime, timezone, timedelta
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import intelligence as I
@@ -67,6 +68,28 @@ class TestIntelligence(unittest.TestCase):
         for key in ("what_happened", "why_it_matters", "who_is_affected", "what_to_watch", "evidence", "confidence"):
             self.assertIn(key, event["insight"])
         self.assertEqual(event["insight"]["confidence"], event["scores"]["confidence"])
+
+    def test_radar_contains_entity_and_trend_signals(self):
+        now = datetime.now(timezone.utc)
+        def item(i, title, days_ago, topic):
+            ts = (now - timedelta(days=days_ago)).isoformat()
+            return {
+                "id": i, "title": title, "summary": "insurance event",
+                "source_name": "Source", "source_url": "https://example.com/%s" % i,
+                "published_at": ts, "ai_score": 85, "research_topic": topic,
+                "source_authority": 85, "date_verified": True,
+            }
+        result = I.build({"news": [
+            item(1, "Munich Re acquires At-Bay", 1, "capital_reinsurance"),
+            item(2, "Munich Re expands cyber business", 2, "capital_reinsurance"),
+            item(3, "Munich Re launches new risk service", 3, "capital_reinsurance"),
+            item(4, "New pension reform released", 10, "pension_finance"),
+        ]})
+        radar = result["radar"]
+        self.assertIn("entity_radar", radar)
+        self.assertIn("topic_trends", radar)
+        self.assertGreaterEqual(radar["stats"]["entities"], 1)
+        self.assertTrue(any(x["topic"] == "capital_reinsurance" for x in radar["topic_trends"]))
 
 
 if __name__ == "__main__":
