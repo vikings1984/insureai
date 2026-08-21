@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Build a privacy-safe release provenance record from release and audit artifacts."""
 # release-provenance-v1: aggregate release, audit, and impact metadata without business content.
+# release-provenance-rollout: trigger post-merge provenance verification.
 from __future__ import annotations
 
 import hashlib
