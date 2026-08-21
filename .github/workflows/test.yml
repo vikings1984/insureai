@@ -18,6 +18,6 @@ jobs:
         with:
           python-version: '3.11'
       - name: Syntax check
-        run: python3 -m py_compile intelligence.py radar.py scripts/inject_intelligence_ui.py
+        run: python3 -m py_compile intelligence.py radar.py personalization.py scripts/inject_intelligence_ui.py scripts/inject_personalization_ui.py
       - name: Unit tests
         run: python3 -m unittest discover tests/ -v
