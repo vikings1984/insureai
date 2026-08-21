@@ -11,7 +11,6 @@ HISTORY = ROOT / "decision_history.json"
 OUTPUT = ROOT / "decision_stability.json"
 MAX_SNAPSHOTS = 90
 WINDOW = 5
-RANK = {"watch": 0, "soon": 1, "now": 2}
 
 
 def _snapshot(decisions: list[dict]) -> dict:
@@ -67,11 +66,12 @@ def build_stability(history: dict, current_decisions: list[dict]) -> dict:
         meaningful = sum(1 for a, b in zip(rows, rows[1:]) if _meaningful_change(a, b))
         oscillating = len(rows) >= 3 and rows[-1].get("urgency") == rows[-3].get("urgency") and rows[-1].get("urgency") != rows[-2].get("urgency")
         churn_rate = round(changes / max(len(rows) - 1, 1), 4)
+        meaningful_ratio = round(meaningful / max(changes, 1), 4)
         if len(rows) < 3:
             status = "baseline"
-        elif oscillating and changes >= 2 and meaningful < changes:
+        elif oscillating and changes >= 2 and meaningful_ratio < 0.5:
             status = "jitter"
-        elif changes >= 2 and meaningful >= changes:
+        elif changes >= 2 and meaningful_ratio >= 0.5:
             status = "responsive"
         elif changes:
             status = "changed"
@@ -83,6 +83,7 @@ def build_stability(history: dict, current_decisions: list[dict]) -> dict:
             "window": len(rows),
             "urgency_changes": changes,
             "meaningful_changes": meaningful,
+            "meaningful_ratio": meaningful_ratio,
             "churn_rate": churn_rate,
             "oscillating": oscillating,
             "note": "稳定性只描述输出变化，不修改原始决策。" if status != "jitter" else "检测到可能由轻微输入波动造成的判断抖动，建议人工复核。",
