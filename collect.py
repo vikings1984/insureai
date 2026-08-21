@@ -89,6 +89,20 @@ SCORE_BOOST = [
     (["产品", "渠道", "数字化", "product", "digital"], 2),
 ]
 
+# 负向信号：人事/通稿/泛观点降分，避免「任命类」长期霸占高分
+SCORE_PENALTY = [
+    (["appoints", "appointed", "appointment", "names ", "出任", "任命", "履新", "就任", "加盟"], -8),
+    (["wins award", "honored for", "honoured for", "获奖", "表彰"], -6),
+    (["viewpoint", "opinion", "社论", "评论员"], -3),
+]
+
+# 评级/信用强信号 → 研究主题强制倾向资本与再保险
+_RATING_TOPIC_KWS = [
+    "am best", "moody", "fitch", "s&p", "standard & poor",
+    "credit rating", "issuer credit", "financial strength",
+    "评级", "信用评级", "展望",
+]
+
 # 强保险领域信号词（RSS 入册门控，剔除非保险新闻：泛事故/政务/体育等）
 # 刻意排除 policy/claim/report/data/product/digital/capital 等过于泛化的词，
 # 因为它们会误命中 "claims three lives"(船只倾覆)、"training requirement"(地方政务) 等噪声。
@@ -557,9 +571,24 @@ def to_iso(pub):
 
 
 def infer_topic(title, summary):
-    text = (title + " " + summary).lower()
-    scores = {t: sum(1 for kw in kws if kw.lower() in text) for t, kws in RESEARCH_TOPICS.items()}
-    scores = {t: c for t, c in scores.items() if c}
+    """标题加权计分；评级类强制 capital_reinsurance；无命中返回 None（不再默认 product_innovation）。"""
+    title_l = (title or "").lower()
+    sum_l = (summary or "").lower()
+    # 评级强信号优先
+    blob = title_l + " " + sum_l
+    if any(k in blob for k in _RATING_TOPIC_KWS):
+        return "capital_reinsurance"
+    scores = {}
+    for t, kws in RESEARCH_TOPICS.items():
+        c = 0
+        for kw in kws:
+            k = kw.lower()
+            if k in title_l:
+                c += 2
+            elif k in sum_l:
+                c += 1
+        if c:
+            scores[t] = c
     return max(scores, key=scores.get) if scores else None
 
 
@@ -569,7 +598,18 @@ def score_item(title, summary, authority):
     for kws, boost in SCORE_BOOST:
         if any(k.lower() in text for k in kws):
             s += boost
-    return max(60, min(95, s))
+    for kws, pen in SCORE_PENALTY:
+        if any(k.lower() in text for k in kws):
+            s += pen
+    # 纯人事且无监管/资本强信号：上限 78
+    is_hr = any(k in text for k in ("appoints", "appointed", "出任", "任命", "履新"))
+    strong = any(k in text for k in (
+        "regulation", "regulator", "solvency", "监管", "偿付能力",
+        "am best", "评级",
+    ))
+    if is_hr and not strong:
+        s = min(s, 78)
+    return max(55, min(95, s))
 
 
 def lev_ratio(a, b):
@@ -596,7 +636,7 @@ def is_dup(title, existing_titles, threshold=0.82):
 # 短英文/易歧义词用「词边界」匹配，避免子串误命中：
 # "law"→lawyer/lawsuit、"life"→lifestyle/lifecycle、"motor"→motorway、
 # "green"→greenhouse、"fine"→finance/define。CJK 关键词仍用子串匹配。
-_BOUNDARY_KWS = {"law", "life", "motor", "green", "fine"}
+_BOUNDARY_KWS = {"law", "life", "motor", "green", "fine", "ai"}
 
 
 def _kw_in(kw, text):
@@ -748,6 +788,46 @@ def run(dry_run=False, per_source_limit=10):
     # 使历史条目的分类随逻辑改进而修正（改进可持久化到每日 CI）。
     for n in merged:
         n["category"] = _category(n.get("title", ""), n.get("summary", ""))
+        # 同步刷新自动推荐理由与研究主题（人工在 inbox 写死的 reason 若需保留可加 curated 标记；此处统一重算以纠历史错配）
+        n["research_topic"] = infer_topic(n.get("title", ""), n.get("summary", ""))
+        n["reason"] = auto_reason(
+            n.get("title", ""), n.get("summary", ""),
+            n.get("source_name", ""), n.get("source_type", ""),
+            n.get("category", "industry"), n.get("ai_score", 70),
+            n.get("research_topic"),
+        )
+        # 对存量条目轻量重算分（authority 不可得时用原分作下限参考）
+        try:
+            n["ai_score"] = score_item(
+                n.get("title", ""), n.get("summary", ""),
+                max(60, int(n.get("ai_score") or 70)),
+            )
+        except Exception:
+            pass
+
+    # 体积控制：保留近 120 天，或高分，或有精选痕迹
+    RETAIN_DAYS = 120
+    RETAIN_MIN_SCORE = 80
+    if "--no-prune" not in sys.argv:
+        from datetime import datetime as _dt, timezone as _tz, timedelta as _td
+        cutoff = (_dt.now(_tz.utc) - _td(days=RETAIN_DAYS)).strftime("%Y-%m-%d")
+        before = len(merged)
+
+        def _keep(n):
+            d = (n.get("published_at") or "")[:10]
+            if d >= cutoff:
+                return True
+            if (n.get("ai_score") or 0) >= RETAIN_MIN_SCORE:
+                return True
+            if n.get("date_verified") or n.get("is_research_report"):
+                return True
+            return False
+
+        merged = [n for n in merged if _keep(n)]
+        removed = before - len(merged)
+        if removed:
+            print(f"  🗜 历史裁剪: 剔除 {removed} 条（保留近{RETAIN_DAYS}天/高分/精选）")
+
     for i, n in enumerate(merged, 1):
         n["id"] = i
 
@@ -792,12 +872,23 @@ _CATEGORY_CN = {
 # 避免“同一主题千篇一律”。从句尽量点出“为什么值得看”。
 # 顺序即优先级：理赔服务置于监管合规之前，避免 "lawsuit" 被 "law" 子串误标为监管。
 _THEME_HINTS = [
-    (("评级", "outlook", "outlook to", "credit rating", "downgrade", "upgrade", "revised", "affirmed", "stable", "negative", "positive", "AM Best", "Moody's", "S&P", "Fitch", "标普", "穆迪", "惠誉"), "评级与信用观察", [
+    # 人事优先，避免被评级/地缘宽词误吃
+    (("appoints", "appointed", "appointment", "names as", "出任", "任命", "履新", "就任", "新任"), "人事与组织", [
+        "人事变动反映公司战略重心与治理结构调整",
+        "关键岗位更替往往预示业务线或区域扩张节奏变化",
+        "管理层调整是观察险企下一阶段经营重点的窗口",
+    ]),
+    # 评级：去掉单独的 upgrade/positive/stable/negative/revised 等宽词
+    (("评级", "outlook to", "credit rating", "issuer credit", "financial strength",
+      "downgrade", "affirmed", "am best", "moody's", "moody", "s&p", "fitch",
+      "标普", "穆迪", "惠誉", "信用评级"), "评级与信用观察", [
         "评级机构对保险公司的信用与展望调整，直接影响融资成本与市场信心",
         "信用展望的下调或上调，往往预示险企资本与盈利端的边际变化",
         "评级行动是观察行业信用风险与资本充足度的重要窗口",
     ]),
-    (("war", "conflict", "attack", "military", "Hormuz", "Strait", "vessel", "shipping", "geopolitical", "sanctions", "naval", "maritime"), "地缘政治与战争风险", [
+    # 地缘：去掉单独的 attack/vessel/shipping 等易误伤词
+    (("geopolitical", "sanctions", "hormuz", "strait of", "naval blockade",
+      "战争险", "制裁", "地缘政治", "军事冲突"), "地缘政治与战争风险", [
         "地缘冲突与航运袭击事件考验特殊风险与战争险的定价及承保边界",
         "区域性冲突推高航运与能源风险，特殊险种的供给与价格随之波动",
         "战争与制裁风险外溢，倒逼再保险与货主重新审视风险敞口",
@@ -842,7 +933,8 @@ _THEME_HINTS = [
         "快赔与线上理赔重塑客户触点，也考验险企的数据与风控底座",
         "理赔反欺诈从规则走向模型，直接改善综合成本率",
     ]),
-    (("大模型", "智能体", "人工智能", "智能核保", "智能理赔", "保险科技", "数字化", "insurtech", "automation"), "保险科技与 AI", [
+    (("大模型", "智能体", "人工智能", "智能核保", "智能理赔", "保险科技", "数字化", "insurtech", "automation",
+      "ai", "generative ai", "artificial intelligence"), "保险科技与 AI", [
         "大模型与智能体正重塑核保、理赔与客户服务的作业方式",
         "AI 在反欺诈与精算中的应用，正在压缩保险作业的边际成本",
         "保险科技从渠道线上化走向核心作业智能化",
@@ -947,12 +1039,24 @@ def _stable_idx(s, n=4):
 
 
 def _match_theme(title, summary):
-    text = (title + " " + (summary or "")).lower()
+    """多候选打分：标题命中×2、摘要×1；得分<2 不套主题，避免宽词误配。"""
+    title_l = (title or "").lower()
+    sum_l = (summary or "").lower()
+    best_label, best_clause, best_score = None, None, -1
     for kws, label, clauses in _THEME_HINTS:
-        if any(_kw_in(k, text) for k in kws):
-            clause = clauses[_stable_idx(title, len(clauses))]
-            return label, clause
-    return None, None
+        score = 0
+        for k in kws:
+            if _kw_in(k, title_l):
+                score += 2
+            elif _kw_in(k, sum_l):
+                score += 1
+        if score > best_score:
+            best_score = score
+            best_label = label
+            best_clause = clauses[_stable_idx(title, len(clauses))]
+    if best_score < 2:
+        return None, None
+    return best_label, best_clause
 
 
 def _source_prefix(sname, stype):
@@ -1015,7 +1119,7 @@ def _ingest(title, summary, url, sname, stype, authority, published, existing_ti
         "published_at": published,
         "reason": reason or auto_reason(title, summary, sname, stype, cat, sc, topic),
         "date_verified": False,
-        "research_topic": topic or "product_innovation",
+        "research_topic": topic,  # 可为 None，不再默认 product_innovation
         "is_research_report": stype in ("研究机构", "咨询"),
     })
     existing_titles.append(title)

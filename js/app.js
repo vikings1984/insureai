@@ -114,7 +114,7 @@
           .replace(/[\s\p{P}]/gu, '')
           .replace(/\d+/g, '');
         for (const seenTitle of seen) {
-          if (calculateSimilarity(normalizedTitle, seenTitle) > 0.7) {
+          if (calculateSimilarity(normalizedTitle, seenTitle) >= 0.82) {
             return false;
           }
         }
@@ -168,8 +168,16 @@
     function renderHotTopics(data) {
       const container = document.getElementById('hot-topics');
       if (!container) return;
-      // Take top 3-5 items with highest ai_score as hot topics
-      const hot = data.slice(0, 5);
+      const now = Date.now();
+      const horizon = 72 * 3600 * 1000;
+      let pool = data.filter(item => {
+        const t = new Date(item.published_at).getTime();
+        return !isNaN(t) && (now - t) <= horizon;
+      });
+      if (pool.length < 5) pool = data.slice(); // 不足则回退全量
+      pool = pool.slice().sort((a, b) => (b.ai_score || 0) - (a.ai_score || 0) ||
+        new Date(b.published_at) - new Date(a.published_at));
+      const hot = pool.slice(0, 5);
       if (!hot.length) { container.innerHTML = ''; return; }
       container.innerHTML = hot.map((item, i) => {
         const catNames = { regulation: '监管', product: '产品', industry: '行业', research: '研究', claims: '理赔' };
