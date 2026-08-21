@@ -1,7 +1,7 @@
 name: Daily Insurance News Collect
 
 # 单分支架构：insureai 既是默认分支也是唯一应用分支。
-# 流程：采集 → intelligence engine → trust layer → claim/evidence → temporal → decision → radar/trends → prerender → UI → 质量评分 → push。
+# 流程：采集 → intelligence engine → trust layer → claim/evidence → temporal → decision → contract → radar/trends → prerender → UI → 质量评分 → push。
 on:
   schedule:
     - cron: '0 0,6,12,18 * * *'
@@ -48,10 +48,14 @@ jobs:
       - name: Build decision intelligence
         run: python3 decision_build.py
 
+      - name: Validate and stamp data contract
+        run: python3 contract.py
+
       - name: Data validation
         run: |
           python3 -c "
           import json
+          from contract import validate
           d = json.load(open('data.json'))
           news = d.get('news', [])
           assert isinstance(news, list) and news, 'data.json news is empty!'
@@ -59,36 +63,15 @@ jobs:
               assert n.get('title'), f'missing title: {n}'
               assert 'published_at' in n, f'missing published_at: {n.get(\"title\",\"\")}'
           i = json.load(open('intelligence.json'))
-          assert i.get('version') == 7
-          assert isinstance(i.get('events'), list) and i['events']
-          assert 1 <= len(i.get('daily_brief', [])) <= 5
-          assert isinstance(i.get('temporal'), dict)
-          assert isinstance(i['temporal'].get('topic_signals'), list)
-          assert isinstance(i['temporal'].get('entity_momentum'), list)
-          assert isinstance(i.get('decisions'), list)
-          assert isinstance(i.get('decision_stats'), dict)
-          radar = i.get('radar', {})
-          assert isinstance(radar.get('entity_radar'), list)
-          assert isinstance(radar.get('topic_trends'), list)
-          assert isinstance(i.get('trust_stats'), dict)
-          assert isinstance(i.get('claim_stats'), dict)
-          for e in i['events']:
-              s = e.get('scores', {})
-              for k in ('relevance','impact','novelty','actionability','confidence','intelligence_score'):
-                  assert k in s, f'missing score {k}'
-              assert e.get('event_type'), f'missing event_type: {e}'
-              assert isinstance(e.get('entities'), list)
-              assert e.get('insight', {}).get('evidence') is not None
-              t = e.get('trust', {})
-              assert t.get('level') in ('high','medium','low')
-              assert isinstance(t.get('evidence'), list)
-              c = e.get('claims', {})
-              assert isinstance(c.get('claims'), list)
-              assert 0 <= int(c.get('coverage', 0)) <= 100
-          for d in i['decisions']:
-              assert d.get('urgency') in ('now','soon','watch')
-              assert d.get('guardrail')
-          print(f'Validation passed: {len(news)} news -> {len(i[\"events\"])} events; decisions={len(i[\"decisions\"])}')
+          errors = validate(i)
+          assert not errors, 'contract errors: ' + '; '.join(errors[:10])
+          contract = i.get('data_contract', {})
+          assert contract.get('schema_version') == 1
+          assert contract.get('intelligence_version') == 7
+          assert isinstance(contract.get('components'), dict)
+          assert isinstance(contract.get('counts'), dict)
+          assert len(contract['components']) >= 6
+          print(f'Validation passed: {len(news)} news -> {len(i[\"events\"])} events; decisions={len(i[\"decisions\"])}; schema={contract[\"schema_version\"]}')
           "
 
       - name: Run tests
@@ -129,7 +112,7 @@ jobs:
           git config user.email "bot@insureai.local"
           if [ -n "$(git status --porcelain data.json intelligence.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
             git add data.json intelligence.json index.html sitemap.xml research.json data/quality data/translation_cache.json
-            git commit -m "chore: auto-collect + intelligence + trust + claims + temporal + decision + radar + personal UI $(date +%F)"
+            git commit -m "chore: auto-collect + intelligence + contract + trust + claims + temporal + decision $(date +%F)"
           else
             echo "no changes"
           fi
