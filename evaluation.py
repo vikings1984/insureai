@@ -65,11 +65,11 @@ def _case_claims() -> EvalResult:
 def _case_temporal() -> EvalResult:
     def e(day, topic="ai_intelligent"):
         return {"event_id": day, "topic": topic, "published_at": f"2026-08-{day:02d}T10:00:00+00:00", "entities": ["example"], "source_count": 2, "event_type": "product", "trust": {"level": "high"}}
-    rows = [e(4), e(5), e(6), e(13)]
+    rows = [e(10), e(17), e(18), e(19)]
     result = build_temporal_intelligence(rows)
     signal = next(x for x in result["topic_signals"] if x["topic"] == "ai_intelligent")
-    passed = signal["phase"] in {"accelerating", "forming"} and signal["current_period_count"] >= 2
-    return EvalResult("temporal_signal", passed, f"phase={signal['phase']} current={signal['current_period_count']}")
+    passed = signal["phase"] == "accelerating" and signal["current_period_count"] == 3 and signal["previous_period_count"] == 1
+    return EvalResult("temporal_signal", passed, f"phase={signal['phase']} current={signal['current_period_count']} previous={signal['previous_period_count']}")
 
 
 def _case_decision_guardrail() -> EvalResult:
@@ -88,12 +88,7 @@ def _case_decision_guardrail() -> EvalResult:
 
 
 def run_evaluation() -> list[EvalResult]:
-    cases: list[Callable[[], EvalResult]] = [
-        _case_event_clustering,
-        _case_claims,
-        _case_temporal,
-        _case_decision_guardrail,
-    ]
+    cases: list[Callable[[], EvalResult]] = [_case_event_clustering, _case_claims, _case_temporal, _case_decision_guardrail]
     return [case() for case in cases]
 
 
