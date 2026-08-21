@@ -137,6 +137,8 @@ jobs:
         run: python3 scripts/inject_action_triggers_ui.py
       - name: Inject Execution Readiness UI
         run: python3 scripts/inject_execution_readiness_ui.py
+      - name: Inject Owner Risk UI
+        run: python3 scripts/inject_owner_risk_ui.py
       - name: 采集质量自动评分 (ce-optimize)
         run: python3 scripts/quality_score.py
       - name: Commit data + quality artifacts
