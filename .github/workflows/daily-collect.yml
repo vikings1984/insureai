@@ -1,13 +1,11 @@
 name: Daily Insurance News Collect
 
 # 单分支架构：insureai 既是默认分支也是唯一应用分支。
-# 流程：采集 → prerender(SEO) → 提交 data.json(+SEO) → push。
-# data-url 指向同源 data.json（GitHub Pages 每次 push 自动重部署，数据即最新），
-# 无需 jsDelivr CDN / SHA pin / purge —— 少三个脆弱环节，零接触刷新不变。
+# 流程：采集 → intelligence engine → prerender(SEO) → UI 注入 → 质量评分 → push。
 on:
   schedule:
-    - cron: '0 0,6,12,18 * * *'  # 每6小时：UTC 00/06/12/18 = 北京时间 08/14/20/02
-  workflow_dispatch:           # 支持手动触发
+    - cron: '0 0,6,12,18 * * *'
+  workflow_dispatch:
 
 concurrency:
   group: daily-collect
@@ -38,18 +36,29 @@ jobs:
       - name: Run collector
         run: python3 collect.py
 
+      - name: Build event-based intelligence
+        run: python3 intelligence.py
+
       - name: Data validation
         run: |
           python3 -c "
-          import json, sys
+          import json
           d = json.load(open('data.json'))
           news = d.get('news', [])
-          assert len(news) > 0, 'data.json news is empty!'
-          assert isinstance(news, list), 'news is not a list'
+          assert isinstance(news, list) and news, 'data.json news is empty!'
           for n in news:
-              assert 'title' in n and n['title'], f'missing title: {n}'
+              assert n.get('title'), f'missing title: {n}'
               assert 'published_at' in n, f'missing published_at: {n.get(\"title\",\"\")}'
-          print(f'✅ Data validation passed: {len(news)} items')
+          i = json.load(open('intelligence.json'))
+          assert i.get('version') == 1
+          assert isinstance(i.get('events'), list) and i['events']
+          assert 1 <= len(i.get('daily_brief', [])) <= 5
+          for e in i['events']:
+              s = e.get('scores', {})
+              for k in ('relevance','impact','novelty','actionability','confidence','intelligence_score'):
+                  assert k in s, f'missing score {k}'
+              assert e.get('insight', {}).get('evidence') is not None
+          print(f'Validation passed: {len(news)} news -> {len(i[\"events\"])} events')
           "
 
       - name: Run tests
@@ -63,16 +72,19 @@ jobs:
       - name: Prerender SEO (site = GitHub Pages)
         run: python3 prerender.py --site-url "$SITE_URL"
 
+      - name: Inject Daily Intelligence UI
+        run: python3 scripts/inject_intelligence_ui.py
+
       - name: 采集质量自动评分 (ce-optimize)
         run: python3 scripts/quality_score.py
 
-      - name: Commit data + SEO + 质量评分
+      - name: Commit data + intelligence + SEO + 质量评分
         run: |
           git config user.name "insureai-bot"
           git config user.email "bot@insureai.local"
-          if [ -n "$(git status --porcelain data.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
-            git add data.json index.html sitemap.xml research.json data/quality data/translation_cache.json
-            git commit -m "chore: auto-collect + prerender + quality-score $(date +%F)"
+          if [ -n "$(git status --porcelain data.json intelligence.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
+            git add data.json intelligence.json index.html sitemap.xml research.json data/quality data/translation_cache.json
+            git commit -m "chore: auto-collect + intelligence + prerender $(date +%F)"
           else
             echo "no changes"
           fi
