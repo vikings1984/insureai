@@ -30,7 +30,7 @@ def _priority(event, decision, counterfactual=None, impact=None, evidence_availa
     elif level == 'medium': priority += 5
     classification = (trend_attribution or {}).get('classification')
     priority += {
-        'persistent_worsening': 15, 'regressed': 15, 'single_spike': -10,
+        'persistent_worsening': 20, 'regressed': 20, 'single_spike': -10,
         'recovering': -5, 'recovered': -10, 'stable': -5, 'baseline': 0,
     }.get(classification, 0)
     return max(0, min(priority, 100))
