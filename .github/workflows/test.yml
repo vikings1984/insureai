@@ -18,8 +18,8 @@ jobs:
         with:
           python-version: '3.11'
       - name: Syntax check
-        run: python3 -m py_compile intelligence.py radar.py personalization.py trust.py trust_build.py scripts/inject_intelligence_ui.py scripts/inject_personalization_ui.py
+        run: python3 -m py_compile intelligence.py radar.py personalization.py trust.py trust_build.py scripts/inject_intelligence_ui.py scripts/inject_personalization_ui.py scripts/inject_trust_ui.py
       - name: JavaScript syntax check
-        run: node --check behavior_learning.js && node --check personalization-ui.js
+        run: node --check behavior_learning.js && node --check personalization-ui.js && node --check trust-ui.js
       - name: Unit tests
         run: python3 -m unittest discover tests/ -v
