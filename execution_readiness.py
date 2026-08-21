@@ -27,14 +27,14 @@ PACKS = {
         "deliverables": ["impact_map", "affected_owner_list", "open_questions"],
         "deadline": "within_5_business_days",
         "cost_class": "low",
-        "approval_boundary": "analysis only; no policy or portfolio change",
+        "approval_boundary": "analysis only; human review; no policy or portfolio change",
     },
     "trigger_thresholds": {
         "required_inputs": ["metric_definition", "baseline", "escalation_threshold", "deescalation_threshold"],
         "deliverables": ["threshold_register", "owner_assignment", "review_cadence"],
         "deadline": "next_governance_cycle",
         "cost_class": "low",
-        "approval_boundary": "threshold proposal only; approval required before operational use",
+        "approval_boundary": "threshold proposal only; human approval required before operational use",
     },
 }
 
