@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Build a privacy-safe release provenance record from release and audit artifacts."""
+# release-provenance-v1: aggregate release, audit, and impact metadata without business content.
 from __future__ import annotations
 
 import hashlib
