@@ -8,7 +8,8 @@ class OptimizationBacklogTests(unittest.TestCase):
         item = out['items'][0]
         self.assertEqual(item['module'], 'trust')
         self.assertEqual(item['automation'], 'advisory_only')
-        self.assertEqual(item['dedupe_key'], 'trust:worsening')
+        self.assertEqual(item['dedupe_key'], 'quality:trust')
+        self.assertTrue(item['backlog_id'] == 'quality-trust')
 
     def test_stable_healthy_module_does_not_create_noise(self):
         out = build_backlog({'baseline_available': True, 'modules': {'trust': {'direction':'stable','health':'healthy','error_rate':0.1,'priority':5}}})

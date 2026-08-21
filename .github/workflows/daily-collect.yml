@@ -87,8 +87,10 @@ jobs:
           fb=json.load(open('feedback_attribution.json')); assert fb.get('version') == 1 and isinstance(fb.get('modules'),dict)
           mh=json.load(open('module_health.json')); assert mh.get('version') == 1 and isinstance(mh.get('modules'),list)
           mt=json.load(open('module_health_trend.json')); assert mt.get('version') == 1 and isinstance(mt.get('modules'),dict)
-          ob=json.load(open('optimization_backlog.json')); assert ob.get('version') == 1 and isinstance(ob.get('items'),list)
-          print(f'Validation passed: news={len(news)} events={len(i["events"])} review={len(q["items"])} impacts={imp["impacted_count"]} backlog={len(ob["items"])} baseline={mt["baseline_available"]}')
+          ob=json.load(open('optimization_backlog.json')); assert ob.get('version') == 2 and isinstance(ob.get('items'),list)
+          hist=json.load(open('optimization_backlog_history.json')); assert hist.get('version') == 1 and isinstance(hist.get('snapshots'),list) and len(hist['snapshots']) <= 90
+          for item in ob['items']: assert item.get('status') in {'open','recovering','resolved','regressed'}
+          print(f'Validation passed: news={len(news)} events={len(i["events"])} review={len(q["items"])} impacts={imp["impacted_count"]} backlog={len(ob["items"])} baseline={mt["baseline_available"]} backlog_history={len(hist["snapshots"])}')
           "
       - name: Run tests
         run: python3 -m unittest discover tests/ -v
@@ -117,8 +119,8 @@ jobs:
       - name: Commit data + intelligence + quality profile + SEO
         run: |
           git config user.name "insureai-bot"; git config user.email "bot@insureai.local"
-          if [ -n "$(git status --porcelain data.json intelligence.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json optimization_backlog.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
-            git add data.json intelligence.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json optimization_backlog.json index.html sitemap.xml research.json data/quality data/translation_cache.json
+          if [ -n "$(git status --porcelain data.json intelligence.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json optimization_backlog.json optimization_backlog_history.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
+            git add data.json intelligence.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json optimization_backlog.json optimization_backlog_history.json index.html sitemap.xml research.json data/quality data/translation_cache.json
             git commit -m "chore: auto-collect + intelligence + quality profile $(date +%F)"
           else echo "no changes"; fi
       - name: Push (triggers GitHub Pages redeploy)
