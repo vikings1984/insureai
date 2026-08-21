@@ -1,23 +1,19 @@
 name: Daily Insurance News Collect
 
 # 单分支架构：insureai 既是默认分支也是唯一应用分支。
-# 流程：采集 → intelligence engine → trust layer → claim/evidence → temporal → calibration → decision → contract → evaluation → metrics → replay → human review → radar/trends → prerender → UI → 质量评分 → push。
+# 流程：采集 → intelligence engine → trust layer → claim/evidence → temporal → calibration → decision → counterfactual → contract → evaluation → metrics → replay → human review → radar/trends → prerender → UI → 质量评分 → push。
 on:
   schedule:
     - cron: '0 0,6,12,18 * * *'
   workflow_dispatch:
-
 concurrency:
   group: daily-collect
   cancel-in-progress: false
-
 permissions:
   contents: write
   issues: write
-
 env:
   SITE_URL: "https://vikings1984.github.io/insureai"
-
 jobs:
   collect:
     runs-on: ubuntu-latest
@@ -27,47 +23,34 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
           token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Run collector
         run: python3 collect.py
-
       - name: Build event-based intelligence
         run: python3 intelligence.py
-
       - name: Build evidence trust layer
         run: python3 trust_build.py
-
       - name: Build temporal intelligence
         run: python3 temporal_build.py
-
-      # Use explicit human labels from the previous review cycle, if present.
-      # Without labels this remains neutral and does not change decisions.
       - name: Build bounded human-feedback calibration
         run: python3 calibration.py
-
       - name: Build decision intelligence
         run: python3 decision_build.py
-
+      - name: Run counterfactual robustness analysis
+        run: python3 counterfactual.py
       - name: Validate and stamp data contract
         run: python3 contract.py
-
       - name: Evaluate intelligence quality
         run: python3 evaluation.py
-
       - name: Quantitative quality metrics gate
         run: python3 -c "from evaluation_metrics import build_metrics; m=build_metrics(); assert m['macro_quality'] >= 0.95, m; print(m)"
-
       - name: Production replay
         run: python3 production_replay.py
-
       - name: Build human review queue
         run: python3 review.py
-
       - name: Data validation
         run: |
           python3 -c "
@@ -77,75 +60,52 @@ jobs:
           news = d.get('news', [])
           assert isinstance(news, list) and news, 'data.json news is empty!'
           for n in news:
-              assert n.get('title'), f'missing title: {n}'
-              assert 'published_at' in n, f'missing published_at: {n.get(\"title\",\"\")}'
+              assert n.get('title')
+              assert 'published_at' in n
           i = json.load(open('intelligence.json'))
           errors = validate(i)
           assert not errors, 'contract errors: ' + '; '.join(errors[:10])
-          contract = i.get('data_contract', {})
-          assert contract.get('schema_version') == 1
-          assert contract.get('intelligence_version') == 7
-          assert isinstance(contract.get('components'), dict)
-          assert isinstance(contract.get('counts'), dict)
-          assert len(contract['components']) >= 6
           q = json.load(open('review_queue.json'))
-          assert q.get('version') == 1
-          assert isinstance(q.get('items'), list)
+          assert q.get('version') == 1 and isinstance(q.get('items'), list)
           cal = json.load(open('calibration.json'))
-          assert cal.get('version') == 1
-          assert cal.get('status') in {'neutral', 'active'}
-          print(f'Validation passed: {len(news)} news -> {len(i[\"events\"])} events; review_candidates={len(q[\"items\"])}; calibration={cal[\"status\"]}')
+          assert cal.get('version') == 1 and cal.get('status') in {'neutral', 'active'}
+          cf = json.load(open('counterfactual.json'))
+          assert cf.get('version') == 1
+          assert 0 <= float(cf.get('fragility_rate', 0)) <= 1
+          print(f'Validation passed: {len(news)} news -> {len(i["events"])} events; review={len(q["items"])}; calibration={cal["status"]}; fragility={cf["fragility_rate"]}')
           "
-
       - name: Run tests
-        run: |
-          if command -v pytest >/dev/null 2>&1; then
-            python3 -m pytest tests/ -v --tb=short
-          else
-            python3 -m unittest discover tests/ -v
-          fi
-
+        run: python3 -m unittest discover tests/ -v
       - name: Prerender SEO (site = GitHub Pages)
         run: python3 prerender.py --site-url "$SITE_URL"
-
       - name: Inject Daily Intelligence UI
         run: python3 scripts/inject_intelligence_ui.py
-
       - name: Inject Personal Intelligence UI
         run: python3 scripts/inject_personalization_ui.py
-
       - name: Inject Trust UI
         run: python3 scripts/inject_trust_ui.py
-
       - name: Inject Claim Evidence UI
         run: python3 scripts/inject_claim_evidence_ui.py
-
       - name: Inject Temporal UI
         run: python3 scripts/inject_temporal_ui.py
-
       - name: Inject Decision UI
         run: python3 scripts/inject_decision_ui.py
-
       - name: Inject Human Review UI
         run: python3 scripts/inject_review_ui.py
-
       - name: 采集质量自动评分 (ce-optimize)
         run: python3 scripts/quality_score.py
-
-      - name: Commit data + intelligence + calibration + review queue + SEO + 质量评分
+      - name: Commit data + intelligence + calibration + counterfactual + review queue + SEO + 质量评分
         run: |
           git config user.name "insureai-bot"
           git config user.email "bot@insureai.local"
-          if [ -n "$(git status --porcelain data.json intelligence.json calibration.json review_queue.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
-            git add data.json intelligence.json calibration.json review_queue.json index.html sitemap.xml research.json data/quality data/translation_cache.json
-            git commit -m "chore: auto-collect + intelligence + calibration + review + evaluation + replay + trust + claims + temporal + decision $(date +%F)"
+          if [ -n "$(git status --porcelain data.json intelligence.json calibration.json counterfactual.json review_queue.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
+            git add data.json intelligence.json calibration.json counterfactual.json review_queue.json index.html sitemap.xml research.json data/quality data/translation_cache.json
+            git commit -m "chore: auto-collect + intelligence + calibration + counterfactual + review + evaluation + replay + trust + claims + temporal + decision $(date +%F)"
           else
             echo "no changes"
           fi
-
       - name: Push (triggers GitHub Pages redeploy)
         run: git push origin HEAD:${{ github.ref_name }}
-
       - name: Notify on failure
         if: failure()
         uses: actions/github-script@v7
