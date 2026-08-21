@@ -21,6 +21,11 @@ SCENARIO_ACTIONS = {
     "competition_follows": [("competitor_monitoring", "建立竞争对手监测"), ("response_playbook", "准备可逆的竞争响应预案")],
 }
 
+
+def _ready(row: dict) -> bool:
+    return row.get("execution_readiness", "ready") == "ready" and row.get("vulnerability") not in {"blocked"}
+
+
 def build_matrix(data: dict) -> dict:
     scenarios = data.get("scenarios", []) if isinstance(data, dict) else []
     by_event: dict[str, list[dict]] = {}
@@ -33,9 +38,11 @@ def build_matrix(data: dict) -> dict:
         names = sorted({r.get("scenario") for r in rows if r.get("scenario")})
         if len(names) < 2:
             continue
+        ready_names = sorted({r.get("scenario") for r in rows if r.get("scenario") and _ready(r)})
         robust = []
         for action_id, label, description in COMMON_ACTIONS:
-            robust.append({"action_id": action_id, "label": label, "description": description, "coverage": 1.0, "robust": True, "reversibility": "high"})
+            eligible = len(ready_names) >= 2
+            robust.append({"action_id": action_id, "label": label, "description": description, "coverage": round(len(ready_names) / max(len(names), 1), 4), "robust": eligible, "reversibility": "high", "eligible_scenarios": ready_names})
         specific = []
         for name in names:
             for action_id, label in SCENARIO_ACTIONS.get(name, []):
@@ -44,12 +51,14 @@ def build_matrix(data: dict) -> dict:
             "event_id": event_id,
             "scenario_count": len(names),
             "scenarios": names,
+            "evidence_ready_scenarios": ready_names,
             "robust_actions": robust,
             "scenario_specific_actions": specific,
             "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+            "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
             "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。",
         })
-    return {"version": 1, "principle": "在不确定性下最大化跨情景有效性与选择权，而不是预测唯一未来。", "event_count": len(results), "results": results[:500]}
+    return {"version": 2, "principle": "在不确定性下最大化跨情景有效性与选择权，而不是预测唯一未来。", "event_count": len(results), "results": results[:500]}
 
 def main() -> None:
     data = json.loads(SCENARIO_PATH.read_text(encoding="utf-8"))
