@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Turn daily risk radar items into human owner views without executing actions."""
+"""Turn daily risk radar into human owner views without executing actions."""
 from __future__ import annotations
 
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-
 DEFAULT_OWNER_BY_ACTION = {
     "evidence_refresh": ["risk_intelligence_owner"],
     "exposure_mapping": ["portfolio_risk_owner", "operations_owner"],
@@ -55,16 +54,12 @@ def _resolve_readiness(item: dict, by_key: dict, by_event: dict[str, list[dict]]
     if direct:
         return direct
     candidates = by_event.get(event_id, [])
-    if len(candidates) == 1:
-        return candidates[0]
-    return None
+    return candidates[0] if len(candidates) == 1 else None
 
 
 def _next_step(item: dict, readiness: dict | None) -> str:
-    if readiness:
-        deliverables = readiness.get("deliverables") or []
-        if deliverables:
-            return f"human review: complete {deliverables[0]}"
+    if readiness and readiness.get("deliverables"):
+        return f"human review: complete {readiness['deliverables'][0]}"
     reasons = item.get("reasons") or []
     if "human_review" in reasons:
         return "review queue: confirm evidence and disposition"
@@ -75,9 +70,10 @@ def _next_step(item: dict, readiness: dict | None) -> str:
     return "review context and confirm next action"
 
 
-def build_owner_view(radar: dict | None = None, readiness: dict | None = None) -> dict:
+def build_owner_view(radar: dict | None = None, readiness: dict | None = None, credibility: dict | None = None) -> dict:
     radar = _load("daily_risk_radar.json", {}) if radar is None else radar
     readiness = _load("execution_readiness.json", {}) if readiness is None else readiness
+    credibility = _load("decision_credibility.json", {}) if credibility is None else credibility
     readiness_by_key = _readiness_by_key(readiness)
     readiness_by_event = _readiness_by_event(readiness)
 
@@ -108,9 +104,16 @@ def build_owner_view(radar: dict | None = None, readiness: dict | None = None) -
             "approval_boundary": (ready or {}).get("approval_boundary") or "human confirmation required",
         })
 
+    provenance = credibility.get("provenance") if isinstance(credibility.get("provenance"), dict) else {}
+    credibility_summary = {
+        "status": credibility.get("status", "unknown"),
+        "reasons": credibility.get("reasons") or [],
+        "provenance": provenance,
+    }
     return {
-        "version": 1,
-        "principle": "负责人视图只组织已有信号，不创建责任、不执行行动、不改变风险判断。",
+        "version": 2,
+        "principle": "负责人视图只组织已有信号，不创建责任、不执行行动、不改变风险判断。可信度来源只读、可追溯。",
+        "credibility": credibility_summary,
         "item_count": len(items),
         "items": items[:30],
     }
@@ -119,7 +122,7 @@ def build_owner_view(radar: dict | None = None, readiness: dict | None = None) -
 def main() -> None:
     result = build_owner_view()
     (ROOT / "owner_risk_view.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Owner risk view: {result['item_count']} items")
+    print(f"Owner risk view: {result['item_count']} items; credibility={result['credibility']['status']}")
 
 
 if __name__ == "__main__":
