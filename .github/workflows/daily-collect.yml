@@ -1,7 +1,7 @@
 name: Daily Insurance News Collect
 
 # 单分支架构：insureai 既是默认分支也是唯一应用分支。
-# 流程：采集 → intelligence → trust → claims → temporal → calibration → decision → counterfactual → scenario → scenario matrix → contract → evaluation → metrics → replay → review → publish。
+# 流程：采集 → intelligence → trust → claims → temporal → calibration → decision → counterfactual → scenario → scenario matrix → action triggers → contract → evaluation → metrics → replay → review → publish。
 on:
   schedule:
     - cron: '0 0,6,12,18 * * *'
@@ -45,6 +45,8 @@ jobs:
         run: python3 scenario.py
       - name: Run cross-scenario decision matrix
         run: python3 scenario_matrix.py
+      - name: Build actionable trigger rules
+        run: python3 action_triggers.py
       - name: Validate and stamp data contract
         run: python3 contract.py
       - name: Evaluate intelligence quality
@@ -83,7 +85,14 @@ jobs:
           for row in sm['results']:
               assert int(row.get('scenario_count', 0)) >= 2
               assert all(a.get('robust') is True for a in row.get('robust_actions', []))
-          print(f'Validation passed: {len(news)} news -> {len(i["events"])} events; review={len(q["items"])}; calibration={cal["status"]}; fragility={cf["fragility_rate"]}; scenarios={len(sc["scenarios"])}; matrix={len(sm["results"])}')
+          tr = json.load(open('action_triggers.json'))
+          assert tr.get('version') == 1 and isinstance(tr.get('results'), list)
+          for row in tr['results']:
+              assert row.get('automation') == 'advisory_only'
+              assert row.get('status') == 'monitor'
+              assert len(row.get('owner_roles', [])) >= 1
+              assert all(row.get('trigger', {}).get(k) for k in ('start', 'escalate', 'deescalate', 'stop'))
+          print(f'Validation passed: {len(news)} news -> {len(i["events"])} events; review={len(q["items"])}; calibration={cal["status"]}; fragility={cf["fragility_rate"]}; scenarios={len(sc["scenarios"])}; matrix={len(sm["results"])}; triggers={len(tr["results"])}')
           "
       - name: Run tests
         run: python3 -m unittest discover tests/ -v
@@ -105,13 +114,13 @@ jobs:
         run: python3 scripts/inject_review_ui.py
       - name: 采集质量自动评分 (ce-optimize)
         run: python3 scripts/quality_score.py
-      - name: Commit data + intelligence + calibration + counterfactual + scenario + scenario matrix + review queue + SEO + 质量评分
+      - name: Commit data + intelligence + calibration + counterfactual + scenario + scenario matrix + action triggers + review queue + SEO + 质量评分
         run: |
           git config user.name "insureai-bot"
           git config user.email "bot@insureai.local"
-          if [ -n "$(git status --porcelain data.json intelligence.json calibration.json counterfactual.json scenario.json scenario_matrix.json review_queue.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
-            git add data.json intelligence.json calibration.json counterfactual.json scenario.json scenario_matrix.json review_queue.json index.html sitemap.xml research.json data/quality data/translation_cache.json
-            git commit -m "chore: auto-collect + intelligence + calibration + counterfactual + scenario + scenario matrix + review + evaluation + replay + trust + claims + temporal + decision $(date +%F)"
+          if [ -n "$(git status --porcelain data.json intelligence.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json review_queue.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
+            git add data.json intelligence.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json review_queue.json index.html sitemap.xml research.json data/quality data/translation_cache.json
+            git commit -m "chore: auto-collect + intelligence + calibration + counterfactual + scenario + matrix + triggers + review + evaluation + replay + trust + claims + temporal + decision $(date +%F)"
           else
             echo "no changes"
           fi
