@@ -4,9 +4,11 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
+
 
 def _load(name: str, default):
     path = ROOT / name
@@ -17,6 +19,14 @@ def _load(name: str, default):
         return value
     except Exception:
         return default
+
+
+def _source(name: str, value: dict) -> dict:
+    return {
+        "source": name,
+        "available": bool(value),
+        "source_commit": value.get("source_commit") if isinstance(value, dict) else None,
+    }
 
 
 def build_credibility() -> dict:
@@ -47,18 +57,13 @@ def build_credibility() -> dict:
     else:
         status = "ready"
 
+    generated_at = datetime.now(timezone.utc).isoformat()
     return {
-        "version": 1,
+        "version": 2,
         "status": status,
         "principle": "可信度摘要只汇总已有质量信号，不重新评分，也不修改原始决策。",
-        "quality": {
-            "status": quality_status,
-            "macro_quality": macro_quality,
-        },
-        "deployment": {
-            "status": deployment_status,
-            "verified": release.get("deployment_verified", False),
-        },
+        "quality": {"status": quality_status, "macro_quality": macro_quality},
+        "deployment": {"status": deployment_status, "verified": release.get("deployment_verified", False)},
         "stability": {
             "jitter_events": jitter,
             "unstable_events": unstable,
@@ -68,12 +73,28 @@ def build_credibility() -> dict:
             "low_or_unavailable": low_availability,
             "signal": "sufficient" if low_availability == 0 else "review",
         },
+        "provenance": {
+            "generated_at": generated_at,
+            "quality": _source("release_manifest.json", release),
+            "stability": _source("decision_stability.json", stability),
+            "evidence": _source("evidence_availability.json", availability),
+            "metrics": _source("evaluation_metrics.json", metrics),
+            "auditability": "source_files_are_named_and_missing_inputs_are_explicit",
+        },
+        "reasons": [
+            "quality_not_passed" if quality_status != "passed" else None,
+            "deployment_not_verified" if deployment_status != "verified" else None,
+            "decision_jitter_detected" if jitter > 0 else None,
+            "low_or_unavailable_evidence" if low_availability > 0 else None,
+            "macro_quality_below_gate" if macro_quality is not None and macro_quality < 0.95 else None,
+        ],
         "guardrail": "该摘要不替代承保、投资、合规或管理决策。",
     }
 
 
 def main() -> None:
     output = build_credibility()
+    output["reasons"] = [reason for reason in output["reasons"] if reason]
     (ROOT / "decision_credibility.json").write_text(
         json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
