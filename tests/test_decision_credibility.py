@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
-import json
-import tempfile
 import unittest
-from pathlib import Path
 from unittest.mock import patch
 
 import decision_credibility
@@ -19,6 +16,9 @@ class TestDecisionCredibility(unittest.TestCase):
         with patch.object(decision_credibility, "_load", side_effect=lambda name, default: payloads.get(name, default)):
             result = decision_credibility.build_credibility()
         self.assertEqual(result["status"], "review")
+        jitter = next(row for row in result["signal_details"] if row["signal"] == "decision_jitter_events")
+        self.assertEqual(jitter["actual"], 1)
+        self.assertFalse(jitter["result"])
 
     def test_clean_quality_is_ready_when_deployment_is_pending(self):
         payloads = {
@@ -31,6 +31,8 @@ class TestDecisionCredibility(unittest.TestCase):
             result = decision_credibility.build_credibility()
         self.assertEqual(result["status"], "ready")
         self.assertFalse(result["deployment"]["verified"])
+        self.assertEqual(result["version"], 3)
+        self.assertEqual(len(result["signal_details"]), 5)
 
     def test_failed_quality_blocks(self):
         payloads = {
