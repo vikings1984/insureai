@@ -86,7 +86,7 @@ jobs:
           i=json.load(open('intelligence.json')); errors=validate(i); assert not errors, 'contract errors: ' + '; '.join(errors[:10])
           s=json.load(open('decision_stability.json')); assert s.get('version') == 1 and isinstance(s.get('results'),list)
           sh=json.load(open('decision_history.json')); assert sh.get('version') == 1 and isinstance(sh.get('snapshots'),list) and len(sh['snapshots']) <= 90
-          cred=json.load(open('decision_credibility.json')); assert cred.get('version') == 1 and cred.get('status') in {'ready','review','caution','blocked'}
+          cred=json.load(open('decision_credibility.json')); assert cred.get('version') == 2 and cred.get('status') in {'ready','review','caution','blocked'} and isinstance(cred.get('provenance'),dict) and isinstance(cred.get('reasons'),list)
           q=json.load(open('review_queue.json')); assert q.get('version') == 1 and isinstance(q.get('items'),list)
           imp=json.load(open('change_impact.json')); assert imp.get('version') == 1 and isinstance(imp.get('impacted_events'),list) and isinstance(imp.get('baseline_available'),bool)
           ledger=json.load(open('audit_ledger.json')); assert ledger.get('version') == 1 and ledger.get('privacy') == 'hashes_and_metadata_only'
