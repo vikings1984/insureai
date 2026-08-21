@@ -17,6 +17,7 @@ ROLE_ACTIONS = {
 URGENCY = {"accelerating": "now", "forming": "soon", "cooling": "watch", "isolated": "watch"}
 LABELS = {"now": "高", "soon": "中", "watch": "低"}
 
+
 def build_decisions(events: list[dict], temporal: dict | None = None, role: str = "executive") -> list[dict]:
     temporal = temporal or {}
     topic_phase = {x.get("topic"): x for x in temporal.get("topic_signals", [])}
@@ -25,16 +26,30 @@ def build_decisions(events: list[dict], temporal: dict | None = None, role: str 
     for event in events:
         score = int(event.get("scores", {}).get("intelligence_score") or 0)
         trust = event.get("trust", {}).get("level", "low")
+        conflict = bool(event.get("trust", {}).get("conflict"))
         phase_row = topic_phase.get(event.get("topic")) or {}
         phase = phase_row.get("phase", "isolated")
         action = actions.get(event.get("event_type")) or "保持跟踪，等待更多独立证据或业务信号"
-        urgency = URGENCY.get(phase, "watch")
-        if trust == "low" or event.get("trust", {}).get("conflict"):
+
+        # Safety rule: any unresolved source conflict or low trust must never escalate
+        # to an action-taking urgency, even when score/trend is otherwise strong.
+        if conflict or trust == "low":
             urgency = "watch"
-        if score >= 82 and trust == "high" and phase == "accelerating":
+        elif score >= 82 and trust == "high" and phase == "accelerating":
             urgency = "now"
         elif score >= 75 and trust in {"high", "medium"} and phase in {"accelerating", "forming"}:
-            urgency = "soon" if urgency == "watch" else urgency
-        out.append({"event_id": event.get("event_id"), "role": role, "action": action, "urgency": urgency, "urgency_label": LABELS[urgency], "basis": {"intelligence_score": score, "trust_level": trust, "temporal_phase": phase, "signal_strength": phase_row.get("signal_strength", 0)}, "guardrail": "这是情报辅助建议，不替代承保、投资、合规或管理决策。"})
+            urgency = URGENCY.get(phase, "watch")
+        else:
+            urgency = URGENCY.get(phase, "watch")
+
+        out.append({
+            "event_id": event.get("event_id"),
+            "role": role,
+            "action": action,
+            "urgency": urgency,
+            "urgency_label": LABELS[urgency],
+            "basis": {"intelligence_score": score, "trust_level": trust, "temporal_phase": phase, "signal_strength": phase_row.get("signal_strength", 0), "conflict": conflict},
+            "guardrail": "这是情报辅助建议，不替代承保、投资、合规或管理决策。",
+        })
     rank = {"watch": 0, "soon": 1, "now": 2}
     return sorted(out, key=lambda x: (rank[x["urgency"]], x["basis"]["intelligence_score"]), reverse=True)
