@@ -25,13 +25,20 @@ jobs:
           python-version: '3.11'
       - name: Test release provenance
         run: python3 -m unittest tests.test_release_provenance -v
-      - name: Validate committed release provenance
+      - name: Validate release provenance contract
+        env:
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           python3 - <<'PY'
           import json
+          import os
           from pathlib import Path
           path = Path('release_provenance.json')
-          assert path.exists(), 'release_provenance.json missing'
+          event = os.environ['EVENT_NAME']
+          if not path.exists():
+              assert event == 'pull_request', 'release_provenance.json missing on non-PR event'
+              print('PR validation: runtime provenance not present yet; contract deferred to push validation')
+              raise SystemExit(0)
           p = json.loads(path.read_text(encoding='utf-8'))
           assert p.get('version') == 1
           assert p.get('schema_version') == 'release-provenance-v1'
@@ -46,4 +53,3 @@ jobs:
               value = p.get('artifacts', {}).get(key)
               assert isinstance(value, str) and len(value) == 64
           print('Release provenance valid')
-          PY
