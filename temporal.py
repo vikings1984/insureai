@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Temporal intelligence: turn events into time-based signals.
-
-Principle: a trend is repeated, corroborated change over time, not one noisy article.
-"""
+"""Temporal intelligence: turn events into time-based signals."""
 from __future__ import annotations
 
 from collections import defaultdict
@@ -34,6 +31,8 @@ def build_temporal_intelligence(events: list[dict]) -> dict:
     topic_signals = []
     for topic, rows in by_topic.items():
         recent = [e for e in rows if _date(e.get('published_at')) is not None]
+        if not recent:
+            continue
         weeks = defaultdict(int)
         for e in recent:
             weeks[_week(e.get('published_at'))] += 1
@@ -58,7 +57,10 @@ def build_temporal_intelligence(events: list[dict]) -> dict:
 
     entity_signals = []
     for entity, rows in by_entity.items():
-        recent = sorted(rows, key=lambda e: e.get('published_at') or '', reverse=True)[:8]
+        dated = [e for e in rows if _date(e.get('published_at')) is not None]
+        if not dated:
+            continue
+        recent = sorted(dated, key=lambda e: e.get('published_at') or '', reverse=True)[:8]
         source_mentions = sum(int(e.get('source_count') or 0) for e in recent)
         types = len({e.get('event_type') for e in recent})
         active = len(recent)
