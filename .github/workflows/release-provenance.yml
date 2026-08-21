@@ -1,0 +1,84 @@
+name: Release Provenance
+on:
+  pull_request:
+    branches: [insureai]
+  push:
+    branches: [insureai]
+    paths:
+      - release_manifest.json
+      - audit_ledger.json
+      - change_impact.json
+      - release_provenance.py
+      - tests/test_release_provenance.py
+      - .github/workflows/release-provenance.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test release provenance
+        run: python3 -m unittest tests.test_release_provenance -v
+      - name: Validate committed provenance when present
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('release_provenance.json')
+          if path.exists():
+              p = json.loads(path.read_text(encoding='utf-8'))
+              assert p.get('version') == 1
+              assert p.get('schema_version') == 'release-provenance-v1'
+              assert p.get('quality', {}).get('status') in {'passed', 'failed', 'unknown'}
+              assert p.get('deployment', {}).get('status') in {'pending', 'verified', 'failed', 'unknown'}
+              assert isinstance(p.get('deployment', {}).get('verified'), bool)
+              for key in ('release_manifest_sha256', 'audit_ledger_sha256'):
+                  value = p.get('artifacts', {}).get(key)
+                  assert isinstance(value, str) and len(value) == 64
+              print('Committed release provenance valid')
+          else:
+              print('No committed release provenance yet')
+          PY
+  publish:
+    if: github.event_name == 'push' && !contains(github.event.head_commit.message, 'chore: update release provenance')
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Build release provenance
+        run: python3 release_provenance.py
+      - name: Validate release provenance
+        run: |
+          python3 - <<'PY'
+          import json
+          p = json.load(open('release_provenance.json'))
+          assert p.get('version') == 1 and p.get('schema_version') == 'release-provenance-v1'
+          assert p.get('source_commit') and p.get('release_channel') == 'github_pages'
+          assert p.get('quality', {}).get('status') == 'passed'
+          assert p.get('quality', {}).get('audit_privacy') == 'hashes_and_metadata_only'
+          assert p.get('quality', {}).get('audit_stage_count', 0) > 0
+          assert p.get('deployment', {}).get('status') == 'pending'
+          assert p.get('deployment', {}).get('verified') is False
+          for key in ('release_manifest_sha256', 'audit_ledger_sha256'):
+              assert len(p['artifacts'][key]) == 64
+          print('Release provenance valid')
+          PY
+      - name: Commit release provenance
+        run: |
+          git config user.name "insureai-bot"
+          git config user.email "bot@insureai.local"
+          if git diff --quiet -- release_provenance.json; then
+            echo "release provenance unchanged"
+          else
+            git add release_provenance.json
+            git commit -m "chore: update release provenance [skip ci]"
+            git push origin HEAD:${{ github.ref_name }}
+          fi
