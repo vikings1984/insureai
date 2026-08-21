@@ -1,7 +1,7 @@
 name: Daily Insurance News Collect
 
 # 单分支架构：insureai 既是默认分支也是唯一应用分支。
-# 流程：采集 → intelligence → trust → claims → temporal → calibration → decision → counterfactual → scenario → scenario matrix → action triggers → execution readiness → audit ledger → contract → evaluation → metrics → replay → review → publish。
+# 流程：采集 → intelligence → trust → claims → temporal → calibration → decision → counterfactual → scenario → scenario matrix → action triggers → execution readiness → audit ledger → change impact → contract → evaluation → metrics → replay → review → publish。
 on:
   schedule:
     - cron: '0 0,6,12,18 * * *'
@@ -51,6 +51,8 @@ jobs:
         run: python3 execution_readiness.py
       - name: Build auditable lineage ledger
         run: python3 audit_ledger.py
+      - name: Analyze downstream change impact
+        run: python3 change_impact.py
       - name: Validate and stamp data contract
         run: python3 contract.py
       - name: Evaluate intelligence quality
@@ -108,7 +110,10 @@ jobs:
           for row in ledger.get('stages', []):
               assert len(row.get('sha256', '')) == 64
               assert 'title' not in row and 'url' not in row and 'body' not in row
-          print(f'Validation passed: {len(news)} news -> {len(i["events"])} events; review={len(q["items"])}; calibration={cal["status"]}; fragility={cf["fragility_rate"]}; scenarios={len(sc["scenarios"])}; matrix={len(sm["results"])}; triggers={len(tr["results"])}; readiness={len(er["results"])}; audit_stages={len(ledger["stages"])}')
+          impact = json.load(open('change_impact.json'))
+          assert impact.get('version') == 1 and isinstance(impact.get('impacted_events'), list)
+          assert isinstance(impact.get('baseline_available'), bool)
+          print(f'Validation passed: {len(news)} news -> {len(i["events"])} events; review={len(q["items"])}; calibration={cal["status"]}; fragility={cf["fragility_rate"]}; scenarios={len(sc["scenarios"])}; matrix={len(sm["results"])}; triggers={len(tr["results"])}; readiness={len(er["results"])}; audit_stages={len(ledger["stages"])}; impacts={impact["impacted_count"]}; baseline={impact["baseline_available"]}')
           "
       - name: Run tests
         run: python3 -m unittest discover tests/ -v
@@ -134,13 +139,13 @@ jobs:
         run: python3 scripts/inject_execution_readiness_ui.py
       - name: 采集质量自动评分 (ce-optimize)
         run: python3 scripts/quality_score.py
-      - name: Commit data + intelligence + calibration + counterfactual + scenario + scenario matrix + action triggers + execution readiness + audit ledger + review queue + SEO + 质量评分
+      - name: Commit data + intelligence + calibration + counterfactual + scenario + scenario matrix + action triggers + execution readiness + audit ledger + change impact + review queue + SEO + 质量评分
         run: |
           git config user.name "insureai-bot"
           git config user.email "bot@insureai.local"
-          if [ -n "$(git status --porcelain data.json intelligence.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json review_queue.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
-            git add data.json intelligence.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json review_queue.json index.html sitemap.xml research.json data/quality data/translation_cache.json
-            git commit -m "chore: auto-collect + intelligence + calibration + counterfactual + scenario + matrix + triggers + readiness + audit + review + evaluation + replay + trust + claims + temporal + decision $(date +%F)"
+          if [ -n "$(git status --porcelain data.json intelligence.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
+            git add data.json intelligence.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json index.html sitemap.xml research.json data/quality data/translation_cache.json
+            git commit -m "chore: auto-collect + intelligence + calibration + counterfactual + scenario + matrix + triggers + readiness + audit + impact + review + evaluation + replay + trust + claims + temporal + decision $(date +%F)"
           else
             echo "no changes"
           fi
