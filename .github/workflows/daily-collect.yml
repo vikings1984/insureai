@@ -146,6 +146,21 @@ jobs:
         run: python3 scripts/inject_owner_risk_ui.py
       - name: 采集质量自动评分 (ce-optimize)
         run: python3 scripts/quality_score.py
+      - name: Build final analytical audit ledger
+        run: python3 audit_ledger.py
+      - name: Validate final analytical audit ledger
+        run: |
+          python3 -c "
+          import json
+          ledger=json.load(open('audit_ledger.json'))
+          required={'data.json','intelligence.json','decision_stability.json','decision_credibility.json','counterfactual.json','scenario.json','scenario_matrix.json','action_triggers.json','execution_readiness.json','change_impact.json','freshness.json','evidence_availability.json','review_queue.json','feedback_attribution.json','module_health.json','module_health_history.json','module_health_trend.json','trend_attribution.json','optimization_backlog.json','optimization_backlog_history.json','daily_risk_radar.json','owner_risk_view.json'}
+          actual={row.get('artifact') for row in ledger.get('stages',[])}
+          missing=required-actual
+          assert not missing, f'missing audit artifacts: {sorted(missing)}'
+          for row in ledger.get('stages',[]): assert len(row.get('sha256','')) == 64 and 'title' not in row and 'url' not in row and 'body' not in row
+          assert ledger.get('privacy') == 'hashes_and_metadata_only'
+          print(f'Final audit ledger valid: stages={len(ledger["stages"])}')
+          "
       - name: Commit data + quality artifacts
         run: |
           git config user.name "insureai-bot"; git config user.email "bot@insureai.local"
