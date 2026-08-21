@@ -18,9 +18,9 @@ jobs:
         with:
           python-version: '3.11'
       - name: Syntax check
-        run: python3 -m py_compile contract.py evaluation.py evaluation_metrics.py production_replay.py intelligence.py radar.py personalization.py trust.py trust_build.py claims.py temporal.py temporal_build.py decision.py decision_build.py scripts/inject_intelligence_ui.py scripts/inject_personalization_ui.py scripts/inject_trust_ui.py scripts/inject_claim_evidence_ui.py scripts/inject_temporal_ui.py scripts/inject_decision_ui.py
+        run: python3 -m py_compile contract.py evaluation.py evaluation_metrics.py production_replay.py review.py promote_reviews.py intelligence.py radar.py personalization.py trust.py trust_build.py claims.py temporal.py temporal_build.py decision.py decision_build.py scripts/inject_intelligence_ui.py scripts/inject_personalization_ui.py scripts/inject_trust_ui.py scripts/inject_claim_evidence_ui.py scripts/inject_temporal_ui.py scripts/inject_decision_ui.py scripts/inject_review_ui.py
       - name: JavaScript syntax check
-        run: node --check behavior_learning.js && node --check personalization-ui.js && node --check trust-ui.js && node --check claim-evidence-ui.js && node --check temporal-ui.js && node --check decision-ui.js
+        run: node --check behavior_learning.js && node --check personalization-ui.js && node --check trust-ui.js && node --check claim-evidence-ui.js && node --check temporal-ui.js && node --check decision-ui.js && node --check review-ui.js
       - name: Contract check
         run: python3 -m unittest tests.test_contract -v
       - name: Intelligence evaluation gate
@@ -29,5 +29,7 @@ jobs:
         run: python3 -c "from evaluation_metrics import build_metrics; m=build_metrics(); assert m['macro_quality'] >= 0.95, m; print(m)"
       - name: Production replay
         run: python3 production_replay.py
+      - name: Human review queue test
+        run: python3 -m unittest tests.test_review tests.test_promote_reviews -v
       - name: Unit tests
         run: python3 -m unittest discover tests/ -v
