@@ -1,7 +1,7 @@
 name: Daily Insurance News Collect
 
 # 单分支架构：insureai 既是默认分支也是唯一应用分支。
-# 流程：采集 → intelligence engine → trust layer → claim/evidence → temporal → decision → contract → evaluation → radar/trends → prerender → UI → 质量评分 → push。
+# 流程：采集 → intelligence engine → trust layer → claim/evidence → temporal → decision → contract → evaluation → metrics → radar/trends → prerender → UI → 质量评分 → push。
 on:
   schedule:
     - cron: '0 0,6,12,18 * * *'
@@ -53,6 +53,9 @@ jobs:
 
       - name: Evaluate intelligence quality
         run: python3 evaluation.py
+
+      - name: Quantitative quality metrics gate
+        run: python3 -c "from evaluation_metrics import build_metrics; m=build_metrics(); assert m['macro_quality'] >= 0.95, m; print(m)"
 
       - name: Data validation
         run: |
@@ -115,7 +118,7 @@ jobs:
           git config user.email "bot@insureai.local"
           if [ -n "$(git status --porcelain data.json intelligence.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
             git add data.json intelligence.json index.html sitemap.xml research.json data/quality data/translation_cache.json
-            git commit -m "chore: auto-collect + intelligence + contract + evaluation + trust + claims + temporal + decision $(date +%F)"
+            git commit -m "chore: auto-collect + intelligence + contract + evaluation + metrics + trust + claims + temporal + decision $(date +%F)"
           else
             echo "no changes"
           fi
