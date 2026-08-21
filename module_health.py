@@ -9,20 +9,26 @@ ATTRIBUTION = ROOT / "feedback_attribution.json"
 OUTPUT = ROOT / "module_health.json"
 MODULES = ("event", "trust", "claims", "temporal", "decision", "counterfactual", "scenario", "unknown")
 
+def _module_rows(doc: dict):
+    source = doc.get("modules", {})
+    if isinstance(source, dict):
+        return [{"module": k, **(v if isinstance(v, dict) else {})} for k, v in source.items()]
+    return source if isinstance(source, list) else []
+
 def build_health(doc: dict) -> dict:
     rows = {m: {"module": m, "review_count": 0, "error_count": 0, "error_rate": 0.0, "confidence": 0.0, "health": "no_signal", "optimization_priority": 0} for m in MODULES}
-    totals = sum(int(x.get("error_count") or 0) for x in doc.get("modules", []) if isinstance(x, dict))
-    for src in doc.get("modules", []):
+    total_reviews = int(doc.get("reviewed_count") or 0)
+    for src in _module_rows(doc):
         if not isinstance(src, dict):
             continue
         m = src.get("module")
         if m not in rows:
             continue
         r = rows[m]
-        r["review_count"] = int(src.get("review_count") or src.get("error_count") or 0)
         r["error_count"] = int(src.get("error_count") or 0)
         r["error_rate"] = float(src.get("error_rate") or 0.0)
-        r["confidence"] = float(src.get("confidence") or 0.0)
+        r["review_count"] = int(src.get("review_count") or total_reviews)
+        r["confidence"] = float(src.get("confidence") or (1.0 if r["error_count"] > 0 and r["review_count"] else 0.0))
         if r["review_count"] == 0:
             r["health"] = "no_signal"
         elif r["error_rate"] >= 0.5:
@@ -33,7 +39,7 @@ def build_health(doc: dict) -> dict:
             r["health"] = "healthy"
         r["optimization_priority"] = min(100, round(r["error_rate"] * 70 + r["confidence"] * 20 + min(r["error_count"], 10)))
     ranked = sorted(rows.values(), key=lambda x: (x["optimization_priority"], x["error_count"]), reverse=True)
-    return {"version": 1, "principle": "先修最不稳定且证据充分的模块，而不是按直觉平均分配资源", "modules": list(rows.values()), "priority_order": [x["module"] for x in ranked]}
+    return {"version": 1, "principle": "先修最不稳定且证据充分的模块，而不是按直觉平均分配资源", "reviewed_count": total_reviews, "modules": list(rows.values()), "priority_order": [x["module"] for x in ranked]}
 
 def main() -> None:
     if ATTRIBUTION.exists():
