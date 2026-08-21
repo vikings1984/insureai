@@ -1,7 +1,7 @@
 name: Daily Insurance News Collect
 
 # 单分支架构：insureai 既是默认分支也是唯一应用分支。
-# 流程：采集 → intelligence engine → trust layer → radar/trends → prerender(SEO) → UI 注入 → 质量评分 → push。
+# 流程：采集 → intelligence engine → trust layer → claim/evidence → radar/trends → prerender(SEO) → UI 注入 → 质量评分 → push。
 on:
   schedule:
     - cron: '0 0,6,12,18 * * *'
@@ -53,13 +53,14 @@ jobs:
               assert n.get('title'), f'missing title: {n}'
               assert 'published_at' in n, f'missing published_at: {n.get(\"title\",\"\")}'
           i = json.load(open('intelligence.json'))
-          assert i.get('version') == 4
+          assert i.get('version') == 5
           assert isinstance(i.get('events'), list) and i['events']
           assert 1 <= len(i.get('daily_brief', [])) <= 5
           radar = i.get('radar', {})
           assert isinstance(radar.get('entity_radar'), list)
           assert isinstance(radar.get('topic_trends'), list)
           assert isinstance(i.get('trust_stats'), dict)
+          assert isinstance(i.get('claim_stats'), dict)
           for e in i['events']:
               s = e.get('scores', {})
               for k in ('relevance','impact','novelty','actionability','confidence','intelligence_score'):
@@ -70,7 +71,10 @@ jobs:
               t = e.get('trust', {})
               assert t.get('level') in ('high','medium','low')
               assert isinstance(t.get('evidence'), list)
-          print(f'Validation passed: {len(news)} news -> {len(i[\"events\"])} events; trust={i[\"trust_stats\"]}')
+              c = e.get('claims', {})
+              assert isinstance(c.get('claims'), list)
+              assert 0 <= int(c.get('coverage', 0)) <= 100
+          print(f'Validation passed: {len(news)} news -> {len(i[\"events\"])} events; trust={i[\"trust_stats\"]}; claims={i[\"claim_stats\"]}')
           "
 
       - name: Run tests
@@ -93,6 +97,9 @@ jobs:
       - name: Inject Trust UI
         run: python3 scripts/inject_trust_ui.py
 
+      - name: Inject Claim Evidence UI
+        run: python3 scripts/inject_claim_evidence_ui.py
+
       - name: 采集质量自动评分 (ce-optimize)
         run: python3 scripts/quality_score.py
 
@@ -102,7 +109,7 @@ jobs:
           git config user.email "bot@insureai.local"
           if [ -n "$(git status --porcelain data.json intelligence.json index.html sitemap.xml research.json data/quality data/translation_cache.json)" ]; then
             git add data.json intelligence.json index.html sitemap.xml research.json data/quality data/translation_cache.json
-            git commit -m "chore: auto-collect + intelligence + trust + radar + personal UI $(date +%F)"
+            git commit -m "chore: auto-collect + intelligence + trust + claims + radar + personal UI $(date +%F)"
           else
             echo "no changes"
           fi
