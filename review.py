@@ -10,8 +10,9 @@ QUEUE = ROOT / 'review_queue.json'
 COUNTERFACTUAL = ROOT / 'counterfactual.json'
 CHANGE_IMPACT = ROOT / 'change_impact.json'
 EVIDENCE_AVAILABILITY = ROOT / 'evidence_availability.json'
+TREND_ATTRIBUTION = ROOT / 'trend_attribution.json'
 
-def _priority(event, decision, counterfactual=None, impact=None, evidence_availability=None):
+def _priority(event, decision, counterfactual=None, impact=None, evidence_availability=None, trend_attribution=None):
     score = int(event.get('scores', {}).get('intelligence_score') or 0); trust = (event.get('trust') or {}).get('level', 'low'); priority = 20
     if score >= 85: priority += 20
     if trust == 'low': priority += 25
@@ -26,9 +27,19 @@ def _priority(event, decision, counterfactual=None, impact=None, evidence_availa
     if level == 'unavailable': priority += 20
     elif level == 'low': priority += 15
     elif level == 'medium': priority += 5
-    return min(priority, 100)
+    classification = (trend_attribution or {}).get('classification')
+    priority += {
+        'persistent_worsening': 15,
+        'regressed': 15,
+        'single_spike': -10,
+        'recovering': -5,
+        'recovered': -10,
+        'stable': -5,
+        'baseline': 0,
+    }.get(classification, 0)
+    return max(0, min(priority, 100))
 
-def _candidate_reasons(event, decision, temporal, counterfactual, impact=None, evidence_availability=None):
+def _candidate_reasons(event, decision, temporal, counterfactual, impact=None, evidence_availability=None, trend_attribution=None):
     reasons=[]; trust=event.get('trust') or {}; claims=event.get('claims') or {}; scores=event.get('scores') or {}
     if trust.get('conflict'): reasons.append({'type':'conflict','reason':'trust layer detected source conflict'})
     if float(claims.get('coverage') or 0) < 80: reasons.append({'type':'evidence','reason':f"claim evidence coverage={claims.get('coverage', 0)}"})
@@ -42,20 +53,27 @@ def _candidate_reasons(event, decision, temporal, counterfactual, impact=None, e
     level = (evidence_availability or {}).get('level')
     if level in {'low','unavailable'}:
         reasons.append({'type':'input_quality','reason':(evidence_availability or {}).get('reason','evidence availability is limited')})
+    if trend_attribution:
+        classification = trend_attribution.get('classification')
+        if classification in {'persistent_worsening', 'regressed'}:
+            reasons.append({'type':'trend_persistence','reason':trend_attribution.get('reason','persistent module deterioration')})
+        elif classification == 'single_spike':
+            reasons.append({'type':'trend_noise_guard','reason':trend_attribution.get('reason','single-period spike; persistence not established')})
     return reasons
 
-def build_review_queue(data, counterfactual_cases=None, impact_cases=None, evidence_availability=None):
+def build_review_queue(data, counterfactual_cases=None, impact_cases=None, evidence_availability=None, trend_attribution=None):
     decisions={str(x.get('event_id')):x for x in data.get('decisions',[]) if x.get('event_id')}; temporal=data.get('temporal') or {}; cf_by_event={}
     for row in counterfactual_cases or []:
         if row.get('changed'): cf_by_event.setdefault(str(row.get('event_id')), row)
     impact_by_event={str(row.get('event_id')):row for row in impact_cases or [] if row.get('event_id')}
     candidates=[]; events=data.get('events',[]) if isinstance(data.get('events'),list) else []
     for event in events:
-        event_id=str(event.get('event_id')); decision=decisions.get(event_id); cf=cf_by_event.get(event_id); impact=impact_by_event.get(event_id); reasons=_candidate_reasons(event,decision,temporal,cf,impact,evidence_availability)
+        event_id=str(event.get('event_id')); decision=decisions.get(event_id); cf=cf_by_event.get(event_id); impact=impact_by_event.get(event_id); module_attr=(trend_attribution or {}).get('modules', {}).get(str(event.get('module') or event.get('event_type') or ''))
+        reasons=_candidate_reasons(event,decision,temporal,cf,impact,evidence_availability,module_attr)
         if not reasons: continue
-        candidates.append({'event_id':event.get('event_id'),'title':event.get('title'),'event_type':event.get('event_type') or 'industry_update','topic':event.get('topic'),'priority':_priority(event,decision,cf,impact,evidence_availability),'status':'pending','reasons':reasons[:6],'article_ids':event.get('article_ids',[]),'source_count':event.get('source_count',0),'trust_level':(event.get('trust') or {}).get('level','low'),'intelligence_score':(event.get('scores') or {}).get('intelligence_score',0),'decision':{'urgency':decision.get('urgency'),'action':decision.get('action')} if decision else None,'change_impact':impact if impact else None,'evidence_availability':evidence_availability if evidence_availability else None})
+        candidates.append({'event_id':event.get('event_id'),'title':event.get('title'),'event_type':event.get('event_type') or 'industry_update','topic':event.get('topic'),'priority':_priority(event,decision,cf,impact,evidence_availability,module_attr),'status':'pending','reasons':reasons[:6],'article_ids':event.get('article_ids',[]),'source_count':event.get('source_count',0),'trust_level':(event.get('trust') or {}).get('level','low'),'intelligence_score':(event.get('scores') or {}).get('intelligence_score',0),'decision':{'urgency':decision.get('urgency'),'action':decision.get('action')} if decision else None,'change_impact':impact if impact else None,'evidence_availability':evidence_availability if evidence_availability else None,'trend_attribution':module_attr if module_attr else None})
     candidates.sort(key=lambda x:(x['priority'],x.get('intelligence_score',0)),reverse=True)
-    return {'version':2,'principle':'人工复核优先处理不确定性高、潜在影响大且判断发生变化的样本；输入证据可用性低时提高人工注意力，但不改写业务判断','generated_count':len(candidates),'items':candidates[:100]}
+    return {'version':3,'principle':'人工复核优先处理不确定性高、潜在影响大、持续恶化或发生回归的样本；单次尖峰不会被误报为持续问题；该层不改写业务判断','generated_count':len(candidates),'items':candidates[:100]}
 
 def _read_optional(path: Path, key: str | None = None):
     if not path.exists(): return {}
@@ -65,8 +83,8 @@ def _read_optional(path: Path, key: str | None = None):
     except (json.JSONDecodeError,OSError): return {}
 
 def write_queue(data):
-    cases=_read_optional(COUNTERFACTUAL,'cases'); impacts=_read_optional(CHANGE_IMPACT,'impacted_events'); evidence=_read_optional(EVIDENCE_AVAILABILITY)
-    queue=build_review_queue(data,cases,impacts,evidence); QUEUE.write_text(json.dumps(queue,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); return queue
+    cases=_read_optional(COUNTERFACTUAL,'cases'); impacts=_read_optional(CHANGE_IMPACT,'impacted_events'); evidence=_read_optional(EVIDENCE_AVAILABILITY); trend=_read_optional(TREND_ATTRIBUTION)
+    queue=build_review_queue(data,cases,impacts,evidence,trend); QUEUE.write_text(json.dumps(queue,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); return queue
 
 def main():
     data=json.loads(INTEL.read_text(encoding='utf-8')); queue=write_queue(data); print(f"Review queue generated: {len(queue['items'])} pending candidates")
