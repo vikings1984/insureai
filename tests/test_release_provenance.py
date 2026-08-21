@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+import json
+import tempfile
+import unittest
+from pathlib import Path
+
+from release_provenance import build_provenance
+
+
+class TestReleaseProvenance(unittest.TestCase):
+    def _root(self):
+        root = Path(tempfile.mkdtemp())
+        (root / "release_manifest.json").write_text(json.dumps({
+            "version": 1,
+            "source_commit": "manifest-sha",
+            "release_channel": "github_pages",
+            "site_url": "https://example.test",
+            "quality_status": "passed",
+            "deployment_status": "pending",
+            "deployment_verified": False,
+        }), encoding="utf-8")
+        (root / "audit_ledger.json").write_text(json.dumps({
+            "version": 1,
+            "privacy": "hashes_and_metadata_only",
+            "stages": [
+                {"artifact": "data.json", "sha256": "a" * 64},
+                {"artifact": "decision_credibility.json", "sha256": "b" * 64},
+            ],
+        }), encoding="utf-8")
+        (root / "change_impact.json").write_text(json.dumps({
+            "version": 1,
+            "baseline_available": True,
+            "impacted_count": 3,
+        }), encoding="utf-8")
+        return root
+
+    def test_aggregates_release_audit_and_impact_without_content(self):
+        root = self._root()
+        provenance = build_provenance(source_commit="commit-123", site_url="https://example.test", root=root)
+        self.assertEqual(provenance["version"], 1)
+        self.assertEqual(provenance["schema_version"], "release-provenance-v1")
+        self.assertEqual(provenance["source_commit"], "commit-123")
+        self.assertEqual(provenance["quality"]["audit_stage_count"], 2)
+        self.assertEqual(provenance["quality"]["audit_artifact_count"], 2)
+        self.assertTrue(provenance["impact"]["baseline_available"])
+        self.assertEqual(provenance["impact"]["impacted_count"], 3)
+        self.assertEqual(provenance["deployment"]["status"], "pending")
+        self.assertFalse(provenance["deployment"]["verified"])
+        self.assertEqual(len(provenance["artifacts"]["release_manifest_sha256"]), 64)
+        self.assertEqual(len(provenance["artifacts"]["audit_ledger_sha256"]), 64)
+        self.assertNotIn("title", provenance)
+        self.assertNotIn("url", provenance)
+        self.assertNotIn("body", provenance)
+
+
+if __name__ == "__main__":
+    unittest.main()
