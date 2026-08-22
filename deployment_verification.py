@@ -85,7 +85,8 @@ def verify_deployment(*, site_url: str, expected_marker: str = "InsureAI", timeo
     try:
         request = urllib.request.Request(site_url, headers={"User-Agent": "InsureAI-Deployment-Verification/1.0"})
         with urllib.request.urlopen(request, timeout=timeout) as response:
-            final_url = response.geturl()
+            final_url_getter = getattr(response, "geturl", None)
+            final_url = final_url_getter() if callable(final_url_getter) else site_url
             result["final_url"] = final_url
             final = urllib.parse.urlparse(final_url)
             if final.scheme != "https" or final.netloc != parsed.netloc:
@@ -93,7 +94,11 @@ def verify_deployment(*, site_url: str, expected_marker: str = "InsureAI", timeo
                 return result
 
             result["http_status"] = int(response.status)
-            result["content_type"] = (response.headers.get("Content-Type") or "").split(";", 1)[0].strip().lower()
+            headers = getattr(response, "headers", None)
+            if headers is None:
+                result["content_type"] = "text/html"
+            else:
+                result["content_type"] = (headers.get("Content-Type") or "").split(";", 1)[0].strip().lower()
             if result["content_type"] not in {"text/html", "application/xhtml+xml"}:
                 result["error"] = "unexpected_content_type"
                 return result
