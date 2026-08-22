@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Build and update a privacy-safe release provenance record."""
-# release-provenance-v1-compatible: add deployment trend as optional metadata without a breaking schema bump.
+# release-provenance-v1-compatible: deployment trend plus release-identity binding.
 from __future__ import annotations
 
 import hashlib
@@ -47,13 +47,15 @@ def build_provenance(*, source_commit: str, site_url: str, root: Path = ROOT) ->
     deployment_check = _read_json(deployment_path) if deployment_path.exists() else {}
     history = _read_history(history_path)
     stages = audit.get("stages", [])
-    verified = bool(deployment_check.get("verified", False))
-    deployment_status = "verified" if verified else release.get("deployment_status", "pending")
+    release_marker = str(release.get("release_marker") or "")
+    verified = bool(deployment_check.get("verified", False)) and deployment_check.get("release_marker") == release_marker
+    deployment_status = "verified" if verified else ("stale" if deployment_check.get("verified") else release.get("deployment_status", "pending"))
     deployment_trend = attribute_deployment_trend(history)
     return {
         "version": 1,
         "schema_version": "release-provenance-v1",
         "source_commit": source_commit or release.get("source_commit") or "unknown",
+        "release_marker": release_marker,
         "release_channel": release.get("release_channel", "github_pages"),
         "site_url": site_url or release.get("site_url", ""),
         "quality": {
@@ -72,6 +74,7 @@ def build_provenance(*, source_commit: str, site_url: str, root: Path = ROOT) ->
             "checked_at": deployment_check.get("checked_at"),
             "http_status": deployment_check.get("http_status"),
             "marker_found": bool(deployment_check.get("marker_found", False)),
+            "release_marker_found": bool(deployment_check.get("release_marker_found", False)),
             "error": deployment_check.get("error"),
             "trend": deployment_trend,
         },
@@ -87,21 +90,25 @@ def build_provenance(*, source_commit: str, site_url: str, root: Path = ROOT) ->
 
 
 def attach_deployment_verification(*, root: Path = ROOT) -> dict:
-    """Update existing provenance with latest verification and derived trend only."""
+    """Update existing provenance with verification only when release identity matches."""
     provenance_path = root / "release_provenance.json"
     deployment_path = root / "deployment_verification.json"
     history_path = root / "deployment_verification_history.json"
     provenance = _read_json(provenance_path)
     deployment = _read_json(deployment_path)
     history = _read_history(history_path)
-    verified = bool(deployment.get("verified", False))
+    expected_marker = str(provenance.get("release_marker") or "")
+    marker_matches = bool(deployment.get("release_marker") == expected_marker and expected_marker)
+    verified = bool(deployment.get("verified", False)) and marker_matches
+    status = "verified" if verified else ("stale" if deployment.get("verified") and not marker_matches else deployment.get("status", "failed"))
     provenance["deployment"] = {
-        "status": "verified" if verified else deployment.get("status", "failed"),
+        "status": status,
         "verified": verified,
         "checked_at": deployment.get("checked_at"),
         "http_status": deployment.get("http_status"),
         "marker_found": bool(deployment.get("marker_found", False)),
-        "error": deployment.get("error"),
+        "release_marker_found": bool(deployment.get("release_marker_found", False)),
+        "error": deployment.get("error") if marker_matches else ("release_identity_mismatch" if deployment.get("verified") else deployment.get("error")),
         "trend": attribute_deployment_trend(history),
     }
     artifacts = provenance.setdefault("artifacts", {})
@@ -115,10 +122,7 @@ def attach_deployment_verification(*, root: Path = ROOT) -> dict:
 
 
 def main() -> None:
-    provenance = build_provenance(
-        source_commit=os.environ.get("GITHUB_SHA", "unknown"),
-        site_url=os.environ.get("SITE_URL", ""),
-    )
+    provenance = build_provenance(source_commit=os.environ.get("GITHUB_SHA", "unknown"), site_url=os.environ.get("SITE_URL", ""))
     OUTPUT.write_text(json.dumps(provenance, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(provenance, ensure_ascii=False))
 
