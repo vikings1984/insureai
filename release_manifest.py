@@ -14,6 +14,7 @@ from production_quality_gate import run_gate
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT = ROOT / "release_manifest.json"
+QUALITY_OUTPUT = ROOT / "production_quality_gate.json"
 INDEX = ROOT / "index.html"
 
 
@@ -68,8 +69,10 @@ def main() -> None:
     source_commit = os.environ.get("GITHUB_SHA", "unknown")
     gate = run_gate(ROOT)
     if gate["status"] != "passed":
+        QUALITY_OUTPUT.write_text(json.dumps(gate, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         raise SystemExit("Production quality gate failed: " + json.dumps(gate, ensure_ascii=False))
 
+    QUALITY_OUTPUT.write_text(json.dumps(gate, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     marker = build_release_marker(source_commit=source_commit)
     manifest = build_manifest(
         source_commit=source_commit,
