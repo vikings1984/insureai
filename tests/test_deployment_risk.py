@@ -4,6 +4,12 @@ from deployment_risk import build_deployment_risk
 
 
 class TestDeploymentRisk(unittest.TestCase):
+    def test_unconfigured_is_configuration_debt_signal(self):
+        result = build_deployment_risk({"status": "unconfigured", "verified": False, "error": "site_url_missing"})
+        self.assertEqual(result["classification"], "deployment_configuration_missing")
+        self.assertTrue(result["attention"])
+        self.assertEqual(result["priority"], 40)
+
     def test_unverified_is_attention_signal(self):
         result = build_deployment_risk({"status": "pending", "verified": False})
         self.assertEqual(result["classification"], "deployment_unverified")
