@@ -128,6 +128,32 @@ class TestReleaseProvenance(unittest.TestCase):
         self.assertFalse(updated["deployment"]["release_match"])
         self.assertEqual(updated["deployment"]["release_marker"], "insureai-release-old")
 
+    def test_unconfigured_deployment_is_configuration_debt(self):
+        root = self._root()
+        (root / "deployment_verification.json").write_text(json.dumps({
+            "version": 1,
+            "status": "unconfigured",
+            "verified": False,
+            "error": "site_url_missing",
+            "expected_marker": "insureai-release-new",
+        }), encoding="utf-8")
+        updated = build_provenance(source_commit="commit-new", site_url="https://example.test", root=root)
+        self.assertEqual(updated["deployment"]["status"], "configuration_debt")
+        self.assertFalse(updated["deployment"]["verified"])
+
+    def test_failed_deployment_remains_failed(self):
+        root = self._root()
+        (root / "deployment_verification.json").write_text(json.dumps({
+            "version": 1,
+            "status": "failed",
+            "verified": False,
+            "error": "request_failed:TimeoutError",
+            "expected_marker": "insureai-release-new",
+        }), encoding="utf-8")
+        updated = build_provenance(source_commit="commit-new", site_url="https://example.test", root=root)
+        self.assertEqual(updated["deployment"]["status"], "failed")
+        self.assertFalse(updated["deployment"]["verified"])
+
 
 if __name__ == "__main__":
     unittest.main()
