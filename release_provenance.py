@@ -54,7 +54,7 @@ def build_provenance(*, source_commit: str, site_url: str, root: Path = ROOT) ->
         "version": 1,
         "schema_version": "release-provenance-v1",
         "source_commit": source_commit or release.get("source_commit") or "unknown",
-        "release_channel": release.get("release_channel", "github_pages"),
+        "release_channel": release.get("release_channel", "cloudflare_workers"),
         "site_url": site_url or release.get("site_url", ""),
         "quality": {
             "status": release.get("quality_status", "unknown"),
