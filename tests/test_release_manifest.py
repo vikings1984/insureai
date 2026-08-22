@@ -9,6 +9,10 @@ class TestReleaseManifest(unittest.TestCase):
         self.assertEqual(m["quality_status"], "passed")
         self.assertEqual(m["deployment_status"], "pending")
         self.assertFalse(m["deployment_verified"])
+        self.assertEqual(m["release_channel"], "cloudflare_workers")
+
+    def test_release_channel_can_be_explicit(self):
+        m = build_manifest(source_commit="abc123", site_url="https://example.test", release_channel="github_pages")
         self.assertEqual(m["release_channel"], "github_pages")
 
     def test_failed_quality_is_explicit(self):
