@@ -54,7 +54,7 @@ def build_radar(credibility=None, intelligence=None, impacts=None, backlog=None,
         deployment_risk=build_deployment_risk(deployment, deployment_history or [])
         if deployment_risk['attention']:
             urgency='soon' if deployment_risk['classification']=='deployment_unverified' else 'now'
-            candidates.append({'event_id':'deployment:github_pages','title':'生产部署状态：'+deployment_risk['classification'],'urgency':urgency,'trust_level':None,'attention_score':deployment_risk['priority'],'reasons':[deployment_risk['classification']] + ([deployment_risk['error']] if deployment_risk['error'] else []),'source':'deployment_verification.json','deployment_risk':deployment_risk})
+            candidates.append({'event_id':'deployment:production','title':'生产部署状态：'+deployment_risk['classification'],'urgency':urgency,'trust_level':None,'attention_score':deployment_risk['priority'],'reasons':[deployment_risk['classification']] + ([deployment_risk['error']] if deployment_risk['error'] else []),'source':'deployment_verification.json','deployment_risk':deployment_risk})
         deployment_classification=deployment_risk['classification']
         deployment_attention=deployment_risk['attention']
     else:
