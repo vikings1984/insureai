@@ -14,7 +14,6 @@ from production_quality_gate import run_gate
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT = ROOT / "release_manifest.json"
-QUALITY_OUTPUT = ROOT / "production_quality_gate.json"
 INDEX = ROOT / "index.html"
 
 
@@ -31,7 +30,7 @@ def build_release_marker(*, source_commit: str, audit_path: Path = ROOT / "audit
     return f"insureai-{hashlib.sha256(payload).hexdigest()[:16]}"
 
 
-def build_manifest(*, source_commit: str, site_url: str, quality_passed: bool = True, release_channel: str = "cloudflare_workers", release_marker: str | None = None) -> dict:
+def build_manifest(*, source_commit: str, site_url: str, quality_passed: bool = True, release_channel: str = "cloudflare_workers", release_marker: str | None = None, production_quality_gate: dict | None = None) -> dict:
     marker = release_marker or build_release_marker(source_commit=source_commit)
     return {
         "version": 1,
@@ -40,6 +39,7 @@ def build_manifest(*, source_commit: str, site_url: str, quality_passed: bool = 
         "site_url": site_url,
         "release_marker": marker,
         "quality_status": "passed" if quality_passed else "failed",
+        "production_quality_gate": production_quality_gate or {"status": "unknown", "failed_checks": []},
         "deployment_status": "pending",
         "deployment_verified": False,
         "deployment_note": "发布前质量门禁通过不代表生产站点已经完成部署与验收。",
@@ -68,18 +68,17 @@ def inject_release_marker(marker: str) -> None:
 def main() -> None:
     source_commit = os.environ.get("GITHUB_SHA", "unknown")
     gate = run_gate(ROOT)
+    marker = build_release_marker(source_commit=source_commit)
     if gate["status"] != "passed":
-        QUALITY_OUTPUT.write_text(json.dumps(gate, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         raise SystemExit("Production quality gate failed: " + json.dumps(gate, ensure_ascii=False))
 
-    QUALITY_OUTPUT.write_text(json.dumps(gate, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    marker = build_release_marker(source_commit=source_commit)
     manifest = build_manifest(
         source_commit=source_commit,
         site_url=os.environ.get("SITE_URL", ""),
         quality_passed=True,
         release_channel=os.environ.get("RELEASE_CHANNEL", "cloudflare_workers"),
         release_marker=marker,
+        production_quality_gate=gate,
     )
     OUTPUT.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     inject_release_marker(marker)
