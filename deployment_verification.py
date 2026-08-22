@@ -58,7 +58,8 @@ def verify_deployment(*, site_url: str, expected_marker: str = "InsureAI", timeo
                 result["status"] = "verified"
                 result["verified"] = True
             else:
-                result["error"] = "http_or_release_marker_check_failed"
+                # Keep the established error contract; release_marker is exposed separately.
+                result["error"] = "http_or_marker_check_failed"
     except (urllib.error.URLError, TimeoutError, ValueError) as exc:
         result["error"] = f"request_failed:{type(exc).__name__}"
     return result
