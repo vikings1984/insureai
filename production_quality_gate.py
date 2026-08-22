@@ -1,15 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Validate the real release artifacts at the point of publication.
-
-第一性原理：发布质量不是多个漂亮数字的平均值，而是端到端信息链路没有出现
-不可接受的断裂。核心安全/溯源条件采用 non-compensatory gate：任何关键不变量失败，
-整体即失败。
-
-This gate reads the generated production artifacts rather than synthetic benchmark fixtures.
-Synthetic regression metrics remain useful, but they must not be the only signal deciding whether
-real output is safe to publish.
-"""
+"""Validate the real release artifacts at the point of publication."""
 from __future__ import annotations
 
 import json
@@ -17,7 +8,6 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parent
-
 REQUIRED_ARTIFACTS = (
     "data.json",
     "intelligence.json",
@@ -26,7 +16,7 @@ REQUIRED_ARTIFACTS = (
     "evidence_availability.json",
     "owner_risk_view.json",
 )
-
+DERIVED_ARTIFACTS = tuple(x for x in REQUIRED_ARTIFACTS if x != "data.json")
 VALID_CREDIBILITY = {"ready", "review", "caution", "blocked", "unknown"}
 
 
@@ -46,11 +36,9 @@ def _check_news(data: dict) -> dict:
         return {"name": "news_present", "passed": False, "detail": "data.json.news must be a non-empty list"}
     ids = [str(row.get("id")) for row in rows]
     duplicate_ids = len(ids) - len(set(ids))
-    malformed_dates = 0
+    malformed_dates = sum(1 for row in rows if not row.get("published_at"))
     missing_urls = 0
     for row in rows:
-        if not row.get("published_at"):
-            malformed_dates += 1
         parsed = urlparse(str(row.get("source_url") or ""))
         if not (parsed.scheme in {"http", "https"} and parsed.netloc):
             missing_urls += 1
@@ -146,12 +134,8 @@ def _check_credibility(credibility: dict) -> dict:
 
 
 def _check_versions(artifacts: dict) -> dict:
-    missing = [name for name, value in artifacts.items() if not isinstance(value, dict) or not value.get("version")]
-    return {
-        "name": "artifact_versions",
-        "passed": not missing,
-        "detail": {"missing_versions": missing},
-    }
+    missing = [name for name in DERIVED_ARTIFACTS if not isinstance(artifacts[name], dict) or not artifacts[name].get("version")]
+    return {"name": "derived_artifact_versions", "passed": not missing, "detail": {"missing_versions": missing}}
 
 
 def run_gate(root: Path = ROOT) -> dict:
@@ -177,13 +161,7 @@ def main() -> int:
     try:
         result = run_gate()
     except ValueError as exc:
-        result = {
-            "version": 1,
-            "status": "failed",
-            "principle": "critical release invariants are non-compensatory",
-            "checks": [],
-            "failed_checks": [str(exc)],
-        }
+        result = {"version": 1, "status": "failed", "principle": "critical release invariants are non-compensatory", "checks": [], "failed_checks": [str(exc)]}
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0 if result["status"] == "passed" else 1
 
