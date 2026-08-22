@@ -8,7 +8,7 @@ from production_quality_gate import REQUIRED_ARTIFACTS, run_gate
 
 
 class TestProductionQualityGate(unittest.TestCase):
-    def _write_fixture(self, root: Path, *, unsafe: bool = False, missing_article: bool = False, blocked: bool = False) -> None:
+    def _write_fixture(self, root: Path, *, unsafe: bool = False, missing_article: bool = False, blocked: bool = False, mismatch_freshness: bool = False) -> None:
         news = [
             {"id": "a1", "published_at": "2026-08-22T08:00:00+00:00", "source_url": "https://example.com/a1"},
             {"id": "a2", "published_at": "2026-08-22T09:00:00+00:00", "source_url": "https://example.com/a2"},
@@ -28,12 +28,20 @@ class TestProductionQualityGate(unittest.TestCase):
         }
         intelligence = {"version": 7, "events": events, "decisions": [decision]}
         credibility_status = "blocked" if blocked else "ready"
+        freshness = {"version": 1, "status": "ok", "date_coverage": 1.0, "stale": False}
+        availability = {
+            "version": 1,
+            "level": "low" if mismatch_freshness else "high",
+            "freshness_status": "ok",
+            "date_coverage": 1.0,
+        }
         for name, payload in {
             "data.json": {"news": news},
             "intelligence.json": intelligence,
             "decision_stability.json": {"version": 1, "results": []},
             "decision_credibility.json": {"version": 3, "status": credibility_status, "reasons": [{"code": "quality_not_passed"}] if blocked else []},
-            "evidence_availability.json": {"version": 1, "results": []},
+            "freshness.json": freshness,
+            "evidence_availability.json": availability,
             "owner_risk_view.json": {"version": 2, "items": []},
         }.items():
             (root / name).write_text(json.dumps(payload), encoding="utf-8")
@@ -70,9 +78,19 @@ class TestProductionQualityGate(unittest.TestCase):
             self.assertEqual(result["status"], "failed")
             self.assertIn("credibility_contract", result["failed_checks"])
 
+    def test_freshness_mismatch_blocks_release(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._write_fixture(root, mismatch_freshness=True)
+            result = run_gate(root)
+            self.assertEqual(result["status"], "failed")
+            self.assertIn("freshness_evidence_binding", result["failed_checks"])
+
     def test_required_artifacts_match_runtime_contract(self):
         self.assertNotIn("decision.json", REQUIRED_ARTIFACTS)
         self.assertIn("intelligence.json", REQUIRED_ARTIFACTS)
+        self.assertIn("freshness.json", REQUIRED_ARTIFACTS)
+        self.assertIn("evidence_availability.json", REQUIRED_ARTIFACTS)
 
 
 if __name__ == "__main__":
