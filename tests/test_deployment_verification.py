@@ -23,23 +23,31 @@ class _Response:
 
 class TestDeploymentVerification(unittest.TestCase):
     def test_missing_site_url_is_failed(self):
-        result = verify_deployment(site_url="")
+        result = verify_deployment(site_url="", expected_marker="insureai:abc")
         self.assertFalse(result["verified"])
         self.assertEqual(result["error"], "site_url_missing")
 
     @patch("deployment_verification.urllib.request.urlopen")
-    def test_http_200_and_marker_verifies(self, urlopen):
-        urlopen.return_value = _Response(b"<html><title>InsureAI</title></html>")
-        result = verify_deployment(site_url="https://example.test")
+    def test_http_200_and_release_marker_verifies(self, urlopen):
+        urlopen.return_value = _Response(b'<html><title>InsureAI</title><meta name="insureai-release-marker" content="insureai:abc"></html>')
+        result = verify_deployment(site_url="https://example.test", expected_marker="insureai:abc")
         self.assertTrue(result["verified"])
         self.assertEqual(result["status"], "verified")
         self.assertEqual(result["http_status"], 200)
         self.assertTrue(result["marker_found"])
+        self.assertTrue(result["release_marker_found"])
+
+    @patch("deployment_verification.urllib.request.urlopen")
+    def test_release_marker_mismatch_does_not_verify(self, urlopen):
+        urlopen.return_value = _Response(b'<html><title>InsureAI</title><meta name="insureai-release-marker" content="insureai:old"></html>')
+        result = verify_deployment(site_url="https://example.test", expected_marker="insureai:new")
+        self.assertFalse(result["verified"])
+        self.assertEqual(result["error"], "release_marker_mismatch")
 
     @patch("deployment_verification.urllib.request.urlopen")
     def test_missing_marker_does_not_verify(self, urlopen):
         urlopen.return_value = _Response(b"<html>not our site</html>")
-        result = verify_deployment(site_url="https://example.test")
+        result = verify_deployment(site_url="https://example.test", expected_marker="insureai:new")
         self.assertFalse(result["verified"])
         self.assertEqual(result["error"], "http_or_marker_check_failed")
 
