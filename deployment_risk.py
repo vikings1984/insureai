@@ -12,6 +12,8 @@ def build_deployment_risk(deployment: dict | None, history: list[dict] | None = 
     error = deployment.get("error")
     if verified or status == "verified":
         classification, priority, attention = "deployment_verified", 0, False
+    elif status == "unconfigured" or error == "site_url_missing":
+        classification, priority, attention = "deployment_configuration_missing", 40, True
     elif trend["classification"] == "persistent_failure":
         classification, priority, attention = "deployment_persistent_failure", 95, True
     elif status == "failed" or error:
