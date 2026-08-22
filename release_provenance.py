@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Build and update a privacy-safe release provenance record."""
-# release-provenance-v3: include deployment trend without changing deployment facts.
+# release-provenance-v1-compatible: add deployment trend as optional metadata without a breaking schema bump.
 from __future__ import annotations
 
 import hashlib
@@ -51,8 +51,8 @@ def build_provenance(*, source_commit: str, site_url: str, root: Path = ROOT) ->
     deployment_status = "verified" if verified else release.get("deployment_status", "pending")
     deployment_trend = attribute_deployment_trend(history)
     return {
-        "version": 3,
-        "schema_version": "release-provenance-v3",
+        "version": 1,
+        "schema_version": "release-provenance-v1",
         "source_commit": source_commit or release.get("source_commit") or "unknown",
         "release_channel": release.get("release_channel", "github_pages"),
         "site_url": site_url or release.get("site_url", ""),
@@ -108,8 +108,8 @@ def attach_deployment_verification(*, root: Path = ROOT) -> dict:
     artifacts["deployment_verification_sha256"] = _sha256(deployment_path)
     artifacts["deployment_history_sha256"] = _sha256(history_path) if history_path.exists() else None
     provenance["generated_at"] = datetime.now(timezone.utc).isoformat()
-    provenance["schema_version"] = "release-provenance-v3"
-    provenance["version"] = 3
+    provenance["schema_version"] = "release-provenance-v1"
+    provenance["version"] = 1
     provenance_path.write_text(json.dumps(provenance, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return provenance
 
