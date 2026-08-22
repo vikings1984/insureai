@@ -17,7 +17,7 @@ REQUIRED_ARTIFACTS = (
     "owner_risk_view.json",
 )
 DERIVED_ARTIFACTS = tuple(x for x in REQUIRED_ARTIFACTS if x != "data.json")
-VALID_CREDIBILITY = {"ready", "review", "caution", "unknown"}
+VALID_CREDIBILITY = {"ready", "review", "caution"}
 
 
 def _load(root: Path, name: str):
@@ -157,7 +157,7 @@ def _check_credibility(credibility: dict) -> dict:
         "detail": {
             "status": status,
             "reason_count": len(reasons) if isinstance(reasons, list) else 0,
-            "fail_closed": status == "blocked",
+            "fail_closed": status not in VALID_CREDIBILITY,
         },
     }
 
@@ -180,7 +180,7 @@ def run_gate(root: Path = ROOT) -> dict:
     return {
         "version": 1,
         "status": "passed" if not failed else "failed",
-        "principle": "critical release invariants are non-compensatory and blocked credibility fails closed",
+        "principle": "critical release invariants are non-compensatory and unknown/blocked credibility fails closed",
         "checks": checks,
         "failed_checks": [x["name"] for x in failed],
     }
