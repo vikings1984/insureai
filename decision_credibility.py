@@ -84,6 +84,10 @@ def build_credibility() -> dict:
             )
         )
 
+    # pending is the normal lifecycle state before deployment verification and
+    # must not downgrade otherwise-clean quality into review. Only an unexpected
+    # state or an explicit verified state with an inconsistent verification claim
+    # is a credibility issue.
     if deployment_status not in {"verified", "pending"}:
         reasons.append(
             _reason(
@@ -95,12 +99,12 @@ def build_credibility() -> dict:
                 ["verified", "pending"],
             )
         )
-    elif not deployment_verified:
+    elif deployment_status == "verified" and not deployment_verified:
         reasons.append(
             _reason(
                 "deployment_not_verified",
                 "review",
-                "质量通过不等于生产部署已经验收；当前发布身份尚未得到线上验证。",
+                "发布状态声明为 verified，但 deployment_verified 未成立。",
                 "deployment_verified",
                 deployment_verified,
                 True,
