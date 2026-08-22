@@ -29,13 +29,38 @@ class TestDeploymentVerification(unittest.TestCase):
         self.assertEqual(result["error"], "site_url_missing")
 
     @patch("deployment_verification.urllib.request.urlopen")
-    def test_http_200_and_marker_verifies(self, urlopen):
-        urlopen.return_value = _Response(b"<html><title>InsureAI</title></html>")
-        result = verify_deployment(site_url="https://example.test")
+    def test_http_200_and_exact_release_marker_verifies(self, urlopen):
+        marker = "insureai-abc123"
+        urlopen.return_value = _Response(
+            f'<html><head><meta name="insureai-release-marker" content="{marker}"></head></html>'.encode()
+        )
+        result = verify_deployment(site_url="https://example.test", expected_marker=marker)
         self.assertTrue(result["verified"])
         self.assertEqual(result["status"], "verified")
         self.assertEqual(result["http_status"], 200)
         self.assertTrue(result["marker_found"])
+        self.assertEqual(result["release_marker"], marker)
+
+    @patch("deployment_verification.urllib.request.urlopen")
+    def test_body_marker_without_metadata_does_not_verify(self, urlopen):
+        urlopen.return_value = _Response(b"<html><title>insureai-abc123</title></html>")
+        result = verify_deployment(site_url="https://example.test", expected_marker="insureai-abc123")
+        self.assertFalse(result["verified"])
+        self.assertEqual(result["status"], "failed")
+        self.assertFalse(result["marker_found"])
+        self.assertIsNone(result["release_marker"])
+        self.assertEqual(result["error"], "http_or_marker_check_failed")
+
+    @patch("deployment_verification.urllib.request.urlopen")
+    def test_wrong_release_marker_does_not_verify(self, urlopen):
+        urlopen.return_value = _Response(
+            b'<html><head><meta name="insureai-release-marker" content="insureai-old"></head></html>'
+        )
+        result = verify_deployment(site_url="https://example.test", expected_marker="insureai-current")
+        self.assertFalse(result["verified"])
+        self.assertEqual(result["status"], "failed")
+        self.assertFalse(result["marker_found"])
+        self.assertEqual(result["release_marker"], "insureai-old")
 
     @patch("deployment_verification.urllib.request.urlopen")
     def test_missing_marker_does_not_verify(self, urlopen):
@@ -43,6 +68,7 @@ class TestDeploymentVerification(unittest.TestCase):
         result = verify_deployment(site_url="https://example.test")
         self.assertFalse(result["verified"])
         self.assertEqual(result["status"], "failed")
+        self.assertIsNone(result["release_marker"])
         self.assertEqual(result["error"], "http_or_marker_check_failed")
 
 
