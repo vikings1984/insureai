@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify that the published site matches the current release marker."""
+"""Verify that the published site is reachable and contains the current release marker."""
 from __future__ import annotations
 
 import json
@@ -24,7 +24,19 @@ def _load_release_marker() -> str:
 def verify_deployment(*, site_url: str, expected_marker: str = "", timeout: float = 15.0) -> dict:
     checked_at = datetime.now(timezone.utc).isoformat()
     expected_marker = expected_marker or _load_release_marker()
-    result = {"version": 2, "status": "failed", "verified": False, "site_url": site_url, "expected_marker": expected_marker, "release_marker_found": False, "http_status": None, "content_length": 0, "marker_found": False, "error": None, "checked_at": checked_at}
+    result = {
+        "version": 2,
+        "status": "failed",
+        "verified": False,
+        "site_url": site_url,
+        "expected_marker": expected_marker,
+        "release_marker_found": False,
+        "http_status": None,
+        "content_length": 0,
+        "marker_found": False,
+        "error": None,
+        "checked_at": checked_at,
+    }
     if not site_url:
         result["error"] = "site_url_missing"
         return result
