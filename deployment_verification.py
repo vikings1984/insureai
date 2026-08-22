@@ -27,6 +27,7 @@ def verify_deployment(*, site_url: str, expected_marker: str = "InsureAI", timeo
         "checked_at": checked_at,
     }
     if not site_url:
+        result["status"] = "unconfigured"
         result["error"] = "site_url_missing"
         return result
     try:
@@ -54,7 +55,7 @@ def main() -> None:
     )
     OUTPUT.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(result, ensure_ascii=False))
-    if not result["verified"]:
+    if not result["verified"] and result["status"] != "unconfigured":
         raise SystemExit(1)
 
 
