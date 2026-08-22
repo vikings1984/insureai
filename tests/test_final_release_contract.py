@@ -29,6 +29,18 @@ class FinalReleaseContractTests(unittest.TestCase):
         self.assertLess(availability, credibility)
         self.assertLess(credibility, release)
 
+    def test_daily_pipeline_builds_freshness_and_evidence_before_credibility(self):
+        workflow = Path('.github/workflows/daily-collect.yml').read_text(encoding='utf-8')
+        freshness = workflow.index('name: Build input freshness')
+        availability = workflow.index('name: Build evidence availability')
+        credibility = workflow.index('name: Build decision credibility summary')
+        final_audit = workflow.index('name: Build final analytical audit ledger')
+        self.assertLess(freshness, availability)
+        self.assertLess(availability, credibility)
+        self.assertLess(credibility, final_audit)
+        self.assertIn('run: python3 freshness.py', workflow)
+        self.assertIn('run: python3 evidence_availability.py', workflow)
+
 
 if __name__ == '__main__':
     unittest.main()
