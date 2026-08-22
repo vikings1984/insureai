@@ -15,6 +15,7 @@ class TestReleaseProvenance(unittest.TestCase):
             "source_commit": "manifest-sha",
             "release_channel": "github_pages",
             "site_url": "https://example.test",
+            "release_marker": "insureai-release-new",
             "quality_status": "passed",
             "deployment_status": "pending",
             "deployment_verified": False,
@@ -40,12 +41,14 @@ class TestReleaseProvenance(unittest.TestCase):
         self.assertEqual(provenance["version"], 1)
         self.assertEqual(provenance["schema_version"], "release-provenance-v1")
         self.assertEqual(provenance["source_commit"], "commit-123")
+        self.assertEqual(provenance["release_marker"], "insureai-release-new")
         self.assertEqual(provenance["quality"]["audit_stage_count"], 2)
         self.assertEqual(provenance["quality"]["audit_artifact_count"], 2)
         self.assertTrue(provenance["impact"]["baseline_available"])
         self.assertEqual(provenance["impact"]["impacted_count"], 3)
         self.assertEqual(provenance["deployment"]["status"], "pending")
         self.assertFalse(provenance["deployment"]["verified"])
+        self.assertFalse(provenance["deployment"]["release_match"])
         self.assertIsNone(provenance["deployment"]["final_url"])
         self.assertIsNone(provenance["deployment"]["content_type"])
         self.assertEqual(provenance["deployment"]["trend"]["classification"], "baseline")
@@ -70,6 +73,7 @@ class TestReleaseProvenance(unittest.TestCase):
             "final_url": "https://example.test/",
             "content_type": "text/html",
             "expected_marker": "InsureAI",
+            "release_marker": "insureai-release-new",
             "http_status": 200,
             "content_length": 123,
             "marker_found": True,
@@ -78,12 +82,14 @@ class TestReleaseProvenance(unittest.TestCase):
         }), encoding="utf-8")
         (root / "deployment_verification_history.json").write_text(json.dumps([
             {"verified": False, "status": "failed", "error": "request_failed"},
-            {"verified": True, "status": "verified", "error": None},
+            {"verified": True, "status": "verified", "release_marker": "insureai-release-new", "error": None},
         ]), encoding="utf-8")
         updated = attach_deployment_verification(root=root)
         self.assertEqual(updated["source_commit"], "commit-123")
         self.assertEqual(updated["deployment"]["status"], "verified")
         self.assertTrue(updated["deployment"]["verified"])
+        self.assertTrue(updated["deployment"]["release_match"])
+        self.assertEqual(updated["deployment"]["release_marker"], "insureai-release-new")
         self.assertEqual(updated["deployment"]["final_url"], "https://example.test/")
         self.assertEqual(updated["deployment"]["content_type"], "text/html")
         self.assertEqual(updated["deployment"]["http_status"], 200)
@@ -94,6 +100,33 @@ class TestReleaseProvenance(unittest.TestCase):
         self.assertEqual(updated["version"], 1)
         self.assertEqual(len(updated["artifacts"]["deployment_verification_sha256"]), 64)
         self.assertEqual(len(updated["artifacts"]["deployment_history_sha256"]), 64)
+
+    def test_stale_verified_deployment_is_not_inherited_by_new_release(self):
+        root = self._root()
+        (root / "release_provenance.json").write_text(json.dumps(build_provenance(
+            source_commit="commit-123", site_url="https://example.test", root=root
+        )), encoding="utf-8")
+        (root / "deployment_verification.json").write_text(json.dumps({
+            "version": 1,
+            "status": "verified",
+            "verified": True,
+            "site_url": "https://example.test",
+            "final_url": "https://example.test/",
+            "expected_marker": "InsureAI",
+            "release_marker": "insureai-release-old",
+            "http_status": 200,
+            "marker_found": True,
+            "error": None,
+            "checked_at": "2026-08-22T00:00:00+00:00",
+        }), encoding="utf-8")
+        (root / "deployment_verification_history.json").write_text("[]", encoding="utf-8")
+
+        updated = build_provenance(source_commit="commit-new", site_url="https://example.test", root=root)
+        self.assertEqual(updated["release_marker"], "insureai-release-new")
+        self.assertEqual(updated["deployment"]["status"], "stale")
+        self.assertFalse(updated["deployment"]["verified"])
+        self.assertFalse(updated["deployment"]["release_match"])
+        self.assertEqual(updated["deployment"]["release_marker"], "insureai-release-old")
 
 
 if __name__ == "__main__":
