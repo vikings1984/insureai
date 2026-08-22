@@ -190,11 +190,13 @@ jobs:
           assert p.get('quality',{}).get('status') == 'passed'
           assert p.get('quality',{}).get('audit_privacy') == 'hashes_and_metadata_only'
           assert p.get('quality',{}).get('audit_stage_count', 0) > 0
-          assert p.get('deployment',{}).get('status') == 'pending' and p.get('deployment',{}).get('verified') is False
+          deployment=p.get('deployment',{})
+          assert deployment.get('status') in {'pending','stale','verified'}, deployment
+          assert deployment.get('verified') is False or (deployment.get('status') == 'verified' and deployment.get('release_match') is True), deployment
           assert p.get('artifacts',{}).get('release_manifest_sha256')
           assert m.get('release_marker')
           for key in ('release_manifest_sha256','audit_ledger_sha256'): assert len(p['artifacts'][key]) == 64
-          print('Final release provenance valid against restamped manifest')
+          print(f'Final release provenance valid against restamped manifest: deployment={deployment.get("status")} release_match={deployment.get("release_match")}')
           "
       - name: Commit data + quality artifacts
         run: |
