@@ -19,6 +19,16 @@ class FinalReleaseContractTests(unittest.TestCase):
         self.assertIn("Path('index.html').read_text(encoding='utf-8').find(m['release_marker']) >= 0", workflow)
         self.assertIn("assert audit.get('privacy') == 'hashes_and_metadata_only'", workflow)
 
+    def test_smoke_builds_freshness_and_evidence_before_credibility_and_release(self):
+        smoke = Path('scripts/verify_full_pipeline.py').read_text(encoding='utf-8')
+        freshness = smoke.index('[sys.executable, "freshness.py"]')
+        availability = smoke.index('[sys.executable, "evidence_availability.py"]')
+        credibility = smoke.index('[sys.executable, "decision_credibility.py"]')
+        release = smoke.index('[sys.executable, "release_manifest.py"]')
+        self.assertLess(freshness, availability)
+        self.assertLess(availability, credibility)
+        self.assertLess(credibility, release)
+
 
 if __name__ == '__main__':
     unittest.main()
