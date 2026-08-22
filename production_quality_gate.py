@@ -3,17 +3,16 @@
 """Validate the real release artifacts at the point of publication.
 
 第一性原理：发布质量不是多个漂亮数字的平均值，而是端到端信息链路没有出现
-不可接受的断裂。核心安全/溯源条件采用 non-compensatory gate：任何一项关键
-不变量失败，整体即失败。
+不可接受的断裂。核心安全/溯源条件采用 non-compensatory gate：任何关键不变量失败，
+整体即失败。
 
-This gate intentionally reads the generated artifacts rather than synthetic benchmark
-fixtures. Synthetic regression metrics remain useful, but they must not be the only
-thing deciding whether a real release is safe to publish.
+This gate reads the generated production artifacts rather than synthetic benchmark fixtures.
+Synthetic regression metrics remain useful, but they must not be the only signal deciding whether
+real output is safe to publish.
 """
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -22,7 +21,6 @@ ROOT = Path(__file__).resolve().parent
 REQUIRED_ARTIFACTS = (
     "data.json",
     "intelligence.json",
-    "decision.json",
     "decision_stability.json",
     "decision_credibility.json",
     "evidence_availability.json",
@@ -53,8 +51,7 @@ def _check_news(data: dict) -> dict:
     for row in rows:
         if not row.get("published_at"):
             malformed_dates += 1
-        url = str(row.get("source_url") or "")
-        parsed = urlparse(url)
+        parsed = urlparse(str(row.get("source_url") or ""))
         if not (parsed.scheme in {"http", "https"} and parsed.netloc):
             missing_urls += 1
     passed = duplicate_ids == 0 and malformed_dates == 0 and missing_urls == 0
@@ -92,12 +89,7 @@ def _check_lineage(data: dict, intelligence: dict) -> dict:
     duplicate_article_assignments = len(assigned) - len(assigned_set)
     missing_articles = sorted(expected_set - assigned_set)
     orphan_articles = sorted(assigned_set - expected_set)
-    passed = (
-        duplicate_event_ids == 0
-        and duplicate_article_assignments == 0
-        and not missing_articles
-        and not orphan_articles
-    )
+    passed = duplicate_event_ids == 0 and duplicate_article_assignments == 0 and not missing_articles and not orphan_articles
     return {
         "name": "lineage",
         "passed": passed,
@@ -112,12 +104,10 @@ def _check_lineage(data: dict, intelligence: dict) -> dict:
     }
 
 
-def _check_decisions(decisions: dict) -> dict:
-    rows = decisions.get("decisions") if isinstance(decisions, dict) else None
-    if rows is None and isinstance(decisions, dict):
-        rows = decisions.get("items")
+def _check_decisions(intelligence: dict) -> dict:
+    rows = intelligence.get("decisions") if isinstance(intelligence, dict) else None
     if not isinstance(rows, list) or not rows:
-        return {"name": "decision_safety", "passed": False, "detail": "decision.json must contain a non-empty decisions/items list"}
+        return {"name": "decision_safety", "passed": False, "detail": "intelligence.json.decisions must be a non-empty list"}
 
     guardrail_missing = 0
     unsafe_now = 0
@@ -169,7 +159,7 @@ def run_gate(root: Path = ROOT) -> dict:
     checks = [
         _check_news(artifacts["data.json"]),
         _check_lineage(artifacts["data.json"], artifacts["intelligence.json"]),
-        _check_decisions(artifacts["decision.json"]),
+        _check_decisions(artifacts["intelligence.json"]),
         _check_credibility(artifacts["decision_credibility.json"]),
         _check_versions(artifacts),
     ]
