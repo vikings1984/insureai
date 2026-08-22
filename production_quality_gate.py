@@ -13,6 +13,7 @@ REQUIRED_ARTIFACTS = (
     "intelligence.json",
     "decision_stability.json",
     "decision_credibility.json",
+    "freshness.json",
     "evidence_availability.json",
     "owner_risk_view.json",
 )
@@ -162,6 +163,35 @@ def _check_credibility(credibility: dict) -> dict:
     }
 
 
+def _check_freshness_binding(freshness: dict, availability: dict) -> dict:
+    freshness_status = freshness.get("status") if isinstance(freshness, dict) else None
+    freshness_stale = freshness.get("stale") is True if isinstance(freshness, dict) else False
+    coverage = freshness.get("date_coverage") if isinstance(freshness, dict) else None
+    availability_level = availability.get("level") if isinstance(availability, dict) else None
+    availability_status = availability.get("freshness_status") if isinstance(availability, dict) else None
+    availability_coverage = availability.get("date_coverage") if isinstance(availability, dict) else None
+
+    allowed_by_freshness = "unavailable" if freshness_status == "unavailable" else "low" if freshness_stale or freshness_status == "undated" or (isinstance(coverage, (int, float)) and coverage < 0.5) else "medium" if isinstance(coverage, (int, float)) and coverage < 0.8 else "high"
+    passed = (
+        availability_level == allowed_by_freshness
+        and availability_status == (freshness_status or "unknown")
+        and availability_coverage == coverage
+    )
+    return {
+        "name": "freshness_evidence_binding",
+        "passed": passed,
+        "detail": {
+            "freshness_status": freshness_status,
+            "freshness_stale": freshness_stale,
+            "freshness_coverage": coverage,
+            "availability_level": availability_level,
+            "availability_status": availability_status,
+            "availability_coverage": availability_coverage,
+            "expected_availability_level": allowed_by_freshness,
+        },
+    }
+
+
 def _check_versions(artifacts: dict) -> dict:
     missing = [name for name in DERIVED_ARTIFACTS if not isinstance(artifacts[name], dict) or not artifacts[name].get("version")]
     return {"name": "derived_artifact_versions", "passed": not missing, "detail": {"missing_versions": missing}}
@@ -174,13 +204,14 @@ def run_gate(root: Path = ROOT) -> dict:
         _check_lineage(artifacts["data.json"], artifacts["intelligence.json"]),
         _check_decisions(artifacts["intelligence.json"]),
         _check_credibility(artifacts["decision_credibility.json"]),
+        _check_freshness_binding(artifacts["freshness.json"], artifacts["evidence_availability.json"]),
         _check_versions(artifacts),
     ]
     failed = [x for x in checks if not x["passed"]]
     return {
         "version": 1,
         "status": "passed" if not failed else "failed",
-        "principle": "critical release invariants are non-compensatory and unknown/blocked credibility fails closed",
+        "principle": "critical release invariants are non-compensatory and derived evidence quality must remain bound to its freshness source",
         "checks": checks,
         "failed_checks": [x["name"] for x in failed],
     }
