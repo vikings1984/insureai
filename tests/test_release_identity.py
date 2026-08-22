@@ -57,7 +57,7 @@ class TestReleaseIdentity(unittest.TestCase):
         with patch("deployment_verification.urllib.request.urlopen", return_value=_Response(body)):
             result = verify_deployment(site_url="https://example.test", expected_marker="insureai-current")
         self.assertFalse(result["verified"])
-        self.assertEqual(result["error"], "http_or_release_marker_check_failed")
+        self.assertEqual(result["error"], "http_or_marker_check_failed")
         self.assertFalse(result["marker_found"])
 
 
