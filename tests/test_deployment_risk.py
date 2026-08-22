@@ -9,29 +9,34 @@ class TestDeploymentRisk(unittest.TestCase):
         self.assertEqual(result["classification"], "deployment_configuration_missing")
         self.assertTrue(result["attention"])
         self.assertEqual(result["priority"], 40)
+        self.assertIn("DEPLOYMENT_URL", result["next_step"])
 
     def test_unverified_is_attention_signal(self):
         result = build_deployment_risk({"status": "pending", "verified": False})
         self.assertEqual(result["classification"], "deployment_unverified")
         self.assertTrue(result["attention"])
         self.assertEqual(result["priority"], 70)
+        self.assertTrue(result["next_step"])
 
     def test_failed_is_higher_attention_signal(self):
         result = build_deployment_risk({"status": "failed", "verified": False, "error": "request_failed"})
         self.assertEqual(result["classification"], "deployment_failed")
         self.assertTrue(result["attention"])
         self.assertEqual(result["priority"], 90)
+        self.assertIn("部署", result["next_step"])
 
     def test_persistent_failure_gets_higher_priority(self):
         result = build_deployment_risk({"status": "failed", "verified": False, "error": "request_failed"}, [{"verified": False}, {"verified": False}])
         self.assertEqual(result["classification"], "deployment_persistent_failure")
         self.assertEqual(result["priority"], 95)
+        self.assertTrue(result["next_step"])
 
     def test_verified_is_not_attention_signal(self):
         result = build_deployment_risk({"status": "verified", "verified": True})
         self.assertEqual(result["classification"], "deployment_verified")
         self.assertFalse(result["attention"])
         self.assertEqual(result["priority"], 0)
+        self.assertIsNone(result["next_step"])
 
 
 if __name__ == "__main__":
