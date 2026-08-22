@@ -46,6 +46,8 @@ class TestReleaseProvenance(unittest.TestCase):
         self.assertEqual(provenance["impact"]["impacted_count"], 3)
         self.assertEqual(provenance["deployment"]["status"], "pending")
         self.assertFalse(provenance["deployment"]["verified"])
+        self.assertIsNone(provenance["deployment"]["final_url"])
+        self.assertIsNone(provenance["deployment"]["content_type"])
         self.assertEqual(provenance["deployment"]["trend"]["classification"], "baseline")
         self.assertIsNone(provenance["artifacts"]["deployment_verification_sha256"])
         self.assertIsNone(provenance["artifacts"]["deployment_history_sha256"])
@@ -65,6 +67,8 @@ class TestReleaseProvenance(unittest.TestCase):
             "status": "verified",
             "verified": True,
             "site_url": "https://example.test",
+            "final_url": "https://example.test/",
+            "content_type": "text/html",
             "expected_marker": "InsureAI",
             "http_status": 200,
             "content_length": 123,
@@ -80,6 +84,8 @@ class TestReleaseProvenance(unittest.TestCase):
         self.assertEqual(updated["source_commit"], "commit-123")
         self.assertEqual(updated["deployment"]["status"], "verified")
         self.assertTrue(updated["deployment"]["verified"])
+        self.assertEqual(updated["deployment"]["final_url"], "https://example.test/")
+        self.assertEqual(updated["deployment"]["content_type"], "text/html")
         self.assertEqual(updated["deployment"]["http_status"], 200)
         self.assertTrue(updated["deployment"]["marker_found"])
         self.assertEqual(updated["deployment"]["trend"]["classification"], "recovered")
