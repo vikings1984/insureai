@@ -17,7 +17,7 @@ REQUIRED_ARTIFACTS = (
     "owner_risk_view.json",
 )
 DERIVED_ARTIFACTS = tuple(x for x in REQUIRED_ARTIFACTS if x != "data.json")
-VALID_CREDIBILITY = {"ready", "review", "caution", "blocked", "unknown"}
+VALID_CREDIBILITY = {"ready", "review", "caution", "unknown"}
 
 
 def _load(root: Path, name: str):
@@ -124,12 +124,14 @@ def _check_credibility(credibility: dict) -> dict:
     status = credibility.get("status") if isinstance(credibility, dict) else None
     reasons = credibility.get("reasons") if isinstance(credibility, dict) else None
     passed = status in VALID_CREDIBILITY and isinstance(reasons, list)
-    if status == "blocked" and not reasons:
-        passed = False
     return {
         "name": "credibility_contract",
         "passed": passed,
-        "detail": {"status": status, "reason_count": len(reasons) if isinstance(reasons, list) else 0},
+        "detail": {
+            "status": status,
+            "reason_count": len(reasons) if isinstance(reasons, list) else 0,
+            "fail_closed": status == "blocked",
+        },
     }
 
 
@@ -151,7 +153,7 @@ def run_gate(root: Path = ROOT) -> dict:
     return {
         "version": 1,
         "status": "passed" if not failed else "failed",
-        "principle": "critical release invariants are non-compensatory; one broken safety or lineage invariant blocks publication",
+        "principle": "critical release invariants are non-compensatory and blocked credibility fails closed",
         "checks": checks,
         "failed_checks": [x["name"] for x in failed],
     }
