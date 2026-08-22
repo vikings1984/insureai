@@ -14,6 +14,7 @@ DEFAULT_OWNER_BY_ACTION = {
 DEFAULT_OWNER_BY_REASON = {
     "deployment_configuration_missing": ["platform_owner", "release_owner"],
     "deployment_release_mismatch": ["release_owner", "platform_owner"],
+    "deployment_not_verified": ["release_owner", "platform_owner"],
 }
 
 
@@ -68,6 +69,8 @@ def _next_step(item: dict, readiness: dict | None) -> str:
         return "release review: compare current release marker with live deployment and reconcile the published version"
     if "deployment_configuration_missing" in reasons:
         return "platform governance: configure DEPLOYMENT_URL and run deployment verification"
+    if "deployment_not_verified" in reasons:
+        return "release review: verify the live release marker before treating the decision as production-ready"
     if "human_review" in reasons:
         return "review queue: confirm evidence and disposition"
     if "optimization_backlog" in reasons or "regressed" in reasons:
@@ -108,12 +111,7 @@ def build_owner_view(radar: dict | None = None, readiness: dict | None = None, c
             continue
         reason_owner = next((DEFAULT_OWNER_BY_REASON[r] for r in reasons if r in DEFAULT_OWNER_BY_REASON), None)
         owners = (ready or {}).get("owner_roles") or reason_owner or DEFAULT_OWNER_BY_ACTION.get(resolved_action, ["risk_review_owner"])
-        if "deployment_configuration_missing" in reasons:
-            deadline = (ready or {}).get("deadline") or "next_release_cycle"
-        elif "deployment_release_mismatch" in reasons:
-            deadline = (ready or {}).get("deadline") or "before_next_release"
-        else:
-            deadline = (ready or {}).get("deadline") or "next_review_cycle"
+        deadline = (ready or {}).get("deadline") or ("before_next_release" if "deployment_release_mismatch" in reasons else "next_review_cycle")
         items.append({
             "rank": rank,
             "event_id": event_id,
@@ -132,13 +130,16 @@ def build_owner_view(radar: dict | None = None, readiness: dict | None = None, c
         })
 
     provenance = credibility.get("provenance") if isinstance(credibility.get("provenance"), dict) else {}
+    raw_reasons = credibility.get("reasons") or []
+    reason_codes = credibility.get("reason_codes") or [r.get("code") for r in raw_reasons if isinstance(r, dict)]
     credibility_summary = {
         "status": credibility.get("status", "unknown"),
-        "reasons": credibility.get("reasons") or [],
+        "reason_codes": reason_codes,
+        "reasons": raw_reasons,
         "provenance": provenance,
     }
     return {
-        "version": 2,
+        "version": 3,
         "principle": "负责人视图只组织已有信号，不创建责任、不执行行动、不改变风险判断。可信度来源只读、可追溯。",
         "credibility": credibility_summary,
         "configuration_debt": configuration_debt,
@@ -151,7 +152,7 @@ def build_owner_view(radar: dict | None = None, readiness: dict | None = None, c
 def main() -> None:
     result = build_owner_view()
     (ROOT / "owner_risk_view.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Owner risk view: {result['item_count']} items; credibility={result['credibility']['status']}")
+    print(f"Owner risk view: {result['item_count']} items; credibility={result['credibility']['status']}; reasons={','.join(result['credibility']['reason_codes'])}")
 
 
 if __name__ == "__main__":
