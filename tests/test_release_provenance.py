@@ -37,8 +37,8 @@ class TestReleaseProvenance(unittest.TestCase):
     def test_aggregates_release_audit_and_impact_without_content(self):
         root = self._root()
         provenance = build_provenance(source_commit="commit-123", site_url="https://example.test", root=root)
-        self.assertEqual(provenance["version"], 3)
-        self.assertEqual(provenance["schema_version"], "release-provenance-v3")
+        self.assertEqual(provenance["version"], 1)
+        self.assertEqual(provenance["schema_version"], "release-provenance-v1")
         self.assertEqual(provenance["source_commit"], "commit-123")
         self.assertEqual(provenance["quality"]["audit_stage_count"], 2)
         self.assertEqual(provenance["quality"]["audit_artifact_count"], 2)
@@ -84,8 +84,8 @@ class TestReleaseProvenance(unittest.TestCase):
         self.assertTrue(updated["deployment"]["marker_found"])
         self.assertEqual(updated["deployment"]["trend"]["classification"], "recovered")
         self.assertEqual(updated["deployment"]["trend"]["failure_streak"], 0)
-        self.assertEqual(updated["schema_version"], "release-provenance-v3")
-        self.assertEqual(updated["version"], 3)
+        self.assertEqual(updated["schema_version"], "release-provenance-v1")
+        self.assertEqual(updated["version"], 1)
         self.assertEqual(len(updated["artifacts"]["deployment_verification_sha256"]), 64)
         self.assertEqual(len(updated["artifacts"]["deployment_history_sha256"]), 64)
 
