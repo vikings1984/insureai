@@ -49,7 +49,7 @@ def verify_deployment(*, site_url: str, expected_marker: str = "InsureAI", timeo
 
 def main() -> None:
     result = verify_deployment(
-        site_url=os.environ.get("SITE_URL", ""),
+        site_url=os.environ.get("DEPLOYMENT_URL", ""),
         expected_marker=os.environ.get("DEPLOYMENT_MARKER", "InsureAI"),
     )
     OUTPUT.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

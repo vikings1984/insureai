@@ -6,7 +6,7 @@ on:
 permissions:
   contents: write
 env:
-  SITE_URL: "https://vikings1984.github.io/insureai"
+  DEPLOYMENT_URL: ${{ vars.DEPLOYMENT_URL || '' }}
   DEPLOYMENT_MARKER: "InsureAI"
 jobs:
   verify:
