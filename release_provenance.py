@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Build and update a privacy-safe release provenance record."""
-# release-provenance-v1-compatible: add deployment trend as optional metadata without a breaking schema bump.
+# release-provenance-v1-compatible: add deployment trend and release marker as optional metadata without a breaking schema bump.
 from __future__ import annotations
 
 import hashlib
@@ -56,6 +56,7 @@ def build_provenance(*, source_commit: str, site_url: str, root: Path = ROOT) ->
         "source_commit": source_commit or release.get("source_commit") or "unknown",
         "release_channel": release.get("release_channel", "cloudflare_workers"),
         "site_url": site_url or release.get("site_url", ""),
+        "release_marker": release.get("release_marker"),
         "quality": {
             "status": release.get("quality_status", "unknown"),
             "audit_privacy": audit.get("privacy", "unknown"),
@@ -72,6 +73,7 @@ def build_provenance(*, source_commit: str, site_url: str, root: Path = ROOT) ->
             "checked_at": deployment_check.get("checked_at"),
             "http_status": deployment_check.get("http_status"),
             "marker_found": bool(deployment_check.get("marker_found", False)),
+            "release_marker": deployment_check.get("release_marker") or deployment_check.get("expected_marker"),
             "error": deployment_check.get("error"),
             "trend": deployment_trend,
         },
@@ -101,6 +103,7 @@ def attach_deployment_verification(*, root: Path = ROOT) -> dict:
         "checked_at": deployment.get("checked_at"),
         "http_status": deployment.get("http_status"),
         "marker_found": bool(deployment.get("marker_found", False)),
+        "release_marker": deployment.get("release_marker") or deployment.get("expected_marker"),
         "error": deployment.get("error"),
         "trend": attribute_deployment_trend(history),
     }
