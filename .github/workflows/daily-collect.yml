@@ -161,6 +161,22 @@ jobs:
           assert ledger.get('privacy') == 'hashes_and_metadata_only'
           print(f'Final audit ledger valid: stages={len(ledger["stages"])}')
           "
+      - name: Restamp final release manifest after final audit
+        run: python3 release_manifest.py
+      - name: Validate final release manifest
+        run: |
+          python3 -c "
+          import json
+          from pathlib import Path
+          m=json.load(open('release_manifest.json'))
+          audit=json.load(open('audit_ledger.json'))
+          assert m.get('version') == 1 and m.get('release_channel') == 'cloudflare_workers'
+          assert m.get('quality_status') == 'passed' and m.get('deployment_status') == 'pending' and m.get('deployment_verified') is False
+          assert len(m.get('release_marker','')) >= 8
+          assert Path('index.html').read_text(encoding='utf-8').find(m['release_marker']) >= 0
+          assert audit.get('privacy') == 'hashes_and_metadata_only'
+          print('Final release manifest restamped after final audit')
+          "
       - name: Build final release provenance
         run: python3 release_provenance.py
       - name: Validate final release provenance
@@ -168,14 +184,17 @@ jobs:
           python3 -c "
           import json
           p=json.load(open('release_provenance.json'))
+          m=json.load(open('release_manifest.json'))
           assert p.get('version') == 1 and p.get('schema_version') == 'release-provenance-v1'
           assert p.get('source_commit') and p.get('release_channel') == 'cloudflare_workers'
           assert p.get('quality',{}).get('status') == 'passed'
           assert p.get('quality',{}).get('audit_privacy') == 'hashes_and_metadata_only'
           assert p.get('quality',{}).get('audit_stage_count', 0) > 0
           assert p.get('deployment',{}).get('status') == 'pending' and p.get('deployment',{}).get('verified') is False
+          assert p.get('artifacts',{}).get('release_manifest_sha256')
+          assert m.get('release_marker')
           for key in ('release_manifest_sha256','audit_ledger_sha256'): assert len(p['artifacts'][key]) == 64
-          print('Final release provenance valid')
+          print('Final release provenance valid against restamped manifest')
           "
       - name: Commit data + quality artifacts
         run: |
