@@ -21,6 +21,8 @@ ANALYTICAL_STEPS = [
     [sys.executable, "calibration.py"],
     [sys.executable, "decision_build.py"],
     [sys.executable, "decision_stability.py"],
+    [sys.executable, "freshness.py"],
+    [sys.executable, "evidence_availability.py"],
     [sys.executable, "decision_credibility.py"],
     [sys.executable, "counterfactual.py"],
     [sys.executable, "scenario.py"],
