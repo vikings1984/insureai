@@ -34,6 +34,7 @@ STAGES = (
     ("optimization_backlog_history", "optimization_backlog_history.json", "optimization_backlog"),
     ("daily_risk_radar", "daily_risk_radar.json", "daily_risk_radar"),
     ("owner_risk_view", "owner_risk_view.json", "owner_risk_view"),
+    ("production_quality_gate", "production_quality_gate.json", "production_quality_gate"),
 )
 
 def sha256_file(path: Path) -> str:
@@ -50,7 +51,7 @@ def _counts(path: Path) -> dict:
         return {}
     counts = {}
     if isinstance(data, dict):
-        for key in ("news", "events", "results", "scenarios", "items", "modules", "snapshots"):
+        for key in ("news", "events", "results", "scenarios", "items", "modules", "snapshots", "checks", "failed_checks"):
             value = data.get(key)
             if isinstance(value, list):
                 counts[key] = len(value)
@@ -58,6 +59,8 @@ def _counts(path: Path) -> dict:
                 counts[f"{key}_keys"] = len(value)
         if data.get("version") is not None:
             counts["version"] = data["version"]
+        if data.get("status") is not None:
+            counts["status"] = data["status"]
     return counts
 
 def build_ledger() -> dict:
