@@ -35,6 +35,12 @@ def _sha256(path: Path) -> str:
     return h.hexdigest()
 
 
+def _deployment_matches_release(deployment: dict, release: dict) -> bool:
+    expected = release.get("release_marker")
+    observed = deployment.get("release_marker") or deployment.get("expected_marker")
+    return bool(expected and observed and expected == observed)
+
+
 def build_provenance(*, source_commit: str, site_url: str, root: Path = ROOT) -> dict:
     release_path = root / "release_manifest.json"
     audit_path = root / "audit_ledger.json"
@@ -47,8 +53,12 @@ def build_provenance(*, source_commit: str, site_url: str, root: Path = ROOT) ->
     deployment_check = _read_json(deployment_path) if deployment_path.exists() else {}
     history = _read_history(history_path)
     stages = audit.get("stages", [])
-    verified = bool(deployment_check.get("verified", False))
-    deployment_status = "verified" if verified else release.get("deployment_status", "pending")
+    marker_matches = _deployment_matches_release(deployment_check, release)
+    verified = bool(deployment_check.get("verified", False)) and marker_matches
+    if deployment_check.get("verified", False) and not marker_matches:
+        deployment_status = "stale"
+    else:
+        deployment_status = "verified" if verified else release.get("deployment_status", "pending")
     deployment_trend = attribute_deployment_trend(history)
     return {
         "version": 1,
@@ -70,6 +80,7 @@ def build_provenance(*, source_commit: str, site_url: str, root: Path = ROOT) ->
         "deployment": {
             "status": deployment_status,
             "verified": verified,
+            "release_match": marker_matches,
             "checked_at": deployment_check.get("checked_at"),
             "final_url": deployment_check.get("final_url"),
             "content_type": deployment_check.get("content_type"),
@@ -98,16 +109,20 @@ def attach_deployment_verification(*, root: Path = ROOT) -> dict:
     provenance = _read_json(provenance_path)
     deployment = _read_json(deployment_path)
     history = _read_history(history_path)
-    verified = bool(deployment.get("verified", False))
+    expected_marker = provenance.get("release_marker")
+    observed_marker = deployment.get("release_marker") or deployment.get("expected_marker")
+    marker_matches = bool(expected_marker and observed_marker and expected_marker == observed_marker)
+    verified = bool(deployment.get("verified", False)) and marker_matches
     provenance["deployment"] = {
-        "status": "verified" if verified else deployment.get("status", "failed"),
+        "status": "verified" if verified else ("stale" if deployment.get("verified", False) and not marker_matches else deployment.get("status", "failed")),
         "verified": verified,
+        "release_match": marker_matches,
         "checked_at": deployment.get("checked_at"),
         "final_url": deployment.get("final_url"),
         "content_type": deployment.get("content_type"),
         "http_status": deployment.get("http_status"),
         "marker_found": bool(deployment.get("marker_found", False)),
-        "release_marker": deployment.get("release_marker") or deployment.get("expected_marker"),
+        "release_marker": observed_marker,
         "error": deployment.get("error"),
         "trend": attribute_deployment_trend(history),
     }
