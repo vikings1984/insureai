@@ -45,6 +45,15 @@ class OwnerRiskViewTests(unittest.TestCase):
         self.assertIn("configure DEPLOYMENT_URL", debt["next_step"])
         self.assertEqual(debt["automation"], "advisory_only")
 
+    def test_release_mismatch_routes_to_release_and_platform_owners(self):
+        radar = {"items": [{"event_id": "deployment:production", "title": "生产部署状态：deployment_release_mismatch", "attention_score": 98, "urgency": "now", "reasons": ["deployment_release_mismatch"], "source": "deployment_verification.json"}]}
+        result = build_owner_view(radar, {"results": []})
+        item = result["items"][0]
+        self.assertEqual(item["owners"], ["release_owner", "platform_owner"])
+        self.assertEqual(item["deadline"], "before_next_release")
+        self.assertIn("release marker", item["next_step"])
+        self.assertEqual(item["automation"], "advisory_only")
+
 
 if __name__ == "__main__":
     unittest.main()
