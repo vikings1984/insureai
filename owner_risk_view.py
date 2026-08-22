@@ -98,6 +98,7 @@ def build_owner_view(radar: dict | None = None, readiness: dict | None = None, c
                 "title": item.get("title") or event_id,
                 "attention_score": int(item.get("attention_score") or 0),
                 "owners": DEFAULT_OWNER_BY_REASON["deployment_configuration_missing"],
+                "deadline": (ready or {}).get("deadline") or "next_release_cycle",
                 "next_step": _next_step(item, ready),
                 "automation": "advisory_only",
                 "reason": "deployment_configuration_missing",
