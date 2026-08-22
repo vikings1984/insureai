@@ -83,6 +83,7 @@ def build_owner_view(radar: dict | None = None, readiness: dict | None = None, c
     readiness_by_event = _readiness_by_event(readiness)
 
     items = []
+    configuration_debt = []
     for rank, item in enumerate(radar.get("items", []) or [], start=1):
         if not isinstance(item, dict):
             continue
@@ -91,6 +92,17 @@ def build_owner_view(radar: dict | None = None, readiness: dict | None = None, c
         ready = _resolve_readiness(item, readiness_by_key, readiness_by_event)
         resolved_action = str((ready or {}).get("action_id") or action_id)
         reasons = item.get("reasons") or []
+        if "deployment_configuration_missing" in reasons:
+            configuration_debt.append({
+                "event_id": event_id,
+                "title": item.get("title") or event_id,
+                "attention_score": int(item.get("attention_score") or 0),
+                "owners": DEFAULT_OWNER_BY_REASON["deployment_configuration_missing"],
+                "next_step": _next_step(item, ready),
+                "automation": "advisory_only",
+                "reason": "deployment_configuration_missing",
+            })
+            continue
         reason_owner = next((DEFAULT_OWNER_BY_REASON[r] for r in reasons if r in DEFAULT_OWNER_BY_REASON), None)
         owners = (ready or {}).get("owner_roles") or reason_owner or DEFAULT_OWNER_BY_ACTION.get(resolved_action, ["risk_review_owner"])
         if "deployment_configuration_missing" in reasons:
@@ -124,6 +136,8 @@ def build_owner_view(radar: dict | None = None, readiness: dict | None = None, c
         "version": 2,
         "principle": "负责人视图只组织已有信号，不创建责任、不执行行动、不改变风险判断。可信度来源只读、可追溯。",
         "credibility": credibility_summary,
+        "configuration_debt": configuration_debt,
+        "configuration_debt_count": len(configuration_debt),
         "item_count": len(items),
         "items": items[:30],
     }
