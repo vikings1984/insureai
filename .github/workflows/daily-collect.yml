@@ -80,34 +80,69 @@ jobs:
         run: python3 owner_risk_view.py
       - name: Data validation
         run: |
-          python3 -c "
+          python3 - <<'PY'
           import json
           from contract import validate
-          d=json.load(open('data.json')); news=d.get('news',[])
-          assert isinstance(news,list) and news, 'data.json news is empty!'
-          for n in news: assert n.get('title') and 'published_at' in n
-          i=json.load(open('intelligence.json')); errors=validate(i); assert not errors, 'contract errors: ' + '; '.join(errors[:10])
-          s=json.load(open('decision_stability.json')); assert s.get('version') == 1 and isinstance(s.get('results'),list)
-          sh=json.load(open('decision_history.json')); assert sh.get('version') == 1 and isinstance(sh.get('snapshots'),list) and len(sh['snapshots']) <= 90
-          cred=json.load(open('decision_credibility.json')); assert cred.get('version') == 3 and cred.get('status') in {'ready','review','caution','blocked'} and isinstance(cred.get('provenance'),dict) and isinstance(cred.get('reasons'),list) and len(cred.get('signal_details',[])) == 5
-          radar=json.load(open('daily_risk_radar.json')); assert radar.get('version') == 1 and isinstance(radar.get('items'),list) and radar.get('status') in {'ready','review','caution','blocked','unknown'}
-          owner=json.load(open('owner_risk_view.json')); assert owner.get('version') == 2 and isinstance(owner.get('items'),list) and owner.get('item_count', 0) >= len(owner['items']) and isinstance(owner.get('credibility'),dict)
-          assert owner['credibility'].get('status') in {'ready','review','caution','blocked','unknown'} and isinstance(owner['credibility'].get('reasons'),list) and isinstance(owner['credibility'].get('provenance'),dict) and len(owner['credibility'].get('signal_details',[])) == 5
-          for item in owner['items']: assert item.get('automation') == 'advisory_only' and item.get('owners') and item.get('deadline') and item.get('next_step')
-          ta=json.load(open('trend_attribution.json')); assert ta.get('version') == 1 and isinstance(ta.get('modules'),dict)
-          for row in ta['modules'].values(): assert row.get('classification') in {'baseline','single_spike','persistent_worsening','improving','recovering','recovered','stable'}
-          q=json.load(open('review_queue.json')); assert q.get('version') == 1 and isinstance(q.get('items'),list)
-          imp=json.load(open('change_impact.json')); assert imp.get('version') == 1 and isinstance(imp.get('impacted_events'),list) and isinstance(imp.get('baseline_available'),bool)
-          ledger=json.load(open('audit_ledger.json')); assert ledger.get('version') == 1 and ledger.get('privacy') == 'hashes_and_metadata_only'
-          for row in ledger.get('stages',[]): assert len(row.get('sha256','')) == 64 and 'title' not in row and 'url' not in row and 'body' not in row
-          fb=json.load(open('feedback_attribution.json')); assert fb.get('version') == 1 and isinstance(fb.get('modules'),dict)
-          mh=json.load(open('module_health.json')); assert mh.get('version') == 1 and isinstance(mh.get('modules'),list)
-          mt=json.load(open('module_health_trend.json')); assert mt.get('version') == 1 and isinstance(mt.get('modules'),dict)
-          ob=json.load(open('optimization_backlog.json')); assert ob.get('version') == 3 and isinstance(ob.get('items'),list)
-          hist=json.load(open('optimization_backlog_history.json')); assert hist.get('version') == 2 and isinstance(hist.get('snapshots'),list) and len(hist['snapshots']) <= 90
-          for item in ob['items']: assert item.get('status') in {'open','recovering','resolved','regressed'}
+
+          def load(name):
+              with open(name, encoding='utf-8') as f:
+                  return json.load(f)
+
+          def check(label, condition, detail=''):
+              if not condition:
+                  raise AssertionError(f'{label}: {detail}')
+
+          d = load('data.json'); news = d.get('news', [])
+          check('news', isinstance(news, list) and bool(news), f'count={len(news) if isinstance(news, list) else "not-list"}')
+          for index, n in enumerate(news):
+              check(f'news[{index}]', bool(n.get('title')) and 'published_at' in n, str(n)[:240])
+
+          i = load('intelligence.json'); errors = validate(i)
+          check('intelligence contract', not errors, '; '.join(errors[:10]))
+
+          s = load('decision_stability.json')
+          check('decision_stability', s.get('version') == 1 and isinstance(s.get('results'), list), str(s)[:240])
+          sh = load('decision_history.json')
+          check('decision_history', sh.get('version') == 1 and isinstance(sh.get('snapshots'), list) and len(sh['snapshots']) <= 90, str(sh)[:240])
+          cred = load('decision_credibility.json')
+          check('decision_credibility', cred.get('version') == 3 and cred.get('status') in {'ready','review','caution','blocked'} and isinstance(cred.get('provenance'), dict) and isinstance(cred.get('reasons'), list) and len(cred.get('signal_details', [])) == 5, str(cred)[:400])
+          radar = load('daily_risk_radar.json')
+          check('daily_risk_radar', radar.get('version') == 1 and isinstance(radar.get('items'), list) and radar.get('status') in {'ready','review','caution','blocked','unknown'}, str(radar)[:400])
+          owner = load('owner_risk_view.json')
+          check('owner_risk_view', owner.get('version') == 2 and isinstance(owner.get('items'), list) and owner.get('item_count', 0) >= len(owner['items']) and isinstance(owner.get('credibility'), dict), str(owner)[:500])
+          check('owner credibility', owner['credibility'].get('status') in {'ready','review','caution','blocked','unknown'} and isinstance(owner['credibility'].get('reasons'), list) and isinstance(owner['credibility'].get('provenance'), dict) and len(owner['credibility'].get('signal_details', [])) == 5, str(owner['credibility'])[:500])
+          for index, item in enumerate(owner['items']):
+              check(f'owner item {index}', item.get('automation') == 'advisory_only' and item.get('owners') and item.get('deadline') and item.get('next_step'), str(item)[:400])
+
+          ta = load('trend_attribution.json')
+          check('trend_attribution', ta.get('version') == 1 and isinstance(ta.get('modules'), dict), str(ta)[:300])
+          for key, row in ta['modules'].items():
+              check(f'trend module {key}', row.get('classification') in {'baseline','single_spike','persistent_worsening','improving','recovering','recovered','stable'}, str(row)[:300])
+
+          q = load('review_queue.json')
+          check('review_queue', q.get('version') == 1 and isinstance(q.get('items'), list), str(q)[:300])
+          imp = load('change_impact.json')
+          check('change_impact', imp.get('version') == 1 and isinstance(imp.get('impacted_events'), list) and isinstance(imp.get('baseline_available'), bool), str(imp)[:300])
+          ledger = load('audit_ledger.json')
+          check('audit_ledger', ledger.get('version') == 1 and ledger.get('privacy') == 'hashes_and_metadata_only', str(ledger)[:300])
+          for index, row in enumerate(ledger.get('stages', [])):
+              check(f'audit stage {index}', len(row.get('sha256', '')) == 64 and 'title' not in row and 'url' not in row and 'body' not in row, str(row)[:300])
+
+          fb = load('feedback_attribution.json')
+          check('feedback_attribution', fb.get('version') == 1 and isinstance(fb.get('modules'), dict), str(fb)[:300])
+          mh = load('module_health.json')
+          check('module_health', mh.get('version') == 1 and isinstance(mh.get('modules'), list), str(mh)[:300])
+          mt = load('module_health_trend.json')
+          check('module_health_trend', mt.get('version') == 1 and isinstance(mt.get('modules'), dict), str(mt)[:300])
+          ob = load('optimization_backlog.json')
+          check('optimization_backlog', ob.get('version') == 3 and isinstance(ob.get('items'), list), str(ob)[:300])
+          hist = load('optimization_backlog_history.json')
+          check('optimization_backlog_history', hist.get('version') == 2 and isinstance(hist.get('snapshots'), list) and len(hist['snapshots']) <= 90, str(hist)[:300])
+          for index, item in enumerate(ob['items']):
+              check(f'backlog item {index}', item.get('status') in {'open','recovering','resolved','regressed'}, str(item)[:300])
+
           print(f'Validation passed: news={len(news)} events={len(i["events"])} stability={len(s["results"])} credibility={cred["status"]} radar={len(radar["items"])} owner_view={len(owner["items"])} trend_attribution={len(ta["modules"])} review={len(q["items"])} impacts={imp["impacted_count"]} backlog={len(ob["items"])} baseline={mt["baseline_available"]}')
-          "
+          PY
       - name: Run tests
         run: python3 -m unittest discover tests/ -v
       - name: Build truthful release manifest
