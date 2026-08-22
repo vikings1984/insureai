@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parent
 def _load(name: str, default):
     path = ROOT / name
     if not path.exists(): return default
-    try: return json.loads(path.read_text(encoding='utf-8'))
+    try: return json.loads(path.read_text(encoding='utf-8') )
     except Exception: return default
 
 def _urgency_score(value: str | None) -> int:
@@ -24,8 +24,6 @@ def build_radar(credibility=None, intelligence=None, impacts=None, backlog=None,
     backlog=_load('optimization_backlog.json',{}) if backlog is None else backlog
     review=_load('review_queue.json',{}) if review is None else review
     trend_attribution=_load('trend_attribution.json',{}) if trend_attribution is None else trend_attribution
-    deployment=_load('deployment_verification.json',{}) if deployment is None else deployment
-    deployment_history=_load('deployment_verification_history.json',[]) if deployment_history is None else deployment_history
     credibility_status=credibility.get('status','unknown')
     credibility_penalty={'ready':0,'review':15,'caution':20,'blocked':35}.get(credibility_status,25)
     impact_events={str(x.get('event_id')) for x in impacts.get('impacted_events',[]) if isinstance(x,dict)}
@@ -52,13 +50,19 @@ def build_radar(credibility=None, intelligence=None, impacts=None, backlog=None,
         module=str(item.get('module','unknown')); attr=(trend_attribution.get('modules') or {}).get(module,{})
         bump={'persistent_worsening':15,'regressed':15,'single_spike':-10,'recovering':-5,'recovered':-10,'stable':-5}.get(attr.get('classification'),0)
         candidates.append({'event_id':f'module:{module}','title':f'模块质量：{module}','urgency':None,'trust_level':None,'attention_score':max(0,min(100,int(item.get('priority') or 0)+(15 if item.get('status')=='regressed' else 0)+bump)),'reasons':['optimization_backlog',item.get('status')] + ([f"trend_{attr.get('classification')}"] if attr.get('classification') else []),'source':'optimization_backlog.json','trend_attribution':attr or None})
-    deployment_risk=build_deployment_risk(deployment, deployment_history)
-    if deployment_risk['attention']:
-        urgency='soon' if deployment_risk['classification']=='deployment_unverified' else 'now'
-        candidates.append({'event_id':'deployment:github_pages','title':'生产部署状态：'+deployment_risk['classification'],'urgency':urgency,'trust_level':None,'attention_score':deployment_risk['priority'],'reasons':[deployment_risk['classification']] + ([deployment_risk['error']] if deployment_risk['error'] else []),'source':'deployment_verification.json','deployment_risk':deployment_risk})
+    if deployment is not None:
+        deployment_risk=build_deployment_risk(deployment, deployment_history or [])
+        if deployment_risk['attention']:
+            urgency='soon' if deployment_risk['classification']=='deployment_unverified' else 'now'
+            candidates.append({'event_id':'deployment:github_pages','title':'生产部署状态：'+deployment_risk['classification'],'urgency':urgency,'trust_level':None,'attention_score':deployment_risk['priority'],'reasons':[deployment_risk['classification']] + ([deployment_risk['error']] if deployment_risk['error'] else []),'source':'deployment_verification.json','deployment_risk':deployment_risk})
+        deployment_classification=deployment_risk['classification']
+        deployment_attention=deployment_risk['attention']
+    else:
+        deployment_classification='not_supplied'
+        deployment_attention=False
     candidates.sort(key=lambda x:(x['attention_score'],x['event_id']),reverse=True)
-    return {'version':4,'generated_at':datetime.now(timezone.utc).isoformat(),'status':credibility_status,'principle':'雷达只排序已有风险信号；部署风险与趋势归因只影响人工注意力与发布可信度，不重新评分、不修改原始决策、不自动执行行动。','items':candidates[:30],'summary':{'items':len(candidates),'top_attention_score':candidates[0]['attention_score'] if candidates else 0,'credibility_status':credibility_status,'impacted_event_count':len(impact_events),'deployment_attention':deployment_risk['attention'],'deployment_classification':deployment_risk['classification']}}
+    return {'version':4,'generated_at':datetime.now(timezone.utc).isoformat(),'status':credibility_status,'principle':'雷达只排序已有风险信号；部署风险与趋势归因只影响人工注意力与发布可信度，不重新评分、不修改原始决策、不自动执行行动。','items':candidates[:30],'summary':{'items':len(candidates),'top_attention_score':candidates[0]['attention_score'] if candidates else 0,'credibility_status':credibility_status,'impacted_event_count':len(impact_events),'deployment_attention':deployment_attention,'deployment_classification':deployment_classification}}
 
 def main():
-    result=build_radar(); (ROOT/'daily_risk_radar.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); print(f"Daily risk radar: {len(result['items'])} items")
+    result=build_radar(deployment=_load('deployment_verification.json',{}), deployment_history=_load('deployment_verification_history.json',[])); (ROOT/'daily_risk_radar.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); print(f"Daily risk radar: {len(result['items'])} items")
 if __name__=='__main__': main()
