@@ -14,7 +14,9 @@ STATE_FIELDS = (
     "status",
     "verified",
     "site_url",
+    "final_url",
     "expected_marker",
+    "release_marker",
     "http_status",
     "marker_found",
     "error",
@@ -58,6 +60,8 @@ def main() -> None:
         history.append({
             "status": current.get("status"),
             "verified": bool(current.get("verified", False)),
+            "release_marker": current.get("release_marker"),
+            "final_url": current.get("final_url"),
             "error": current.get("error"),
             "checked_at": current.get("checked_at"),
         })
