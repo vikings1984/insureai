@@ -11,6 +11,13 @@ class TestDeploymentRisk(unittest.TestCase):
         self.assertEqual(result["priority"], 40)
         self.assertIn("DEPLOYMENT_URL", result["next_step"])
 
+    def test_unknown_is_verification_missing_signal(self):
+        result = build_deployment_risk({"status": "unknown", "verified": False})
+        self.assertEqual(result["classification"], "deployment_verification_missing")
+        self.assertTrue(result["attention"])
+        self.assertEqual(result["priority"], 50)
+        self.assertIn("Deployment Verification", result["next_step"])
+
     def test_unverified_is_attention_signal(self):
         result = build_deployment_risk({"status": "pending", "verified": False})
         self.assertEqual(result["classification"], "deployment_unverified")

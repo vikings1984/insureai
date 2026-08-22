@@ -16,6 +16,9 @@ def build_deployment_risk(deployment: dict | None, history: list[dict] | None = 
     elif status == "unconfigured" or error == "site_url_missing":
         classification, priority, attention = "deployment_configuration_missing", 40, True
         next_step = "配置 GitHub Actions repository variable DEPLOYMENT_URL，然后重新运行 Deployment Verification。"
+    elif status in {"unknown", ""}:
+        classification, priority, attention = "deployment_verification_missing", 50, True
+        next_step = "先运行 Deployment Verification，确认当前发布是否已完成探测，再判断是否存在真实故障。"
     elif trend["classification"] == "persistent_failure":
         classification, priority, attention = "deployment_persistent_failure", 95, True
         next_step = "检查生产部署日志、可用性与最近一次成功发布，优先处理持续性故障。"
@@ -26,7 +29,7 @@ def build_deployment_risk(deployment: dict | None, history: list[dict] | None = 
         classification, priority, attention = "deployment_unverified", 70, True
         next_step = "等待或重新运行 Deployment Verification，确认当前发布是否已在线。"
     return {
-        "version": 3,
+        "version": 4,
         "classification": classification,
         "priority": priority,
         "attention": attention,
