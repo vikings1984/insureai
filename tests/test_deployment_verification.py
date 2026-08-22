@@ -22,9 +22,10 @@ class _Response:
 
 
 class TestDeploymentVerification(unittest.TestCase):
-    def test_missing_site_url_is_failed(self):
+    def test_missing_site_url_is_unconfigured(self):
         result = verify_deployment(site_url="")
         self.assertFalse(result["verified"])
+        self.assertEqual(result["status"], "unconfigured")
         self.assertEqual(result["error"], "site_url_missing")
 
     @patch("deployment_verification.urllib.request.urlopen")
@@ -41,6 +42,7 @@ class TestDeploymentVerification(unittest.TestCase):
         urlopen.return_value = _Response(b"<html>not our site</html>")
         result = verify_deployment(site_url="https://example.test")
         self.assertFalse(result["verified"])
+        self.assertEqual(result["status"], "failed")
         self.assertEqual(result["error"], "http_or_marker_check_failed")
 
 
