@@ -13,9 +13,11 @@ OUTPUT = ROOT / "release_manifest.json"
 
 
 def build_manifest(*, source_commit: str, site_url: str, quality_passed: bool = True) -> dict:
+    source_commit = source_commit or "unknown"
     return {
         "version": 1,
-        "source_commit": source_commit or "unknown",
+        "source_commit": source_commit,
+        "release_marker": f"insureai:{source_commit}",
         "release_channel": "github_pages",
         "site_url": site_url,
         "quality_status": "passed" if quality_passed else "failed",
