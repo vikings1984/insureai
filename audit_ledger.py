@@ -72,19 +72,32 @@ def build_ledger() -> dict:
                 "sha256": sha256_file(path),
                 "counts": _counts(path),
             })
+    release = {}
+    release_path = ROOT / "release_manifest.json"
+    if release_path.exists():
+        try:
+            release = json.loads(release_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            release = {}
+    gate = release.get("production_quality_gate") or {}
     return {
         "version": 1,
         "schema_version": "audit-ledger-v1",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "privacy": "hashes_and_metadata_only",
-        "coverage_principle": "ledger is generated after all analytical quality artifacts so it never verifies a stale pre-quality snapshot",
+        "coverage_principle": "ledger is generated after all analytical quality artifacts; release_manifest carries the production gate result",
+        "production_quality_gate": {
+            "status": gate.get("status", "unknown"),
+            "failed_checks": list(gate.get("failed_checks") or []),
+            "check_count": len(gate.get("checks") or []),
+        },
         "stages": records,
     }
 
 def main() -> None:
     ledger = build_ledger()
     OUTPUT.write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Audit ledger: {len(ledger['stages'])} stages")
+    print(f"Audit ledger: {len(ledger['stages'])} stages gate={ledger['production_quality_gate']['status']}")
 
 if __name__ == "__main__":
     main()

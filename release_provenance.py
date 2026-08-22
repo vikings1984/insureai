@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Build and update a privacy-safe release provenance record."""
-# release-provenance-v1-compatible: add deployment trend and release marker as optional metadata without a breaking schema bump.
+# release-provenance-v1-compatible: add deployment trend, release marker, and gate evidence as metadata.
 from __future__ import annotations
 
 import hashlib
@@ -66,6 +66,7 @@ def build_provenance(*, source_commit: str, site_url: str, root: Path = ROOT) ->
     history_path = root / "deployment_verification_history.json"
     release = _read_json(release_path)
     audit = _read_json(audit_path)
+    gate = release.get("production_quality_gate") or {}
     impact = _read_json(impact_path) if impact_path.exists() else {}
     deployment_check = _read_json(deployment_path) if deployment_path.exists() else {}
     history = _read_history(history_path)
@@ -88,6 +89,8 @@ def build_provenance(*, source_commit: str, site_url: str, root: Path = ROOT) ->
         "release_marker": release.get("release_marker"),
         "quality": {
             "status": release.get("quality_status", "unknown"),
+            "production_gate_status": gate.get("status", "unknown"),
+            "production_gate_failed_checks": gate.get("failed_checks", []),
             "audit_privacy": audit.get("privacy", "unknown"),
             "audit_stage_count": len(stages),
             "audit_artifact_count": len({row.get("artifact") for row in stages if row.get("artifact")}),
