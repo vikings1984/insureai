@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from release_provenance import build_provenance
+from release_provenance import attach_deployment_verification, build_provenance
 
 
 class TestReleaseProvenance(unittest.TestCase):
@@ -37,8 +37,8 @@ class TestReleaseProvenance(unittest.TestCase):
     def test_aggregates_release_audit_and_impact_without_content(self):
         root = self._root()
         provenance = build_provenance(source_commit="commit-123", site_url="https://example.test", root=root)
-        self.assertEqual(provenance["version"], 1)
-        self.assertEqual(provenance["schema_version"], "release-provenance-v1")
+        self.assertEqual(provenance["version"], 2)
+        self.assertEqual(provenance["schema_version"], "release-provenance-v2")
         self.assertEqual(provenance["source_commit"], "commit-123")
         self.assertEqual(provenance["quality"]["audit_stage_count"], 2)
         self.assertEqual(provenance["quality"]["audit_artifact_count"], 2)
@@ -46,11 +46,38 @@ class TestReleaseProvenance(unittest.TestCase):
         self.assertEqual(provenance["impact"]["impacted_count"], 3)
         self.assertEqual(provenance["deployment"]["status"], "pending")
         self.assertFalse(provenance["deployment"]["verified"])
+        self.assertIsNone(provenance["artifacts"]["deployment_verification_sha256"])
         self.assertEqual(len(provenance["artifacts"]["release_manifest_sha256"]), 64)
         self.assertEqual(len(provenance["artifacts"]["audit_ledger_sha256"]), 64)
         self.assertNotIn("title", provenance)
         self.assertNotIn("url", provenance)
         self.assertNotIn("body", provenance)
+
+    def test_attaches_verified_deployment_without_changing_source_commit(self):
+        root = self._root()
+        (root / "release_provenance.json").write_text(json.dumps(build_provenance(
+            source_commit="commit-123", site_url="https://example.test", root=root
+        )), encoding="utf-8")
+        (root / "deployment_verification.json").write_text(json.dumps({
+            "version": 1,
+            "status": "verified",
+            "verified": True,
+            "site_url": "https://example.test",
+            "expected_marker": "InsureAI",
+            "http_status": 200,
+            "content_length": 123,
+            "marker_found": True,
+            "error": None,
+            "checked_at": "2026-08-22T00:00:00+00:00",
+        }), encoding="utf-8")
+        updated = attach_deployment_verification(root=root)
+        self.assertEqual(updated["source_commit"], "commit-123")
+        self.assertEqual(updated["deployment"]["status"], "verified")
+        self.assertTrue(updated["deployment"]["verified"])
+        self.assertEqual(updated["deployment"]["http_status"], 200)
+        self.assertTrue(updated["deployment"]["marker_found"])
+        self.assertEqual(updated["schema_version"], "release-provenance-v2")
+        self.assertEqual(len(updated["artifacts"]["deployment_verification_sha256"]), 64)
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ on:
     - cron: '15 */6 * * *'
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 env:
   SITE_URL: "https://vikings1984.github.io/insureai"
   DEPLOYMENT_MARKER: "InsureAI"
@@ -13,11 +13,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Verify published deployment
+        continue-on-error: true
         run: python3 deployment_verification.py
+      - name: Bridge verification into release provenance
+        if: always()
+        run: |
+          if [ -f deployment_verification.json ] && [ -f release_provenance.json ]; then
+            python3 -c "from release_provenance import attach_deployment_verification; attach_deployment_verification(); print('Release provenance updated from deployment verification')"
+          else
+            echo "Provenance bridge skipped: required artifact missing"
+          fi
+      - name: Commit deployment verification + provenance
+        if: always()
+        run: |
+          git config user.name "insureai-bot"
+          git config user.email "bot@insureai.local"
+          if [ -n "$(git status --porcelain deployment_verification.json release_provenance.json)" ]; then
+            git add deployment_verification.json release_provenance.json
+            git commit -m "chore: record deployment verification [skip ci]"
+            git push origin HEAD:${{ github.ref_name }}
+          else
+            echo "No verification artifacts changed"
+          fi
       - name: Upload verification result
         if: always()
         uses: actions/upload-artifact@v4
@@ -25,3 +48,11 @@ jobs:
           name: deployment-verification-${{ github.run_id }}
           path: deployment_verification.json
           if-no-files-found: error
+      - name: Enforce verification result
+        run: |
+          python3 - <<'PY'
+          import json
+          result = json.load(open('deployment_verification.json'))
+          assert result.get('verified') is True, result
+          print('Published deployment verified')
+          PY
