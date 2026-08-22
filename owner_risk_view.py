@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Turn daily risk radar into human owner views without executing actions."""
 from __future__ import annotations
 
@@ -14,6 +13,7 @@ DEFAULT_OWNER_BY_ACTION = {
 }
 DEFAULT_OWNER_BY_REASON = {
     "deployment_configuration_missing": ["platform_owner", "release_owner"],
+    "deployment_release_mismatch": ["release_owner", "platform_owner"],
 }
 
 
@@ -64,6 +64,8 @@ def _next_step(item: dict, readiness: dict | None) -> str:
     if readiness and readiness.get("deliverables"):
         return f"human review: complete {readiness['deliverables'][0]}"
     reasons = item.get("reasons") or []
+    if "deployment_release_mismatch" in reasons:
+        return "release review: compare current release marker with live deployment and reconcile the published version"
     if "deployment_configuration_missing" in reasons:
         return "platform governance: configure DEPLOYMENT_URL and run deployment verification"
     if "human_review" in reasons:
@@ -108,6 +110,8 @@ def build_owner_view(radar: dict | None = None, readiness: dict | None = None, c
         owners = (ready or {}).get("owner_roles") or reason_owner or DEFAULT_OWNER_BY_ACTION.get(resolved_action, ["risk_review_owner"])
         if "deployment_configuration_missing" in reasons:
             deadline = (ready or {}).get("deadline") or "next_release_cycle"
+        elif "deployment_release_mismatch" in reasons:
+            deadline = (ready or {}).get("deadline") or "before_next_release"
         else:
             deadline = (ready or {}).get("deadline") or "next_review_cycle"
         items.append({
