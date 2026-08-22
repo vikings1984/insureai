@@ -41,6 +41,23 @@ def _deployment_matches_release(deployment: dict, release: dict) -> bool:
     return bool(expected and observed and expected == observed)
 
 
+def _normalize_deployment_status(*, deployment: dict, release_status: str = "pending", marker_matches: bool = False, verified: bool = False) -> str:
+    if verified:
+        return "verified"
+    if deployment.get("verified", False) and not marker_matches:
+        return "stale"
+    raw = deployment.get("status")
+    if raw == "unconfigured" or deployment.get("error") == "site_url_missing":
+        return "configuration_debt"
+    if raw == "failed" or deployment.get("error"):
+        return "failed"
+    if raw in {"pending", "unknown", "configuration_debt", "stale"}:
+        return raw
+    if release_status in {"pending", "unknown", "configuration_debt", "stale", "failed", "verified"}:
+        return release_status
+    return "pending"
+
+
 def build_provenance(*, source_commit: str, site_url: str, root: Path = ROOT) -> dict:
     release_path = root / "release_manifest.json"
     audit_path = root / "audit_ledger.json"
@@ -55,10 +72,12 @@ def build_provenance(*, source_commit: str, site_url: str, root: Path = ROOT) ->
     stages = audit.get("stages", [])
     marker_matches = _deployment_matches_release(deployment_check, release)
     verified = bool(deployment_check.get("verified", False)) and marker_matches
-    if deployment_check.get("verified", False) and not marker_matches:
-        deployment_status = "stale"
-    else:
-        deployment_status = "verified" if verified else release.get("deployment_status", "pending")
+    deployment_status = _normalize_deployment_status(
+        deployment=deployment_check,
+        release_status=release.get("deployment_status", "pending"),
+        marker_matches=marker_matches,
+        verified=verified,
+    )
     deployment_trend = attribute_deployment_trend(history)
     return {
         "version": 1,
@@ -114,7 +133,12 @@ def attach_deployment_verification(*, root: Path = ROOT) -> dict:
     marker_matches = bool(expected_marker and observed_marker and expected_marker == observed_marker)
     verified = bool(deployment.get("verified", False)) and marker_matches
     provenance["deployment"] = {
-        "status": "verified" if verified else ("stale" if deployment.get("verified", False) and not marker_matches else deployment.get("status", "failed")),
+        "status": _normalize_deployment_status(
+            deployment=deployment,
+            release_status=provenance.get("deployment", {}).get("status", "pending"),
+            marker_matches=marker_matches,
+            verified=verified,
+        ),
         "verified": verified,
         "release_match": marker_matches,
         "checked_at": deployment.get("checked_at"),
