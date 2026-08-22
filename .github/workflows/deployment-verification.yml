@@ -21,57 +21,46 @@ jobs:
       - name: Verify published deployment
         continue-on-error: true
         run: python3 deployment_verification.py
-      - name: Record deployment history
+      - name: Detect deployment state transition
+        id: transition
         if: always()
         run: |
-          python3 - <<'PY'
-          import json
-          from pathlib import Path
-          path = Path('deployment_verification_history.json')
-          history = json.loads(path.read_text(encoding='utf-8')) if path.exists() else []
-          current = json.loads(Path('deployment_verification.json').read_text(encoding='utf-8'))
-          history.append({
-              'verified': bool(current.get('verified', False)),
-              'status': current.get('status'),
-              'error': current.get('error'),
-              'checked_at': current.get('checked_at'),
-          })
-          path.write_text(json.dumps(history[-30:], ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-          print(f'Deployment history records: {min(len(history), 30)}')
-          PY
+          output="$(python3 scripts/deployment_state_transition.py)"
+          echo "$output"
+          echo "state_changed=${output##*=}" >> "$GITHUB_OUTPUT"
       - name: Bridge verification into release provenance
-        if: always()
+        if: always() && steps.transition.outputs.state_changed == 'true'
         run: |
           if [ -f deployment_verification.json ] && [ -f release_provenance.json ]; then
-            python3 -c "from release_provenance import attach_deployment_verification; attach_deployment_verification(); print('Release provenance updated from deployment verification')"
+            python3 -c "from release_provenance import attach_deployment_verification; attach_deployment_verification(); print('Release provenance updated from deployment verification state transition')"
           else
             echo "Provenance bridge skipped: required artifact missing"
           fi
-      - name: Commit deployment verification + provenance + history
-        if: always()
+      - name: Commit deployment state transition + provenance + history
+        if: always() && steps.transition.outputs.state_changed == 'true'
         run: |
           git config user.name "insureai-bot"
           git config user.email "bot@insureai.local"
           if [ -n "$(git status --porcelain deployment_verification.json release_provenance.json deployment_verification_history.json)" ]; then
             git add deployment_verification.json release_provenance.json deployment_verification_history.json
-            git commit -m "chore: record deployment verification history [skip ci]"
+            git commit -m "chore: record deployment state transition [skip ci]"
             git push origin HEAD:${{ github.ref_name }}
           else
-            echo "No verification artifacts changed"
+            echo "No deployment state changes to commit"
           fi
-      - name: Upload verification result
+      - name: Upload latest verification heartbeat
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: deployment-verification-${{ github.run_id }}
-          path: deployment_verification.json
+          path: deployment_verification_latest.json
           if-no-files-found: error
       - name: Enforce verification result
         if: env.DEPLOYMENT_URL != ''
         run: |
           python3 - <<'PY'
           import json
-          result = json.load(open('deployment_verification.json'))
+          result = json.load(open('deployment_verification_latest.json'))
           assert result.get('verified') is True, result
           print('Published deployment verified')
           PY
