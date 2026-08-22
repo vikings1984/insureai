@@ -103,7 +103,11 @@ def verify_deployment(*, site_url: str, expected_marker: str = "InsureAI", timeo
                 result["error"] = "unexpected_content_type"
                 return result
 
-            body = response.read(MAX_RESPONSE_BYTES + 1)
+            reader = response.read
+            try:
+                body = reader(MAX_RESPONSE_BYTES + 1)
+            except TypeError:
+                body = reader()
             if len(body) > MAX_RESPONSE_BYTES:
                 result["content_length"] = len(body)
                 result["error"] = "response_too_large"
