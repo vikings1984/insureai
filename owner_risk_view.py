@@ -12,6 +12,9 @@ DEFAULT_OWNER_BY_ACTION = {
     "exposure_mapping": ["portfolio_risk_owner", "operations_owner"],
     "trigger_thresholds": ["governance_owner"],
 }
+DEFAULT_OWNER_BY_REASON = {
+    "deployment_configuration_missing": ["platform_owner", "release_owner"],
+}
 
 
 def _load(name: str, default):
@@ -61,6 +64,8 @@ def _next_step(item: dict, readiness: dict | None) -> str:
     if readiness and readiness.get("deliverables"):
         return f"human review: complete {readiness['deliverables'][0]}"
     reasons = item.get("reasons") or []
+    if "deployment_configuration_missing" in reasons:
+        return "platform governance: configure DEPLOYMENT_URL and run deployment verification"
     if "human_review" in reasons:
         return "review queue: confirm evidence and disposition"
     if "optimization_backlog" in reasons or "regressed" in reasons:
@@ -85,8 +90,13 @@ def build_owner_view(radar: dict | None = None, readiness: dict | None = None, c
         action_id = str(item.get("action_id") or "")
         ready = _resolve_readiness(item, readiness_by_key, readiness_by_event)
         resolved_action = str((ready or {}).get("action_id") or action_id)
-        owners = (ready or {}).get("owner_roles") or DEFAULT_OWNER_BY_ACTION.get(resolved_action, ["risk_review_owner"])
-        deadline = (ready or {}).get("deadline") or "next_review_cycle"
+        reasons = item.get("reasons") or []
+        reason_owner = next((DEFAULT_OWNER_BY_REASON[r] for r in reasons if r in DEFAULT_OWNER_BY_REASON), None)
+        owners = (ready or {}).get("owner_roles") or reason_owner or DEFAULT_OWNER_BY_ACTION.get(resolved_action, ["risk_review_owner"])
+        if "deployment_configuration_missing" in reasons:
+            deadline = (ready or {}).get("deadline") or "next_release_cycle"
+        else:
+            deadline = (ready or {}).get("deadline") or "next_review_cycle"
         items.append({
             "rank": rank,
             "event_id": event_id,
@@ -98,7 +108,7 @@ def build_owner_view(radar: dict | None = None, readiness: dict | None = None, c
             "owners": owners,
             "deadline": deadline,
             "next_step": _next_step(item, ready),
-            "reasons": item.get("reasons") or [],
+            "reasons": reasons,
             "source": item.get("source"),
             "automation": "advisory_only",
             "approval_boundary": (ready or {}).get("approval_boundary") or "human confirmation required",
