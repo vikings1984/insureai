@@ -21,6 +21,24 @@ jobs:
       - name: Verify published deployment
         continue-on-error: true
         run: python3 deployment_verification.py
+      - name: Record deployment history
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('deployment_verification_history.json')
+          history = json.loads(path.read_text(encoding='utf-8')) if path.exists() else []
+          current = json.loads(Path('deployment_verification.json').read_text(encoding='utf-8'))
+          history.append({
+              'verified': bool(current.get('verified', False)),
+              'status': current.get('status'),
+              'error': current.get('error'),
+              'checked_at': current.get('checked_at'),
+          })
+          path.write_text(json.dumps(history[-30:], ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          print(f'Deployment history records: {min(len(history), 30)}')
+          PY
       - name: Bridge verification into release provenance
         if: always()
         run: |
@@ -29,14 +47,14 @@ jobs:
           else
             echo "Provenance bridge skipped: required artifact missing"
           fi
-      - name: Commit deployment verification + provenance
+      - name: Commit deployment verification + provenance + history
         if: always()
         run: |
           git config user.name "insureai-bot"
           git config user.email "bot@insureai.local"
-          if [ -n "$(git status --porcelain deployment_verification.json release_provenance.json)" ]; then
-            git add deployment_verification.json release_provenance.json
-            git commit -m "chore: record deployment verification [skip ci]"
+          if [ -n "$(git status --porcelain deployment_verification.json release_provenance.json deployment_verification_history.json)" ]; then
+            git add deployment_verification.json release_provenance.json deployment_verification_history.json
+            git commit -m "chore: record deployment verification history [skip ci]"
             git push origin HEAD:${{ github.ref_name }}
           else
             echo "No verification artifacts changed"
