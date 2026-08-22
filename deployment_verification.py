@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify that the published site is reachable and contains an expected release marker."""
+"""Verify that the published site matches the current release identity."""
 from __future__ import annotations
 
 import json
@@ -10,6 +10,21 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 OUTPUT = Path(__file__).resolve().parent / "deployment_verification.json"
+RELEASE_MANIFEST = Path(__file__).resolve().parent / "release_manifest.json"
+
+
+def _current_release_marker() -> str:
+    override = os.environ.get("DEPLOYMENT_RELEASE_MARKER")
+    if override:
+        return override
+    if RELEASE_MANIFEST.exists():
+        try:
+            marker = json.loads(RELEASE_MANIFEST.read_text(encoding="utf-8")).get("release_marker")
+            if marker:
+                return marker
+        except (OSError, json.JSONDecodeError):
+            pass
+    return os.environ.get("DEPLOYMENT_MARKER", "InsureAI")
 
 
 def verify_deployment(*, site_url: str, expected_marker: str = "InsureAI", timeout: float = 15.0) -> dict:
@@ -20,6 +35,7 @@ def verify_deployment(*, site_url: str, expected_marker: str = "InsureAI", timeo
         "verified": False,
         "site_url": site_url,
         "expected_marker": expected_marker,
+        "release_marker": expected_marker,
         "http_status": None,
         "content_length": 0,
         "marker_found": False,
@@ -42,7 +58,7 @@ def verify_deployment(*, site_url: str, expected_marker: str = "InsureAI", timeo
                 result["status"] = "verified"
                 result["verified"] = True
             else:
-                result["error"] = "http_or_marker_check_failed"
+                result["error"] = "http_or_release_marker_check_failed"
     except (urllib.error.URLError, TimeoutError, ValueError) as exc:
         result["error"] = f"request_failed:{type(exc).__name__}"
     return result
@@ -51,7 +67,7 @@ def verify_deployment(*, site_url: str, expected_marker: str = "InsureAI", timeo
 def main() -> None:
     result = verify_deployment(
         site_url=os.environ.get("DEPLOYMENT_URL", ""),
-        expected_marker=os.environ.get("DEPLOYMENT_MARKER", "InsureAI"),
+        expected_marker=_current_release_marker(),
     )
     OUTPUT.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(result, ensure_ascii=False))
