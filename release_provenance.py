@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Build and update a privacy-safe release provenance record."""
-# release-provenance-v2: aggregate release, audit, impact, and deployment verification metadata.
+# release-provenance-v3: include deployment trend without changing deployment facts.
 from __future__ import annotations
 
 import hashlib
@@ -10,12 +10,21 @@ import os
 from datetime import datetime, timezone
 from pathlib import Path
 
+from deployment_trend import attribute_deployment_trend
+
 ROOT = Path(__file__).resolve().parent
 OUTPUT = ROOT / "release_provenance.json"
 
 
 def _read_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _read_history(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
+    data = json.loads(path.read_text(encoding="utf-8"))
+    return data if isinstance(data, list) else []
 
 
 def _sha256(path: Path) -> str:
@@ -31,16 +40,19 @@ def build_provenance(*, source_commit: str, site_url: str, root: Path = ROOT) ->
     audit_path = root / "audit_ledger.json"
     impact_path = root / "change_impact.json"
     deployment_path = root / "deployment_verification.json"
+    history_path = root / "deployment_verification_history.json"
     release = _read_json(release_path)
     audit = _read_json(audit_path)
     impact = _read_json(impact_path) if impact_path.exists() else {}
     deployment_check = _read_json(deployment_path) if deployment_path.exists() else {}
+    history = _read_history(history_path)
     stages = audit.get("stages", [])
     verified = bool(deployment_check.get("verified", False))
     deployment_status = "verified" if verified else release.get("deployment_status", "pending")
+    deployment_trend = attribute_deployment_trend(history)
     return {
-        "version": 2,
-        "schema_version": "release-provenance-v2",
+        "version": 3,
+        "schema_version": "release-provenance-v3",
         "source_commit": source_commit or release.get("source_commit") or "unknown",
         "release_channel": release.get("release_channel", "github_pages"),
         "site_url": site_url or release.get("site_url", ""),
@@ -61,23 +73,27 @@ def build_provenance(*, source_commit: str, site_url: str, root: Path = ROOT) ->
             "http_status": deployment_check.get("http_status"),
             "marker_found": bool(deployment_check.get("marker_found", False)),
             "error": deployment_check.get("error"),
+            "trend": deployment_trend,
         },
         "artifacts": {
             "release_manifest_sha256": _sha256(release_path),
             "audit_ledger_sha256": _sha256(audit_path),
             "change_impact_sha256": _sha256(impact_path) if impact_path.exists() else None,
             "deployment_verification_sha256": _sha256(deployment_path) if deployment_path.exists() else None,
+            "deployment_history_sha256": _sha256(history_path) if history_path.exists() else None,
         },
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }
 
 
 def attach_deployment_verification(*, root: Path = ROOT) -> dict:
-    """Update an existing provenance record with the latest deployment verification only."""
+    """Update existing provenance with latest verification and derived trend only."""
     provenance_path = root / "release_provenance.json"
     deployment_path = root / "deployment_verification.json"
+    history_path = root / "deployment_verification_history.json"
     provenance = _read_json(provenance_path)
     deployment = _read_json(deployment_path)
+    history = _read_history(history_path)
     verified = bool(deployment.get("verified", False))
     provenance["deployment"] = {
         "status": "verified" if verified else deployment.get("status", "failed"),
@@ -86,12 +102,14 @@ def attach_deployment_verification(*, root: Path = ROOT) -> dict:
         "http_status": deployment.get("http_status"),
         "marker_found": bool(deployment.get("marker_found", False)),
         "error": deployment.get("error"),
+        "trend": attribute_deployment_trend(history),
     }
     artifacts = provenance.setdefault("artifacts", {})
     artifacts["deployment_verification_sha256"] = _sha256(deployment_path)
+    artifacts["deployment_history_sha256"] = _sha256(history_path) if history_path.exists() else None
     provenance["generated_at"] = datetime.now(timezone.utc).isoformat()
-    provenance["schema_version"] = "release-provenance-v2"
-    provenance["version"] = 2
+    provenance["schema_version"] = "release-provenance-v3"
+    provenance["version"] = 3
     provenance_path.write_text(json.dumps(provenance, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return provenance
 
