@@ -13,6 +13,9 @@ def build_deployment_risk(deployment: dict | None, history: list[dict] | None = 
     next_step = None
     if verified or status == "verified":
         classification, priority, attention = "deployment_verified", 0, False
+    elif status == "stale" or deployment.get("release_match") is False:
+        classification, priority, attention = "deployment_release_mismatch", 98, True
+        next_step = "核对线上 release marker 与当前 release manifest；确认是否仍运行旧版本，并检查最近一次发布状态。"
     elif status == "unconfigured" or error == "site_url_missing":
         classification, priority, attention = "deployment_configuration_missing", 40, True
         next_step = "配置 GitHub Actions repository variable DEPLOYMENT_URL，然后重新运行 Deployment Verification。"

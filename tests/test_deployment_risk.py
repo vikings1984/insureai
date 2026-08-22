@@ -38,6 +38,27 @@ class TestDeploymentRisk(unittest.TestCase):
         self.assertEqual(result["priority"], 95)
         self.assertTrue(result["next_step"])
 
+    def test_stale_release_is_highest_advisory_risk(self):
+        result = build_deployment_risk({
+            "status": "stale",
+            "verified": False,
+            "release_match": False,
+        })
+        self.assertEqual(result["classification"], "deployment_release_mismatch")
+        self.assertEqual(result["priority"], 98)
+        self.assertTrue(result["attention"])
+        self.assertIn("release marker", result["next_step"])
+
+    def test_release_match_false_is_risk_even_without_stale_status(self):
+        result = build_deployment_risk({
+            "status": "pending",
+            "verified": False,
+            "release_match": False,
+        })
+        self.assertEqual(result["classification"], "deployment_release_mismatch")
+        self.assertEqual(result["priority"], 98)
+        self.assertTrue(result["attention"])
+
     def test_verified_is_not_attention_signal(self):
         result = build_deployment_risk({"status": "verified", "verified": True})
         self.assertEqual(result["classification"], "deployment_verified")
