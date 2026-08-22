@@ -31,6 +31,7 @@ class TestDecisionCredibility(unittest.TestCase):
             result = decision_credibility.build_credibility()
         self.assertEqual(result["status"], "ready")
         self.assertFalse(result["deployment"]["verified"])
+        self.assertNotIn("deployment_not_verified", result["reason_codes"])
         self.assertEqual(result["version"], 3)
         self.assertEqual(len(result["signal_details"]), 5)
 
