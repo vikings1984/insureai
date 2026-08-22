@@ -37,11 +37,12 @@ class OwnerRiskViewTests(unittest.TestCase):
     def test_deployment_configuration_debt_has_platform_owners(self):
         radar = {"items": [{"event_id": "deployment:github_pages", "title": "生产部署状态：deployment_configuration_missing", "attention_score": 40, "urgency": "soon", "reasons": ["deployment_configuration_missing", "site_url_missing"], "source": "deployment_verification.json"}]}
         result = build_owner_view(radar, {"results": []})
-        item = result["items"][0]
-        self.assertEqual(item["owners"], ["platform_owner", "release_owner"])
-        self.assertEqual(item["deadline"], "next_release_cycle")
-        self.assertIn("configure DEPLOYMENT_URL", item["next_step"])
-        self.assertEqual(item["automation"], "advisory_only")
+        self.assertEqual(result["configuration_debt_count"], 1)
+        self.assertEqual(result["items"], [])
+        debt = result["configuration_debt"][0]
+        self.assertEqual(debt["owners"], ["platform_owner", "release_owner"])
+        self.assertIn("configure DEPLOYMENT_URL", debt["next_step"])
+        self.assertEqual(debt["automation"], "advisory_only")
 
 
 if __name__ == "__main__":
