@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Run the real analytical/release pipeline without committing or publishing.
 
-This intentionally mirrors the build order used by daily-collect.yml while
-skipping the final git commit/push. It is the end-to-end smoke test that unit
-suites cannot provide.
+This mirrors the build order used by daily-collect.yml while skipping the final
+git commit/push. It is the end-to-end smoke test that unit suites cannot provide.
 """
 from __future__ import annotations
 
@@ -58,6 +57,7 @@ RELEASE_STEPS = [
     [sys.executable, "release_manifest.py"],
     [sys.executable, "audit_ledger.py"],
     [sys.executable, "release_manifest.py"],
+    [sys.executable, "audit_ledger.py"],
     [sys.executable, "release_provenance.py"],
 ]
 
@@ -77,16 +77,16 @@ def validate_release() -> None:
 
     manifest = json.loads((ROOT / "release_manifest.json").read_text(encoding="utf-8"))
     provenance = json.loads((ROOT / "release_provenance.json").read_text(encoding="utf-8"))
-    gate = json.loads((ROOT / "production_quality_gate.json").read_text(encoding="utf-8"))
     audit = json.loads((ROOT / "audit_ledger.json").read_text(encoding="utf-8"))
+    gate = manifest.get("production_quality_gate") or {}
 
     assert manifest["quality_status"] == "passed", manifest
     assert manifest["deployment_status"] == "pending", manifest
     assert gate["status"] == "passed", gate
-    artifacts = {row.get("artifact") for row in audit.get("stages", [])}
-    assert "production_quality_gate.json" in artifacts, artifacts
+    assert audit["production_quality_gate"]["status"] == "passed", audit
     assert provenance["quality"]["production_gate_status"] == "passed", provenance
-    assert provenance["artifacts"]["production_quality_gate_sha256"], provenance
+    assert provenance["artifacts"]["release_manifest_sha256"], provenance
+    assert provenance["artifacts"]["audit_ledger_sha256"], provenance
     print("\nFULL PIPELINE SMOKE: PASS")
     print(f"audit stages={len(audit.get('stages', []))} gate={gate['status']} deployment={manifest['deployment_status']}")
 
