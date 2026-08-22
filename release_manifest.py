@@ -12,11 +12,11 @@ ROOT = Path(__file__).resolve().parent
 OUTPUT = ROOT / "release_manifest.json"
 
 
-def build_manifest(*, source_commit: str, site_url: str, quality_passed: bool = True) -> dict:
+def build_manifest(*, source_commit: str, site_url: str, quality_passed: bool = True, release_channel: str = "cloudflare_workers") -> dict:
     return {
         "version": 1,
         "source_commit": source_commit or "unknown",
-        "release_channel": "github_pages",
+        "release_channel": release_channel,
         "site_url": site_url,
         "quality_status": "passed" if quality_passed else "failed",
         "deployment_status": "pending",
@@ -31,6 +31,7 @@ def main() -> None:
         source_commit=os.environ.get("GITHUB_SHA", "unknown"),
         site_url=os.environ.get("SITE_URL", ""),
         quality_passed=True,
+        release_channel=os.environ.get("RELEASE_CHANNEL", "cloudflare_workers"),
     )
     OUTPUT.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(manifest, ensure_ascii=False))

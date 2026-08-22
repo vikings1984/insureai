@@ -117,7 +117,7 @@ jobs:
           python3 -c "
           import json
           m=json.load(open('release_manifest.json'))
-          assert m.get('version') == 1 and m.get('release_channel') == 'github_pages'
+          assert m.get('version') == 1 and m.get('release_channel') == 'cloudflare_workers'
           assert m.get('quality_status') == 'passed' and m.get('deployment_status') == 'pending' and m.get('deployment_verified') is False
           assert m.get('source_commit')
           print('Release manifest valid: quality=passed deployment=pending')
@@ -169,7 +169,7 @@ jobs:
           import json
           p=json.load(open('release_provenance.json'))
           assert p.get('version') == 1 and p.get('schema_version') == 'release-provenance-v1'
-          assert p.get('source_commit') and p.get('release_channel') == 'github_pages'
+          assert p.get('source_commit') and p.get('release_channel') == 'cloudflare_workers'
           assert p.get('quality',{}).get('status') == 'passed'
           assert p.get('quality',{}).get('audit_privacy') == 'hashes_and_metadata_only'
           assert p.get('quality',{}).get('audit_stage_count', 0) > 0
