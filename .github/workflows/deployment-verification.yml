@@ -67,6 +67,7 @@ jobs:
           path: deployment_verification.json
           if-no-files-found: error
       - name: Enforce verification result
+        if: env.DEPLOYMENT_URL != ''
         run: |
           python3 - <<'PY'
           import json
@@ -74,3 +75,6 @@ jobs:
           assert result.get('verified') is True, result
           print('Published deployment verified')
           PY
+      - name: Report deployment URL configuration
+        if: env.DEPLOYMENT_URL == ''
+        run: echo 'Deployment verification is unconfigured: set the repository Actions variable DEPLOYMENT_URL.'
