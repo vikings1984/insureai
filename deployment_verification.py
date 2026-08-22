@@ -7,10 +7,36 @@ import os
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
+from html.parser import HTMLParser
 from pathlib import Path
 
 OUTPUT = Path(__file__).resolve().parent / "deployment_verification.json"
 RELEASE_MANIFEST = Path(__file__).resolve().parent / "release_manifest.json"
+
+
+class _ReleaseMarkerParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.marker: str | None = None
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag.lower() != "meta":
+            return
+        attributes = {key.lower(): value for key, value in attrs}
+        if attributes.get("name", "").lower() == "insureai-release-marker":
+            value = attributes.get("content")
+            if value:
+                self.marker = value
+
+
+def _extract_release_marker(html: str) -> str | None:
+    parser = _ReleaseMarkerParser()
+    try:
+        parser.feed(html)
+        parser.close()
+    except ValueError:
+        return None
+    return parser.marker
 
 
 def _current_release_marker() -> str:
@@ -51,14 +77,15 @@ def verify_deployment(*, site_url: str, expected_marker: str = "InsureAI", timeo
         with urllib.request.urlopen(request, timeout=timeout) as response:
             body = response.read()
             text = body.decode("utf-8", errors="replace")
+            published_marker = _extract_release_marker(text)
             result["http_status"] = int(response.status)
             result["content_length"] = len(body)
-            result["marker_found"] = expected_marker in text
+            result["release_marker"] = published_marker
+            result["marker_found"] = published_marker == expected_marker
             if response.status == 200 and body and result["marker_found"]:
                 result["status"] = "verified"
                 result["verified"] = True
             else:
-                # Keep the established error contract; release_marker is exposed separately.
                 result["error"] = "http_or_marker_check_failed"
     except (urllib.error.URLError, TimeoutError, ValueError) as exc:
         result["error"] = f"request_failed:{type(exc).__name__}"
