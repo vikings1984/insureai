@@ -34,7 +34,6 @@ STAGES = (
     ("optimization_backlog_history", "optimization_backlog_history.json", "optimization_backlog"),
     ("daily_risk_radar", "daily_risk_radar.json", "daily_risk_radar"),
     ("owner_risk_view", "owner_risk_view.json", "owner_risk_view"),
-    ("production_quality_gate", "production_quality_gate.json", "production_quality_gate"),
 )
 
 def sha256_file(path: Path) -> str:
@@ -51,7 +50,7 @@ def _counts(path: Path) -> dict:
         return {}
     counts = {}
     if isinstance(data, dict):
-        for key in ("news", "events", "results", "scenarios", "items", "modules", "snapshots", "checks", "failed_checks"):
+        for key in ("news", "events", "results", "scenarios", "items", "modules", "snapshots"):
             value = data.get(key)
             if isinstance(value, list):
                 counts[key] = len(value)
@@ -59,8 +58,6 @@ def _counts(path: Path) -> dict:
                 counts[f"{key}_keys"] = len(value)
         if data.get("version") is not None:
             counts["version"] = data["version"]
-        if data.get("status") is not None:
-            counts["status"] = data["status"]
     return counts
 
 def build_ledger() -> dict:
@@ -75,19 +72,32 @@ def build_ledger() -> dict:
                 "sha256": sha256_file(path),
                 "counts": _counts(path),
             })
+    release = {}
+    release_path = ROOT / "release_manifest.json"
+    if release_path.exists():
+        try:
+            release = json.loads(release_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            release = {}
+    gate = release.get("production_quality_gate") or {}
     return {
         "version": 1,
         "schema_version": "audit-ledger-v1",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "privacy": "hashes_and_metadata_only",
-        "coverage_principle": "ledger is generated after all analytical quality artifacts and includes the production quality gate result",
+        "coverage_principle": "ledger is generated after all analytical quality artifacts; release_manifest carries the production gate result",
+        "production_quality_gate": {
+            "status": gate.get("status", "unknown"),
+            "failed_checks": list(gate.get("failed_checks") or []),
+            "check_count": len(gate.get("checks") or []),
+        },
         "stages": records,
     }
 
 def main() -> None:
     ledger = build_ledger()
     OUTPUT.write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Audit ledger: {len(ledger['stages'])} stages")
+    print(f"Audit ledger: {len(ledger['stages'])} stages gate={ledger['production_quality_gate']['status']}")
 
 if __name__ == "__main__":
     main()
