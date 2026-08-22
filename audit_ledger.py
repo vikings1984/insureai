@@ -85,7 +85,7 @@ def build_ledger() -> dict:
         "schema_version": "audit-ledger-v1",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "privacy": "hashes_and_metadata_only",
-        "coverage_principle": "ledger is generated after all analytical quality artifacts; release_manifest carries the production gate result",
+        "coverage_principle": "ledger is generated after all analytical quality artifacts so it never verifies a stale pre-quality snapshot",
         "production_quality_gate": {
             "status": gate.get("status", "unknown"),
             "failed_checks": list(gate.get("failed_checks") or []),
