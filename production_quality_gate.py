@@ -34,7 +34,8 @@ def _check_news(data: dict) -> dict:
     rows = data.get("news") if isinstance(data, dict) else None
     if not isinstance(rows, list) or not rows:
         return {"name": "news_present", "passed": False, "detail": "data.json.news must be a non-empty list"}
-    ids = [str(row.get("id")) for row in rows]
+    missing_ids = sum(1 for row in rows if not row.get("id"))
+    ids = [str(row.get("id")) for row in rows if row.get("id")]
     duplicate_ids = len(ids) - len(set(ids))
     malformed_dates = sum(1 for row in rows if not row.get("published_at"))
     missing_urls = 0
@@ -42,12 +43,13 @@ def _check_news(data: dict) -> dict:
         parsed = urlparse(str(row.get("source_url") or ""))
         if not (parsed.scheme in {"http", "https"} and parsed.netloc):
             missing_urls += 1
-    passed = duplicate_ids == 0 and malformed_dates == 0 and missing_urls == 0
+    passed = missing_ids == 0 and duplicate_ids == 0 and malformed_dates == 0 and missing_urls == 0
     return {
         "name": "news_integrity",
         "passed": passed,
         "detail": {
             "count": len(rows),
+            "missing_ids": missing_ids,
             "duplicate_ids": duplicate_ids,
             "missing_or_invalid_dates": malformed_dates,
             "missing_or_invalid_urls": missing_urls,
@@ -64,12 +66,16 @@ def _check_lineage(data: dict, intelligence: dict) -> dict:
     expected = [str(row.get("id")) for row in news if row.get("id") is not None]
     assigned = []
     duplicate_event_ids = 0
+    missing_event_ids = 0
     seen_event_ids = set()
     for event in events:
         event_id = str(event.get("event_id") or "")
-        if event_id in seen_event_ids:
+        if not event_id:
+            missing_event_ids += 1
+        elif event_id in seen_event_ids:
             duplicate_event_ids += 1
-        seen_event_ids.add(event_id)
+        else:
+            seen_event_ids.add(event_id)
         assigned.extend(str(x) for x in (event.get("article_ids") or []))
 
     assigned_set = set(assigned)
@@ -77,13 +83,20 @@ def _check_lineage(data: dict, intelligence: dict) -> dict:
     duplicate_article_assignments = len(assigned) - len(assigned_set)
     missing_articles = sorted(expected_set - assigned_set)
     orphan_articles = sorted(assigned_set - expected_set)
-    passed = duplicate_event_ids == 0 and duplicate_article_assignments == 0 and not missing_articles and not orphan_articles
+    passed = (
+        missing_event_ids == 0
+        and duplicate_event_ids == 0
+        and duplicate_article_assignments == 0
+        and not missing_articles
+        and not orphan_articles
+    )
     return {
         "name": "lineage",
         "passed": passed,
         "detail": {
             "news_count": len(expected),
             "event_count": len(events),
+            "missing_event_ids": missing_event_ids,
             "duplicate_event_ids": duplicate_event_ids,
             "duplicate_article_assignments": duplicate_article_assignments,
             "missing_articles": missing_articles[:20],
@@ -94,12 +107,24 @@ def _check_lineage(data: dict, intelligence: dict) -> dict:
 
 def _check_decisions(intelligence: dict) -> dict:
     rows = intelligence.get("decisions") if isinstance(intelligence, dict) else None
+    events = intelligence.get("events") if isinstance(intelligence, dict) else None
     if not isinstance(rows, list) or not rows:
         return {"name": "decision_safety", "passed": False, "detail": "intelligence.json.decisions must be a non-empty list"}
 
+    event_ids = {str(row.get("event_id")) for row in (events or []) if row.get("event_id")}
+    missing_event_links = 0
     guardrail_missing = 0
     unsafe_now = 0
+    duplicate_decision_ids = 0
+    seen_decision_ids = set()
     for row in rows:
+        event_id = str(row.get("event_id") or "")
+        if not event_id or event_id not in event_ids:
+            missing_event_links += 1
+        if event_id in seen_decision_ids:
+            duplicate_decision_ids += 1
+        elif event_id:
+            seen_decision_ids.add(event_id)
         if not row.get("guardrail"):
             guardrail_missing += 1
         basis = row.get("basis") or {}
@@ -108,12 +133,14 @@ def _check_decisions(intelligence: dict) -> dict:
         if row.get("urgency") == "now" and (trust in {"low", None} or conflict):
             unsafe_now += 1
 
-    passed = guardrail_missing == 0 and unsafe_now == 0
+    passed = missing_event_links == 0 and duplicate_decision_ids == 0 and guardrail_missing == 0 and unsafe_now == 0
     return {
         "name": "decision_safety",
         "passed": passed,
         "detail": {
             "decision_count": len(rows),
+            "missing_event_links": missing_event_links,
+            "duplicate_decision_ids": duplicate_decision_ids,
             "missing_guardrails": guardrail_missing,
             "unsafe_now": unsafe_now,
         },
