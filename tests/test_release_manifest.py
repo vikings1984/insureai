@@ -20,6 +20,11 @@ class TestReleaseManifest(unittest.TestCase):
         self.assertEqual(m["quality_status"], "failed")
         self.assertFalse(m["deployment_verified"])
 
+    def test_production_gate_is_persisted(self):
+        gate = {"status": "passed", "failed_checks": [], "checks": [{"name": "lineage", "passed": True}]}
+        m = build_manifest(source_commit="abc123", site_url="https://example.test", production_quality_gate=gate)
+        self.assertEqual(m["production_quality_gate"], gate)
+
 
 if __name__ == "__main__":
     unittest.main()
