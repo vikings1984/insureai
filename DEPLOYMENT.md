@@ -5,6 +5,19 @@ InsureAI uses two intentionally separate URLs:
 - `PUBLIC_SITE_URL`: canonical content/SEO URL used by Daily Collect and prerendering. It may remain the GitHub Pages URL.
 - `DEPLOYMENT_URL`: the URL of the actual production deployment that Deployment Verification probes.
 
+## Enabling Cloudflare Workers deployment
+
+Workers static-asset deployment ships in `.github/workflows/deploy-cloudflare.yml`. It is gated on repository secrets and stays skipped (not failed) until they are configured.
+
+1. **Create API credentials.** In the Cloudflare dashboard, create an API token using the **Edit Cloudflare Workers** template and note your account ID.
+2. **Add repository secrets.** In Settings → Secrets and variables → Actions, add:
+   - `CLOUDFLARE_API_TOKEN` — your API token
+   - `CLOUDFLARE_ACCOUNT_ID` — your account ID
+3. **Deploy.** The next push to `insureai` (or a manual `workflow_dispatch` run) uploads the static assets. `wrangler deploy` creates the `insureai` Worker and assigns a `*.workers.dev` domain.
+4. **Point `DEPLOYMENT_URL` at production.** Set it to the assigned domain (for example `https://insureai.<your-subdomain>.workers.dev`). Deployment Verification then probes it every 6 hours.
+
+The `.assetsignore` file keeps Python sources, docs, and internal audit/release artifacts out of Cloudflare, while `data.json`, `research.json`, `index.html`, `css/`, and `js/` are uploaded — the same front-end content GitHub Pages serves.
+
 ## GitHub Actions variable
 
 Set `DEPLOYMENT_URL` as a repository Actions variable (not a secret) to the production URL exposed by Cloudflare Workers. Do not point it at a preview deployment.

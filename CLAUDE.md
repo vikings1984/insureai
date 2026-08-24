@@ -15,6 +15,7 @@
 
 ## 线上部署
 - 生产部署：Cloudflare Workers（`release_channel=cloudflare_workers`；`DEPLOYMENT_URL` 指向生产域名，`deployment-verification.yml` 每 6 小时探测验证）。
+- 部署流水线：`deploy-cloudflare.yml`（`wrangler deploy` 上传静态资产，`secrets.CLOUDFLARE_API_TOKEN`/`CLOUDFLARE_ACCOUNT_ID` 门控；未配置时 job 跳过，不失败）。启用步骤见 `DEPLOYMENT.md`。
 - SEO/canonical：GitHub Pages `https://vikings1984.github.io/insureai/`（`SITE_URL`，prerender 生成 JSON-LD / sitemap 指向它）。
 - 两个 URL 有意分离（`PUBLIC_SITE_URL` vs `DEPLOYMENT_URL`），详 `DEPLOYMENT.md`。
 - 旧 CloudStudio 托管已弃用。
