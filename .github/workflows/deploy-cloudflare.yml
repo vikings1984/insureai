@@ -15,14 +15,17 @@ concurrency:
 
 jobs:
   deploy:
-    # 未配置 Cloudflare 凭据时跳过（job 显示 skipped，不阻断 CI）；配置 secrets 后自动启用。
-    if: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
     runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
 
       - name: Deploy static assets to Workers
+        # secrets 未配置时跳过（env 变量为空，job 显示成功而非失败）；配置后自动启用。
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
