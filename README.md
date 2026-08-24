@@ -30,7 +30,7 @@
        release artifacts
             │
             ▼
-     静态 SPA / GitHub Pages
+     静态 SPA / GitHub Pages + Cloudflare Workers
 ```
 
 项目坚持一个重要边界：**分析与建议可以自动化，承保、投资、合规和运营动作必须保留人工确认边界。**

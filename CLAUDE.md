@@ -14,7 +14,9 @@
 - ❌ 不存在 `main` 分支，也不存在 `SKILL.md` 文件 —— 历史记忆中 "SKILL.md" 均为幽灵引用；本项目 Agent 文档即本文件。
 
 ## 线上部署
-- 主站：GitHub Pages `https://vikings1984.github.io/insureai/`（推送即自动部署，零接触刷新）。
+- 生产部署：Cloudflare Workers（`release_channel=cloudflare_workers`；`DEPLOYMENT_URL` 指向生产域名，`deployment-verification.yml` 每 6 小时探测验证）。
+- SEO/canonical：GitHub Pages `https://vikings1984.github.io/insureai/`（`SITE_URL`，prerender 生成 JSON-LD / sitemap 指向它）。
+- 两个 URL 有意分离（`PUBLIC_SITE_URL` vs `DEPLOYMENT_URL`），详 `DEPLOYMENT.md`。
 - 旧 CloudStudio 托管已弃用。
 
 ## CI（已验证可运行）
