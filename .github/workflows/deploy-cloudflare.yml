@@ -30,6 +30,8 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # wrangler 4 才支持纯静态资产（无 main 入口）的部署
+          wranglerVersion: '4.125.0'
           command: deploy
 
       - name: Notify on failure
