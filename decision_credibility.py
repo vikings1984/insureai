@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+from contract import ARTIFACT_VERSIONS
 
 ROOT = Path(__file__).resolve().parent
 
@@ -187,7 +188,7 @@ def build_credibility() -> dict:
     ]
 
     return {
-        "version": 3,
+        "version": ARTIFACT_VERSIONS["decision_credibility.json"],
         "status": status,
         "principle": "可信度摘要只汇总当前阶段已经存在的质量信号，不读取未来阶段的产物作为失败依据；任何降级均给出可审计原因。",
         "quality": {"status": quality_status},

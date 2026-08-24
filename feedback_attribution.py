@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from collections import Counter
 from pathlib import Path
+from contract import ARTIFACT_VERSIONS
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT = ROOT / "feedback_attribution.json"
@@ -89,7 +90,7 @@ def build_attribution(labels: dict | None = None, queue: dict | None = None) -> 
         count = module_counts.get(module, 0)
         modules[module] = {"error_count": count, "error_rate": round(count / total, 4) if total else 0.0}
     return {
-        "version": 1,
+        "version": ARTIFACT_VERSIONS["feedback_attribution.json"],
         "principle": "人工纠错首先归因，再决定是否调整规则；本层不直接改变线上评分",
         "reviewed_count": total,
         "cases": rows,

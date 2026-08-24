@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib, json
 from datetime import datetime, timezone
 from pathlib import Path
+from contract import ARTIFACT_VERSIONS
 ROOT = Path(__file__).resolve().parent
 OUTPUT = ROOT / "audit_ledger.json"
 STAGES = (
@@ -81,7 +82,7 @@ def build_ledger() -> dict:
             release = {}
     gate = release.get("production_quality_gate") or {}
     return {
-        "version": 1,
+        "version": ARTIFACT_VERSIONS["audit_ledger.json"],
         "schema_version": "audit-ledger-v1",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "privacy": "hashes_and_metadata_only",

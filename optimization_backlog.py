@@ -6,6 +6,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from contract import ARTIFACT_VERSIONS
 
 from optimization_fix_verification import verify_fix
 
@@ -152,7 +153,7 @@ def build_backlog(
         reverse=True,
     )
     return {
-        "version": 3,
+        "version": ARTIFACT_VERSIONS["optimization_backlog.json"],
         "principle": "质量趋势只生成内部优化建议；只有持续证据才能关闭修复，回归会重新打开，不直接改变线上判断或创建外部任务",
         "baseline_available": bool(trend.get("baseline_available")),
         "items": active[:50],
@@ -176,7 +177,7 @@ def append_history(backlog: dict, history: dict | None = None) -> dict:
                 }
             )
     snapshots.append({"items": snapshot_items})
-    return {"version": 2, "snapshots": snapshots[-90:]}
+    return {"version": ARTIFACT_VERSIONS["optimization_backlog_history.json"], "snapshots": snapshots[-90:]}
 
 
 def main() -> None:

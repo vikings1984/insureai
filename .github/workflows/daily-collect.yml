@@ -26,6 +26,28 @@ jobs:
           python-version: '3.11'
       - name: Run collector
         run: python3 collect.py
+      - name: Commit collected news core data
+        run: |
+          git config user.name "insureai-bot"; git config user.email "bot@insureai.local"
+          if [ -n "$(git status --porcelain data.json inbox.json data/translation_cache.json)" ]; then
+            git add data.json inbox.json data/translation_cache.json
+            git commit -m "chore: auto-collect news core $(date +%F)"
+            git push origin HEAD:${{ github.ref_name }}
+          else echo "no new data"; fi
+
+  analyze:
+    needs: collect
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (default = insureai)
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.ref_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
       - name: Build event-based intelligence
         run: python3 intelligence.py
       - name: Build evidence trust layer
@@ -79,70 +101,7 @@ jobs:
       - name: Build owner-facing risk view
         run: python3 owner_risk_view.py
       - name: Data validation
-        run: |
-          python3 - <<'PY'
-          import json
-          from contract import validate
-
-          def load(name):
-              with open(name, encoding='utf-8') as f:
-                  return json.load(f)
-
-          def check(label, condition, detail=''):
-              if not condition:
-                  raise AssertionError(f'{label}: {detail}')
-
-          d = load('data.json'); news = d.get('news', [])
-          check('news', isinstance(news, list) and bool(news), f'count={len(news) if isinstance(news, list) else "not-list"}')
-          for index, n in enumerate(news):
-              check(f'news[{index}]', bool(n.get('title')) and 'published_at' in n, str(n)[:240])
-
-          i = load('intelligence.json'); errors = validate(i)
-          check('intelligence contract', not errors, '; '.join(errors[:10]))
-
-          s = load('decision_stability.json')
-          check('decision_stability', s.get('version') == 1 and isinstance(s.get('results'), list), str(s)[:240])
-          sh = load('decision_history.json')
-          check('decision_history', sh.get('version') == 1 and isinstance(sh.get('snapshots'), list) and len(sh['snapshots']) <= 90, str(sh)[:240])
-          cred = load('decision_credibility.json')
-          check('decision_credibility', cred.get('version') == 3 and cred.get('status') in {'ready','review','caution','blocked'} and isinstance(cred.get('provenance'), dict) and isinstance(cred.get('reasons'), list) and len(cred.get('signal_details', [])) == 5, str(cred)[:400])
-          radar = load('daily_risk_radar.json')
-          check('daily_risk_radar', radar.get('version') == 1 and isinstance(radar.get('items'), list) and radar.get('status') in {'ready','review','caution','blocked','unknown'}, str(radar)[:400])
-          owner = load('owner_risk_view.json')
-          check('owner_risk_view', owner.get('version') == 2 and isinstance(owner.get('items'), list) and owner.get('item_count', 0) >= len(owner['items']) and isinstance(owner.get('credibility'), dict), str(owner)[:500])
-          check('owner credibility', owner['credibility'].get('status') in {'ready','review','caution','blocked','unknown'} and isinstance(owner['credibility'].get('reasons'), list) and isinstance(owner['credibility'].get('provenance'), dict) and len(owner['credibility'].get('signal_details', [])) == 5, str(owner['credibility'])[:500])
-          for index, item in enumerate(owner['items']):
-              check(f'owner item {index}', item.get('automation') == 'advisory_only' and item.get('owners') and item.get('deadline') and item.get('next_step'), str(item)[:400])
-
-          ta = load('trend_attribution.json')
-          check('trend_attribution', ta.get('version') == 1 and isinstance(ta.get('modules'), dict), str(ta)[:300])
-          for key, row in ta['modules'].items():
-              check(f'trend module {key}', row.get('classification') in {'baseline','single_spike','persistent_worsening','improving','recovering','recovered','stable'}, str(row)[:300])
-
-          q = load('review_queue.json')
-          check('review_queue', q.get('version') == 1 and isinstance(q.get('items'), list), str(q)[:300])
-          imp = load('change_impact.json')
-          check('change_impact', imp.get('version') == 1 and isinstance(imp.get('impacted_events'), list) and isinstance(imp.get('baseline_available'), bool), str(imp)[:300])
-          ledger = load('audit_ledger.json')
-          check('audit_ledger', ledger.get('version') == 1 and ledger.get('privacy') == 'hashes_and_metadata_only', str(ledger)[:300])
-          for index, row in enumerate(ledger.get('stages', [])):
-              check(f'audit stage {index}', len(row.get('sha256', '')) == 64 and 'title' not in row and 'url' not in row and 'body' not in row, str(row)[:300])
-
-          fb = load('feedback_attribution.json')
-          check('feedback_attribution', fb.get('version') == 1 and isinstance(fb.get('modules'), dict), str(fb)[:300])
-          mh = load('module_health.json')
-          check('module_health', mh.get('version') == 1 and isinstance(mh.get('modules'), list), str(mh)[:300])
-          mt = load('module_health_trend.json')
-          check('module_health_trend', mt.get('version') == 1 and isinstance(mt.get('modules'), dict), str(mt)[:300])
-          ob = load('optimization_backlog.json')
-          check('optimization_backlog', ob.get('version') == 3 and isinstance(ob.get('items'), list), str(ob)[:300])
-          hist = load('optimization_backlog_history.json')
-          check('optimization_backlog_history', hist.get('version') == 2 and isinstance(hist.get('snapshots'), list) and len(hist['snapshots']) <= 90, str(hist)[:300])
-          for index, item in enumerate(ob['items']):
-              check(f'backlog item {index}', item.get('status') in {'open','recovering','resolved','regressed'}, str(item)[:300])
-
-          print(f'Validation passed: news={len(news)} events={len(i["events"])} stability={len(s["results"])} credibility={cred["status"]} radar={len(radar["items"])} owner_view={len(owner["items"])} trend_attribution={len(ta["modules"])} review={len(q["items"])} impacts={imp["impacted_count"]} backlog={len(ob["items"])} baseline={mt["baseline_available"]}')
-          PY
+        run: python3 scripts/validate_data.py
       - name: Run tests
         run: python3 -m unittest discover tests/ -v
       - name: Build truthful release manifest
@@ -159,26 +118,8 @@ jobs:
           "
       - name: Prerender SEO (site = GitHub Pages)
         run: python3 prerender.py --site-url "$SITE_URL"
-      - name: Inject Daily Intelligence UI
-        run: python3 scripts/inject_intelligence_ui.py
-      - name: Inject Personal Intelligence UI
-        run: python3 scripts/inject_personalization_ui.py
-      - name: Inject Trust UI
-        run: python3 scripts/inject_trust_ui.py
-      - name: Inject Claim Evidence UI
-        run: python3 scripts/inject_claim_evidence_ui.py
-      - name: Inject Temporal UI
-        run: python3 scripts/inject_temporal_ui.py
-      - name: Inject Decision UI
-        run: python3 scripts/inject_decision_ui.py
-      - name: Inject Human Review UI
-        run: python3 scripts/inject_review_ui.py
-      - name: Inject Action Trigger UI
-        run: python3 scripts/inject_action_triggers_ui.py
-      - name: Inject Execution Readiness UI
-        run: python3 scripts/inject_execution_readiness_ui.py
-      - name: Inject Owner Risk UI
-        run: python3 scripts/inject_owner_risk_ui.py
+      - name: Inject feature UI assets
+        run: python3 scripts/inject_ui_assets.py
       - name: 采集质量自动评分 (ce-optimize)
         run: python3 scripts/quality_score.py
       - name: Build final analytical audit ledger
@@ -248,4 +189,12 @@ jobs:
         with:
           script: |
             const { owner, repo } = context.repo;
-            await github.rest.issues.create({ owner, repo, title: `InsureAI 自动采集失败：${new Date().toISOString()}`, body: `Run: https://github.com/${owner}/${repo}/actions/runs/${context.runId}` });
+            const title = 'InsureAI 自动采集失败';
+            const body = `Run: https://github.com/${owner}/${repo}/actions/runs/${context.runId}`;
+            const { data: issues } = await github.rest.issues.listForRepo({ owner, repo, state: 'open' });
+            const existing = issues.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({ owner, repo, issue_number: existing.number, body });
+            } else {
+              await github.rest.issues.create({ owner, repo, title, body });
+            }

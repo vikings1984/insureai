@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import subprocess
 from pathlib import Path
+from contract import ARTIFACT_VERSIONS
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT = ROOT / "change_impact.json"
@@ -65,7 +66,7 @@ def compare_intelligence(previous: dict, current: dict) -> dict:
         risk = "high" if to_u > from_u else "medium" if to_t < from_t else "low"
         impacts.append({"event_id": event_id, "impact": "judgement_changed", "risk": risk, "changes": changes})
     return {
-        "version": 1,
+        "version": ARTIFACT_VERSIONS["change_impact.json"],
         "baseline_available": bool(previous),
         "impacted_events": impacts,
         "impacted_count": len(impacts),

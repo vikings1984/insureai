@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from trend_attribution import build_attribution
+from contract import ARTIFACT_VERSIONS
 ROOT = Path(__file__).resolve().parent
 INTEL = ROOT / 'intelligence.json'
 QUEUE = ROOT / 'review_queue.json'
@@ -71,7 +72,7 @@ def build_review_queue(data, counterfactual_cases=None, impact_cases=None, evide
         if not reasons: continue
         candidates.append({'event_id':event.get('event_id'),'title':event.get('title'),'event_type':event.get('event_type') or 'industry_update','topic':event.get('topic'),'priority':_priority(event,decision,cf,impact,evidence_availability,module_attr),'status':'pending','reasons':reasons[:6],'article_ids':event.get('article_ids',[]),'source_count':event.get('source_count',0),'trust_level':(event.get('trust') or {}).get('level','low'),'intelligence_score':(event.get('scores') or {}).get('intelligence_score',0),'decision':{'urgency':decision.get('urgency'),'action':decision.get('action')} if decision else None,'change_impact':impact if impact else None,'evidence_availability':evidence_availability if evidence_availability else None,'trend_attribution':module_attr if module_attr else None})
     candidates.sort(key=lambda x:(x['priority'],x.get('intelligence_score',0)),reverse=True)
-    return {'version':3,'principle':'人工复核优先处理不确定性高、潜在影响大、持续恶化或发生回归的样本；单次尖峰不会被误报为持续问题；该层不改写业务判断','generated_count':len(candidates),'items':candidates[:100]}
+    return {'version':ARTIFACT_VERSIONS['review_queue.json'],'principle':'人工复核优先处理不确定性高、潜在影响大、持续恶化或发生回归的样本；单次尖峰不会被误报为持续问题；该层不改写业务判断','generated_count':len(candidates),'items':candidates[:100]}
 
 def _read_optional(path: Path, key: str | None = None):
     if not path.exists(): return {}

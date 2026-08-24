@@ -4,6 +4,7 @@
 from __future__ import annotations
 import json
 from pathlib import Path
+from contract import ARTIFACT_VERSIONS
 ROOT = Path(__file__).resolve().parent
 ATTRIBUTION = ROOT / "feedback_attribution.json"
 OUTPUT = ROOT / "module_health.json"
@@ -39,7 +40,7 @@ def build_health(doc: dict) -> dict:
             r["health"] = "healthy"
         r["optimization_priority"] = min(100, round(r["error_rate"] * 70 + r["confidence"] * 20 + min(r["error_count"], 10)))
     ranked = sorted(rows.values(), key=lambda x: (x["optimization_priority"], x["error_count"]), reverse=True)
-    return {"version": 1, "principle": "先修最不稳定且证据充分的模块，而不是按直觉平均分配资源", "reviewed_count": total_reviews, "modules": list(rows.values()), "priority_order": [x["module"] for x in ranked]}
+    return {"version": ARTIFACT_VERSIONS["module_health.json"], "principle": "先修最不稳定且证据充分的模块，而不是按直觉平均分配资源", "reviewed_count": total_reviews, "modules": list(rows.values()), "priority_order": [x["module"] for x in ranked]}
 
 def main() -> None:
     if ATTRIBUTION.exists():

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from contract import ARTIFACT_VERSIONS
 
 ROOT = Path(__file__).resolve().parent
 CURRENT = ROOT / "module_health.json"
@@ -62,7 +63,7 @@ def build_trend(current: dict | None = None, history: dict | None = None) -> dic
         modules[module] = {**row, "error_rate_delta": delta, "direction": direction}
 
     return {
-        "version": 1,
+        "version": ARTIFACT_VERSIONS["module_health_trend.json"],
         "principle": "趋势用于资源分配，不直接改变线上评分、决策或紧迫度",
         "baseline_available": bool(previous),
         "modules": modules,

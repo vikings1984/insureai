@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+from contract import ARTIFACT_VERSIONS
 from deployment_risk import build_deployment_risk
 ROOT = Path(__file__).resolve().parent
 
@@ -61,7 +62,7 @@ def build_radar(credibility=None, intelligence=None, impacts=None, backlog=None,
         deployment_classification='not_supplied'
         deployment_attention=False
     candidates.sort(key=lambda x:(x['attention_score'],x['event_id']),reverse=True)
-    return {'version':4,'generated_at':datetime.now(timezone.utc).isoformat(),'status':credibility_status,'principle':'雷达只排序已有风险信号；部署风险与趋势归因只影响人工注意力与发布可信度，不重新评分、不修改原始决策、不自动执行行动。','items':candidates[:30],'summary':{'items':len(candidates),'top_attention_score':candidates[0]['attention_score'] if candidates else 0,'credibility_status':credibility_status,'impacted_event_count':len(impact_events),'deployment_attention':deployment_attention,'deployment_classification':deployment_classification}}
+    return {'version':ARTIFACT_VERSIONS['daily_risk_radar.json'],'generated_at':datetime.now(timezone.utc).isoformat(),'status':credibility_status,'principle':'雷达只排序已有风险信号；部署风险与趋势归因只影响人工注意力与发布可信度，不重新评分、不修改原始决策、不自动执行行动。','items':candidates[:30],'summary':{'items':len(candidates),'top_attention_score':candidates[0]['attention_score'] if candidates else 0,'credibility_status':credibility_status,'impacted_event_count':len(impact_events),'deployment_attention':deployment_attention,'deployment_classification':deployment_classification}}
 
 def main():
     result=build_radar(deployment=_load('deployment_verification.json',{}), deployment_history=_load('deployment_verification_history.json',[])); (ROOT/'daily_risk_radar.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); print(f"Daily risk radar: {len(result['items'])} items")

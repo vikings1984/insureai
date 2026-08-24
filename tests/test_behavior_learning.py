@@ -23,7 +23,7 @@ class TestBehaviorLearningContract(unittest.TestCase):
         self.assertIn("slice(-MAX_EVENTS)", text)
 
     def test_injection_order(self):
-        path = ROOT / "scripts" / "inject_personalization_ui.py"
+        path = ROOT / "scripts" / "inject_ui_assets.py"
         text = path.read_text(encoding="utf-8")
         self.assertLess(text.index("behavior_learning.js"), text.index("personalization-ui.js"))
 

@@ -20,7 +20,7 @@ class TestDecisionCredibility(unittest.TestCase):
         self.assertEqual(jitter["actual"], 1)
         self.assertFalse(jitter["result"])
 
-    def test_clean_quality_is_ready_when_deployment_is_pending(self):
+    def test_clean_quality_requires_review_when_deployment_is_pending(self):
         payloads = {
             "release_manifest.json": {"quality_status": "passed", "deployment_status": "pending", "deployment_verified": False},
             "decision_stability.json": {"results": [{"status": "stable"}]},
@@ -29,7 +29,7 @@ class TestDecisionCredibility(unittest.TestCase):
         }
         with patch.object(decision_credibility, "_load", side_effect=lambda name, default: payloads.get(name, default)):
             result = decision_credibility.build_credibility()
-        self.assertEqual(result["status"], "ready")
+        self.assertEqual(result["status"], "review")
         self.assertFalse(result["deployment"]["verified"])
         self.assertEqual(result["version"], 3)
         self.assertEqual(len(result["signal_details"]), 5)

@@ -50,7 +50,7 @@ class AuditLedgerTests(unittest.TestCase):
         self.assertIn("daily_risk_radar.json", names)
         self.assertIn("owner_risk_view.json", names)
         self.assertIn("decision_credibility.json", names)
-        self.assertEqual(ledger["coverage_principle"], "ledger is generated after all analytical quality artifacts so it never verifies a stale pre-quality snapshot")
+        self.assertEqual(ledger["coverage_principle"], "ledger is generated after all analytical quality artifacts; release_manifest carries the production gate result")
 
 
 if __name__ == "__main__":

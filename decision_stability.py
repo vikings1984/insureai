@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from datetime import datetime, timezone
+from contract import ARTIFACT_VERSIONS
 
 ROOT = Path(__file__).resolve().parent
 HISTORY = ROOT / "decision_history.json"
@@ -89,7 +90,7 @@ def build_stability(history: dict, current_decisions: list[dict]) -> dict:
             "note": "稳定性只描述输出变化，不修改原始决策。" if status != "jitter" else "检测到可能由轻微输入波动造成的判断抖动，建议人工复核。",
         })
     return {
-        "version": 1,
+        "version": ARTIFACT_VERSIONS["decision_stability.json"],
         "window": WINDOW,
         "principle": "只有与证据/趋势实质变化相匹配的判断变化才视为响应；反复来回切换且缺乏实质证据变化时标记为抖动。",
         "results": sorted(results, key=lambda x: (x["status"] == "jitter", x["churn_rate"]), reverse=True)[:500],
@@ -103,7 +104,7 @@ def main() -> None:
     result = build_stability(history, intelligence.get("decisions", []))
     snapshots = (history.get("snapshots") or []) + [result["current_snapshot"]]
     snapshots = snapshots[-MAX_SNAPSHOTS:]
-    HISTORY.write_text(json.dumps({"version": 1, "snapshots": snapshots}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    HISTORY.write_text(json.dumps({"version": ARTIFACT_VERSIONS["decision_history.json"], "snapshots": snapshots}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     OUTPUT.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Decision stability: {len(result['results'])} events")
 

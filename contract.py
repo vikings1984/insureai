@@ -12,6 +12,26 @@ ROOT = Path(__file__).resolve().parent
 INTEL = ROOT / "intelligence.json"
 CONTRACT_VERSION = 1
 EXPECTED_VERSION = 7
+
+# Single source of truth for versioned pipeline artifacts. Generators and the
+# validation script both read from this map, so a version bump in a generator
+# can never silently drift out of sync with the pipeline's contract gate.
+ARTIFACT_VERSIONS = {
+    "decision_stability.json": 1,
+    "decision_history.json": 1,
+    "decision_credibility.json": 3,
+    "daily_risk_radar.json": 4,
+    "owner_risk_view.json": 2,
+    "trend_attribution.json": 1,
+    "review_queue.json": 3,
+    "change_impact.json": 1,
+    "audit_ledger.json": 1,
+    "feedback_attribution.json": 1,
+    "module_health.json": 1,
+    "module_health_trend.json": 1,
+    "optimization_backlog.json": 3,
+    "optimization_backlog_history.json": 2,
+}
 EVENT_REQUIRED = {"event_id", "title", "event_type", "entities", "topic", "published_at", "source_count", "article_count", "article_ids", "scores", "insight", "trust", "claims"}
 SCORE_KEYS = {"relevance", "impact", "novelty", "actionability", "confidence", "intelligence_score"}
 

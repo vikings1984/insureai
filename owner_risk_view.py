@@ -3,6 +3,7 @@
 from __future__ import annotations
 import json
 from pathlib import Path
+from contract import ARTIFACT_VERSIONS
 ROOT = Path(__file__).resolve().parent
 DEFAULT_OWNER_BY_ACTION = {"evidence_refresh": ["risk_intelligence_owner"], "exposure_mapping": ["portfolio_risk_owner", "operations_owner"], "trigger_thresholds": ["governance_owner"]}
 DEFAULT_OWNER_BY_REASON = {"deployment_configuration_missing": ["platform_owner", "release_owner"], "deployment_release_mismatch": ["release_owner", "platform_owner"], "deployment_not_verified": ["release_owner", "platform_owner"]}
@@ -63,7 +64,7 @@ def build_owner_view(radar: dict | None = None, readiness: dict | None = None, c
     raw_reasons = credibility.get("reasons") or []
     reason_codes = credibility.get("reason_codes") or [r.get("code") for r in raw_reasons if isinstance(r, dict)]
     credibility_summary = {"status": credibility.get("status", "unknown"), "reason_codes": reason_codes, "reasons": raw_reasons, "signal_details": credibility.get("signal_details") or [], "provenance": provenance}
-    return {"version": 2, "principle": "负责人视图只组织已有信号，不创建责任、不执行行动、不改变风险判断。可信度来源只读、可追溯。", "credibility": credibility_summary, "configuration_debt": configuration_debt, "configuration_debt_count": len(configuration_debt), "item_count": len(items), "items": items[:30]}
+    return {"version": ARTIFACT_VERSIONS["owner_risk_view.json"], "principle": "负责人视图只组织已有信号，不创建责任、不执行行动、不改变风险判断。可信度来源只读、可追溯。", "credibility": credibility_summary, "configuration_debt": configuration_debt, "configuration_debt_count": len(configuration_debt), "item_count": len(items), "items": items[:30]}
 
 def main() -> None:
     result = build_owner_view()

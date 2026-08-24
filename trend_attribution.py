@@ -4,6 +4,7 @@
 from __future__ import annotations
 import json
 from pathlib import Path
+from contract import ARTIFACT_VERSIONS
 ROOT=Path(__file__).resolve().parent
 
 def _load(path: Path)->dict:
@@ -50,7 +51,7 @@ def build_attribution(trend:dict|None=None,history:dict|None=None)->dict:
             if rate<=0.10: resolved=True
             elif resolved and rate>=0.15: regressions+=1
         modules[str(module)]={'classification':classification,'reason':reason,'observation_count':len(hist),'regression_count':regressions,'evidence':'historical_health_snapshots'}
-    return {'version':1,'principle':'趋势归因用于降低复核噪声，不直接改变评分、决策或紧迫度','modules':modules}
+    return {'version':ARTIFACT_VERSIONS['trend_attribution.json'],'principle':'趋势归因用于降低复核噪声，不直接改变评分、决策或紧迫度','modules':modules}
 
 def main()->None:
     result=build_attribution(); (ROOT/'trend_attribution.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); print(f"Trend attribution: {len(result['modules'])} modules")
