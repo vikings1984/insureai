@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from deployment_trend import attribute_deployment_trend
+from contract import RELEASE_CHANNEL, SCHEMA_VERSIONS
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT = ROOT / "release_provenance.json"
@@ -81,10 +82,10 @@ def build_provenance(*, source_commit: str, site_url: str, root: Path = ROOT) ->
     )
     deployment_trend = attribute_deployment_trend(history)
     return {
-        "version": 1,
-        "schema_version": "release-provenance-v1",
+        "version": SCHEMA_VERSIONS["release_provenance"],
+        "schema_version": SCHEMA_VERSIONS["release_provenance_schema"],
         "source_commit": source_commit or release.get("source_commit") or "unknown",
-        "release_channel": release.get("release_channel", "cloudflare_workers"),
+        "release_channel": release.get("release_channel", RELEASE_CHANNEL),
         "site_url": site_url or release.get("site_url", ""),
         "release_marker": release.get("release_marker"),
         "quality": {
@@ -157,8 +158,8 @@ def attach_deployment_verification(*, root: Path = ROOT) -> dict:
     artifacts["deployment_verification_sha256"] = _sha256(deployment_path)
     artifacts["deployment_history_sha256"] = _sha256(history_path) if history_path.exists() else None
     provenance["generated_at"] = datetime.now(timezone.utc).isoformat()
-    provenance["schema_version"] = "release-provenance-v1"
-    provenance["version"] = 1
+    provenance["schema_version"] = SCHEMA_VERSIONS["release_provenance_schema"]
+    provenance["version"] = SCHEMA_VERSIONS["release_provenance"]
     provenance_path.write_text(json.dumps(provenance, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return provenance
 

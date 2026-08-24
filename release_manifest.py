@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from production_quality_gate import run_gate
+from contract import RELEASE_CHANNEL, SCHEMA_VERSIONS
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT = ROOT / "release_manifest.json"
@@ -30,10 +31,10 @@ def build_release_marker(*, source_commit: str, audit_path: Path = ROOT / "audit
     return f"insureai-{hashlib.sha256(payload).hexdigest()[:16]}"
 
 
-def build_manifest(*, source_commit: str, site_url: str, quality_passed: bool = True, release_channel: str = "cloudflare_workers", release_marker: str | None = None, production_quality_gate: dict | None = None) -> dict:
+def build_manifest(*, source_commit: str, site_url: str, quality_passed: bool = True, release_channel: str = RELEASE_CHANNEL, release_marker: str | None = None, production_quality_gate: dict | None = None) -> dict:
     marker = release_marker or build_release_marker(source_commit=source_commit)
     return {
-        "version": 1,
+        "version": SCHEMA_VERSIONS["release_manifest"],
         "source_commit": source_commit or "unknown",
         "release_channel": release_channel,
         "site_url": site_url,
@@ -76,7 +77,7 @@ def main() -> None:
         source_commit=source_commit,
         site_url=os.environ.get("SITE_URL", ""),
         quality_passed=True,
-        release_channel=os.environ.get("RELEASE_CHANNEL", "cloudflare_workers"),
+        release_channel=os.environ.get("RELEASE_CHANNEL", RELEASE_CHANNEL),
         release_marker=marker,
         production_quality_gate=gate,
     )

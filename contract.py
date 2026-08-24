@@ -32,6 +32,20 @@ ARTIFACT_VERSIONS = {
     "optimization_backlog.json": 3,
     "optimization_backlog_history.json": 2,
 }
+
+# Single source of truth for the production release channel and cross-artifact
+# schema identities. Generators, the production workflow, and release provenance
+# all read from here, so a channel/schema rename in a generator can never drift
+# out of sync with the CI contract gates.
+RELEASE_CHANNEL = "cloudflare_workers"
+
+SCHEMA_VERSIONS = {
+    "release_manifest": 1,
+    "release_provenance": 1,
+    "release_provenance_schema": "release-provenance-v1",
+    "audit_ledger_schema": "audit-ledger-v1",
+}
+
 EVENT_REQUIRED = {"event_id", "title", "event_type", "entities", "topic", "published_at", "source_count", "article_count", "article_ids", "scores", "insight", "trust", "claims"}
 SCORE_KEYS = {"relevance", "impact", "novelty", "actionability", "confidence", "intelligence_score"}
 

@@ -1,0 +1,65 @@
+name: Branch Hygiene Report
+
+# 每周自动识别已合并进 insureai 的远程分支，生成清理候选报告。
+# 只报告，不删除：删除前仍须人工确认无 workflow / 部署配置引用（见 BRANCHING.md）。
+on:
+  schedule:
+    - cron: '0 3 * * 1'          # 每周一 UTC 03:00 = 北京时间 11:00
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+jobs:
+  hygiene:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (insureai)
+        uses: actions/checkout@v5
+        with:
+          ref: insureai
+          fetch-depth: 0
+
+      - name: Fetch all remote branches
+        run: git fetch --prune origin '+refs/heads/*:refs/remotes/origin/*'
+
+      - name: Compute merged cleanup candidates
+        run: |
+          python3 scripts/branch_hygiene.py > candidates.json
+          cat candidates.json
+
+      - name: Create or update branch hygiene report
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const { candidates } = JSON.parse(fs.readFileSync('candidates.json', 'utf8'));
+            const { owner, repo } = context.repo;
+            const title = 'InsureAI 分支治理报告';
+
+            const { data: prs } = await github.rest.pulls.list({ owner, repo, state: 'open' });
+            const prHeads = new Set(prs.map(p => p.head.ref));
+            const safe = candidates.filter(b => !prHeads.has(b));
+            const skipped = candidates.filter(b => prHeads.has(b));
+
+            const { data: issues } = await github.rest.issues.listForRepo({ owner, repo, state: 'open' });
+            const existing = issues.find(i => i.title === title);
+
+            if (!safe.length) {
+              if (existing) {
+                await github.rest.issues.update({ owner, repo, issue_number: existing.number, state: 'closed' });
+              }
+              return;
+            }
+
+            const rows = safe.map(b => '- `' + b + '`').join('\n');
+            const note = skipped.length ? `\n\n另有 ${skipped.length} 个分支存在开放 PR，本次跳过。` : '';
+            const body = `以下远程分支已合并进 \`insureai\`，不含独有提交，是可清理候选。删除前仍须人工确认无 workflow / 部署配置引用（见 BRANCHING.md）。\n\n${rows}${note}`;
+
+            if (existing) {
+              await github.rest.issues.update({ owner, repo, issue_number: existing.number, body });
+            } else {
+              await github.rest.issues.create({ owner, repo, title, body });
+            }

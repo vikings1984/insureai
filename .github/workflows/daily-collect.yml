@@ -110,8 +110,9 @@ jobs:
         run: |
           python3 -c "
           import json
+          from contract import RELEASE_CHANNEL, SCHEMA_VERSIONS
           m=json.load(open('release_manifest.json'))
-          assert m.get('version') == 1 and m.get('release_channel') == 'cloudflare_workers'
+          assert m.get('version') == SCHEMA_VERSIONS['release_manifest'] and m.get('release_channel') == RELEASE_CHANNEL
           assert m.get('quality_status') == 'passed' and m.get('deployment_status') == 'pending' and m.get('deployment_verified') is False
           assert m.get('source_commit')
           print('Release manifest valid: quality=passed deployment=pending')
@@ -144,9 +145,10 @@ jobs:
           python3 -c "
           import json
           from pathlib import Path
+          from contract import RELEASE_CHANNEL, SCHEMA_VERSIONS
           m=json.load(open('release_manifest.json'))
           audit=json.load(open('audit_ledger.json'))
-          assert m.get('version') == 1 and m.get('release_channel') == 'cloudflare_workers'
+          assert m.get('version') == SCHEMA_VERSIONS['release_manifest'] and m.get('release_channel') == RELEASE_CHANNEL
           assert m.get('quality_status') == 'passed' and m.get('deployment_status') == 'pending' and m.get('deployment_verified') is False
           assert len(m.get('release_marker','')) >= 8
           assert Path('index.html').read_text(encoding='utf-8').find(m['release_marker']) >= 0
@@ -159,10 +161,11 @@ jobs:
         run: |
           python3 -c "
           import json
+          from contract import RELEASE_CHANNEL, SCHEMA_VERSIONS
           p=json.load(open('release_provenance.json'))
           m=json.load(open('release_manifest.json'))
-          assert p.get('version') == 1 and p.get('schema_version') == 'release-provenance-v1'
-          assert p.get('source_commit') and p.get('release_channel') == 'cloudflare_workers'
+          assert p.get('version') == SCHEMA_VERSIONS['release_provenance'] and p.get('schema_version') == SCHEMA_VERSIONS['release_provenance_schema']
+          assert p.get('source_commit') and p.get('release_channel') == RELEASE_CHANNEL
           assert p.get('quality',{}).get('status') == 'passed'
           assert p.get('quality',{}).get('audit_privacy') == 'hashes_and_metadata_only'
           assert p.get('quality',{}).get('audit_stage_count', 0) > 0
