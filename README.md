@@ -1,45 +1,143 @@
 # InsureAI
 
-保险行业动态资讯与风险情报平台。当前产品形态是**纯静态 SPA + GitHub Actions 数据流水线**：前端无需后端服务，采集、分析、评估、审计与发布由自动化任务生成可追溯的数据产物。
+> **保险行业 AI 情报与决策支持平台**
 
-> **核心目标**：让保险从业者以最低成本持续获取高价值、可验证、可追溯的行业信息。
+InsureAI 的目标不是堆积更多新闻，而是把分散的公开信息转化为**可验证、可解释、可追溯的行业情报**，帮助保险从业者更快回答：发生了什么、为什么重要、证据在哪里、下一步应该关注什么。
+
+## 核心闭环
+
+```text
+Signal → Event → Evidence → Insight → Decision
+```
+
+系统坚持一个重要边界：**分析与建议可以自动化，承保、投资、合规和运营动作必须保留人工确认。**
+
+## 三个核心产品
+
+### Insurance Radar
+
+回答：**行业正在往哪里走？**
+
+输出研究主题趋势、加速/形成/降温状态、信号强度和证据覆盖。
+
+### Event Intelligence
+
+回答：**到底发生了什么？证据是什么？为什么重要？**
+
+事件识别不再只依赖标题相似度，而是综合实体、事件类型、主题和时间窗口；每个事件都保留原始文章与可追溯证据。
+
+### Executive Decision Support
+
+回答：**对经营意味着什么？应该继续关注什么？**
+
+系统生成 advisory-only 建议，并对单一来源、低证据覆盖、冲突或监管/评级/理赔事件设置人工复核边界。
+
+## Canonical Intelligence Model
+
+```text
+Article
+  ↓
+Claim
+  ↓
+Evidence
+  ↓
+Event
+  ↓
+Trend
+  ↓
+Insight
+  ↓
+Decision
+```
+
+这些对象已经建立对应的数据契约，位于 `schemas/`。
+
+### Article
+外部公开信息的原始单元。
+
+### Claim
+从文章中提取的可验证事实陈述。
+
+### Evidence
+能够回溯到来源 URL、来源名称和发布时间的支持材料。
+
+### Event
+同一现实世界变化的多源聚合。
+
+### Insight
+基于证据的解释，必须同时说明证据覆盖、置信度和后续观察点。
+
+### Decision
+受约束的角色化行动建议，绝不直接执行业务动作。
 
 ## 当前架构
 
 ```text
-外部信源 / RSS / 搜索 / Inbox
-            │
-            ▼
-      collect.py / research
-            │
-            ▼
-       事件与证据层
-            │
-     ┌──────┼────────┐
-     ▼      ▼        ▼
- evaluation decision  scenario
-     │      │        │
-     └──────┼────────┘
-            ▼
-   credibility / owner view
-            │
-            ▼
-     audit / provenance
-            │
-            ▼
-       release artifacts
-            │
-            ▼
-     静态 SPA / GitHub Pages + Cloudflare Workers
+外部信源 / RSS / Search / Inbox
+             │
+             ▼
+       collect / research
+             │
+             ▼
+        Signal Layer
+             │
+             ▼
+        Event Engine
+        │          │
+        ▼          ▼
+     Claims      Evidence
+        │          │
+        └────┬─────┘
+             ▼
+      Intelligence / Radar
+             │
+             ▼
+       Decision Support
+             │
+       human approval
+             │
+             ▼
+       Audit / Provenance
+             │
+             ▼
+     Static SPA / Release
 ```
 
-项目坚持一个重要边界：**分析与建议可以自动化，承保、投资、合规和运营动作必须保留人工确认边界。**
+## 关键质量门
+
+系统不以一个笼统的总分掩盖不同类型的错误，而关注：
+
+- **False Merge**：把不同现实事件错误合并。
+- **Evidence Coverage**：判断是否有足够可追溯证据支持。
+- **Single-source Risk**：单一来源不得标记为 cross_checked。
+- **Human Review Boundary**：监管、评级、理赔和低覆盖事件进入人工复核。
+- **Unsafe Now Rate**：低可信度或低证据事件不得直接生成 `urgency=now`。
+
+事件模型当前版本为 `v4`，事件指纹采用 `entity + action + topic + time` 结构，详见 `docs/PRODUCT_ARCHITECTURE.md`。
+
+## 主要目录
+
+| 路径 | 作用 |
+| --- | --- |
+| `collect.py` | 日常资讯采集、过滤、评分与合并 |
+| `collect_research.py` | 研究报告发现与门控 |
+| `signal.py` | 透明、可解释的 Signal Layer |
+| `intelligence.py` | Event / Evidence / Insight 核心引擎 |
+| `decision.py` | 角色化、advisory-only 决策支持 |
+| `schemas/` | Article / Claim / Evidence / Event / Decision 契约 |
+| `benchmark/` | 事件聚类回归基线 |
+| `evaluation_metrics.py` | 质量指标与评估门 |
+| `audit_ledger.py` | 审计记录 |
+| `release_manifest.py` | 发布清单与 provenance |
+| `tests/` | 标准库单元测试 |
+| `.github/workflows/` | 采集、研究、测试和发布流水线 |
+| `docs/PRODUCT_ARCHITECTURE.md` | 产品与技术架构说明 |
 
 ## 快速开始
 
 ```bash
 python3 -m http.server 8000
-# 打开 http://localhost:8000/
+# http://localhost:8000/
 ```
 
 运行测试：
@@ -48,124 +146,47 @@ python3 -m http.server 8000
 python3 -m unittest discover -s tests -v
 ```
 
-## 主要目录
-
-| 路径 | 作用 |
-| --- | --- |
-| `index.html` | SPA 入口、SEO 元数据与静态壳 |
-| `css/style.css` | 前端样式 |
-| `js/app.js` | 前端路由、渲染与交互 |
-| `data.json` | 资讯数据产物 |
-| `research.json` | 研究报告数据产物 |
-| `collect.py` | 日常资讯采集与整理 |
-| `collect_research.py` | 研究报告发现与门控 |
-| `decision_credibility.py` | 决策可信度摘要 |
-| `owner_risk_view.py` | 面向负责人的风险视图 |
-| `evaluation_metrics.py` | 质量评估指标 |
-| `audit_ledger.py` | 审计记录 |
-| `release_manifest.py` | 发布清单与发布身份 |
-| `prerender.py` | SEO 预渲染 |
-| `tests/` | 标准库测试 |
-| `.github/workflows/` | 自动采集、研究与发布流水线 |
-| `BRANCHING.md` | 分支与仓库治理规则 |
-| `DEPLOYMENT.md` | 部署说明 |
-| `Makefile` | 常用本地运维命令 |
-
-> `*.json` 中由流水线生成的文件属于**数据产物**；修改逻辑时应优先修改对应 generator，而不是手工编辑生成结果。
-
-## 数据流水线
-
-### 日常资讯
-
-`collect.py` 从 RSS、Inbox、行业站点和搜索通道发现资讯，执行相关性过滤、评分、分类、去重、翻译与增量合并。
-
-### 研究报告
-
-`collect_research.py` 对机构白名单、报告型标题、保险相关性及财报噪声执行门控，并区分自动收录与人工精编内容。
-
-### 质量与决策
-
-数据进入事件、证据、评估、决策、情景和审计阶段后，会生成包括：
-
-- `evaluation_metrics.json`
-- `decision_credibility.json`
-- `owner_risk_view.json`
-- `decision_stability.json`
-- `evidence_availability.json`
-- `audit_ledger.json`
-- `release_manifest.json`
-
-这些文件共同构成发布前的质量、可信度、责任分配和可追溯性链路。
-
-## 可信度状态
-
-`decision_credibility.json` 不重新评分，也不替代原始决策，只汇总已有信号：
-
-```text
-ready   → 没有发现需要升级处理的质量问题
-caution → 存在需要关注但未直接阻断发布的信号
-review  → 需要人工复核或生产验收
-blocked → 已有明确证据表明质量门失败
-```
-
-特别注意：**“证据尚未生成”不等于“证据证明失败”。** 流水线按 artifact 生命周期处理未来阶段尚未产生的文件，避免时间顺序造成错误的 `blocked`。
-
-## 自动化与人工边界
-
-自动化系统负责资讯发现、研究报告门控、事件与证据整理、质量评估、稳定性检查、风险提示、负责人视图、审计与发布 provenance。
-
-系统不会自动执行：
-
-- 承保决定
-- 投资交易
-- 合规结论
-- 运营处置
-- 对外具有约束力的业务动作
-
-相关建议始终以 `advisory_only` / human approval boundary 表达。
-
-## 本地命令
+运行事件智能引擎：
 
 ```bash
-make collect
-make collect-dry
-make seo
-make sync
+python3 intelligence.py
 ```
 
-如需生产发布，应通过 GitHub Actions 与正式发布流程完成，不建议绕过 CI 手工修改生产数据。
+运行决策构建：由现有 decision pipeline 负责，输出始终保留人工确认边界。
 
-## 测试
+## 数据与发布原则
 
-所有核心逻辑使用 Python 标准库 `unittest`，无需额外依赖：
+`*.json` 中由流水线生成的内容属于数据产物。修改业务逻辑时，应优先修改 generator，而不是手工编辑生产数据。
 
-```bash
-python3 -m unittest discover -s tests -v
-```
+“证据尚未生成”不等于“证据证明失败”。artifact 生命周期必须与质量门分离，避免时间顺序造成错误的 blocked 状态。
 
-修改 generator 时，应同时验证对应 artifact 的 schema、版本和关键字段，避免“代码已升级、CI 仍检查旧契约”的回归。
-
-## 分支策略
-
-长期维护只保留：
-
-```text
-insureai                         # 唯一主线 / 生产源
-feature/<single-purpose-change> # 短生命周期功能
-fix/<single-purpose-bug>        # 短生命周期修复
-chore/<maintenance-task>        # 工程维护
-```
-
-历史实验分支应在确认没有开放 PR、workflow/deployment 引用且已合并或明确废弃后删除。详细规则见 `BRANCHING.md`。
-
-## 贡献原则
+## 工程原则
 
 1. 一个提交解决一个明确问题。
-2. 生成文件与生成逻辑分离维护。
-3. 不为了修 CI 而放宽业务质量门。
-4. 不用缺失数据伪装成失败证据。
-5. 所有重要决策信号必须可追溯到来源 artifact。
-6. 生产发布必须保留 release provenance。
+2. 数据契约与生成逻辑分离。
+3. 前端不重复执行后端语义判断。
+4. 不为了修 CI 而放宽业务质量门。
+5. 所有重要结论必须能够回溯到来源 artifact。
+6. AI 建议不直接执行承保、投资、合规或运营动作。
+7. 新的模型能力必须通过 benchmark、质量门和 provenance 验证。
+
+## 下一阶段
+
+优先继续完成：
+
+```text
+Radar UI
+   ↓
+Event Detail UI
+   ↓
+Evidence / Claim inspection
+   ↓
+Executive Decision View
+   ↓
+Knowledge Graph
+```
+
+其中前端应逐步从“精选资讯阅读器”转变为“事件与决策工作台”。
 
 ## License
 
