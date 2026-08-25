@@ -11,7 +11,10 @@ permissions:
 
 concurrency:
   group: cloudflare-workers-deploy
-  cancel-in-progress: true
+  # Do not cancel an in-flight deployment when a second data/quality commit arrives.
+  # Static asset deployment is intentionally serialized so release verification cannot
+  # be interrupted by the next commit.
+  cancel-in-progress: false
 
 jobs:
   deploy:
