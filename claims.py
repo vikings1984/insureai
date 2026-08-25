@@ -54,16 +54,16 @@ def extract_claims(items: list[dict], event: dict) -> list[dict]:
     lead = items[0] if items else {}
     title = str(event.get("title") or _text(lead)).strip()
     if title:
-        claims.append({"claim_id": "main", "type": "event", "text": title, "status": "supported"})
+        claims.append({"claim_id": "main", "type": "event", "text": title})
     ents = sorted({e for item in items for e in _entities(item)})
     if ents:
-        claims.append({"claim_id": "entities", "type": "entities", "entities": ents[:8], "text": "涉及主体：" + "、".join(ents[:8]), "status": "supported"})
+        claims.append({"claim_id": "entities", "type": "entities", "entities": ents[:8], "text": "涉及主体：" + "、".join(ents[:8])})
     nums = sorted({n for item in items for n in _numbers(_text(item))})
     if nums:
-        claims.append({"claim_id": "numeric_facts", "type": "numeric", "numbers": nums[:8], "text": "可观察数字事实：" + "、".join(nums[:8]), "status": "supported"})
+        claims.append({"claim_id": "numeric_facts", "type": "numeric", "numbers": nums[:8], "text": "可观察数字事实：" + "、".join(nums[:8])})
     dates = sorted({_date(item) for item in items if _date(item)})
     if dates:
-        claims.append({"claim_id": "dates", "type": "date", "dates": dates[:8], "text": "来源日期：" + "、".join(dates[:8]), "status": "supported"})
+        claims.append({"claim_id": "dates", "type": "date", "dates": dates[:8], "text": "来源日期：" + "、".join(dates[:8])})
     return claims
 
 
@@ -83,6 +83,7 @@ def attach_evidence(claims: list[dict], items: list[dict]) -> list[dict]:
             if not related:
                 continue
             evidence.append({
+                "evidence_id": str(item.get("id") or item.get("source_url") or item.get("source_name") or "unknown"),
                 "source_name": item.get("source_name"),
                 "source_url": item.get("source_url"),
                 "domain": _domain(item),
@@ -91,18 +92,24 @@ def attach_evidence(claims: list[dict], items: list[dict]) -> list[dict]:
             })
         claim = dict(claim)
         claim["evidence"] = evidence
+        claim["evidence_refs"] = [x["evidence_id"] for x in evidence]
         claim["evidence_count"] = len(evidence)
         claim["independent_domains"] = len({x["domain"] for x in evidence if x.get("domain")})
-        claim["status"] = "supported" if evidence else "uncorroborated"
-        if claim["independent_domains"] >= 2:
-            claim["status"] = "cross_checked"
+        if not evidence:
+            status = "unverified"
+        elif claim["independent_domains"] >= 2:
+            status = "cross_checked"
+        else:
+            status = "single_source"
+        claim["status"] = status
+        claim["confidence"] = min(100, 40 + 25 * min(claim["evidence_count"], 2) + 10 * max(claim["independent_domains"] - 1, 0))
         out.append(claim)
     return out
 
 
 def build_claims(items: list[dict], event: dict) -> dict:
     claims = attach_evidence(extract_claims(items, event), items)
-    unsupported = sum(1 for x in claims if x["status"] == "uncorroborated")
+    unsupported = sum(1 for x in claims if x["status"] == "unverified")
     cross_checked = sum(1 for x in claims if x["status"] == "cross_checked")
     coverage = round(100 * (len(claims) - unsupported) / len(claims)) if claims else 0
     return {"version": 1, "claims": claims, "coverage": coverage, "cross_checked": cross_checked, "unsupported": unsupported}
