@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vikings1984.github.io/insureai/schemas/article.schema.json",
+  "title": "InsureAI Article",
+  "type": "object",
+  "required": ["id", "title", "source_name", "source_url", "published_at"],
+  "properties": {
+    "id": {"type": ["string", "integer"]},
+    "title": {"type": "string", "minLength": 1},
+    "title_zh": {"type": "string"},
+    "summary": {"type": "string"},
+    "summary_zh": {"type": "string"},
+    "source_name": {"type": "string", "minLength": 1},
+    "source_url": {"type": "string", "format": "uri"},
+    "published_at": {"type": "string", "minLength": 1},
+    "date_verified": {"type": "boolean"},
+    "source_authority": {"type": "number", "minimum": 0, "maximum": 100},
+    "ai_score": {"type": "number", "minimum": 0, "maximum": 100},
+    "research_topic": {"type": ["string", "null"]}
+  },
+  "additionalProperties": true
+}
