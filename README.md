@@ -32,6 +32,16 @@ Signal → Event → Evidence → Insight → Decision
 
 系统生成 advisory-only 建议，并对单一来源、低证据覆盖、冲突或监管/评级/理赔事件设置人工复核边界。
 
+## Intelligence 工作台
+
+项目已提供独立的 Intelligence 工作台入口：
+
+```text
+intelligence.html
+```
+
+工作台将 Radar、事件、证据、Signal Layer、可信度和 Human Review 放到同一个页面，作为从“资讯阅读器”向“情报决策工作台”迁移的产品基线。
+
 ## Canonical Intelligence Model
 
 ```text
@@ -123,6 +133,7 @@ Decision
 | `collect_research.py` | 研究报告发现与门控 |
 | `signal.py` | 透明、可解释的 Signal Layer |
 | `intelligence.py` | Event / Evidence / Insight 核心引擎 |
+| `intelligence.html` | Radar / Event / Evidence / Executive 工作台 |
 | `decision.py` | 角色化、advisory-only 决策支持 |
 | `schemas/` | Article / Claim / Evidence / Event / Decision 契约 |
 | `benchmark/` | 事件聚类回归基线 |
@@ -175,7 +186,7 @@ python3 intelligence.py
 优先继续完成：
 
 ```text
-Radar UI
+主站入口整合
    ↓
 Event Detail UI
    ↓
