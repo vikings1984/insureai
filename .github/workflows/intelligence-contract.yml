@@ -40,13 +40,14 @@ jobs:
           from pathlib import Path
           allowed = {'single_source', 'cross_checked', 'conflicted', 'unverified'}
           data = json.loads(Path('claims.json').read_text(encoding='utf-8'))
-          assert data.get('version') == 1
+          assert data.get('version') == 2
           assert isinstance(data.get('events'), list)
           for event in data['events']:
               for claim in event.get('claims', []):
                   for required in ('claim_id', 'text', 'status', 'evidence_refs'):
                       assert required in claim, (event.get('event_id'), required)
                   assert claim['status'] in allowed, claim['status']
+          assert data.get('claim_count') == data.get('cross_checked_claim_count', 0) + data.get('single_source_claim_count', 0) + data.get('unverified_claim_count', 0)
           print(f'Generated claim artifact valid: events={data["event_count"]} claims={data["claim_count"]}')
           PY
       - name: Event intelligence regression tests
