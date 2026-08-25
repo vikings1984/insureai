@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "purpose": "Regression cases for distinguishing same-event coverage from similar-but-different events.",
+  "cases": [
+    {
+      "id": "acquisition-001",
+      "same_event": true,
+      "items": [
+        {"title": "Munich Re to acquire At-Bay", "entities": ["munich re", "at-bay"], "event_type": "acquisition"},
+        {"title": "Munich Re agrees to buy At-Bay for $575 million", "entities": ["munich re", "at-bay"], "event_type": "acquisition"}
+      ]
+    },
+    {
+      "id": "personnel-001",
+      "same_event": false,
+      "items": [
+        {"title": "Munich Re to acquire At-Bay", "entities": ["munich re", "at-bay"], "event_type": "acquisition"},
+        {"title": "Munich Re appoints new CFO", "entities": ["munich re"], "event_type": "personnel"}
+      ]
+    },
+    {
+      "id": "competitive-001",
+      "same_event": false,
+      "items": [
+        {"title": "Allianz launches AI underwriting platform", "entities": ["allianz"], "event_type": "product"},
+        {"title": "AXA expands AI underwriting capabilities", "entities": ["axa"], "event_type": "product"}
+      ]
+    }
+  ]
+}
