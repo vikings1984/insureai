@@ -18,7 +18,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Syntax check canonical intelligence modules
-        run: python3 -m py_compile signal.py intelligence.py decision.py
+        run: python3 -m py_compile signal.py intelligence.py claims.py claims_build.py decision.py
       - name: Validate schema files are valid JSON
         run: |
           python3 - <<'PY'
@@ -33,4 +33,4 @@ jobs:
           print('Schema contracts valid')
           PY
       - name: Event intelligence regression tests
-        run: python3 -m unittest tests.test_intelligence_model tests.test_decision_review_boundary -v
+        run: python3 -m unittest tests.test_intelligence_model tests.test_decision_review_boundary tests.test_claims_build -v
