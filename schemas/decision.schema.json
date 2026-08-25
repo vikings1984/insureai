@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vikings1984.github.io/insureai/schemas/decision.schema.json",
+  "title": "InsureAI Decision Support",
+  "type": "object",
+  "required": ["event_id", "role", "action", "urgency", "guardrail", "human_review_required"],
+  "properties": {
+    "event_id": {"type": "string", "minLength": 1},
+    "role": {"type": "string", "minLength": 1},
+    "action": {"type": "string", "minLength": 1},
+    "urgency": {"enum": ["now", "soon", "watch"]},
+    "urgency_label": {"type": "string"},
+    "basis": {"type": "object"},
+    "human_review_required": {"type": "boolean"},
+    "guardrail": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": true
+}
