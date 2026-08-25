@@ -36,7 +36,7 @@ class ClaimsBuildTests(unittest.TestCase):
         result = build_claims(self.items[:1], self.event)
         numeric = next(x for x in result["claims"] if x["type"] == "numeric")
         self.assertEqual(numeric["independent_domains"], 1)
-        self.assertEqual(numeric["status"], "supported")
+        self.assertEqual(numeric["status"], "single_source")
 
 
 if __name__ == "__main__":
