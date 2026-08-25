@@ -1,0 +1,36 @@
+name: InsureAI Intelligence Contract
+
+on:
+  pull_request:
+    branches: [insureai]
+  push:
+    branches: [insureai]
+
+permissions:
+  contents: read
+
+jobs:
+  intelligence-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Syntax check canonical intelligence modules
+        run: python3 -m py_compile signal.py intelligence.py decision.py
+      - name: Validate schema files are valid JSON
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          for path in sorted(Path('schemas').glob('*.schema.json')):
+              with path.open(encoding='utf-8') as f:
+                  doc = json.load(f)
+              assert doc.get('$schema'), f'missing $schema: {path}'
+              assert doc.get('title'), f'missing title: {path}'
+              assert doc.get('type') == 'object', f'expected object schema: {path}'
+          print('Schema contracts valid')
+          PY
+      - name: Event intelligence regression tests
+        run: python3 -m unittest tests.test_intelligence_model tests.test_decision_review_boundary -v
