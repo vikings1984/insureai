@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="InsureAI Insurance Intelligence 工作台：趋势雷达、事件情报、证据链与决策支持。">
+  <title>InsureAI · Intelligence 工作台</title>
+  <style>
+    :root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",Arial,sans-serif;color:#172033;background:#f5f7fb;line-height:1.5}
+    *{box-sizing:border-box}body{margin:0}.shell{max-width:1280px;margin:0 auto;padding:24px}
+    header{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:24px}.brand{font-weight:800;font-size:24px}.brand span{color:#f97316}.subtitle{color:#667085;margin:6px 0 0}
+    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:20px 0}.card{background:#fff;border:1px solid #e4e7ec;border-radius:14px;padding:18px;box-shadow:0 3px 16px rgba(16,24,40,.04)}.kpi{font-size:30px;font-weight:750}.muted{color:#667085;font-size:13px}
+    .main{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}.section-title{font-size:18px;font-weight:720;margin:0 0 14px}.event{border:1px solid #e4e7ec;border-radius:12px;padding:15px;margin-bottom:10px;cursor:pointer;background:#fff}.event:hover{border-color:#cbd5e1}.event h3{font-size:15px;margin:0 0 8px}.meta{display:flex;flex-wrap:wrap;gap:8px;color:#667085;font-size:12px}.pill{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;background:#f2f4f7}.high{background:#ecfdf3;color:#067647}.review{background:#fff7ed;color:#c2410c}.detail{position:sticky;top:16px;height:max-content}.detail h2{font-size:20px;margin:0 0 12px}.detail-block{padding:14px 0;border-top:1px solid #eaecf0}.detail-block:first-of-type{border-top:0;padding-top:0}.evidence{padding:10px;border:1px solid #eaecf0;border-radius:10px;margin:8px 0}.evidence a{color:#175cd3;text-decoration:none}.meter{height:8px;background:#eaecf0;border-radius:999px;overflow:hidden}.meter>div{height:100%;background:#f97316}.review-box{padding:12px;border-radius:10px;background:#fff7ed;color:#9a3412}.empty{color:#667085;padding:40px 0;text-align:center}
+    @media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.main{grid-template-columns:1fr}.detail{position:static}}
+    @media(max-width:560px){.shell{padding:14px}.grid{grid-template-columns:1fr 1fr}.kpi{font-size:24px}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header>
+    <div><div class="brand">Insure<span>AI</span> · Intelligence</div><p class="subtitle">从“新闻流”升级为“事件、证据与决策支持工作台”</p></div>
+    <a href="./" style="color:#175cd3;text-decoration:none;font-size:13px">返回 InsureAI</a>
+  </header>
+
+  <div class="grid" id="kpis"><div class="card"><div class="kpi">--</div><div class="muted">加载中</div></div></div>
+  <div class="main">
+    <section class="card"><div class="section-title">保险情报事件</div><div id="events"><div class="empty">正在加载 intelligence.json…</div></div></section>
+    <aside class="card detail"><div class="section-title">事件详情</div><div id="detail"><div class="empty">点击左侧事件查看证据和建议</div></div></aside>
+  </div>
+</div>
+<script>
+(() => {
+  const state = {data:null};
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmt = n => Number.isFinite(Number(n)) ? Number(n).toFixed(0) : '--';
+  async function load(){
+    try{
+      const res = await fetch('intelligence.json?t=' + Date.now(), {cache:'no-store'});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      state.data = await res.json();
+      render();
+      if(state.data.events?.[0]) show(state.data.events[0]);
+    }catch(err){document.getElementById('events').innerHTML='<div class="empty">暂无 intelligence.json。请先运行 intelligence.py 生成情报产物。</div>';}
+  }
+  function render(){
+    const s = state.data.stats || {}, ev = state.data.events || [];
+    document.getElementById('kpis').innerHTML = [
+      ['事件', s.event_count ?? ev.length],
+      ['多源事件', s.multi_source_events ?? 0],
+      ['需人工复核', s.review_required_events ?? 0],
+      ['今日简报', (state.data.daily_brief||[]).length]
+    ].map(([a,b])=>`<div class="card"><div class="kpi">${esc(b)}</div><div class="muted">${esc(a)}</div></div>`).join('');
+    document.getElementById('events').innerHTML = ev.slice(0,30).map((e,i)=>{
+      const score = e.scores?.intelligence_score ?? 0;
+      const coverage = e.evidence_coverage ?? e.insight?.evidence_coverage ?? 0;
+      const review = e.review_required || e.insight?.human_review_required;
+      return `<div class="event" data-i="${i}">
+        <h3>${esc(e.title)}</h3>
+        <div class="meta"><span class="pill">${esc(e.topic_label||'保险行业')}</span><span class="pill">${esc(e.event_type||'industry_update')}</span><span class="pill">情报 ${fmt(score)}</span><span class="pill ${review?'review':'high'}">${review?'需人工复核':'证据充分'}</span></div>
+        <div class="muted" style="margin-top:8px">证据覆盖 ${fmt(coverage)}% · ${esc(e.source_count||0)} 个信源</div>
+      </div>`;
+    }).join('') || '<div class="empty">暂无事件</div>';
+    document.querySelectorAll('.event').forEach(el => el.addEventListener('click', () => show(ev[Number(el.dataset.i)])));
+  }
+  function show(e){
+    const insight = e.insight || {};
+    const evidence = e.evidence || insight.evidence || [];
+    const coverage = e.evidence_coverage ?? insight.evidence_coverage ?? 0;
+    const review = e.review_required || insight.human_review_required;
+    document.getElementById('detail').innerHTML = `
+      <h2>${esc(e.title)}</h2>
+      <div class="meta"><span class="pill">${esc(e.topic_label||'保险行业')}</span><span class="pill">${esc(e.event_type||'industry_update')}</span></div>
+      <div class="detail-block"><div class="muted">为什么重要</div><div>${esc(insight.why_it_matters||'暂无')}</div></div>
+      <div class="detail-block"><div class="muted">谁受到影响</div><div>${esc(insight.who_is_affected||'暂无')}</div></div>
+      <div class="detail-block"><div class="muted">证据覆盖 ${fmt(coverage)}%</div><div class="meter"><div style="width:${Math.max(0,Math.min(100,coverage))}%"></div></div><div class="muted" style="margin-top:6px">${esc(e.evidence_status||insight.evidence_status||'unknown')}</div></div>
+      <div class="detail-block"><div class="muted">证据</div>${evidence.length?evidence.map(x=>`<div class="evidence"><strong>${esc(x.source_name||'来源')}</strong><div class="muted">${esc(x.published_at||'')}</div>${x.source_url?`<a href="${esc(x.source_url)}" target="_blank" rel="noopener">打开原文</a>`:''}</div>`).join(''):'<div class="muted">暂无可追溯证据</div>'}</div>
+      <div class="detail-block"><div class="muted">下一步关注</div><div>${esc(insight.what_to_watch||'暂无')}</div></div>
+      ${review?'<div class="detail-block"><div class="review-box"><strong>Human Review Required</strong><div style="margin-top:4px">该事件存在证据覆盖不足或高风险主题，不能直接作为业务动作依据。</div></div></div>':''}
+    `;
+  }
+  load();
+})();
+</script>
+</body>
+</html>
