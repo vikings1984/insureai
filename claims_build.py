@@ -25,6 +25,8 @@ def main() -> None:
     events = []
     total_claims = 0
     total_cross_checked = 0
+    total_single_source = 0
+    total_unverified = 0
     for event in intelligence.get("events", []):
         article_ids = [str(x) for x in (event.get("article_ids") or [])]
         evidence_items = [by_id[x] for x in article_ids if x in by_id]
@@ -36,21 +38,26 @@ def main() -> None:
             "coverage": result.get("coverage", 0),
             "cross_checked": result.get("cross_checked", 0),
             "unsupported": result.get("unsupported", 0),
+            "single_source": sum(1 for x in result.get("claims", []) if x.get("status") == "single_source"),
             "claims": result.get("claims", []),
         })
         total_claims += len(result.get("claims", []))
         total_cross_checked += int(result.get("cross_checked", 0) or 0)
+        total_single_source += sum(1 for x in result.get("claims", []) if x.get("status") == "single_source")
+        total_unverified += sum(1 for x in result.get("claims", []) if x.get("status") == "unverified")
 
     payload = {
-        "version": 1,
+        "version": 2,
         "generated_from": "intelligence.json + data.json",
         "event_count": len(events),
         "claim_count": total_claims,
         "cross_checked_claim_count": total_cross_checked,
+        "single_source_claim_count": total_single_source,
+        "unverified_claim_count": total_unverified,
         "events": events,
     }
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Claims artifact: events={len(events)} claims={total_claims} cross_checked={total_cross_checked}")
+    print(f"Claims artifact: events={len(events)} claims={total_claims} cross_checked={total_cross_checked} single_source={total_single_source} unverified={total_unverified}")
 
 
 if __name__ == "__main__":
