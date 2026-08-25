@@ -2,9 +2,16 @@
 # -*- coding: utf-8 -*-
 """InsureAI event intelligence engine.
 
-第一性原理：不是把相似文章堆在一起，而是识别“同一件事”，并让每个判断可追溯。
-无外部 API、确定性、可测试。
+Core principle:
+    Article -> Event -> Evidence -> Insight -> Decision
+
+The engine remains deterministic and dependency-free, but event matching now
+explicitly considers entity anchors, event type and time instead of relying on
+text similarity alone. Every event exposes evidence coverage, a trust level,
+and a human-review boundary.
 """
+from __future__ import annotations
+
 import hashlib
 import json
 import os
@@ -14,21 +21,23 @@ from datetime import datetime, timezone
 from urllib.parse import urlparse
 
 from radar import build_radar
+from signal import extract_signals
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(HERE, "data.json")
 OUTPUT_PATH = os.path.join(HERE, "intelligence.json")
 
+MODEL_VERSION = 4
+FINGERPRINT_VERSION = "efp-1"
 TOPIC_LABELS = {
     "ai_intelligent": "AI智能化", "pension_finance": "养老金融",
     "product_innovation": "产品创新", "channel_transformation": "渠道变革",
     "capital_reinsurance": "资本与再保险", "climate_catastrophe": "气候与巨灾",
     "digital_transformation": "数字化转型", "regulatory_change": "监管变革",
 }
-
 EVENT_TYPES = {
     "acquisition": ["acquire", "acquisition", "buy", "merger", "收购", "并购", "合并"],
-    "regulatory": ["regulation", "rule", "regulator", "compliance", "fine", "监管", "法规", "合规", "处罚", "办法"],
+    "regulatory": ["regulation", "rule", "regulator", "compliance", "fine", "监管", "法规", "合规", "处罚", "办法", "政策"],
     "product": ["launch", "unveil", "product", "推出", "发布", "产品", "首发"],
     "capital": ["funding", "invest", "investment", "capital", "融资", "投资", "资本"],
     "market_entry": ["expand", "enter", "exit", "进入", "扩张", "退出", "落地"],
@@ -36,7 +45,6 @@ EVENT_TYPES = {
     "claims_loss": ["claim", "loss", "理赔", "赔付", "损失"],
     "personnel": ["appoint", "appointed", "appointment", "joins", "出任", "任命", "履新", "就任", "加盟"],
 }
-
 ACTION_WORDS = [
     "acquire", "acquisition", "buy", "merger", "launch", "unveil", "regulation", "rule", "fine", "approval",
     "invest", "investment", "expand", "enter", "exit", "raise", "funding", "upgrade", "downgrade", "loss", "claim",
@@ -49,19 +57,24 @@ IMPACT_WORDS = [
     "网络", "人工智能", "监管", "养老", "年金", "保险", "核保", "保费", "长期护理", "医保", "气候",
 ]
 STOPWORDS = set("the a an and or of to in on for with from by as at is are was were be this that how what why insurance insurer insurers reinsurance news report reports viewpoint says said new company 保险 行业 新闻 报道 公司 表示 关于 最新 一个 以及 推动 进行".split())
+ACTION_BY_TYPE = {
+    "acquisition": "acquire", "regulatory": "regulate", "product": "launch", "capital": "invest",
+    "market_entry": "enter", "rating": "rate", "claims_loss": "loss", "personnel": "appoint",
+    "industry_update": "update",
+}
 
 
-def _norm(text):
+def _norm(text: str) -> str:
     text = (text or "").lower()
     text = re.sub(r"https?://\S+", " ", text)
     return re.sub(r"[^\w\u4e00-\u9fff]+", " ", text, flags=re.UNICODE).strip()
 
 
-def _tokens(text):
+def _tokens(text: str) -> set[str]:
     return {x for x in _norm(text).split() if len(x) > 1 and x not in STOPWORDS}
 
 
-def _entities(item):
+def _entities(item: dict) -> list[str]:
     values = []
     tags = item.get("tags") or ""
     if isinstance(tags, str):
@@ -78,14 +91,19 @@ def _entities(item):
     return result[:12]
 
 
-def _timestamp(item):
+def _entity_anchor(item: dict) -> str:
+    entities = _entities(item)
+    return entities[0] if entities else ""
+
+
+def _timestamp(item: dict) -> datetime:
     try:
         return datetime.fromisoformat((item.get("published_at") or "").replace("Z", "+00:00")).astimezone(timezone.utc)
     except Exception:
         return datetime.min.replace(tzinfo=timezone.utc)
 
 
-def _event_type(item):
+def _event_type(item: dict) -> str:
     text = _norm(" ".join([item.get("title", ""), item.get("summary", "")]))
     ranked = []
     for event_type, words in EVENT_TYPES.items():
@@ -95,28 +113,38 @@ def _event_type(item):
     return max(ranked, key=lambda x: (x[0], x[1]))[1] if ranked else "industry_update"
 
 
-def _signature(item):
+def _signature(item: dict) -> str:
     title = item.get("title_zh") or item.get("title") or ""
     entities = tuple(sorted(_entities(item))[:6])
     core_tokens = tuple(sorted(_tokens(title))[:12])
     return hashlib.sha1("|".join(core_tokens + entities).encode("utf-8")).hexdigest()[:12]
 
 
-def _token_similarity(a, b):
+def _event_fingerprint(item: dict) -> str:
+    event_type = _event_type(item)
+    anchor = _entity_anchor(item) or "unknown-entity"
+    topic = item.get("research_topic") or "general"
+    ts = _timestamp(item)
+    period = ts.strftime("%Y-%m") if ts != datetime.min.replace(tzinfo=timezone.utc) else "undated"
+    raw = "|".join((FINGERPRINT_VERSION, anchor, ACTION_BY_TYPE.get(event_type, event_type), topic, period))
+    return hashlib.sha1(raw.encode("utf-8")).hexdigest()[:16]
+
+
+def _token_similarity(a: str, b: str) -> float:
     ta, tb = _tokens(a), _tokens(b)
     if not ta or not tb:
         return 0.0
     return len(ta & tb) / len(ta | tb)
 
 
-def _entity_similarity(a, b):
+def _entity_similarity(a: dict, b: dict) -> float:
     ea, eb = set(_entities(a)), set(_entities(b))
     if not ea or not eb:
         return 0.0
     return len(ea & eb) / max(1, len(ea | eb))
 
 
-def _event_similarity(a, b):
+def _event_similarity(a: dict, b: dict) -> float:
     ta = a.get("title_zh") or a.get("title") or ""
     tb = b.get("title_zh") or b.get("title") or ""
     token = _token_similarity(ta, tb)
@@ -125,7 +153,7 @@ def _event_similarity(a, b):
     return min(1.0, 0.55 * token + 0.30 * entity + type_bonus)
 
 
-def _within_window(a, b, hours=96):
+def _within_window(a: dict, b: dict, hours: int = 96) -> bool:
     ta, tb = _timestamp(a), _timestamp(b)
     minimum = datetime.min.replace(tzinfo=timezone.utc)
     if ta == minimum or tb == minimum:
@@ -133,9 +161,9 @@ def _within_window(a, b, hours=96):
     return abs((ta - tb).total_seconds()) <= hours * 3600
 
 
-def _cluster(items):
-    groups = {}
-    representatives = []
+def _cluster(items: list[dict]) -> dict[str, list[dict]]:
+    groups: dict[str, list[dict]] = {}
+    representatives: list[tuple[str, dict]] = []
     for item in sorted(items, key=_timestamp, reverse=True):
         signature = _signature(item)
         if signature in groups:
@@ -143,13 +171,20 @@ def _cluster(items):
             continue
         matched = None
         best_score = 0.0
+        anchor = _entity_anchor(item)
         for rep_key, rep_item in representatives:
             if not _within_window(item, rep_item):
                 continue
             score = _event_similarity(item, rep_item)
-            same_entity = _entity_similarity(item, rep_item) >= 0.34
+            rep_anchor = _entity_anchor(rep_item)
+            anchor_match = bool(anchor and rep_anchor and anchor == rep_anchor)
+            anchor_conflict = bool(anchor and rep_anchor and anchor != rep_anchor)
             same_type = _event_type(item) == _event_type(rep_item)
-            accept = score >= 0.46 or (same_entity and same_type and score >= 0.30)
+            # Protect against false merges: different named entities need a much
+            # stronger textual match before being treated as the same event.
+            if anchor_conflict and score < 0.72:
+                continue
+            accept = score >= 0.52 or (anchor_match and same_type and score >= 0.30)
             if accept and score > best_score:
                 matched, best_score = rep_key, score
         if matched:
@@ -160,7 +195,14 @@ def _cluster(items):
     return groups
 
 
-def _score(items):
+def _domain(item: dict) -> str:
+    try:
+        return urlparse(item.get("source_url") or "").netloc.lower()
+    except Exception:
+        return ""
+
+
+def _score(items: list[dict]) -> dict:
     rows = []
     for item in items:
         base = float(item.get("ai_score") or 0)
@@ -189,34 +231,48 @@ def _score(items):
     }
 
 
-def _domain(item):
-    try:
-        return urlparse(item.get("source_url") or "").netloc.lower()
-    except Exception:
-        return ""
-
-
-def _evidence(items):
+def _evidence(items: list[dict]) -> list[dict]:
     return [{
         "source_name": x.get("source_name"),
         "source_url": x.get("source_url"),
         "domain": _domain(x),
         "title": x.get("title_zh") or x.get("title"),
         "published_at": x.get("published_at"),
+        "date_verified": bool(x.get("date_verified")),
     } for x in sorted(items, key=_timestamp, reverse=True)[:5]]
 
 
-def _insight(items, scores, event_type, entities):
+def _evidence_quality(items: list[dict], evidence: list[dict]) -> tuple[float, str]:
+    source_count = len({x.get("source_name") for x in items if x.get("source_name")})
+    source_diversity = min(1.0, source_count / 2.0)
+    traceability = sum(1 for x in evidence if x.get("source_url")) / max(1, len(evidence))
+    date_verified = sum(1 for x in evidence if x.get("date_verified")) / max(1, len(evidence))
+    coverage = round((source_diversity * 0.40 + traceability * 0.30 + date_verified * 0.30) * 100, 1)
+    status = "cross_checked" if source_count >= 2 else "single_source"
+    return coverage, status
+
+
+def _trust(coverage: float, conflict: bool = False) -> str:
+    if conflict or coverage < 55:
+        return "low"
+    if coverage < 80:
+        return "medium"
+    return "high"
+
+
+def _insight(items: list[dict], scores: dict, event_type: str, entities: list[str]) -> dict:
     lead = max(items, key=lambda x: float(x.get("ai_score") or 0))
     title = lead.get("title_zh") or lead.get("title") or ""
     summary = lead.get("summary_zh") or lead.get("summary") or ""
     topic = TOPIC_LABELS.get(lead.get("research_topic"), "保险行业")
     source_count = len({x.get("source_name") for x in items if x.get("source_name")})
     evidence = _evidence(items)
+    coverage, evidence_status = _evidence_quality(items, evidence)
+    signals = extract_signals(title, summary, topic=lead.get("research_topic"))
     if source_count > 1:
-        why = f"该变化已由 {source_count} 个信源交叉报道，优先级高于单一来源信息，适合进入事件跟踪。"
+        why = f"该变化已由 {source_count} 个独立信源交叉报道，适合进入事件跟踪。"
     elif scores["impact"] >= 75:
-        why = f"它涉及{topic}的关键变化，潜在影响面较大，应观察其向监管、资本、产品或经营层面的传导。"
+        why = f"它涉及{topic}的关键变化，潜在影响面较大，但目前仍需独立证据确认。"
     else:
         why = f"它属于{topic}的变化信号，目前更适合作为趋势观察，不宜仅凭单一报道下结论。"
     if event_type == "personnel":
@@ -225,19 +281,24 @@ def _insight(items, scores, event_type, entities):
         watch = "继续追踪后续公告、监管文件、市场数据和竞争对手动作，判断是否需要调整业务判断。"
     else:
         watch = "观察是否出现第二个独立信源、监管动作或同类公司跟进，以确认趋势是否形成。"
+    review_required = coverage < 75 or event_type in {"regulatory", "rating", "claims_loss"}
     return {
         "what_happened": title,
         "why_it_matters": why,
         "who_is_affected": topic,
         "what_to_watch": watch,
         "evidence": evidence,
+        "evidence_coverage": coverage,
+        "evidence_status": evidence_status,
+        "signals": signals,
         "confidence": scores["confidence"],
         "summary": summary[:360],
         "entity_count": len(entities),
+        "human_review_required": review_required,
     }
 
 
-def build(data):
+def build(data: dict) -> dict:
     news = data.get("news", []) if isinstance(data, dict) else []
     events = []
     for event_id, items in _cluster(news).items():
@@ -246,8 +307,16 @@ def build(data):
         lead = items[0]
         entities = sorted({e for item in items for e in _entities(item)})[:16]
         event_type = _event_type(lead)
+        evidence = _evidence(items)
+        evidence_coverage, evidence_status = _evidence_quality(items, evidence)
+        review_required = evidence_coverage < 75 or event_type in {"regulatory", "rating", "claims_loss"}
+        conflict = False
+        trust_level = _trust(evidence_coverage, conflict)
+        fingerprint = _event_fingerprint(lead)
         events.append({
             "event_id": "evt_" + event_id,
+            "event_fingerprint": fingerprint,
+            "event_fingerprint_version": FINGERPRINT_VERSION,
             "title": lead.get("title_zh") or lead.get("title") or "",
             "event_type": event_type,
             "entities": entities,
@@ -258,16 +327,28 @@ def build(data):
             "article_count": len(items),
             "article_ids": [x.get("id") for x in items if x.get("id") is not None],
             "scores": scores,
+            "evidence": evidence,
+            "evidence_coverage": evidence_coverage,
+            "evidence_status": evidence_status,
+            "review_required": review_required,
+            "trust": {"level": trust_level, "conflict": conflict},
             "insight": _insight(items, scores, event_type, entities),
         })
     events.sort(key=lambda x: (x["scores"]["intelligence_score"], x.get("published_at") or ""), reverse=True)
     today = datetime.now(timezone.utc).date().isoformat()
     daily = [e for e in events if (e.get("published_at") or "").startswith(today)][:5] or events[:5]
     event_types = Counter(e["event_type"] for e in events)
+    review_count = sum(1 for e in events if e["review_required"])
     return {
-        "version": 3,
+        "version": MODEL_VERSION,
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "principle": "发现值得行动的变化，而不是堆积更多新闻",
+        "model": {
+            "article": "source item",
+            "event": "entity + action + topic + time",
+            "evidence": "traceable source support",
+            "decision": "advisory only / human approval boundary",
+        },
         "events": events,
         "daily_brief": daily,
         "radar": build_radar(events),
@@ -275,12 +356,13 @@ def build(data):
             "news_count": len(news),
             "event_count": len(events),
             "multi_source_events": sum(1 for e in events if e["source_count"] > 1),
+            "review_required_events": review_count,
             "event_types": dict(event_types),
         },
     }
 
 
-def main():
+def main() -> None:
     with open(DATA_PATH, encoding="utf-8") as f:
         data = json.load(f)
     result = build(data)
@@ -289,7 +371,10 @@ def main():
         json.dump(result, f, ensure_ascii=False, indent=2)
         f.write("\n")
     os.replace(tmp, OUTPUT_PATH)
-    print(f"Intelligence engine: {result['stats']['news_count']} news -> {result['stats']['event_count']} events; daily brief={len(result['daily_brief'])}; radar={result['radar']['stats']['entities']} entities")
+    print(
+        f"Intelligence v{MODEL_VERSION}: {result['stats']['news_count']} news -> "
+        f"{result['stats']['event_count']} events; review={result['stats']['review_required_events']}"
+    )
 
 
 if __name__ == "__main__":
