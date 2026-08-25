@@ -1,0 +1,58 @@
+name: Build Claim Evidence Artifact
+
+on:
+  workflow_run:
+    workflows: ["Daily Insurance News Collect"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: claims-artifact
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout insureai
+        uses: actions/checkout@v5
+        with:
+          ref: insureai
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Build claim/evidence artifact
+        run: python3 claims_build.py
+
+      - name: Validate artifact
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('claims.json')
+          data = json.loads(p.read_text(encoding='utf-8'))
+          assert data.get('version') == 1
+          assert isinstance(data.get('events'), list)
+          assert data.get('event_count', 0) == len(data['events'])
+          print(f"claims artifact valid: events={data['event_count']} claims={data['claim_count']}")
+          PY
+
+      - name: Commit artifact
+        run: |
+          git config user.name "insureai-bot"
+          git config user.email "bot@insureai.local"
+          if git status --porcelain -- claims.json | grep -q .; then
+            git add claims.json
+            git commit -m "chore: refresh claim evidence artifact"
+            git push origin HEAD:insureai
+          else
+            echo "claims.json unchanged"
+          fi
