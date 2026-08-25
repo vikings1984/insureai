@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>InsureAI · Event Intelligence</title>
+<style>
+body{margin:0;background:#f6f8fb;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",Arial,sans-serif}.shell{max-width:1240px;margin:auto;padding:24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.brand{font-size:24px;font-weight:800}.brand span{color:#f97316}.muted{color:#667085}.btn{display:inline-block;border:1px solid #d0d5dd;background:#fff;border-radius:9px;padding:8px 12px;color:#344054;text-decoration:none}.layout{display:grid;grid-template-columns:42% 58%;gap:16px;margin-top:20px}.panel{background:#fff;border:1px solid #e4e7ec;border-radius:14px;padding:16px}.event{padding:13px;border:1px solid #eaecf0;border-radius:11px;margin:8px 0;cursor:pointer}.event.active{border-color:#175cd3;background:#f8fbff}.pill{display:inline-block;background:#f2f4f7;border-radius:999px;padding:3px 8px;font-size:12px;margin:4px 4px 0 0}.review{background:#fff7ed;color:#c2410c}.cross{background:#ecfdf3;color:#067647}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}.kpi{background:#fff;border:1px solid #e4e7ec;border-radius:12px;padding:14px}.num{font-size:26px;font-weight:800}.block{border-top:1px solid #eaecf0;padding:14px 0}.block:first-child{border-top:0}.claim{border:1px solid #eaecf0;border-radius:10px;padding:11px;margin:8px 0}.source{font-size:13px;margin-top:7px}.source a{color:#175cd3}.empty{padding:40px;text-align:center;color:#667085}@media(max-width:850px){.layout{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="top"><div><div class="brand">Insure<span>AI</span> · Event Intelligence</div><div class="muted">事件 → Claim → Evidence → Decision；只展示已有产物，不生成无来源判断。</div></div><div><a class="btn" href="./intelligence.html">返回 Intelligence</a></div></div>
+  <div class="kpis" id="kpis"><div class="kpi"><div class="num">--</div><div class="muted">事件</div></div></div>
+  <div class="layout"><section class="panel"><strong>事件</strong><div class="muted" style="margin:5px 0 10px">优先查看需要判断或证据覆盖不足的事件。</div><div id="events"><div class="empty">加载中…</div></div></section><section class="panel"><div id="detail"><div class="empty">选择一个事件</div></div></section></div>
+</div>
+<script>
+(async()=>{
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const [intelRes,claimsRes]=await Promise.all([fetch('intelligence.json?t='+Date.now()),fetch('claims.json?t='+Date.now())]);
+ const intel=intelRes.ok?await intelRes.json():{}; const claimsDoc=claimsRes.ok?await claimsRes.json():{};
+ const events=intel.events||[]; const claimMap=new Map((claimsDoc.events||[]).map(x=>[String(x.event_id),x]));
+ const reviews=events.filter(e=>e.review_required||e.insight?.human_review_required).length;
+ const cross=(claimsDoc.cross_checked_claim_count||0);
+ document.getElementById('kpis').innerHTML=[[events.length,'事件'],[claimsDoc.claim_count||0,'Claims'],[cross,'多源 Claim'],[reviews,'人工复核']].map(x=>`<div class="kpi"><div class="num">${esc(x[0])}</div><div class="muted">${esc(x[1])}</div></div>`).join('');
+ const list=document.getElementById('events');
+ list.innerHTML=events.slice(0,40).map((e,i)=>{const c=claimMap.get(String(e.event_id));return `<div class="event" data-i="${i}"><strong>${esc(e.title)}</strong><div><span class="pill">${esc(e.topic_label||e.topic||'保险行业')}</span><span class="pill">可信度 ${esc(e.trust?.level||'low')}</span><span class="pill ${c?.coverage>=75?'cross':'review'}">证据 ${esc(c?.coverage??e.evidence_coverage??0)}%</span></div></div>`}).join('')||'<div class="empty">暂无事件</div>';
+ function show(i){const e=events[i];const c=claimMap.get(String(e.event_id))||{};document.querySelectorAll('.event').forEach(x=>x.classList.toggle('active',Number(x.dataset.i)===i));const decisions=(intel.decisions||[]).filter(x=>x.event_id===e.event_id);const claims=c.claims||[];document.getElementById('detail').innerHTML=`<h2>${esc(e.title)}</h2><div class="muted">Event ID: ${esc(e.event_id)}</div><div class="block"><strong>事件概览</strong><p>${esc(e.insight?.why_it_matters||'暂无事件解释')}</p><div>${esc(e.source_count||0)} 个信源 · 可信度 ${esc(e.trust?.level||'low')} · Evidence ${esc(c.coverage??e.evidence_coverage??0)}%</div></div><div class="block"><strong>Claims</strong>${claims.length?claims.map(x=>`<div class="claim"><div><strong>${esc(x.text||x.type)}</strong> <span class="pill ${x.status==='cross_checked'?'cross':'review'}">${esc(x.status)}</span></div><div class="muted">${esc(x.evidence_count||0)} 条证据 · ${esc(x.independent_domains||0)} 个独立域</div>${(x.evidence||[]).map(s=>`<div class="source">${esc(s.source_name||s.domain||'来源')} ${s.source_url?`· <a href="${esc(s.source_url)}" target="_blank" rel="noopener">原文</a>`:''}</div>`).join('')}</div>`).join(''):'<div class="muted" style="margin-top:8px">暂无 Claim 产物</div>'}</div><div class="block"><strong>Decision Boundary</strong>${decisions.length?decisions.map(d=>`<div class="claim"><strong>${esc(d.urgency_label||d.urgency)} · ${esc(d.action)}</strong><div class="muted">人工复核：${d.human_review_required?'是':'否'} · 证据覆盖 ${esc(d.basis?.evidence_coverage??0)}% · ${esc(d.basis?.evidence_status||'unknown')}</div></div>`).join(''):'<div class="muted" style="margin-top:8px">暂无决策产物</div>'}</div><div class="block"><strong>人工边界</strong><div class="muted">AI 输出仅为情报辅助建议，不替代承保、投资、合规或管理决策。</div></div>`}
+ document.querySelectorAll('.event').forEach(el=>el.addEventListener('click',()=>show(Number(el.dataset.i)))); if(events.length) show(0);
+})().catch(()=>{document.getElementById('events').innerHTML='<div class="empty">数据产物尚未生成或暂不可用。</div>';});
+</script>
+</body></html>
