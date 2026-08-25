@@ -23,10 +23,12 @@ class TestClaims(unittest.TestCase):
         numeric = next(x for x in result["claims"] if x["type"] == "numeric")
         self.assertEqual(numeric["status"], "cross_checked")
         self.assertEqual(numeric["independent_domains"], 2)
+        self.assertTrue(numeric["evidence_refs"])
+        self.assertIn("confidence", numeric)
 
     def test_single_source_claim_not_cross_checked(self):
         result = claims.build_claims(self.items[:1], self.event)
-        self.assertTrue(all(x["status"] in ("supported", "uncorroborated") for x in result["claims"]))
+        self.assertTrue(all(x["status"] in ("single_source", "unverified") for x in result["claims"]))
         self.assertEqual(result["cross_checked"], 0)
 
 
