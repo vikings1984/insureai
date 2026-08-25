@@ -32,5 +32,22 @@ jobs:
               assert doc.get('type') == 'object', f'expected object schema: {path}'
           print('Schema contracts valid')
           PY
+      - name: Generate and validate claim/evidence artifact
+        run: |
+          python3 claims_build.py
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          allowed = {'single_source', 'cross_checked', 'conflicted', 'unverified'}
+          data = json.loads(Path('claims.json').read_text(encoding='utf-8'))
+          assert data.get('version') == 1
+          assert isinstance(data.get('events'), list)
+          for event in data['events']:
+              for claim in event.get('claims', []):
+                  for required in ('claim_id', 'text', 'status', 'evidence_refs'):
+                      assert required in claim, (event.get('event_id'), required)
+                  assert claim['status'] in allowed, claim['status']
+          print(f'Generated claim artifact valid: events={data["event_count"]} claims={data["claim_count"]}')
+          PY
       - name: Event intelligence regression tests
-        run: python3 -m unittest tests.test_intelligence_model tests.test_decision_review_boundary tests.test_claims_build -v
+        run: python3 -m unittest tests.test_intelligence_model tests.test_decision_review_boundary tests.test_claims_build tests.test_claims -v
