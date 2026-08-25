@@ -29,11 +29,18 @@ class TestCalibration(unittest.TestCase):
         self.assertEqual(result["overrides"]["regulatory"]["max_urgency"], "watch")
 
     def test_decision_applies_cap_without_changing_scores(self):
+        # The calibration test must satisfy the same evidence boundary as
+        # production: high urgency is only eligible when evidence is
+        # independently cross-checked and trust is high. Calibration then
+        # applies its own cap without changing the intelligence score.
         events = [{
             "event_id": "e1",
             "event_type": "regulatory",
             "topic": "regulatory_change",
             "scores": {"intelligence_score": 92},
+            "evidence_coverage": 100,
+            "evidence_status": "cross_checked",
+            "review_required": False,
             "trust": {"level": "high", "conflict": False},
         }]
         temporal = {"topic_signals": [{"topic": "regulatory_change", "phase": "accelerating", "signal_strength": 90}]}
