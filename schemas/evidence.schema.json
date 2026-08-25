@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vikings1984.github.io/insureai/schemas/evidence.schema.json",
+  "title": "InsureAI Evidence",
+  "type": "object",
+  "required": ["source_name", "source_url", "title", "published_at"],
+  "properties": {
+    "source_name": {"type": "string", "minLength": 1},
+    "source_url": {"type": "string", "format": "uri"},
+    "domain": {"type": "string"},
+    "title": {"type": "string", "minLength": 1},
+    "published_at": {"type": "string", "minLength": 1},
+    "date_verified": {"type": "boolean"}
+  },
+  "additionalProperties": true
+}
