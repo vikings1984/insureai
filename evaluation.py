@@ -73,11 +73,18 @@ def _case_temporal() -> EvalResult:
 
 
 def _case_decision_guardrail() -> EvalResult:
+    # This case deliberately supplies high-quality, independently verified
+    # evidence. The benchmark therefore expects a high-urgency advisory while
+    # still requiring the human-approval guardrail. Low-coverage cases are
+    # tested separately in tests.test_decision_review_boundary.
     events = [{
         "event_id": "evt_decision",
         "event_type": "regulatory",
         "topic": "regulatory_change",
         "scores": {"intelligence_score": 90},
+        "evidence_coverage": 100,
+        "evidence_status": "cross_checked",
+        "review_required": False,
         "trust": {"level": "high", "conflict": False},
     }]
     temporal = {"topic_signals": [{"topic": "regulatory_change", "phase": "accelerating", "signal_strength": 90}]}
