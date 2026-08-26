@@ -19,7 +19,7 @@ TAGS = [
     '<script src="review-ui.js" defer></script>',
     '<script src="action-triggers-ui.js" defer></script>',
     '<script src="execution-readiness-ui.js" defer></script>',
-    '<script src="owner-risk-ui.js" defer></script>",
+    '<script src="owner-risk-ui.js" defer></script>',
 ]
 
 text = INDEX.read_text(encoding="utf-8")
