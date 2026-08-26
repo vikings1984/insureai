@@ -1,0 +1,40 @@
+name: InsureAI Benchmark
+
+on:
+  push:
+    branches: [insureai]
+  pull_request:
+    branches: [insureai]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Benchmark syntax check
+        run: python3 -m py_compile benchmark.py tests/test_benchmark.py
+      - name: Run core intelligence benchmark
+        run: python3 benchmark.py
+      - name: Run benchmark regression tests
+        run: python3 -m unittest tests.test_benchmark -v
+      - name: Publish benchmark result summary
+        if: always()
+        run: |
+          if [ -f benchmark_results.json ]; then
+            python3 - <<'PY'
+            import json
+            r=json.load(open('benchmark_results.json', encoding='utf-8'))
+            print(f"macro_quality={r.get('macro_quality')}")
+            print(f"safety_pass={r.get('safety_pass')}")
+            print(f"event_false_merge_rate={r.get('event',{}).get('false_merge_rate')}")
+            print(f"single_source_false_cross_check_rate={r.get('claim_evidence',{}).get('single_source_false_cross_check_rate')}")
+            print(f"unsafe_now_rate={r.get('decision',{}).get('unsafe_now_rate')}")
+            PY
+          fi
