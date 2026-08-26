@@ -1,0 +1,57 @@
+name: InsureAI Knowledge Graph
+
+on:
+  push:
+    branches: [insureai]
+    paths:
+      - 'intelligence.json'
+      - 'claims.json'
+      - 'knowledge_graph.py'
+      - 'knowledge_graph.schema.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  graph:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Build knowledge graph
+        run: python3 knowledge_graph.py
+      - name: Validate graph JSON and schema shape
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          graph=json.loads(Path('knowledge_graph.json').read_text(encoding='utf-8'))
+          schema=json.loads(Path('knowledge_graph.schema.json').read_text(encoding='utf-8'))
+          assert graph['graph'] == 'insureai_traceable_knowledge_graph'
+          assert graph['version'] == 2
+          assert graph['stats']['node_count'] == len(graph['nodes'])
+          assert graph['stats']['edge_count'] == len(graph['edges'])
+          node_ids={n['id'] for n in graph['nodes']}
+          for edge in graph['edges']:
+              assert edge['source'] in node_ids
+              assert edge['target'] in node_ids
+              assert 0 <= edge['confidence'] <= 1
+          assert schema['title'] == 'InsureAI Traceable Knowledge Graph'
+          print('Knowledge graph contract valid:', graph['stats'])
+          PY
+      - name: Graph lineage regression
+        run: python3 -m unittest tests.test_knowledge_graph -v
+      - name: Commit graph artifact
+        run: |
+          git config user.name "insureai-bot"
+          git config user.email "bot@insureai.local"
+          if [ -n "$(git status --porcelain knowledge_graph.json)" ]; then
+            git add knowledge_graph.json
+            git commit -m "chore: refresh knowledge graph [skip ci]"
+            git push origin HEAD:${{ github.ref_name }}
+          else
+            echo "no graph changes"
+          fi
