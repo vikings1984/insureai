@@ -172,6 +172,7 @@ def _cluster(items: list[dict]) -> dict[str, list[dict]]:
         matched = None
         best_score = 0.0
         anchor = _entity_anchor(item)
+        item_type = _event_type(item)
         for rep_key, rep_item in representatives:
             if not _within_window(item, rep_item):
                 continue
@@ -179,8 +180,12 @@ def _cluster(items: list[dict]) -> dict[str, list[dict]]:
             rep_anchor = _entity_anchor(rep_item)
             anchor_match = bool(anchor and rep_anchor and anchor == rep_anchor)
             anchor_conflict = bool(anchor and rep_anchor and anchor != rep_anchor)
-            same_type = _event_type(item) == _event_type(rep_item)
+            same_type = item_type == _event_type(rep_item)
             if anchor_conflict and score < 0.72:
+                continue
+            # Same entity but different event types should never merge on weak lexical overlap.
+            # A very high similarity can still merge when titles are effectively duplicates.
+            if anchor_match and not same_type and score < 0.72:
                 continue
             accept = score >= 0.52 or (anchor_match and same_type and score >= 0.30)
             if accept and score > best_score:
@@ -238,138 +243,3 @@ def _evidence(items: list[dict]) -> list[dict]:
         "published_at": x.get("published_at"),
         "date_verified": bool(x.get("date_verified")),
     } for x in sorted(items, key=_timestamp, reverse=True)[:5]]
-
-
-def _evidence_quality(items: list[dict], evidence: list[dict]) -> tuple[float, str]:
-    source_count = len({x.get("source_name") for x in items if x.get("source_name")})
-    # A single source is intentionally not rewarded for "independence". It may
-    # be traceable and date-verified, but it is still un-cross-checked evidence.
-    source_independence = 1.0 if source_count >= 2 else 0.0
-    traceability = sum(1 for x in evidence if x.get("source_url")) / max(1, len(evidence))
-    date_verified = sum(1 for x in evidence if x.get("date_verified")) / max(1, len(evidence))
-    coverage = round((source_independence * .50 + traceability * .25 + date_verified * .25) * 100, 1)
-    return coverage, ("cross_checked" if source_count >= 2 else "single_source")
-
-
-def _trust(coverage: float, conflict: bool = False) -> str:
-    if conflict or coverage < 55:
-        return "low"
-    if coverage < 80:
-        return "medium"
-    return "high"
-
-
-def _insight(items: list[dict], scores: dict, event_type: str, entities: list[str]) -> dict:
-    lead = max(items, key=lambda x: float(x.get("ai_score") or 0))
-    title = lead.get("title_zh") or lead.get("title") or ""
-    summary = lead.get("summary_zh") or lead.get("summary") or ""
-    topic = TOPIC_LABELS.get(lead.get("research_topic"), "保险行业")
-    source_count = len({x.get("source_name") for x in items if x.get("source_name")})
-    evidence = _evidence(items)
-    coverage, evidence_status = _evidence_quality(items, evidence)
-    signals = extract_signals(title, summary, topic=lead.get("research_topic"))
-    if source_count > 1:
-        why = f"该变化已由 {source_count} 个独立信源交叉报道，适合进入事件跟踪。"
-    elif scores["impact"] >= 75:
-        why = f"它涉及{topic}的关键变化，潜在影响面较大，但目前仍需独立证据确认。"
-    else:
-        why = f"它属于{topic}的变化信号，目前更适合作为趋势观察，不宜仅凭单一报道下结论。"
-    if event_type == "personnel":
-        watch = "除非出现战略调整、组织重组或经营指标变化，否则建议降低持续关注优先级。"
-    elif scores["actionability"] >= 70:
-        watch = "继续追踪后续公告、监管文件、市场数据和竞争对手动作，判断是否需要调整业务判断。"
-    else:
-        watch = "观察是否出现第二个独立信源、监管动作或同类公司跟进，以确认趋势是否形成。"
-    review_required = coverage < 75 or event_type in {"regulatory", "rating", "claims_loss"}
-    return {
-        "what_happened": title,
-        "why_it_matters": why,
-        "who_is_affected": topic,
-        "what_to_watch": watch,
-        "evidence": evidence,
-        "evidence_coverage": coverage,
-        "evidence_status": evidence_status,
-        "signals": signals,
-        "confidence": scores["confidence"],
-        "summary": summary[:360],
-        "entity_count": len(entities),
-        "human_review_required": review_required,
-    }
-
-
-def build(data: dict) -> dict:
-    news = data.get("news", []) if isinstance(data, dict) else []
-    events = []
-    for event_id, items in _cluster(news).items():
-        items = sorted(items, key=_timestamp, reverse=True)
-        scores = _score(items)
-        lead = items[0]
-        entities = sorted({e for item in items for e in _entities(item)})[:16]
-        event_type = _event_type(lead)
-        evidence = _evidence(items)
-        evidence_coverage, evidence_status = _evidence_quality(items, evidence)
-        review_required = evidence_coverage < 75 or event_type in {"regulatory", "rating", "claims_loss"}
-        conflict = False
-        trust_level = _trust(evidence_coverage, conflict)
-        events.append({
-            "event_id": "evt_" + event_id,
-            "event_fingerprint": _event_fingerprint(lead),
-            "event_fingerprint_version": FINGERPRINT_VERSION,
-            "title": lead.get("title_zh") or lead.get("title") or "",
-            "event_type": event_type,
-            "entities": entities,
-            "topic": lead.get("research_topic"),
-            "topic_label": TOPIC_LABELS.get(lead.get("research_topic"), "保险行业"),
-            "published_at": lead.get("published_at"),
-            "source_count": len({x.get("source_name") for x in items if x.get("source_name")}),
-            "article_count": len(items),
-            "article_ids": [x.get("id") for x in items if x.get("id") is not None],
-            "scores": scores,
-            "evidence": evidence,
-            "evidence_coverage": evidence_coverage,
-            "evidence_status": evidence_status,
-            "review_required": review_required,
-            "trust": {"level": trust_level, "conflict": conflict},
-            "insight": _insight(items, scores, event_type, entities),
-        })
-    events.sort(key=lambda x: (x["scores"]["intelligence_score"], x.get("published_at") or ""), reverse=True)
-    today = datetime.now(timezone.utc).date().isoformat()
-    daily = [e for e in events if (e.get("published_at") or "").startswith(today)][:5] or events[:5]
-    event_types = Counter(e["event_type"] for e in events)
-    return {
-        "version": MODEL_VERSION,
-        "generated_at": datetime.now(timezone.utc).isoformat(),
-        "principle": "发现值得行动的变化，而不是堆积更多新闻",
-        "model": {
-            "article": "source item",
-            "event": "entity + action + topic + time",
-            "evidence": "traceable independent source support",
-            "decision": "advisory only / human approval boundary",
-        },
-        "events": events,
-        "daily_brief": daily,
-        "radar": build_radar(events),
-        "stats": {
-            "news_count": len(news),
-            "event_count": len(events),
-            "multi_source_events": sum(1 for e in events if e["source_count"] > 1),
-            "review_required_events": sum(1 for e in events if e["review_required"]),
-            "event_types": dict(event_types),
-        },
-    }
-
-
-def main() -> None:
-    with open(DATA_PATH, encoding="utf-8") as f:
-        data = json.load(f)
-    result = build(data)
-    tmp = OUTPUT_PATH + ".tmp"
-    with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(result, f, ensure_ascii=False, indent=2)
-        f.write("\n")
-    os.replace(tmp, OUTPUT_PATH)
-    print(f"Intelligence v{MODEL_VERSION}: {result['stats']['news_count']} news -> {result['stats']['event_count']} events; review={result['stats']['review_required_events']}")
-
-
-if __name__ == "__main__":
-    main()
