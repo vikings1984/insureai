@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "InsureAI Traceable Knowledge Graph",
+  "type": "object",
+  "required": ["version", "graph", "nodes", "edges", "stats"],
+  "properties": {
+    "version": {"type": "integer", "minimum": 1},
+    "graph": {"const": "insureai_traceable_knowledge_graph"},
+    "node_types": {"type": "array", "items": {"type": "string"}},
+    "relationship_types": {"type": "array", "items": {"type": "string"}},
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "name"],
+        "properties": {
+          "id": {"type": "string"},
+          "type": {"enum": ["Company", "Person", "Product", "Event", "Regulation", "Claim", "Evidence", "Topic"]},
+          "name": {"type": "string"}
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source", "relationship", "target", "confidence"],
+        "properties": {
+          "source": {"type": "string"},
+          "relationship": {"type": "string"},
+          "target": {"type": "string"},
+          "evidence_refs": {"type": "array", "items": {"type": "string"}},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+        }
+      }
+    },
+    "stats": {"type": "object"}
+  }
+}
