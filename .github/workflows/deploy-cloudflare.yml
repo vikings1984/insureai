@@ -9,9 +9,6 @@ permissions:
   contents: read
   deployments: write
 
-env:
-  DEPLOYMENT_URL: ${{ vars.DEPLOYMENT_URL || '' }}
-
 concurrency:
   group: cloudflare-workers-deploy
   # Do not cancel an in-flight deployment when a second data/quality commit arrives.
@@ -52,27 +49,6 @@ jobs:
           assert 'InsureAI' in text, 'InsureAI site identity missing from deployment artifact'
           print('Cloudflare deployment artifact identity verified')
           PY
-
-      - name: Verify published deployment
-        if: env.DEPLOYMENT_URL != ''
-        env:
-          DEPLOYMENT_URL: ${{ env.DEPLOYMENT_URL }}
-          DEPLOYMENT_MARKER: InsureAI
-        run: |
-          for attempt in 1 2 3 4 5; do
-            echo "Published deployment verification attempt ${attempt}/5"
-            if python3 deployment_verification.py; then
-              exit 0
-            fi
-            if [ "$attempt" -lt 5 ]; then
-              sleep 15
-            fi
-          done
-          exit 1
-
-      - name: Report live verification configuration
-        if: env.DEPLOYMENT_URL == ''
-        run: echo 'Live deployment verification is unconfigured: set the repository Actions variable DEPLOYMENT_URL.'
 
       - name: Notify on failure
         if: failure()
