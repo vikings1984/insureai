@@ -56,8 +56,15 @@ jobs:
           [ -f release_provenance.json ] && files="$files release_provenance.json"
           if [ -n "$(git status --porcelain $files)" ]; then
             git add $files
-            git commit -m "chore: record deployment state transition [skip ci]"
-            git push origin HEAD:${{ github.ref_name }}
+            git commit -m "chore: record deployment state transition [skip ci]" || echo 'nothing to commit'
+            git fetch origin "${{ github.ref_name }}"
+            if git rebase "origin/${{ github.ref_name }}"; then
+              git push origin HEAD:${{ github.ref_name }}
+            else
+              echo 'Remote already advanced with concurrent verification state; discarding local commit'
+              git rebase --abort
+              git reset --merge
+            fi
           else
             echo "No deployment state changes to commit"
           fi
