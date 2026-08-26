@@ -79,7 +79,7 @@ jobs:
           PY
       - name: Report deployment URL configuration
         if: env.DEPLOYMENT_URL == ''
-        run: echo 'Deployment verification is unconfigured: set the repository Actions variable DEPLOYMENT_URL.'
+        run: "echo 'Deployment verification is unconfigured: set the repository Actions variable DEPLOYMENT_URL.'"
       - name: Notify on failure
         if: failure()
         uses: actions/github-script@v7

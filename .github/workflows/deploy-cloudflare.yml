@@ -96,7 +96,7 @@ jobs:
 
       - name: Report verification configuration
         if: env.DEPLOYMENT_URL == ''
-        run: echo 'Deployment verification is unconfigured: set the repository Actions variable DEPLOYMENT_URL.'
+        run: "echo 'Deployment verification is unconfigured: set the repository Actions variable DEPLOYMENT_URL.'"
 
       - name: Notify on failure
         if: failure()

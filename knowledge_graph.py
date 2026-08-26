@@ -100,11 +100,11 @@ def build() -> dict:
                 add_edge(edges, nid, "MENTIONS", cid, confidence=0.8)
             if claim.get("type") == "numeric":
                 for value in claim.get("numbers") or []:
-                    pid = add_node(nodes, "Product", f"numeric:{value}", value=value, semantic_type="numeric_fact")
+                    pid = add_node(nodes, "Product", f"numeric:{value}", raw=value, semantic_type="numeric_fact")
                     add_edge(edges, cid, "RELATED_TO", pid, confidence=0.6)
             if claim.get("type") == "date":
                 for value in claim.get("dates") or []:
-                    rid = add_node(nodes, "Regulation", f"date:{value}", value=value, semantic_type="date_fact")
+                    rid = add_node(nodes, "Regulation", f"date:{value}", raw=value, semantic_type="date_fact")
                     add_edge(edges, cid, "RELATED_TO", rid, confidence=0.6)
 
     result = {

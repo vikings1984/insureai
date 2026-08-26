@@ -49,22 +49,24 @@ def pair_metrics(actual: set[tuple[str, str]], expected_positive: set[tuple[str,
 
 
 def event_benchmark(fixtures: list[dict]) -> dict:
-    rows = []
     expected_positive: set[tuple[str, str]] = set()
     different_pairs: set[tuple[str, str]] = set()
     for case in fixtures:
-        rows.extend(news(x) for x in case["articles"])
         for pair in case.get("same_event_pairs", []):
             expected_positive.add(tuple(sorted(pair)))
         for pair in case.get("different_event_pairs", []):
             different_pairs.add(tuple(sorted(pair)))
-    result = build({"news": rows})
+    # Evaluate each case in isolation: cross-case duplicated headlines must not
+    # collide in a single build and pollute the merge metrics.
     actual: set[tuple[str, str]] = set()
-    for event in result.get("events", []):
-        ids = [str(x) for x in event.get("article_ids") or []]
-        for i, left in enumerate(ids):
-            for right in ids[i + 1:]:
-                actual.add(tuple(sorted((left, right))))
+    for case in fixtures:
+        rows = [news(x) for x in case["articles"]]
+        result = build({"news": rows})
+        for event in result.get("events", []):
+            ids = [str(x) for x in event.get("article_ids") or []]
+            for i, left in enumerate(ids):
+                for right in ids[i + 1:]:
+                    actual.add(tuple(sorted((left, right))))
     return pair_metrics(actual, expected_positive, expected_positive | different_pairs)
 
 
