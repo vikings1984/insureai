@@ -40,8 +40,13 @@ jobs:
           echo "$output"
           echo "state_changed=${output##*=}" >> "$GITHUB_OUTPUT"
       - name: Bridge verification into release provenance
-        if: always() && steps.transition.outputs.state_changed == 'true' && hashFiles('deployment_verification.json','release_provenance.json') != ''
-        run: python3 -c "from release_provenance import attach_deployment_verification; attach_deployment_verification(); print('Release provenance updated')"
+        if: always() && steps.transition.outputs.state_changed == 'true'
+        run: |
+          if [ -f deployment_verification.json ] && [ -f release_provenance.json ]; then
+            python3 -c "from release_provenance import attach_deployment_verification; attach_deployment_verification(); print('Release provenance updated')"
+          else
+            echo "Provenance bridge skipped: optional artifact missing"
+          fi
       - name: Commit deployment state transition + optional provenance + history
         if: always() && steps.transition.outputs.state_changed == 'true'
         run: |
