@@ -81,7 +81,7 @@ def verify_deployment(*, site_url: str, expected_marker: str = "InsureAI", timeo
         result["error"] = "insecure_or_invalid_site_url"
         return result
     try:
-        request = urllib.request.Request(site_url, headers={"User-Agent": "InsureAI-Deployment-Verification/1.1"})
+        request = urllib.request.Request(site_url, headers={"User-Agent": "InsureAI-Deployment-Verification/1.2"})
         with urllib.request.urlopen(request, timeout=timeout) as response:
             final_url = response.geturl() if callable(getattr(response, "geturl", None)) else site_url
             result["final_url"] = final_url
@@ -94,7 +94,11 @@ def verify_deployment(*, site_url: str, expected_marker: str = "InsureAI", timeo
             if result["content_type"] not in {"text/html", "application/xhtml+xml"}:
                 result["error"] = "unexpected_content_type"
                 return result
-            body = response.read(MAX_RESPONSE_BYTES + 1)
+            reader = response.read
+            try:
+                body = reader(MAX_RESPONSE_BYTES + 1)
+            except TypeError:
+                body = reader()
             if len(body) > MAX_RESPONSE_BYTES:
                 result["content_length"] = len(body)
                 result["error"] = "response_too_large"
