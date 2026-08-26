@@ -21,7 +21,17 @@ jobs:
           python-version: '3.11'
       - name: Verify published deployment
         continue-on-error: true
-        run: python3 deployment_verification.py
+        run: |
+          for attempt in 1 2 3 4 5; do
+            echo "Deployment verification attempt ${attempt}/5"
+            if python3 deployment_verification.py; then
+              exit 0
+            fi
+            if [ "$attempt" -lt 5 ]; then
+              sleep 15
+            fi
+          done
+          exit 1
       - name: Detect deployment state transition
         id: transition
         if: always()
