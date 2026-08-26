@@ -32,6 +32,8 @@ jobs:
               assert doc.get('type') == 'object', f'expected object schema: {path}'
           print('Schema contracts valid')
           PY
+      - name: Generate canonical intelligence artifact
+        run: python3 intelligence.py
       - name: Generate and validate claim/evidence artifact
         run: |
           python3 claims_build.py
