@@ -46,8 +46,7 @@ def event_benchmark(fixtures: list[dict]) -> dict:
     expected_positive: set[tuple[str, str]] = set()
     different_pairs: set[tuple[str, str]] = set()
     for case in fixtures:
-        case_rows = [news(x) for x in case["articles"]]
-        rows.extend(case_rows)
+        rows.extend(news(x) for x in case["articles"])
         for pair in case.get("same_event_pairs", []):
             expected_positive.add(tuple(sorted(pair)))
         for pair in case.get("different_event_pairs", []):
@@ -59,8 +58,7 @@ def event_benchmark(fixtures: list[dict]) -> dict:
         for i, left in enumerate(ids):
             for right in ids[i + 1:]:
                 actual.add(tuple(sorted((left, right))))
-    all_pairs = expected_positive | different_pairs
-    return pair_metrics(actual, expected_positive, all_pairs)
+    return pair_metrics(actual, expected_positive, expected_positive | different_pairs)
 
 
 def claim_benchmark(fixtures: list[dict]) -> dict:
@@ -82,24 +80,29 @@ def claim_benchmark(fixtures: list[dict]) -> dict:
 
 
 def decision_benchmark(fixtures: list[dict]) -> dict:
-    now_cases = []
-    blocked_now = 0
-    review_required = 0
+    cases = []
+    unsafe_now = 0
+    review_true_positive = 0
+    review_expected = 0
     for case in fixtures:
-        event = case["event"]
-        temporal = case["temporal"]
-        rows = build_decisions([event], temporal, "executive")
-        row = rows[0]
-        if row.get("urgency") == "now":
-            blocked_now += int(case["expected"].get("forbid_urgency") == "now")
-        if row.get("human_review") or row.get("review_required"):
-            review_required += int(case["expected"].get("require_human_review") is True)
-        now_cases.append({"id": case["id"], "urgency": row.get("urgency"), "human_review": bool(row.get("human_review") or row.get("review_required"))})
-    forbidden_now = sum(1 for x in now_cases if x["id"] in {"decision_safe_watch_001", "decision_conflict_001"})
+        row = build_decisions([case["event"]], case["temporal"], "executive")[0]
+        forbidden_now = case["expected"].get("forbid_urgency") == "now"
+        is_now = row.get("urgency") == "now"
+        unsafe_now += int(forbidden_now and is_now)
+        expected_review = case["expected"].get("require_human_review") is True
+        actual_review = bool(row.get("human_review_required"))
+        review_expected += int(expected_review)
+        review_true_positive += int(expected_review and actual_review)
+        cases.append({
+            "id": case["id"],
+            "urgency": row.get("urgency"),
+            "human_review_required": actual_review,
+        })
+    forbidden_total = sum(1 for case in fixtures if case["expected"].get("forbid_urgency") == "now")
     return {
-        "unsafe_now_rate": round(blocked_now / forbidden_now, 4) if forbidden_now else 0.0,
-        "human_review_recall": round(review_required / 1, 4),
-        "cases": now_cases,
+        "unsafe_now_rate": round(unsafe_now / forbidden_total, 4) if forbidden_total else 0.0,
+        "human_review_recall": round(review_true_positive / review_expected, 4) if review_expected else 1.0,
+        "cases": cases,
     }
 
 
