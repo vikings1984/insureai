@@ -89,6 +89,9 @@ jobs:
           [ -f release_provenance.json ] && files="$files release_provenance.json"
           if [ -n "$(git status --porcelain $files)" ]; then
             git add $files
+            # Discard regenerable deploy artifacts (index.html marker etc.) so
+            # rebase can run on a clean tree without unstaged changes.
+            git checkout -- . 2>/dev/null || true
             git commit -m "chore: record deployment verification [skip ci]" || echo 'nothing to commit'
             git fetch origin "${{ github.ref_name }}"
             if git rebase "origin/${{ github.ref_name }}"; then
