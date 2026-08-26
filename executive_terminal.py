@@ -27,10 +27,10 @@ def main() -> None:
     risk = load("daily_risk_radar.json", {})
     owner = load("owner_risk_view.json", {})
     credibility = load("decision_credibility.json", {})
-    provenance = load("release_provenance.json", {})
+    manifest = load("release_manifest.json", {})
+    deployment = load("deployment_verification.json", {})
 
     events = intelligence.get("events") or []
-    stats = intelligence.get("stats") or {}
     trends = (intelligence.get("radar") or {}).get("topic_trends") or []
     rising = [x for x in trends if x.get("direction") == "rising"]
     attention = [x for x in (risk.get("items") or risk.get("signals") or []) if isinstance(x, dict)]
@@ -44,9 +44,10 @@ def main() -> None:
         sum(float(e.get("evidence_coverage", 0) or 0) for e in events) / len(events)
         if events else 0
     )
+    deployment_status = deployment.get("status") or manifest.get("deployment_status") or "unknown"
 
     output = {
-        "version": 1,
+        "version": 2,
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "summary": {
             "event_count": len(events),
@@ -57,20 +58,38 @@ def main() -> None:
             "cross_checked_claims": int(claims.get("cross_checked_claim_count", 0) or 0),
             "single_source_claims": int(claims.get("single_source_claim_count", 0) or 0),
             "credibility_status": credibility.get("status", "unknown"),
-            "deployment_status": (provenance.get("deployment") or {}).get("status", "unknown"),
+            "deployment_status": deployment_status,
         },
         "what_changed": [
-            {"title": e.get("topic") or e.get("title") or "未命名事件", "why": e.get("insight") or e.get("summary"), "event_id": e.get("event_id"), "trust": e.get("trust"), "evidence_coverage": e.get("evidence_coverage"), "review_required": bool(e.get("review_required", False))}
+            {
+                "title": e.get("topic") or e.get("title") or "未命名事件",
+                "why": e.get("insight") or e.get("summary"),
+                "event_id": e.get("event_id"),
+                "trust": e.get("trust"),
+                "evidence_coverage": e.get("evidence_coverage"),
+                "review_required": bool(e.get("review_required", False)),
+            }
             for e in priority_events
         ],
         "what_is_accelerating": rising[:8],
         "what_needs_attention": attention[:8],
         "what_needs_human_decision": reviews[:8],
         "release": {
-            "source_commit": provenance.get("source_commit"),
-            "release_marker": provenance.get("release_marker"),
-            "deployment": provenance.get("deployment", {}),
-            "quality": provenance.get("quality", {}),
+            "source_commit": manifest.get("source_commit"),
+            "release_marker": manifest.get("release_marker"),
+            "deployment": {
+                "status": deployment_status,
+                "verified": bool(deployment.get("verified", False)),
+                "release_match": bool(
+                    deployment.get("release_marker")
+                    and manifest.get("release_marker")
+                    and deployment.get("release_marker") == manifest.get("release_marker")
+                ),
+            },
+            "quality": {
+                "status": manifest.get("quality_status", "unknown"),
+                "production_gate": (manifest.get("production_quality_gate") or {}).get("status", "unknown"),
+            },
         },
         "artifact_sources": [
             "intelligence.json",
@@ -79,7 +98,8 @@ def main() -> None:
             "daily_risk_radar.json",
             "owner_risk_view.json",
             "decision_credibility.json",
-            "release_provenance.json",
+            "release_manifest.json",
+            "deployment_verification.json",
         ],
     }
     OUTPUT.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
