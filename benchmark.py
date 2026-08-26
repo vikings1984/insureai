@@ -13,15 +13,22 @@ ROOT = Path(__file__).resolve().parent
 FIXTURE = ROOT / "benchmarks" / "event_claim_evidence_decision.json"
 OUTPUT = ROOT / "benchmark_results.json"
 
+SOURCE_DOMAINS = {
+    "Reuters": "reuters.com",
+    "Insurance Journal": "insurancejournal.com",
+}
+
 
 def news(row: dict) -> dict:
+    source = row["source"]
+    domain = SOURCE_DOMAINS.get(source, "benchmark.invalid")
     return {
         "id": row["id"],
         "title": row["title"],
         "summary": row["title"],
         "tags": row.get("tags", ""),
-        "source_name": row["source"],
-        "source_url": f"https://benchmark.invalid/{row['id']}",
+        "source_name": source,
+        "source_url": f"https://{domain}/benchmark/{row['id']}",
         "published_at": row.get("published_at", "2026-08-21T10:00:00+00:00"),
         "date_verified": True,
         "source_authority": 90,
@@ -93,11 +100,7 @@ def decision_benchmark(fixtures: list[dict]) -> dict:
         actual_review = bool(row.get("human_review_required"))
         review_expected += int(expected_review)
         review_true_positive += int(expected_review and actual_review)
-        cases.append({
-            "id": case["id"],
-            "urgency": row.get("urgency"),
-            "human_review_required": actual_review,
-        })
+        cases.append({"id": case["id"], "urgency": row.get("urgency"), "human_review_required": actual_review})
     forbidden_total = sum(1 for case in fixtures if case["expected"].get("forbid_urgency") == "now")
     return {
         "unsafe_now_rate": round(unsafe_now / forbidden_total, 4) if forbidden_total else 0.0,
