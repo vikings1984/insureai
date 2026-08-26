@@ -28,13 +28,5 @@ jobs:
         if: always()
         run: |
           if [ -f benchmark_results.json ]; then
-            python3 - <<'PY'
-            import json
-            r=json.load(open('benchmark_results.json', encoding='utf-8'))
-            print(f"macro_quality={r.get('macro_quality')}")
-            print(f"safety_pass={r.get('safety_pass')}")
-            print(f"event_false_merge_rate={r.get('event',{}).get('false_merge_rate')}")
-            print(f"single_source_false_cross_check_rate={r.get('claim_evidence',{}).get('single_source_false_cross_check_rate')}")
-            print(f"unsafe_now_rate={r.get('decision',{}).get('unsafe_now_rate')}")
-            PY
+            python3 -c "import json; r=json.load(open('benchmark_results.json', encoding='utf-8')); print('macro_quality=' + str(r.get('macro_quality'))); print('safety_pass=' + str(r.get('safety_pass'))); print('event_false_merge_rate=' + str(r.get('event',{}).get('false_merge_rate'))); print('single_source_false_cross_check_rate=' + str(r.get('claim_evidence',{}).get('single_source_false_cross_check_rate'))); print('unsafe_now_rate=' + str(r.get('decision',{}).get('unsafe_now_rate')))"
           fi
