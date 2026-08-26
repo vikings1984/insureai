@@ -6,14 +6,11 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   deployments: write
 
 concurrency:
   group: cloudflare-workers-deploy
-  # Do not cancel an in-flight deployment when a second data/quality commit arrives.
-  # Static asset deployment is intentionally serialized so release verification cannot
-  # be interrupted by the next commit.
   cancel-in-progress: false
 
 jobs:
@@ -22,21 +19,22 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      DEPLOYMENT_URL: ${{ vars.DEPLOYMENT_URL || '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          persist-credentials: true
 
       - name: Inject deployment identity marker
         run: python3 scripts/inject_ui_assets.py
 
       - name: Deploy static assets to Workers
-        # secrets 未配置时跳过（env 变量为空，job 显示成功而非失败）；配置后自动启用。
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # wrangler 4 才支持纯静态资产（无 main 入口）的部署
           wranglerVersion: '4.125.0'
           command: deploy
 
@@ -49,6 +47,56 @@ jobs:
           assert 'InsureAI' in text, 'InsureAI site identity missing from deployment artifact'
           print('Cloudflare deployment artifact identity verified')
           PY
+
+      - name: Verify live deployment
+        if: env.DEPLOYMENT_URL != '' && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
+        run: |
+          for attempt in 1 2 3 4 5; do
+            echo "Live deployment verification attempt ${attempt}/5"
+            if python3 deployment_verification.py; then
+              break
+            fi
+            if [ "$attempt" -eq 5 ]; then
+              exit 1
+            fi
+            sleep 15
+          done
+
+      - name: Detect deployment state transition
+        id: transition
+        if: always() && env.DEPLOYMENT_URL != ''
+        run: |
+          output="$(python3 scripts/deployment_state_transition.py)"
+          echo "$output"
+          echo "state_changed=${output##*=}" >> "$GITHUB_OUTPUT"
+
+      - name: Bridge verification into release provenance
+        if: always() && env.DEPLOYMENT_URL != '' && steps.transition.outputs.state_changed == 'true'
+        run: |
+          if [ -f release_provenance.json ] && [ -f deployment_verification.json ]; then
+            python3 -c "from release_provenance import attach_deployment_verification; attach_deployment_verification(); print('Release provenance updated')"
+          else
+            echo 'Provenance bridge skipped: optional artifact missing'
+          fi
+
+      - name: Commit deployment verification state
+        if: always() && env.DEPLOYMENT_URL != '' && steps.transition.outputs.state_changed == 'true'
+        run: |
+          git config user.name "insureai-bot"
+          git config user.email "bot@insureai.local"
+          files="deployment_verification.json deployment_verification_history.json"
+          [ -f release_provenance.json ] && files="$files release_provenance.json"
+          if [ -n "$(git status --porcelain $files)" ]; then
+            git add $files
+            git commit -m "chore: record deployment verification [skip ci]"
+            git push origin HEAD:${{ github.ref_name }}
+          else
+            echo 'No deployment verification state changes to commit'
+          fi
+
+      - name: Report verification configuration
+        if: env.DEPLOYMENT_URL == ''
+        run: echo 'Deployment verification is unconfigured: set the repository Actions variable DEPLOYMENT_URL.'
 
       - name: Notify on failure
         if: failure()
