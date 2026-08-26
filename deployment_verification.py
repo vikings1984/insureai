@@ -64,7 +64,7 @@ def verify_deployment(*, site_url: str, expected_marker: str = "InsureAI", timeo
         "site_url": site_url,
         "final_url": None,
         "expected_marker": expected_marker,
-        "release_marker": expected_marker,
+        "release_marker": None,
         "http_status": None,
         "content_type": None,
         "content_length": 0,
@@ -76,43 +76,29 @@ def verify_deployment(*, site_url: str, expected_marker: str = "InsureAI", timeo
         result["status"] = "unconfigured"
         result["error"] = "site_url_missing"
         return result
-
     parsed = urllib.parse.urlparse(site_url)
     if parsed.scheme != "https" or not parsed.netloc:
         result["error"] = "insecure_or_invalid_site_url"
         return result
-
     try:
-        request = urllib.request.Request(site_url, headers={"User-Agent": "InsureAI-Deployment-Verification/1.0"})
+        request = urllib.request.Request(site_url, headers={"User-Agent": "InsureAI-Deployment-Verification/1.1"})
         with urllib.request.urlopen(request, timeout=timeout) as response:
-            final_url_getter = getattr(response, "geturl", None)
-            final_url = final_url_getter() if callable(final_url_getter) else site_url
+            final_url = response.geturl() if callable(getattr(response, "geturl", None)) else site_url
             result["final_url"] = final_url
             final = urllib.parse.urlparse(final_url)
             if final.scheme != "https" or final.netloc != parsed.netloc:
                 result["error"] = "redirect_origin_mismatch"
                 return result
-
             result["http_status"] = int(response.status)
-            headers = getattr(response, "headers", None)
-            if headers is None:
-                result["content_type"] = "text/html"
-            else:
-                result["content_type"] = (headers.get("Content-Type") or "").split(";", 1)[0].strip().lower()
+            result["content_type"] = ((response.headers.get("Content-Type") if getattr(response, "headers", None) else "text/html") or "").split(";", 1)[0].strip().lower()
             if result["content_type"] not in {"text/html", "application/xhtml+xml"}:
                 result["error"] = "unexpected_content_type"
                 return result
-
-            reader = response.read
-            try:
-                body = reader(MAX_RESPONSE_BYTES + 1)
-            except TypeError:
-                body = reader()
+            body = response.read(MAX_RESPONSE_BYTES + 1)
             if len(body) > MAX_RESPONSE_BYTES:
                 result["content_length"] = len(body)
                 result["error"] = "response_too_large"
                 return result
-
             text = body.decode("utf-8", errors="replace")
             published_marker = _extract_release_marker(text)
             result["content_length"] = len(body)
@@ -129,10 +115,7 @@ def verify_deployment(*, site_url: str, expected_marker: str = "InsureAI", timeo
 
 
 def main() -> None:
-    result = verify_deployment(
-        site_url=os.environ.get("DEPLOYMENT_URL", ""),
-        expected_marker=_current_release_marker(),
-    )
+    result = verify_deployment(site_url=os.environ.get("DEPLOYMENT_URL", ""), expected_marker=_current_release_marker())
     OUTPUT.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(result, ensure_ascii=False))
     if not result["verified"] and result["status"] != "unconfigured":
