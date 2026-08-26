@@ -26,6 +26,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      - name: Inject deployment identity marker
+        run: python3 scripts/inject_ui_assets.py
+
       - name: Deploy static assets to Workers
         # secrets 未配置时跳过（env 变量为空，job 显示成功而非失败）；配置后自动启用。
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
@@ -36,6 +39,16 @@ jobs:
           # wrangler 4 才支持纯静态资产（无 main 入口）的部署
           wranglerVersion: '4.125.0'
           command: deploy
+
+      - name: Verify deployment artifact marker
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          text = Path('index.html').read_text(encoding='utf-8')
+          assert 'insureai-release-marker' in text, 'deployment marker was not injected'
+          assert 'InsureAI' in text, 'InsureAI site identity missing from deployment artifact'
+          print('Cloudflare deployment artifact identity verified')
+          PY
 
       - name: Notify on failure
         if: failure()
