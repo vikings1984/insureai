@@ -30,20 +30,17 @@ jobs:
           echo "$output"
           echo "state_changed=${output##*=}" >> "$GITHUB_OUTPUT"
       - name: Bridge verification into release provenance
-        if: always() && steps.transition.outputs.state_changed == 'true'
-        run: |
-          if [ -f deployment_verification.json ] && [ -f release_provenance.json ]; then
-            python3 -c "from release_provenance import attach_deployment_verification; attach_deployment_verification(); print('Release provenance updated from deployment verification state transition')"
-          else
-            echo "Provenance bridge skipped: required artifact missing"
-          fi
-      - name: Commit deployment state transition + provenance + history
+        if: always() && steps.transition.outputs.state_changed == 'true' && hashFiles('deployment_verification.json','release_provenance.json') != ''
+        run: python3 -c "from release_provenance import attach_deployment_verification; attach_deployment_verification(); print('Release provenance updated')"
+      - name: Commit deployment state transition + optional provenance + history
         if: always() && steps.transition.outputs.state_changed == 'true'
         run: |
           git config user.name "insureai-bot"
           git config user.email "bot@insureai.local"
-          if [ -n "$(git status --porcelain deployment_verification.json release_provenance.json deployment_verification_history.json)" ]; then
-            git add deployment_verification.json release_provenance.json deployment_verification_history.json
+          files="deployment_verification.json deployment_verification_history.json"
+          [ -f release_provenance.json ] && files="$files release_provenance.json"
+          if [ -n "$(git status --porcelain $files)" ]; then
+            git add $files
             git commit -m "chore: record deployment state transition [skip ci]"
             git push origin HEAD:${{ github.ref_name }}
           else
@@ -67,8 +64,7 @@ jobs:
           PY
       - name: Report deployment URL configuration
         if: env.DEPLOYMENT_URL == ''
-        run: "echo 'Deployment verification is unconfigured: set the repository Actions variable DEPLOYMENT_URL.'"
-
+        run: echo 'Deployment verification is unconfigured: set the repository Actions variable DEPLOYMENT_URL.'
       - name: Notify on failure
         if: failure()
         uses: actions/github-script@v7
