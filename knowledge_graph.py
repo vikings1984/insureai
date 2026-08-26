@@ -59,62 +59,67 @@ def entities(text: str) -> list[str]:
     return out[:12]
 
 
-def domain(url: str) -> str:
-    try:
-        return urlparse(url or "").netloc.lower()
-    except Exception:
-        return ""
-
-
 def build() -> dict:
     intelligence = load(INTELLIGENCE)
     claims_doc = load(CLAIMS)
     events = intelligence.get("events") or []
-    claims = claims_doc.get("claims") or []
     nodes, edges = {}, {}
-    event_claim_map = {}
     evidence_nodes = {}
+    event_nodes = {}
 
     for event in events:
-        eid = add_node(nodes, "Event", event.get("event_id") or event.get("title") or "unknown", title=event.get("title"), topic=event.get("topic"), trust=event.get("trust"), evidence_status=event.get("evidence_status"), source_count=event.get("source_count"))
-        topic = event.get("topic")
-        tid = add_node(nodes, "Topic", topic or "")
+        event_key = event.get("event_id") or event.get("title") or "unknown"
+        eid = add_node(nodes, "Event", event_key, title=event.get("title"), topic=event.get("topic"), trust=event.get("trust"), evidence_status=event.get("evidence_status"), source_count=event.get("source_count"))
+        event_nodes[event.get("event_id")] = eid
+        tid = add_node(nodes, "Topic", event.get("topic") or "")
         add_edge(edges, eid, "ABOUT", tid, confidence=0.9)
         title = event.get("title") or event.get("summary") or event.get("insight") or ""
         for entity in entities(title):
             kind = "Person" if re.search(r"任命|出任|履新|appoint|appointed", title, re.I) else "Company"
             nid = add_node(nodes, kind, entity)
             add_edge(edges, nid, "PARTICIPATES_IN", eid, evidence_refs=event.get("article_ids") or [], confidence=0.75)
-        for ev in (event.get("evidence") or []):
-            ev_id = add_node(nodes, "Evidence", ev.get("source_url") or ev.get("source_name") or "unknown", source_name=ev.get("source_name"), domain=ev.get("domain"), published_at=ev.get("published_at"))
-            evidence_nodes[ev.get("evidence_id") or ev.get("source_url")] = ev_id
+        for ev in event.get("evidence") or []:
+            key = ev.get("evidence_id") or ev.get("source_url") or ev.get("source_name")
+            ev_id = add_node(nodes, "Evidence", key or "unknown", source_name=ev.get("source_name"), domain=ev.get("domain"), published_at=ev.get("published_at"))
+            evidence_nodes[key] = ev_id
             add_edge(edges, ev_id, "EVIDENCES", eid, confidence=1.0)
 
-    for claim in claims:
-        cid = add_node(nodes, "Claim", claim.get("claim_id") or claim.get("text") or "unknown", text=claim.get("text"), status=claim.get("status"), confidence=claim.get("confidence"), independent_domains=claim.get("independent_domains"))
-        for ref in claim.get("evidence_refs") or []:
-            ev_id = evidence_nodes.get(ref)
-            if not ev_id:
-                evidence = next((x for x in claim.get("evidence") or [] if x.get("evidence_id") == ref), None)
-                ev_id = add_node(nodes, "Evidence", (evidence or {}).get("source_url") or ref, source_name=(evidence or {}).get("source_name"), domain=(evidence or {}).get("domain"))
+    for event_group in claims_doc.get("events") or []:
+        eid = event_nodes.get(event_group.get("event_id"))
+        for claim in event_group.get("claims") or []:
+            cid = add_node(nodes, "Claim", f"{event_group.get('event_id')}:{claim.get('claim_id')}", text=claim.get("text"), status=claim.get("status"), confidence=claim.get("confidence"), independent_domains=claim.get("independent_domains"), event_id=event_group.get("event_id"))
+            if eid:
+                add_edge(edges, cid, "INVOLVES", eid, confidence=0.9)
+            for evidence in claim.get("evidence") or []:
+                ref = evidence.get("evidence_id") or evidence.get("source_url") or evidence.get("source_name")
+                ev_id = evidence_nodes.get(ref) or add_node(nodes, "Evidence", ref or "unknown", source_name=evidence.get("source_name"), domain=evidence.get("domain"), published_at=evidence.get("published_at"))
                 evidence_nodes[ref] = ev_id
-            add_edge(edges, ev_id, "SUPPORTS", cid, evidence_refs=[ref], confidence=min(1.0, float(claim.get("confidence", 0) or 0) / 100))
-        text = claim.get("text") or ""
-        for entity in claim.get("entities") or entities(text):
-            nid = add_node(nodes, "Company", entity)
-            add_edge(edges, nid, "MENTIONS", cid, confidence=0.8)
-        event_id = claim.get("event_id")
-        if event_id:
-            add_edge(edges, cid, "INVOLVES", node_id("Event", event_id), confidence=0.9)
+                add_edge(edges, ev_id, "SUPPORTS", cid, evidence_refs=[ref], confidence=min(1.0, float(claim.get("confidence", 0) or 0) / 100))
+            for entity in claim.get("entities") or entities(claim.get("text") or ""):
+                nid = add_node(nodes, "Company", entity)
+                add_edge(edges, nid, "MENTIONS", cid, confidence=0.8)
+            if claim.get("type") == "numeric":
+                for value in claim.get("numbers") or []:
+                    pid = add_node(nodes, "Product", f"numeric:{value}", value=value, semantic_type="numeric_fact")
+                    add_edge(edges, cid, "RELATED_TO", pid, confidence=0.6)
+            if claim.get("type") == "date":
+                for value in claim.get("dates") or []:
+                    rid = add_node(nodes, "Regulation", f"date:{value}", value=value, semantic_type="date_fact")
+                    add_edge(edges, cid, "RELATED_TO", rid, confidence=0.6)
 
     result = {
-        "version": 1,
+        "version": 2,
         "graph": "insureai_traceable_knowledge_graph",
         "node_types": sorted(NODE_TYPES),
         "relationship_types": sorted(REL_TYPES),
         "nodes": list(nodes.values()),
         "edges": list(edges.values()),
-        "stats": {"node_count": len(nodes), "edge_count": len(edges), "event_count": len(events), "claim_count": len(claims)},
+        "stats": {
+            "node_count": len(nodes),
+            "edge_count": len(edges),
+            "event_count": len(events),
+            "claim_count": sum(len(x.get("claims") or []) for x in claims_doc.get("events") or []),
+        },
     }
     OUTPUT.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return result
