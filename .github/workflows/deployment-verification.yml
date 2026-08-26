@@ -3,6 +3,9 @@ on:
   schedule:
     - cron: '15 */6 * * *'
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Deploy to Cloudflare Workers"]
+    types: [completed]
 permissions:
   contents: write
   issues: write
@@ -11,11 +14,13 @@ env:
   DEPLOYMENT_MARKER: "InsureAI"
 jobs:
   verify:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
         with:
           persist-credentials: true
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
@@ -57,7 +62,7 @@ jobs:
           if [ -n "$(git status --porcelain $files)" ]; then
             git add $files
             git commit -m "chore: record deployment state transition [skip ci]"
-            git push origin HEAD:${{ github.ref_name }}
+            git push origin HEAD:${{ github.event.workflow_run.head_branch || github.ref_name }}
           else
             echo "No deployment state changes to commit"
           fi
