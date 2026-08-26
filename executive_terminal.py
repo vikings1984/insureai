@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Build a management-level daily intelligence terminal from existing artifacts."""
+"""Build a management-level daily intelligence terminal without release-cycle coupling."""
 from __future__ import annotations
 
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -25,9 +26,7 @@ def main() -> None:
     claims = load("claims.json", {})
     review = load("review_queue.json", {})
     risk = load("daily_risk_radar.json", {})
-    owner = load("owner_risk_view.json", {})
     credibility = load("decision_credibility.json", {})
-    manifest = load("release_manifest.json", {})
     deployment = load("deployment_verification.json", {})
 
     events = intelligence.get("events") or []
@@ -40,15 +39,13 @@ def main() -> None:
         return float(event.get("importance", event.get("score", 0)) or 0) + (15 if event.get("review_required") else 0)
 
     priority_events = sorted(events, key=score_event, reverse=True)[:8]
-    avg_coverage = (
-        sum(float(e.get("evidence_coverage", 0) or 0) for e in events) / len(events)
-        if events else 0
-    )
-    deployment_status = deployment.get("status") or manifest.get("deployment_status") or "unknown"
+    avg_coverage = sum(float(e.get("evidence_coverage", 0) or 0) for e in events) / len(events) if events else 0
+    deployment_status = deployment.get("status", "unknown")
 
     output = {
-        "version": 2,
+        "version": 3,
         "generated_at": datetime.now(timezone.utc).isoformat(),
+        "source_commit": os.environ.get("GITHUB_SHA", "unknown"),
         "summary": {
             "event_count": len(events),
             "rising_topics": len(rising),
@@ -75,30 +72,17 @@ def main() -> None:
         "what_needs_attention": attention[:8],
         "what_needs_human_decision": reviews[:8],
         "release": {
-            "source_commit": manifest.get("source_commit"),
-            "release_marker": manifest.get("release_marker"),
-            "deployment": {
-                "status": deployment_status,
-                "verified": bool(deployment.get("verified", False)),
-                "release_match": bool(
-                    deployment.get("release_marker")
-                    and manifest.get("release_marker")
-                    and deployment.get("release_marker") == manifest.get("release_marker")
-                ),
-            },
-            "quality": {
-                "status": manifest.get("quality_status", "unknown"),
-                "production_gate": (manifest.get("production_quality_gate") or {}).get("status", "unknown"),
-            },
+            "deployment_status": deployment_status,
+            "deployment_verified": bool(deployment.get("verified", False)),
+            "release_marker": deployment.get("release_marker"),
+            "release_match": deployment.get("marker_found") is True,
         },
         "artifact_sources": [
             "intelligence.json",
             "claims.json",
             "review_queue.json",
             "daily_risk_radar.json",
-            "owner_risk_view.json",
             "decision_credibility.json",
-            "release_manifest.json",
             "deployment_verification.json",
         ],
     }
