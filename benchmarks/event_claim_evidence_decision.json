@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "name": "insureai_core_benchmark",
+  "description": "人工标注的最小核心基准集，用于评估 Event / Claim / Evidence / Decision 四层能力。",
+  "policy": {
+    "production_data_is_excluded": true,
+    "expected_outputs_are_hand_labeled": true,
+    "decision_safety_is_zero_tolerance": true
+  },
+  "event_cases": [
+    {
+      "id": "event_same_001",
+      "articles": [
+        {"id":"r1","title":"Munich Re to acquire At-Bay for $575 million","source":"Reuters","published_at":"2026-08-21T10:00:00+00:00","tags":"Munich Re,At-Bay","topic":"capital_reinsurance"},
+        {"id":"ij1","title":"Munich Re agrees to buy At-Bay for $575 million","source":"Insurance Journal","published_at":"2026-08-21T11:00:00+00:00","tags":"Munich Re,At-Bay","topic":"capital_reinsurance"}
+      ],
+      "same_event_pairs":[["r1","ij1"]],
+      "different_event_pairs":[]
+    },
+    {
+      "id": "event_different_001",
+      "articles": [
+        {"id":"r2","title":"Munich Re to acquire At-Bay for $575 million","source":"Reuters","published_at":"2026-08-21T10:00:00+00:00","tags":"Munich Re,At-Bay","topic":"capital_reinsurance"},
+        {"id":"r3","title":"Munich Re appoints new CFO","source":"Reuters","published_at":"2026-08-21T12:00:00+00:00","tags":"Munich Re","topic":"digital_transformation"}
+      ],
+      "same_event_pairs":[],
+      "different_event_pairs":[["r2","r3"]]
+    }
+  ],
+  "claim_cases": [
+    {
+      "id": "claim_cross_checked_001",
+      "articles": [
+        {"id":"r4","title":"Munich Re to acquire At-Bay for $575 million","source":"Reuters","published_at":"2026-08-21T10:00:00+00:00","tags":"Munich Re,At-Bay","topic":"capital_reinsurance"},
+        {"id":"ij4","title":"Munich Re agrees to buy At-Bay for $575 million","source":"Insurance Journal","published_at":"2026-08-21T11:00:00+00:00","tags":"Munich Re,At-Bay","topic":"capital_reinsurance"}
+      ],
+      "event":{"title":"Munich Re 收购 At-Bay"},
+      "expected":{"numeric_status":"cross_checked","minimum_coverage":100}
+    },
+    {
+      "id": "claim_single_source_001",
+      "articles": [
+        {"id":"r5","title":"Munich Re to acquire At-Bay for $575 million","source":"Reuters","published_at":"2026-08-21T10:00:00+00:00","tags":"Munich Re,At-Bay","topic":"capital_reinsurance"}
+      ],
+      "event":{"title":"Munich Re 收购 At-Bay"},
+      "expected":{"numeric_status":"single_source","forbid_cross_checked":true}
+    }
+  ],
+  "decision_cases": [
+    {
+      "id":"decision_safe_watch_001",
+      "event":{"event_id":"safe-watch","event_type":"regulatory","topic":"regulatory_change","scores":{"intelligence_score":90},"trust":{"level":"high","conflict":false},"evidence_coverage":100,"evidence_status":"cross_checked","source_count":2},
+      "temporal":{"topic_signals":[{"topic":"regulatory_change","phase":"accelerating","signal_strength":90}]},
+      "expected":{"forbid_urgency":"now"}
+    },
+    {
+      "id":"decision_conflict_001",
+      "event":{"event_id":"conflict","event_type":"regulatory","topic":"regulatory_change","scores":{"intelligence_score":90},"trust":{"level":"high","conflict":true},"evidence_coverage":100,"evidence_status":"cross_checked","source_count":2},
+      "temporal":{"topic_signals":[{"topic":"regulatory_change","phase":"accelerating","signal_strength":90}]},
+      "expected":{"forbid_urgency":"now","require_human_review":true}
+    }
+  ]
+}
