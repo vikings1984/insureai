@@ -7,6 +7,8 @@ import json
 from pathlib import Path
 from urllib.parse import urlparse
 
+from decision import CONTEXT_FIELDS, ROLE_ACTIONS, context_coverage
+
 ROOT = Path(__file__).resolve().parent
 REQUIRED_ARTIFACTS = (
     "data.json",
@@ -134,6 +136,32 @@ def _check_decisions(intelligence: dict) -> dict:
             unsafe_now += 1
 
     passed = missing_event_links == 0 and duplicate_decision_ids == 0 and guardrail_missing == 0 and unsafe_now == 0
+
+    # P1-2：八角色分发与决策上下文六要素齐备率（≥ 0.9）。
+    by_role = intelligence.get("decisions_by_role") if isinstance(intelligence, dict) else None
+    if not isinstance(by_role, dict) or set(by_role) != set(ROLE_ACTIONS):
+        return {
+            "name": "decision_safety",
+            "passed": False,
+            "detail": {
+                "decision_count": len(rows) if isinstance(rows, list) else 0,
+                "decisions_by_role_missing_roles": sorted(set(ROLE_ACTIONS) - set(by_role if isinstance(by_role, dict) else {})),
+            },
+        }
+    role_cards = [card for rows in by_role.values() for card in rows]
+    coverage = context_coverage(role_cards)
+    if coverage < 0.9:
+        return {
+            "name": "decision_safety",
+            "passed": False,
+            "detail": {
+                "decision_count": len(rows) if isinstance(rows, list) else 0,
+                "decision_context_coverage": coverage,
+                "decision_context_fields": list(CONTEXT_FIELDS),
+                "reason": "decision context coverage below 0.9",
+            },
+        }
+    passed = passed and coverage >= 0.9
     return {
         "name": "decision_safety",
         "passed": passed,
@@ -143,6 +171,8 @@ def _check_decisions(intelligence: dict) -> dict:
             "duplicate_decision_ids": duplicate_decision_ids,
             "missing_guardrails": guardrail_missing,
             "unsafe_now": unsafe_now,
+            "decision_roles": len(by_role),
+            "decision_context_coverage": coverage,
         },
     }
 

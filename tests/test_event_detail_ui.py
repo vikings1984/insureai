@@ -12,7 +12,7 @@ from pathlib import Path
 
 from benchmark import news
 from claims import build_claims
-from decision import build_decisions
+from decision import ROLE_ACTIONS, build_decisions
 from intelligence import build
 from review import build_review_queue
 from trust import summarize_event_trust
@@ -24,7 +24,7 @@ BLOCK_ORDER = ["what-happened", "claims", "evidence", "conflicts", "recommendati
 
 JS_METHODS = {
     "filter", "forEach", "get", "getElementById", "indexOf", "innerHTML",
-    "isArray", "join", "length", "map", "push", "set", "values",
+    "isArray", "join", "keys", "length", "map", "push", "set", "values",
 }
 STATE_FIELDS = {"data", "reviewQueue"}
 # 渲染器内部构造的字段（证据合并视图），不来自 artifact
@@ -39,7 +39,9 @@ ARTIFACT_FIELDS = {
     "supporting_evidence", "contradicting_evidence", "context_evidence",
     "evidence_id", "source_name", "source_url", "source_tier", "published_at", "matched_span", "relation",
     "level", "conflict", "conflict_fields",
-    "decisions", "action", "urgency", "urgency_label", "guardrail", "basis",
+    "decisions", "decisions_by_role", "action", "urgency", "urgency_label", "guardrail", "basis",
+    "context", "business_impact", "affected_functions", "potential_opportunity", "potential_risk",
+    "what_to_monitor", "recommended_next_step", "label", "impact",
     "trust_level", "temporal_phase",
     "priority", "status", "reasons", "reason",
 }
@@ -75,7 +77,8 @@ def _synthetic_intelligence() -> dict:
         event["trust"] = summarize_event_trust(items, event)
         event["claims"] = build_claims(items, event)
     temporal = {"topic_signals": [{"topic": "capital_reinsurance", "phase": "accelerating", "signal_strength": 90}]}
-    data["decisions"] = build_decisions(data["events"], temporal, "executive")
+    data["decisions_by_role"] = {role: build_decisions(data["events"], temporal, role)[:12] for role in ROLE_ACTIONS}
+    data["decisions"] = data["decisions_by_role"]["executive"]
     return data
 
 
@@ -138,6 +141,14 @@ class EventDetailUiContractTests(unittest.TestCase):
             "what_happened", "verification_status", "source_tier", "matched_span",
             "contradicting_evidence", "guardrail", "urgency_label", "conflict_fields",
             "evidence_status", "priority",
+        ):
+            self.assertIn(field, body)
+
+    def test_renderer_reads_decision_context_fields(self):
+        body = renderer_body()
+        for field in (
+            "decisions_by_role", "affected_functions", "potential_opportunity",
+            "potential_risk", "what_to_monitor", "recommended_next_step",
         ):
             self.assertIn(field, body)
 

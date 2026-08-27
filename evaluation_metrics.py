@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 
 from claims import build_claims
-from decision import build_decisions
+from decision import build_decisions, context_coverage
 from intelligence import build
 from radar import build_topic_trends
 from temporal import build_temporal_intelligence
@@ -195,15 +195,21 @@ def trend_metrics() -> dict:
 
 def decision_metrics() -> dict:
     events = [
-        {"event_id": "safe", "event_type": "regulatory", "topic": "regulatory_change", "scores": {"intelligence_score": 90}, "trust": {"level": "high", "conflict": False}},
-        {"event_id": "unsafe", "event_type": "regulatory", "topic": "regulatory_change", "scores": {"intelligence_score": 90}, "trust": {"level": "medium", "conflict": True}},
+        {"event_id": "safe", "event_type": "regulatory", "topic": "regulatory_change", "scores": {"intelligence_score": 90}, "trust": {"level": "high", "conflict": False}, "insight": {"what_to_watch": "跟踪后续监管文件与实施时间表", "signals": {"scores": {"regulatory_change": 56}}}},
+        {"event_id": "unsafe", "event_type": "regulatory", "topic": "regulatory_change", "scores": {"intelligence_score": 90}, "trust": {"level": "medium", "conflict": True}, "insight": {"what_to_watch": "跟踪证据冲突的收敛情况", "signals": {"scores": {"regulatory_change": 56}}}},
     ]
     temporal = {"topic_signals": [{"topic": "regulatory_change", "phase": "accelerating", "signal_strength": 90}]}
     rows = build_decisions(events, temporal, "executive")
     unsafe = [r for r in rows if r["urgency"] == "now" and (r["basis"]["trust_level"] != "high" or r["event_id"] == "unsafe")]
+    underwriting = build_decisions(events, temporal, "underwriting")
+    by_event = {r["event_id"]: r for r in rows}
+    # 同一事件、不同角色必须给出不同视角的行动建议（P1-2 验收：数据同源、视角不同）。
+    lens_distinct = 1.0 if any(by_event[r["event_id"]]["action"] != r["action"] for r in underwriting) else 0.0
     return {
         "unsafe_now_rate": _safe_div(len(unsafe), len(rows)),
         "guardrail_coverage": _safe_div(sum(1 for r in rows if r.get("guardrail")), len(rows)),
+        "decision_context_coverage": context_coverage(rows),
+        "role_lens_distinct": lens_distinct,
     }
 
 
@@ -270,9 +276,11 @@ def build_metrics() -> dict:
         1 - temporal["false_trend_rate_no_date"],
         1 - decision["unsafe_now_rate"],
         decision["guardrail_coverage"],
+        decision["decision_context_coverage"],
+        decision["role_lens_distinct"],
         source_tier["tier1_single_source_trust"],
         source_tier["tier3_pair_not_high"],
-    ]) / 14, 4)
+    ]) / 16, 4)
     return {
         "version": 2,
         "event_clustering": event,

@@ -17,6 +17,46 @@ ROLE_ACTIONS = {
     "distribution": {"market_entry": "评估渠道竞争与客户触达变化", "product": "评估产品渠道适配", "regulatory": "检查销售与分销合规影响"},
 }
 
+# P1-2 决策上下文：五个业务职能分面及其信号来源（全部为 event 已有信号的映射）。
+IMPACT_FACETS = {
+    "strategic": {"label": "战略", "signals": ("strategic_change",), "types": {"acquisition", "capital", "market_entry"}},
+    "product": {"label": "产品", "signals": ("market_change", "technology_change"), "types": {"product", "market_entry"}},
+    "underwriting": {"label": "核保", "signals": ("financial_impact",), "types": {"claims_loss", "rating", "product"}},
+    "investment": {"label": "投资", "signals": ("financial_impact",), "types": {"capital", "acquisition", "rating"}},
+    "compliance": {"label": "合规", "signals": ("regulatory_change",), "types": {"regulatory"}},
+}
+# 类型未命中时，信号分面的影响强度按 45% 折算（次要影响不得高于类型直接命中的主影响）。
+SIGNAL_FACET_RATIO = 0.45
+# 与 signal.py 的"有意义信号"阈值保持一致的分面在位判定线。
+FACET_PRESENT_THRESHOLD = 28
+
+OPPORTUNITY_BY_TYPE = {
+    "acquisition": "标的整合与业务协同带来的组合机会",
+    "capital": "资本合作与资产负债配置窗口",
+    "market_entry": "新市场/新渠道的先发布局机会",
+    "product": "产品创新与定价模型迭代机会",
+    "regulatory": "合规能力先行带来的信誉与准入优势",
+    "claims_loss": "风险减量服务与理赔效率提升空间",
+    "rating": "评级改善带来的融资与再保成本优势",
+    "industry_update": "行业动向中蕴含的业务参照机会",
+    "personnel": "关键人才流动带来的组织补强机会",
+}
+
+RISK_BY_TYPE = {
+    "acquisition": "交易估值与整合不及预期",
+    "capital": "资本占用与偿付能力压力",
+    "market_entry": "新市场竞争与获客成本超预期",
+    "product": "产品定价不足与逆选择风险",
+    "regulatory": "合规成本上升与业务节奏受限",
+    "claims_loss": "赔付恶化与准备金不足",
+    "rating": "评级下调推高再保与融资成本",
+    "industry_update": "行业格局变化削弱现有定位",
+    "personnel": "关键岗位空缺影响业务连续性",
+}
+
+NEXT_STEP_PREFIX = {"now": "优先处理", "soon": "列入近期计划", "watch": "保持跟踪"}
+CONTEXT_FIELDS = ("business_impact", "affected_functions", "potential_opportunity", "potential_risk", "what_to_monitor", "recommended_next_step")
+
 URGENCY = {"accelerating": "now", "forming": "soon", "cooling": "watch", "isolated": "watch"}
 LABELS = {"now": "高", "soon": "中", "watch": "低"}
 RANK = {"watch": 0, "soon": 1, "now": 2}
@@ -39,6 +79,45 @@ def _apply_calibration(urgency: str, event_type: str, calibration: dict) -> str:
     if cap in RANK and RANK[urgency] > RANK[cap]:
         return cap
     return urgency
+
+
+def _business_impact(event_type: str, signals: dict, score: int) -> dict:
+    """影响强度分面：类型直接命中的职能以情报分为主导，仅信号激活的按 45% 折算。"""
+    scores = (signals or {}).get("scores") or {}
+    facets = {}
+    for facet, spec in IMPACT_FACETS.items():
+        sig = max((int(scores.get(k) or 0) for k in spec["signals"]), default=0)
+        base = score if event_type in spec["types"] else int(round(sig * SIGNAL_FACET_RATIO))
+        facets[facet] = min(100, base)
+    return facets
+
+
+def _affected_functions(impact: dict) -> list[dict]:
+    present = [(f, v) for f, v in impact.items() if v >= FACET_PRESENT_THRESHOLD]
+    if not present:
+        # 类型未命中且信号偏弱时，取最高分面作为唯一参照，不凭空补职能。
+        top = max(impact.items(), key=lambda kv: kv[1]) if any(impact.values()) else None
+        present = [top] if top and top[1] > 0 else []
+    return [{"function": f, "label": IMPACT_FACETS[f]["label"], "impact": v} for f, v in sorted(present, key=lambda kv: -kv[1])]
+
+
+def _potential_risk(event_type: str, evidence_status: str, conflict: bool, trust: str) -> list[str]:
+    risks = [RISK_BY_TYPE.get(event_type, "行业信号变化带来的不确定性")]
+    if evidence_status == "single_source":
+        risks.append("单一来源，结论待独立证据确认")
+    if conflict:
+        risks.append("证据存在冲突，结论尚未收敛")
+    if trust == "low":
+        risks.append("来源可信度低，行动前需复核")
+    return risks
+
+
+def context_coverage(decisions: list[dict]) -> float:
+    """六要素齐备率：business_impact / affected_functions / opportunity / risk / monitor / next_step 任一为空即不齐备。"""
+    if not decisions:
+        return 0.0
+    complete = sum(1 for row in decisions if all((row.get("context") or {}).get(f) for f in CONTEXT_FIELDS))
+    return round(complete / len(decisions), 4)
 
 
 def build_decisions(events: list[dict], temporal: dict | None = None, role: str = "executive", calibration: dict | None = None) -> list[dict]:
@@ -79,6 +158,20 @@ def build_decisions(events: list[dict], temporal: dict | None = None, role: str 
         calibration_applied = urgency != before_calibration
         human_review_required = explicit_review or low_evidence or conflict or trust != "high"
 
+        insight = event.get("insight") or {}
+        impact = _business_impact(event_type, insight.get("signals") or {}, score)
+        prefix = NEXT_STEP_PREFIX[urgency]
+        # 默认兜底动作（"保持跟踪，…"）本身已含时限语义时不再叠加前缀。
+        step = action if action.startswith(prefix) else prefix + "：" + action
+        context = {
+            "business_impact": impact,
+            "affected_functions": _affected_functions(impact),
+            "potential_opportunity": [OPPORTUNITY_BY_TYPE.get(event_type, "行业信号中的业务参照机会")],
+            "potential_risk": _potential_risk(event_type, evidence_status, conflict, trust),
+            "what_to_monitor": insight.get("what_to_watch") or "",
+            "recommended_next_step": step + ("（先完成人工复核）" if human_review_required else ""),
+        }
+
         out.append({
             "event_id": event.get("event_id"),
             "role": role,
@@ -86,6 +179,7 @@ def build_decisions(events: list[dict], temporal: dict | None = None, role: str 
             "urgency": urgency,
             "urgency_label": LABELS[urgency],
             "human_review_required": human_review_required,
+            "context": context,
             "basis": {
                 "intelligence_score": score,
                 "trust_level": trust,

@@ -8,10 +8,13 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
+from decision import CONTEXT_FIELDS, ROLE_ACTIONS
+
 ROOT = Path(__file__).resolve().parent
 INTEL = ROOT / "intelligence.json"
 CONTRACT_VERSION = 1
-EXPECTED_VERSION = 7
+# v8：决策卡新增 context 六要素 + decisions_by_role 八角色分组（P1-2）。
+EXPECTED_VERSION = 8
 
 # Single source of truth for versioned pipeline artifacts. Generators and the
 # validation script both read from this map, so a version bump in a generator
@@ -66,6 +69,22 @@ def _sha(value: object) -> str:
     raw = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
     return hashlib.sha256(raw).hexdigest()[:16]
 
+def _decision_errors(decision: dict, where: str) -> list[str]:
+    errors: list[str] = []
+    if not isinstance(decision, dict):
+        return [f"{where} must be a dict"]
+    for key in ("event_id", "urgency", "guardrail"):
+        if not decision.get(key):
+            errors.append(f"{where} missing: {key}")
+    if decision.get("urgency") not in {"now", "soon", "watch"}:
+        errors.append(f"{where} invalid urgency: {decision.get('urgency')}")
+    context = decision.get("context") or {}
+    for field in CONTEXT_FIELDS:
+        if not context.get(field):
+            errors.append(f"{where} missing context: {field}")
+    return errors
+
+
 def validate(data: dict) -> list[str]:
     errors: list[str] = []
     if data.get("version") != EXPECTED_VERSION:
@@ -101,11 +120,20 @@ def validate(data: dict) -> list[str]:
         errors.append("decisions must be a list")
     else:
         for idx, decision in enumerate(decisions):
-            for key in ("event_id", "urgency", "guardrail"):
-                if not decision.get(key):
-                    errors.append(f"decision[{idx}] missing: {key}")
-            if decision.get("urgency") not in {"now", "soon", "watch"}:
-                errors.append(f"decision[{idx}] invalid urgency: {decision.get('urgency')}")
+            errors.extend(_decision_errors(decision, f"decision[{idx}]"))
+    by_role = data.get("decisions_by_role")
+    if not isinstance(by_role, dict) or not by_role:
+        errors.append("decisions_by_role must be a non-empty dict")
+    else:
+        for role, rows in by_role.items():
+            if role not in ROLE_ACTIONS:
+                errors.append(f"decisions_by_role unknown role: {role}")
+                continue
+            if not isinstance(rows, list):
+                errors.append(f"decisions_by_role[{role}] must be a list")
+                continue
+            for idx, decision in enumerate(rows):
+                errors.extend(_decision_errors(decision, f"decisions_by_role[{role}][{idx}]"))
     temporal = data.get("temporal") or {}
     if not isinstance(temporal.get("topic_signals"), list):
         errors.append("temporal.topic_signals must be a list")
@@ -128,11 +156,13 @@ def attach_contract(data: dict) -> dict:
             "claims": _sha(data.get("claim_stats", {})),
             "temporal": _sha(data.get("temporal", {})),
             "decisions": _sha(data.get("decisions", [])),
+            "decisions_by_role": _sha(data.get("decisions_by_role", {})),
             "radar": _sha(data.get("radar", {})),
         },
         "counts": {
             "events": len(data.get("events", [])),
             "decisions": len(data.get("decisions", [])),
+            "decision_roles": len(data.get("decisions_by_role", {})),
             "topic_signals": len(data.get("temporal", {}).get("topic_signals", [])),
             "entity_momentum": len(data.get("temporal", {}).get("entity_momentum", [])),
         },

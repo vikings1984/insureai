@@ -17,7 +17,20 @@ news → events → intelligence → trust → claims → temporal → decisions
 - Scores are numeric and use a 0–100 scale.
 - Trust levels are exactly `high`, `medium`, or `low`.
 - Decision urgency is exactly `now`, `soon`, or `watch`.
+- Decision roles are exactly the 8 keys of `decision.ROLE_ACTIONS` (`executive`, `product`, `underwriting`, `actuarial`, `investment`, `technology`, `claims`, `distribution`).
 - `claims`, `temporal`, `decisions`, and `radar` are module outputs, but the contract validates their minimum structure before publishing.
+
+## Decision cards (v8)
+
+Since version 8 every decision card carries a `context` object whose six elements are mappings of existing event signals — the pipeline never fabricates facts inside a decision card:
+
+- `business_impact` — facet strengths 0–100 for `strategic` / `product` / `underwriting` / `investment` / `compliance`. A facet whose `event_type` directly hits the function equals the intelligence score; a facet activated only by signal scores is scaled at 45% and capped below primary facets.
+- `affected_functions` — facets at or above the 28 presence threshold (same threshold as `signal.py`), each as `{function, label, impact}`; weak-signal events fall back to the single highest facet instead of inventing functions.
+- `potential_opportunity` / `potential_risk` — templates keyed by `event_type`, with evidence qualifiers (single source, conflict, low trust) appended to the risk list.
+- `what_to_monitor` — inherited verbatim from `insight.what_to_watch`.
+- `recommended_next_step` — urgency prefix + the role action, plus a human-review qualifier when `human_review_required` is true.
+
+`intelligence.json.decisions` stays the executive-lens flat list for downstream consumers; `intelligence.json.decisions_by_role` groups the top 12 cards per role. `decision_stats.decision_context_coverage` reports the six-element completeness rate across all role cards and the production quality gate requires it ≥ 0.9.
 
 ## Lineage
 
