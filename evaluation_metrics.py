@@ -3,13 +3,20 @@
 """Quantitative quality metrics for the deterministic InsureAI benchmark.
 
 第一性原理：pass_rate 只回答“测试是否通过”；质量指标回答“错在哪里、错多少”。
+合成基准（fixture）度量算法正确性；生产指标（claims.json 实测）度量真实数据上的效果。
 """
 from __future__ import annotations
+
+import json
+from pathlib import Path
 
 from claims import build_claims
 from decision import build_decisions
 from intelligence import build
 from temporal import build_temporal_intelligence
+
+CLAIMS_ARTIFACT = Path(__file__).resolve().parent / "claims.json"
+CLAIM_EVIDENCE_MATCH_RATE_GATE = 0.6
 
 
 def _news(title, source, url, published_at, tags="Munich Re,At-Bay", score=88, topic="capital_reinsurance"):
@@ -127,6 +134,28 @@ def decision_metrics() -> dict:
     }
 
 
+def production_claim_metrics(path: Path | None = None) -> dict:
+    """生产指标：claims.json 实测的命题-证据匹配率。fail-closed——生产产物缺失或不可读时按 0 分处理。"""
+    artifact = path or CLAIMS_ARTIFACT
+    try:
+        data = json.loads(artifact.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {"claim_evidence_match_rate": 0.0, "claim_count": 0, "source": str(artifact.name), "reason": "artifact missing or unreadable"}
+    total = int(data.get("claim_count") or 0)
+    if total <= 0:
+        return {"claim_evidence_match_rate": 0.0, "claim_count": 0, "source": str(artifact.name), "reason": "no claims"}
+    unverified = int(data.get("unverified_claim_count") or 0)
+    computed = round((total - unverified) / total, 4)
+    return {
+        "claim_evidence_match_rate": computed,
+        "claim_count": total,
+        "unverified_claim_count": unverified,
+        "conflicted_claim_count": int(data.get("conflicted_claim_count") or 0),
+        "gate": CLAIM_EVIDENCE_MATCH_RATE_GATE,
+        "source": str(artifact.name),
+    }
+
+
 def build_metrics() -> dict:
     event = event_pair_metrics()
     claim = claim_metrics()
@@ -153,6 +182,7 @@ def build_metrics() -> dict:
         "temporal": temporal,
         "decision": decision,
         "macro_quality": macro,
+        "production": production_claim_metrics(),
     }
 
 

@@ -211,9 +211,29 @@ def _has_any(text: str, keywords) -> bool:
     return any(k.lower() in lowered for k in keywords)
 
 
+_CATEGORY_KEYWORDS = {
+    "acquisition": _ACQUISITION_KEYWORDS,
+    "regulatory": _REGULATORY_KEYWORDS,
+    "rating": _RATING_UP_KEYWORDS + _RATING_DOWN_KEYWORDS,
+    "personnel": _PERSONNEL_KEYWORDS,
+    "product": _PRODUCT_KEYWORDS,
+    "market_entry": _MARKET_ENTRY_KEYWORDS,
+    "capital": _CAPITAL_KEYWORDS,
+    "claims_loss": _LOSS_KEYWORDS,
+}
+
+
+def _category_supported(category: str, text: str) -> bool:
+    keywords = _CATEGORY_KEYWORDS.get(category)
+    return bool(keywords) and _has_any(text, keywords)
+
+
 def _infer_category(event: dict, text: str) -> str:
+    """事件类型必须有文本佐证才用于命题模板：话题层分类（如 capital_reinsurance）
+    只说明"聊到资本市场"，命题层还须出现动作词（融资/注资），否则强行套模板
+    会产出无证据支持的假命题（如把资本规模预测当成融资事件）。"""
     event_type = str(event.get("event_type") or "").strip()
-    if event_type and event_type != "industry_update":
+    if event_type and event_type != "industry_update" and _category_supported(event_type, text):
         return event_type
     if _has_any(text, _ACQUISITION_KEYWORDS):
         return "acquisition"
@@ -225,7 +245,7 @@ def _infer_category(event: dict, text: str) -> str:
         return "personnel"
     if _has_any(text, _PRODUCT_KEYWORDS):
         return "product"
-    return event_type or "industry_update"
+    return "industry_update"
 
 
 def _subject_object(event: dict, items: list[dict]) -> tuple[str | None, str | None]:
@@ -249,6 +269,8 @@ def _span(text: str, keyword: str, width: int = 70) -> str:
 # ---------------------------------------------------------------------------
 
 def extract_propositions(items: list[dict], event: dict) -> list[dict]:
+    if not items:
+        return []
     combined = " ".join(_text(x) for x in items)
     category = _infer_category(event, str(event.get("title") or "") + " " + combined)
     subject, obj = _subject_object(event, items)
@@ -404,10 +426,14 @@ def _confidence(supporting: list[dict], contradicting: list[dict]) -> int:
     return score
 
 
+def _context_span(item: dict) -> str:
+    return re.sub(r"\s+", " ", str(item.get("title") or item.get("summary") or "")).strip()[:160]
+
+
 def attach_evidence(propositions: list[dict], items: list[dict]) -> list[dict]:
     out = []
     for prop in propositions:
-        supporting, contradicting = [], []
+        supporting, contradicting, contextual = [], [], []
         is_value_claim = bool((prop.get("value") or {}).get("normalized") is not None or (prop.get("value") or {}).get("iso"))
         for item in items[:12]:
             if is_value_claim:
@@ -418,6 +444,8 @@ def attach_evidence(propositions: list[dict], items: list[dict]) -> list[dict]:
                 supporting.append(_evidence_row(item, "support", matched))
             elif contradicts:
                 contradicting.append(_evidence_row(item, "contradict", matched))
+            else:
+                contextual.append(_evidence_row(item, "context", _context_span(item)))
         claim = {
             "claim_id": prop.get("claim_id"),
             "event_id": prop.get("event_id"),
@@ -429,6 +457,7 @@ def attach_evidence(propositions: list[dict], items: list[dict]) -> list[dict]:
             "source_articles": sorted({x["evidence_id"] for x in supporting + contradicting}),
             "supporting_evidence": supporting,
             "contradicting_evidence": contradicting,
+            "context_evidence": contextual,
             "evidence": supporting,
             "evidence_refs": [x["evidence_id"] for x in supporting],
             "evidence_count": len(supporting),

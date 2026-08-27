@@ -138,6 +138,75 @@ class TestSourceTiers(unittest.TestCase):
         self.assertEqual(tier_for_item({"source_url": "https://example.com/x", "source_type": "公司发布"}), 1)
 
 
+class TestEvidenceDirectionality(unittest.TestCase):
+    def test_keyword_hit_without_subject_is_context_not_dropped(self):
+        items = [
+            _item("1", "Munich Re to acquire At-Bay", "Reuters", "www.reuters.com"),
+            _item("2", "慕尼黑再保险宣布收购计划", "行业媒体", "www.media.cn", "2026-08-21T11:00:00+00:00"),
+        ]
+        event = {"event_id": "evt_8", "title": "Munich Re 收购 At-Bay", "event_type": "acquisition"}
+        result = claims.build_claims(items, event)
+        intent = next(c for c in result["claims"] if c["claim_type"] == "acquisition_intent")
+        relations = {x["evidence_id"]: x["relation"] for x in intent["supporting_evidence"] + intent["contradicting_evidence"] + intent["context_evidence"]}
+        self.assertEqual(relations.get("1"), "support")
+        self.assertEqual(relations.get("2"), "context")
+
+    def test_context_evidence_rows_carry_tier_and_span(self):
+        items = [
+            _item("1", "Munich Re to acquire At-Bay", "Reuters", "www.reuters.com"),
+            _item("2", "慕尼黑再保险宣布收购计划", "行业媒体", "www.media.cn", "2026-08-21T11:00:00+00:00"),
+        ]
+        event = {"event_id": "evt_9", "title": "Munich Re 收购 At-Bay", "event_type": "acquisition"}
+        result = claims.build_claims(items, event)
+        intent = next(c for c in result["claims"] if c["claim_type"] == "acquisition_intent")
+        ctx = next(x for x in intent["context_evidence"])
+        self.assertEqual(ctx["relation"], "context")
+        self.assertTrue(ctx["matched_span"])
+        self.assertIn("source_tier", ctx)
+
+    def test_context_does_not_change_verification_status(self):
+        items = [
+            _item("1", "Munich Re to acquire At-Bay", "Reuters", "www.reuters.com"),
+            _item("2", "慕尼黑再保险宣布收购计划", "行业媒体", "www.media.cn", "2026-08-21T11:00:00+00:00"),
+        ]
+        event = {"event_id": "evt_10", "title": "Munich Re 收购 At-Bay", "event_type": "acquisition"}
+        result = claims.build_claims(items, event)
+        for c in result["claims"]:
+            if c["context_evidence"] and not c["supporting_evidence"]:
+                self.assertEqual(c["verification_status"], "unverified")
+            if c["supporting_evidence"]:
+                self.assertIn(c["verification_status"], ("single_source", "cross_checked", "conflicted"))
+
+
+class TestCategorySupport(unittest.TestCase):
+    def test_unsupported_event_type_degrades_to_summary(self):
+        """上游把资本话题评论误标为 capital 时，不得产出无证据的融资命题。"""
+        items = [_item("1", "J.P. Morgan says reinsurance pricing unlikely to stabilise before 2027", "Reuters", "www.reuters.com")]
+        event = {"event_id": "evt_11", "title": "J.P. Morgan 再保险定价评论", "event_type": "capital"}
+        result = claims.build_claims(items, event)
+        types = {c["claim_type"] for c in result["claims"]}
+        self.assertNotIn("capital_raise", types)
+        self.assertIn("event_summary", types)
+        for c in result["claims"]:
+            self.assertNotEqual(c["verification_status"], "unverified")
+
+    def test_supported_event_type_still_applies_template(self):
+        items = [_item("1", "InsurTech startup raises $50 million in funding round", "Reuters", "www.reuters.com", tags="InsurTech")]
+        event = {"event_id": "evt_12", "title": "InsurTech 融资", "event_type": "capital"}
+        result = claims.build_claims(items, event)
+        types = {c["claim_type"] for c in result["claims"]}
+        self.assertIn("capital_raise", types)
+        for c in result["claims"]:
+            self.assertNotEqual(c["verification_status"], "unverified")
+
+    def test_keyword_evidence_can_rescue_untyped_event(self):
+        items = [_item("1", "Munich Re to acquire At-Bay for $575 million", "Reuters", "www.reuters.com")]
+        event = {"event_id": "evt_13", "title": "Munich Re 收购 At-Bay", "event_type": "industry_update"}
+        result = claims.build_claims(items, event)
+        types = {c["claim_type"] for c in result["claims"]}
+        self.assertIn("acquisition_intent", types)
+
+
 class TestFallbackEvents(unittest.TestCase):
     def test_generic_event_still_yields_summary_proposition(self):
         items = [_item("1", "行业观察：保险科技融资升温", "Insurance Journal", "www.insurancejournal.com")]

@@ -18,8 +18,9 @@
           (claims.length?'<div class="ce-list">'+claims.map(x=>{
             const text=x.claim_text||x.text||''; const status=x.verification_status||x.status||'';
             const contra=(x.contradicting_evidence||[]).length;
+            const ctx=(x.context_evidence||[]).length;
             const tag=typeLabels[x.claim_type]?'<i class="ce-type">'+esc(typeLabels[x.claim_type])+'</i>':'';
-            return '<div class="ce-row'+(status==='conflicted'?' ce-row-conflict':'')+'"><div><strong>'+esc(text)+'</strong><small>'+tag+esc(labels[status]||status||'')+' · 置信 '+esc(x.confidence==null?'-':x.confidence)+' · 支持 '+esc(x.evidence_count||0)+(contra?' · 矛盾 '+esc(contra):'')+'</small></div><span>'+esc(x.independent_domains||0)+' 域</span></div>';
+            return '<div class="ce-row'+(status==='conflicted'?' ce-row-conflict':'')+'"><div><strong>'+esc(text)+'</strong><small>'+tag+esc(labels[status]||status||'')+' · 置信 '+esc(x.confidence==null?'-':x.confidence)+' · 支持 '+esc(x.evidence_count||0)+(contra?' · 矛盾 '+esc(contra):'')+(ctx?' · 关联 '+esc(ctx):'')+'</small></div><span>'+esc(x.independent_domains||0)+' 域</span></div>';
           }).join('')+'</div>':'<div class="ce-empty">暂无可拆分的事实命题。</div>');
         card.querySelector('.di-body')?.appendChild(box);
       });

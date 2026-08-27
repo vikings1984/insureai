@@ -90,7 +90,7 @@ jobs:
       - name: Evaluate intelligence quality
         run: python3 evaluation.py
       - name: Quantitative quality metrics gate
-        run: python3 -c "from evaluation_metrics import build_metrics; m=build_metrics(); assert m['macro_quality'] >= 0.95, m; print(m)"
+        run: python3 -c "from evaluation_metrics import build_metrics; m=build_metrics(); assert m['macro_quality'] >= 0.95, m; assert m['production']['claim_evidence_match_rate'] >= 0.6, m; print(m)"
       - name: Production replay
         run: python3 production_replay.py
       - name: Build human review queue with change-impact priority

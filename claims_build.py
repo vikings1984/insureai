@@ -57,6 +57,7 @@ def main() -> None:
         total_conflicted += conflicted
 
     proposition_coverage = round(100 * events_with_proposition / len(events), 1) if events else 0
+    claim_evidence_match_rate = round((total_claims - total_unverified) / total_claims, 4) if total_claims else 0.0
     payload = {
         "version": ARTIFACT_VERSIONS["claims.json"],
         "generated_from": "intelligence.json + data.json",
@@ -67,10 +68,11 @@ def main() -> None:
         "unverified_claim_count": total_unverified,
         "conflicted_claim_count": total_conflicted,
         "proposition_coverage": proposition_coverage,
+        "claim_evidence_match_rate": claim_evidence_match_rate,
         "events": events,
     }
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Claims artifact v{payload['version']}: events={len(events)} claims={total_claims} cross_checked={total_cross_checked} single_source={total_single_source} conflicted={total_conflicted} proposition_coverage={proposition_coverage}%")
+    print(f"Claims artifact v{payload['version']}: events={len(events)} claims={total_claims} cross_checked={total_cross_checked} single_source={total_single_source} conflicted={total_conflicted} proposition_coverage={proposition_coverage}% match_rate={claim_evidence_match_rate}")
 
 
 if __name__ == "__main__":
