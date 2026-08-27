@@ -1,0 +1,703 @@
+{
+  "version": 2,
+  "principle": "负责人视图只组织已有信号，不创建责任、不执行行动、不改变风险判断。可信度来源只读、可追溯。",
+  "credibility": {
+    "status": "review",
+    "reason_codes": [
+      "release_manifest_unavailable",
+      "deployment_state_unavailable"
+    ],
+    "reasons": [
+      {
+        "code": "release_manifest_unavailable",
+        "severity": "review",
+        "message": "可信度计算发生在发布清单生成之前，当前没有可用于部署验收的 release manifest。",
+        "signal": "release_manifest_available",
+        "actual": false,
+        "threshold": true
+      },
+      {
+        "code": "deployment_state_unavailable",
+        "severity": "review",
+        "message": "当前运行尚未提供可验证的生产部署状态。",
+        "signal": "deployment_status",
+        "actual": "unknown",
+        "threshold": [
+          "verified",
+          "pending"
+        ]
+      }
+    ],
+    "signal_details": [
+      {
+        "signal": "quality_status",
+        "actual": "unknown",
+        "comparator": "==",
+        "threshold": "passed",
+        "result": false,
+        "source": "release_manifest.json",
+        "source_available": false
+      },
+      {
+        "signal": "deployment_status",
+        "actual": "unknown",
+        "comparator": "in",
+        "threshold": [
+          "verified",
+          "pending"
+        ],
+        "result": false,
+        "source": "release_manifest.json",
+        "source_available": false
+      },
+      {
+        "signal": "decision_jitter_events",
+        "actual": 0,
+        "comparator": ">",
+        "threshold": 0,
+        "result": true,
+        "source": "decision_stability.json"
+      },
+      {
+        "signal": "low_or_unavailable_evidence",
+        "actual": 0,
+        "comparator": ">",
+        "threshold": 0,
+        "result": true,
+        "source": "evidence_availability.json"
+      },
+      {
+        "signal": "release_manifest_available",
+        "actual": false,
+        "comparator": "==",
+        "threshold": true,
+        "result": false,
+        "source": "release_manifest.json"
+      }
+    ],
+    "provenance": {
+      "generated_at": "2026-08-27T01:11:51.146394+00:00",
+      "quality": {
+        "source": "release_manifest.json",
+        "available": false,
+        "source_commit": null
+      },
+      "stability": {
+        "source": "decision_stability.json",
+        "available": true,
+        "source_commit": null
+      },
+      "evidence": {
+        "source": "evidence_availability.json",
+        "available": false,
+        "source_commit": null
+      },
+      "auditability": "missing_future_stage_inputs_are_explicit_and_non_blocking"
+    }
+  },
+  "configuration_debt": [],
+  "configuration_debt_count": 0,
+  "item_count": 30,
+  "items": [
+    {
+      "rank": 1,
+      "event_id": "evt_96c336ca5844",
+      "action_id": null,
+      "title": "美洲开发银行通过瑞士再保险为伯利兹安排巨灾互换",
+      "attention_score": 100,
+      "urgency": null,
+      "trust_level": "low",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 2,
+      "event_id": "evt_7635b5984895",
+      "action_id": null,
+      "title": "慕尼黑再保险 (Munich Re) 跻身劳合社全球 50 家最大再保险公司之列：AM Best",
+      "attention_score": 100,
+      "urgency": null,
+      "trust_level": "low",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 3,
+      "event_id": "evt_7099dec26227",
+      "action_id": null,
+      "title": "PERILS 将风暴 Goretti 造成的行业损失预估下调至 4.68 亿欧元",
+      "attention_score": 100,
+      "urgency": null,
+      "trust_level": "low",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 4,
+      "event_id": "evt_4b12fa2f9f1b",
+      "action_id": null,
+      "title": "我国保险资金运用余额首次突破40万亿元！红利低波ETF华泰柏瑞(512890)年内累计“吸金”近60亿元",
+      "attention_score": 100,
+      "urgency": null,
+      "trust_level": "low",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 5,
+      "event_id": "evt_40ac78061367",
+      "action_id": null,
+      "title": "红树林推出百慕大再保险Sidecar Grove Re",
+      "attention_score": 100,
+      "urgency": null,
+      "trust_level": "low",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 6,
+      "event_id": "evt_1806ade270bd",
+      "action_id": null,
+      "title": "CatIQ 将安大略省和魁北克省雷暴保险市场损失预估上调 17.5% 至 4.39 亿加元",
+      "attention_score": 100,
+      "urgency": null,
+      "trust_level": "low",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 7,
+      "event_id": "evt_db0a3669a076",
+      "action_id": null,
+      "title": "GC Securities 在 2026 年上半年发行了 20 只巨灾债券，总额达到创纪录的 50 亿美元：Guy Carpenter 首席执行官 Klisura",
+      "attention_score": 80,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 8,
+      "event_id": "evt_92310abdea56",
+      "action_id": null,
+      "title": "传统整合公司 Marco Capital 将收购保险服务公司 Pro Global",
+      "attention_score": 80,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 9,
+      "event_id": "evt_59a8566e7e13",
+      "action_id": null,
+      "title": "另类资本的崛起将为金融投资者创造更大的空间：盖伊·卡彭特的卢梭",
+      "attention_score": 80,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 10,
+      "event_id": "evt_3429758517ea",
+      "action_id": null,
+      "title": "国家金融监督管理总局：全面推进保险行业AI大模型合规应用指引",
+      "attention_score": 80,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 11,
+      "event_id": "evt_0fe4820271f7",
+      "action_id": null,
+      "title": "KCC 报告称，随着再保险公司/保险公司寻求更多当前风险洞察力，人工智能正在重塑猫模型",
+      "attention_score": 80,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 12,
+      "event_id": "evt_083f21f9623f",
+      "action_id": null,
+      "title": "加拿大皇家银行分析师预计，定价压力和较高的CAT损失将在26年第二季度对美国保险公司造成压力",
+      "attention_score": 80,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 13,
+      "event_id": "evt_083577177db6",
+      "action_id": null,
+      "title": "摩根大通表示再保险定价在 2027 年之前不太可能稳定",
+      "attention_score": 80,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 14,
+      "event_id": "evt_03c95bd12e1d",
+      "action_id": null,
+      "title": "AM Best & Guy Carpenter 预计 2026 年专用再保险资本将达到创纪录的 7050 亿美元",
+      "attention_score": 80,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 15,
+      "event_id": "evt_fdce63d983d9",
+      "action_id": null,
+      "title": "马云罕见海外投资布局公示",
+      "attention_score": 60,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 16,
+      "event_id": "evt_f982aaace043",
+      "action_id": null,
+      "title": "由于承保和投资业绩强劲，大韩再保险 26 年第二季度净利润增长 77.6%",
+      "attention_score": 60,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 17,
+      "event_id": "evt_e833bbc251da",
+      "action_id": null,
+      "title": "Talcott 与高盛合作推出价值 10 亿美元的 West Grove Re sidecar",
+      "attention_score": 60,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 18,
+      "event_id": "evt_e6c1c99f3b9f",
+      "action_id": null,
+      "title": "条款更加标准化，但 26 年上半年保留再保险：Hiscox CUO",
+      "attention_score": 60,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 19,
+      "event_id": "evt_e5aa7bc66dfa",
+      "action_id": null,
+      "title": "惠誉表示，非人寿再保险公司的承保利润有所改善，但该行业“具有挑战性”",
+      "attention_score": 60,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 20,
+      "event_id": "evt_e000cb8ec4c4",
+      "action_id": null,
+      "title": "White Mountains gets $222m capital return from Ark’s Outrigger Re sidecar",
+      "attention_score": 60,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 21,
+      "event_id": "evt_df9aee1a3fa5",
+      "action_id": null,
+      "title": "尽管市场压力，美国内陆海上保险仍保持强劲的承保业绩：AM Best",
+      "attention_score": 60,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 22,
+      "event_id": "evt_da4ddc03005e",
+      "action_id": null,
+      "title": "MSIG USA支持DEG $ 5亿基金，以扩大可持续发展项目的私人资本",
+      "attention_score": 60,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 23,
+      "event_id": "evt_d6dbd6b4a736",
+      "action_id": null,
+      "title": "瑞士养老金 Nest 表示 ILS 投资在 2025 年“再次取得令人信服的成果”",
+      "attention_score": 60,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 24,
+      "event_id": "evt_d5a703563d3f",
+      "action_id": null,
+      "title": "未如实记载保险业务，四川鸿霖保险代理合计被罚24万元",
+      "attention_score": 60,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 25,
+      "event_id": "evt_d4c6b2150c69",
+      "action_id": null,
+      "title": "澳大利亚的APRA使获得另类再保险（ CAT债券和ILS ）更简单",
+      "attention_score": 60,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 26,
+      "event_id": "evt_d42873a48e85",
+      "action_id": null,
+      "title": "Beazley 与 Integral ILS 合作在百慕大开发新的网络 ILS 基金平台",
+      "attention_score": 60,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 27,
+      "event_id": "evt_d323b69bc8ab",
+      "action_id": null,
+      "title": "青岛海林保险代理被罚2万，涉保险代理业务违规等",
+      "attention_score": 60,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 28,
+      "event_id": "evt_cd1750e23fee",
+      "action_id": null,
+      "title": "国家金融监督管理总局等两部门：支持再保险机构增资扩股和发行资本补充工具",
+      "attention_score": 60,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 29,
+      "event_id": "evt_c7b446a384d5",
+      "action_id": null,
+      "title": "KatRisk 通过新的野火风险功能扩展了灾难建模平台",
+      "attention_score": 60,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    },
+    {
+      "rank": 30,
+      "event_id": "evt_c5c49655ca16",
+      "action_id": null,
+      "title": "NextRock 公布建立人寿保险和再保险平台的计划",
+      "attention_score": 60,
+      "urgency": null,
+      "trust_level": "medium",
+      "owners": [
+        "risk_review_owner"
+      ],
+      "deadline": "next_review_cycle",
+      "next_step": "review queue: confirm evidence and disposition",
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "automation": "advisory_only",
+      "approval_boundary": "human confirmation required"
+    }
+  ]
+}

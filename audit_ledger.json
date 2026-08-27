@@ -1,0 +1,278 @@
+{
+  "version": 1,
+  "schema_version": "audit-ledger-v1",
+  "generated_at": "2026-08-27T01:12:25.967440+00:00",
+  "privacy": "hashes_and_metadata_only",
+  "coverage_principle": "ledger is generated after all analytical quality artifacts; release_manifest carries the production gate result",
+  "production_quality_gate": {
+    "status": "passed",
+    "failed_checks": [],
+    "check_count": 5
+  },
+  "stages": [
+    {
+      "stage": "collect",
+      "producer": "collector",
+      "artifact": "data.json",
+      "sha256": "86e83d20a8bac583bc2baea098390b05b1cee0abb89f9e2dfa051e0df2654747",
+      "counts": {
+        "news": 1535,
+        "version": "2.2.106"
+      }
+    },
+    {
+      "stage": "intelligence",
+      "producer": "intelligence",
+      "artifact": "intelligence.json",
+      "sha256": "3d166f8bae2966347be2c8620809e3b3fead06310967d20e675226ed0fef5501",
+      "counts": {
+        "events": 1486,
+        "version": 7
+      }
+    },
+    {
+      "stage": "trust",
+      "producer": "trust",
+      "artifact": "intelligence.json",
+      "sha256": "3d166f8bae2966347be2c8620809e3b3fead06310967d20e675226ed0fef5501",
+      "counts": {
+        "events": 1486,
+        "version": 7
+      }
+    },
+    {
+      "stage": "claims",
+      "producer": "claims",
+      "artifact": "claims.json",
+      "sha256": "911752a934eebfb225a433f7b75657a93eddb39ec6c971880073e25bf9ed25a8",
+      "counts": {
+        "events": 1486,
+        "version": 2
+      }
+    },
+    {
+      "stage": "temporal",
+      "producer": "temporal",
+      "artifact": "intelligence.json",
+      "sha256": "3d166f8bae2966347be2c8620809e3b3fead06310967d20e675226ed0fef5501",
+      "counts": {
+        "events": 1486,
+        "version": 7
+      }
+    },
+    {
+      "stage": "decision",
+      "producer": "decision",
+      "artifact": "intelligence.json",
+      "sha256": "3d166f8bae2966347be2c8620809e3b3fead06310967d20e675226ed0fef5501",
+      "counts": {
+        "events": 1486,
+        "version": 7
+      }
+    },
+    {
+      "stage": "decision_stability",
+      "producer": "decision_stability",
+      "artifact": "decision_stability.json",
+      "sha256": "1318ed72ae93fc8491b4484582fba7535e22cfa17e1b83761c0b64c4650046f0",
+      "counts": {
+        "results": 12,
+        "version": 1
+      }
+    },
+    {
+      "stage": "decision_credibility",
+      "producer": "decision_credibility",
+      "artifact": "decision_credibility.json",
+      "sha256": "f63b368d78c137a0ed36fd86908c00cccc738f5a40b68d442c68ac2f01eecf4d",
+      "counts": {
+        "version": 3
+      }
+    },
+    {
+      "stage": "counterfactual",
+      "producer": "counterfactual",
+      "artifact": "counterfactual.json",
+      "sha256": "986b7b18623a9339dcce864cb67000e4751f0c3856028337e2babf6b9751e12f",
+      "counts": {
+        "version": 1
+      }
+    },
+    {
+      "stage": "scenario",
+      "producer": "scenario",
+      "artifact": "scenario.json",
+      "sha256": "c55ad8253aa8b90f1c8d1ac6cbd898e1d9e265ef78417b86a8f1fc9e7642ea22",
+      "counts": {
+        "scenarios": 500,
+        "version": 1
+      }
+    },
+    {
+      "stage": "scenario_matrix",
+      "producer": "scenario_matrix",
+      "artifact": "scenario_matrix.json",
+      "sha256": "c1ea3f909b97b0fd9121df354f44466d7bbb66e1355df67530bfd6cb9ce53046",
+      "counts": {
+        "results": 121,
+        "version": 3
+      }
+    },
+    {
+      "stage": "action_triggers",
+      "producer": "action_triggers",
+      "artifact": "action_triggers.json",
+      "sha256": "4459ec5204e70848cfa7801b388b7bd9f75670d00edd07c4aea43a0c39303ad0",
+      "counts": {
+        "results": 363,
+        "version": 1
+      }
+    },
+    {
+      "stage": "execution_readiness",
+      "producer": "execution_readiness",
+      "artifact": "execution_readiness.json",
+      "sha256": "47143eacee8a8ea409da06e104068e70aaaf0525a26cb3a558109170d0c8ce04",
+      "counts": {
+        "results": 363,
+        "version": 1
+      }
+    },
+    {
+      "stage": "change_impact",
+      "producer": "change_impact",
+      "artifact": "change_impact.json",
+      "sha256": "c7dbbc9df4dc3fccbd49348e8741b27332c26472dd4a043fc5c36c6a724e63a9",
+      "counts": {
+        "version": 1
+      }
+    },
+    {
+      "stage": "freshness",
+      "producer": "freshness",
+      "artifact": "freshness.json",
+      "sha256": "ac0399f1027bd16587e7c2af05e275b5c41cebe53b8b2cbbdf390a3091553ed2",
+      "counts": {
+        "version": 1
+      }
+    },
+    {
+      "stage": "evidence_availability",
+      "producer": "evidence_availability",
+      "artifact": "evidence_availability.json",
+      "sha256": "398068ba84d4be4cadb584db57c7a4c30745b95982035d06e6591448eb39dac7",
+      "counts": {
+        "version": 1
+      }
+    },
+    {
+      "stage": "review_queue",
+      "producer": "human_review",
+      "artifact": "review_queue.json",
+      "sha256": "8ba17fe5e7d72b07a9f72cc9b79ef2d034fd01f4d754dd507309e602f533c143",
+      "counts": {
+        "items": 100,
+        "version": 3
+      }
+    },
+    {
+      "stage": "feedback_attribution",
+      "producer": "feedback_attribution",
+      "artifact": "feedback_attribution.json",
+      "sha256": "ccd9bfa994fbec224edde5135e9914e451cf5d52febabf27f3983fdf720919f1",
+      "counts": {
+        "modules_keys": 8,
+        "version": 1
+      }
+    },
+    {
+      "stage": "module_health",
+      "producer": "module_health",
+      "artifact": "module_health.json",
+      "sha256": "c46e980739dac4c75e945565e74d638061de97be97655002227f57b18dbdcf9a",
+      "counts": {
+        "modules": 8,
+        "version": 1
+      }
+    },
+    {
+      "stage": "module_health_history",
+      "producer": "module_health",
+      "artifact": "module_health_history.json",
+      "sha256": "ec116e85319ada3c1979f745b13c4f118b5a08a9c5d5e5f8f51e212541ad08a8",
+      "counts": {
+        "snapshots": 1,
+        "version": 1
+      }
+    },
+    {
+      "stage": "module_health_trend",
+      "producer": "module_health_trend",
+      "artifact": "module_health_trend.json",
+      "sha256": "90f4694cfcfec2b3c1fb7610aec2fa1fe9735fbeeb59e2b8e192da629ab8e2a7",
+      "counts": {
+        "modules_keys": 8,
+        "version": 1
+      }
+    },
+    {
+      "stage": "trend_attribution",
+      "producer": "trend_attribution",
+      "artifact": "trend_attribution.json",
+      "sha256": "e480ada6e44d8633704a71ef849fdb199fe3824447a4dd401225b63d07fceeb8",
+      "counts": {
+        "modules_keys": 8,
+        "version": 1
+      }
+    },
+    {
+      "stage": "optimization_backlog",
+      "producer": "optimization_backlog",
+      "artifact": "optimization_backlog.json",
+      "sha256": "a5e7db430b5f72a383f603e461d37f030d4e1072f244050bbe613d6d5b59f736",
+      "counts": {
+        "items": 8,
+        "version": 3
+      }
+    },
+    {
+      "stage": "optimization_backlog_history",
+      "producer": "optimization_backlog",
+      "artifact": "optimization_backlog_history.json",
+      "sha256": "2e3caeb5da0752f428c8e5fc9a31fd5dffe903f0f94c273f4bb64ee53ecc635d",
+      "counts": {
+        "snapshots": 1,
+        "version": 2
+      }
+    },
+    {
+      "stage": "daily_risk_radar",
+      "producer": "daily_risk_radar",
+      "artifact": "daily_risk_radar.json",
+      "sha256": "5632ecf69cfa8402e469b786959c50448522d164cbdd6e5cca5add63b3aed330",
+      "counts": {
+        "items": 30,
+        "version": 4
+      }
+    },
+    {
+      "stage": "owner_risk_view",
+      "producer": "owner_risk_view",
+      "artifact": "owner_risk_view.json",
+      "sha256": "7246502e9d49d64d6d51a594a42fbce311941e976ea56abe3e946d8c3fd7249e",
+      "counts": {
+        "items": 30,
+        "version": 2
+      }
+    },
+    {
+      "stage": "executive_terminal",
+      "producer": "executive_terminal",
+      "artifact": "executive_terminal.json",
+      "sha256": "deba511df15726d3dccd8e2109b4816b81d90a033470039c33e87a2b04185acf",
+      "counts": {
+        "version": 3
+      }
+    }
+  ]
+}

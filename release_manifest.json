@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "source_commit": "27d9ecb9787928ea16f08185c32a191710103066",
+  "release_channel": "cloudflare_workers",
+  "site_url": "https://vikings1984.github.io/insureai",
+  "release_marker": "insureai-1122422579223e6a",
+  "quality_status": "passed",
+  "production_quality_gate": {
+    "version": 1,
+    "status": "passed",
+    "principle": "critical release invariants are non-compensatory and unknown/blocked credibility fails closed",
+    "checks": [
+      {
+        "name": "news_integrity",
+        "passed": true,
+        "detail": {
+          "count": 1535,
+          "missing_ids": 0,
+          "duplicate_ids": 0,
+          "missing_or_invalid_dates": 0,
+          "missing_or_invalid_urls": 0
+        }
+      },
+      {
+        "name": "lineage",
+        "passed": true,
+        "detail": {
+          "news_count": 1535,
+          "event_count": 1486,
+          "missing_event_ids": 0,
+          "duplicate_event_ids": 0,
+          "duplicate_article_assignments": 0,
+          "missing_articles": [],
+          "orphan_articles": []
+        }
+      },
+      {
+        "name": "decision_safety",
+        "passed": true,
+        "detail": {
+          "decision_count": 12,
+          "missing_event_links": 0,
+          "duplicate_decision_ids": 0,
+          "missing_guardrails": 0,
+          "unsafe_now": 0
+        }
+      },
+      {
+        "name": "credibility_contract",
+        "passed": true,
+        "detail": {
+          "status": "review",
+          "reason_count": 2,
+          "fail_closed": false
+        }
+      },
+      {
+        "name": "derived_artifact_versions",
+        "passed": true,
+        "detail": {
+          "missing_versions": []
+        }
+      }
+    ],
+    "failed_checks": []
+  },
+  "deployment_status": "pending",
+  "deployment_verified": false,
+  "deployment_note": "发布前质量门禁通过不代表生产站点已经完成部署与验收。",
+  "generated_at": "2026-08-27T01:12:26.131430+00:00"
+}
