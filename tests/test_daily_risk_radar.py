@@ -9,7 +9,7 @@ class DailyRiskRadarTests(unittest.TestCase):
         r=build_radar({'status':'blocked'},{'decisions':[{'event_id':'e1','urgency':'now','basis':{'trust_level':'high'}}]},{'impacted_events':[]},{'items':[]},{'items':[]})
         self.assertEqual(r['items'][0]['urgency'],'now'); self.assertEqual(r['items'][0]['trust_level'],'high')
     def test_regressed_backlog_is_prioritized(self):
-        r=build_radar({'status':'ready'},{'decisions':[]},{'impacted_events':[]},{'items':[{'module':'trust','status':'regressed','priority':50}]},{'items':[]})
+        r=build_radar({'status':'ready'},{'decisions':[]},{'impacted_events':[]},{'items':[{'module':'trust','status':'regressed','priority':50}]},{'items':[]},{'modules':{}})
         self.assertEqual(r['items'][0]['event_id'],'module:trust'); self.assertGreaterEqual(r['items'][0]['attention_score'],65)
     def test_persistent_worsening_beats_single_spike(self):
         backlog={'items':[{'module':'trust','status':'open','priority':50},{'module':'event','status':'open','priority':50}]}
