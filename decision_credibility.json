@@ -3,10 +3,10 @@
   "status": "review",
   "principle": "可信度摘要只汇总当前阶段已经存在的质量信号，不读取未来阶段的产物作为失败依据；任何降级均给出可审计原因。",
   "quality": {
-    "status": "unknown"
+    "status": "passed"
   },
   "deployment": {
-    "status": "unknown",
+    "status": "pending",
     "verified": false
   },
   "stability": {
@@ -19,11 +19,11 @@
     "signal": "sufficient"
   },
   "provenance": {
-    "generated_at": "2026-08-27T01:11:51.146394+00:00",
+    "generated_at": "2026-08-27T02:45:42.757157+00:00",
     "quality": {
       "source": "release_manifest.json",
-      "available": false,
-      "source_commit": null
+      "available": true,
+      "source_commit": "27d9ecb9787928ea16f08185c32a191710103066"
     },
     "stability": {
       "source": "decision_stability.json",
@@ -32,7 +32,7 @@
     },
     "evidence": {
       "source": "evidence_availability.json",
-      "available": false,
+      "available": true,
       "source_commit": null
     },
     "auditability": "missing_future_stage_inputs_are_explicit_and_non_blocking"
@@ -40,24 +40,24 @@
   "signal_details": [
     {
       "signal": "quality_status",
-      "actual": "unknown",
+      "actual": "passed",
       "comparator": "==",
       "threshold": "passed",
-      "result": false,
+      "result": true,
       "source": "release_manifest.json",
-      "source_available": false
+      "source_available": true
     },
     {
       "signal": "deployment_status",
-      "actual": "unknown",
+      "actual": "pending",
       "comparator": "in",
       "threshold": [
         "verified",
         "pending"
       ],
-      "result": false,
+      "result": true,
       "source": "release_manifest.json",
-      "source_available": false
+      "source_available": true
     },
     {
       "signal": "decision_jitter_events",
@@ -77,37 +77,25 @@
     },
     {
       "signal": "release_manifest_available",
-      "actual": false,
+      "actual": true,
       "comparator": "==",
       "threshold": true,
-      "result": false,
+      "result": true,
       "source": "release_manifest.json"
     }
   ],
   "reasons": [
     {
-      "code": "release_manifest_unavailable",
+      "code": "deployment_not_verified",
       "severity": "review",
-      "message": "可信度计算发生在发布清单生成之前，当前没有可用于部署验收的 release manifest。",
-      "signal": "release_manifest_available",
+      "message": "质量通过不等于生产部署已经验收；当前发布身份尚未得到线上验证。",
+      "signal": "deployment_verified",
       "actual": false,
       "threshold": true
-    },
-    {
-      "code": "deployment_state_unavailable",
-      "severity": "review",
-      "message": "当前运行尚未提供可验证的生产部署状态。",
-      "signal": "deployment_status",
-      "actual": "unknown",
-      "threshold": [
-        "verified",
-        "pending"
-      ]
     }
   ],
   "reason_codes": [
-    "release_manifest_unavailable",
-    "deployment_state_unavailable"
+    "deployment_not_verified"
   ],
   "guardrail": "该摘要不替代承保、投资、合规或管理决策。"
 }

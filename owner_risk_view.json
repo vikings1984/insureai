@@ -4,51 +4,39 @@
   "credibility": {
     "status": "review",
     "reason_codes": [
-      "release_manifest_unavailable",
-      "deployment_state_unavailable"
+      "deployment_not_verified"
     ],
     "reasons": [
       {
-        "code": "release_manifest_unavailable",
+        "code": "deployment_not_verified",
         "severity": "review",
-        "message": "可信度计算发生在发布清单生成之前，当前没有可用于部署验收的 release manifest。",
-        "signal": "release_manifest_available",
+        "message": "质量通过不等于生产部署已经验收；当前发布身份尚未得到线上验证。",
+        "signal": "deployment_verified",
         "actual": false,
         "threshold": true
-      },
-      {
-        "code": "deployment_state_unavailable",
-        "severity": "review",
-        "message": "当前运行尚未提供可验证的生产部署状态。",
-        "signal": "deployment_status",
-        "actual": "unknown",
-        "threshold": [
-          "verified",
-          "pending"
-        ]
       }
     ],
     "signal_details": [
       {
         "signal": "quality_status",
-        "actual": "unknown",
+        "actual": "passed",
         "comparator": "==",
         "threshold": "passed",
-        "result": false,
+        "result": true,
         "source": "release_manifest.json",
-        "source_available": false
+        "source_available": true
       },
       {
         "signal": "deployment_status",
-        "actual": "unknown",
+        "actual": "pending",
         "comparator": "in",
         "threshold": [
           "verified",
           "pending"
         ],
-        "result": false,
+        "result": true,
         "source": "release_manifest.json",
-        "source_available": false
+        "source_available": true
       },
       {
         "signal": "decision_jitter_events",
@@ -68,19 +56,19 @@
       },
       {
         "signal": "release_manifest_available",
-        "actual": false,
+        "actual": true,
         "comparator": "==",
         "threshold": true,
-        "result": false,
+        "result": true,
         "source": "release_manifest.json"
       }
     ],
     "provenance": {
-      "generated_at": "2026-08-27T01:11:51.146394+00:00",
+      "generated_at": "2026-08-27T02:45:42.757157+00:00",
       "quality": {
         "source": "release_manifest.json",
-        "available": false,
-        "source_commit": null
+        "available": true,
+        "source_commit": "27d9ecb9787928ea16f08185c32a191710103066"
       },
       "stability": {
         "source": "decision_stability.json",
@@ -89,7 +77,7 @@
       },
       "evidence": {
         "source": "evidence_availability.json",
-        "available": false,
+        "available": true,
         "source_commit": null
       },
       "auditability": "missing_future_stage_inputs_are_explicit_and_non_blocking"
@@ -101,10 +89,10 @@
   "items": [
     {
       "rank": 1,
-      "event_id": "evt_96c336ca5844",
+      "event_id": "evt_7635b5984895",
       "action_id": null,
-      "title": "美洲开发银行通过瑞士再保险为伯利兹安排巨灾互换",
-      "attention_score": 100,
+      "title": "慕尼黑再保险 (Munich Re) 跻身劳合社全球 50 家最大再保险公司之列：AM Best",
+      "attention_score": 95,
       "urgency": null,
       "trust_level": "low",
       "owners": [
@@ -121,10 +109,10 @@
     },
     {
       "rank": 2,
-      "event_id": "evt_7635b5984895",
+      "event_id": "evt_7099dec26227",
       "action_id": null,
-      "title": "慕尼黑再保险 (Munich Re) 跻身劳合社全球 50 家最大再保险公司之列：AM Best",
-      "attention_score": 100,
+      "title": "PERILS 将风暴 Goretti 造成的行业损失预估下调至 4.68 亿欧元",
+      "attention_score": 95,
       "urgency": null,
       "trust_level": "low",
       "owners": [
@@ -141,10 +129,10 @@
     },
     {
       "rank": 3,
-      "event_id": "evt_7099dec26227",
+      "event_id": "evt_4b12fa2f9f1b",
       "action_id": null,
-      "title": "PERILS 将风暴 Goretti 造成的行业损失预估下调至 4.68 亿欧元",
-      "attention_score": 100,
+      "title": "我国保险资金运用余额首次突破40万亿元！红利低波ETF华泰柏瑞(512890)年内累计“吸金”近60亿元",
+      "attention_score": 95,
       "urgency": null,
       "trust_level": "low",
       "owners": [
@@ -161,10 +149,10 @@
     },
     {
       "rank": 4,
-      "event_id": "evt_4b12fa2f9f1b",
+      "event_id": "evt_40ac78061367",
       "action_id": null,
-      "title": "我国保险资金运用余额首次突破40万亿元！红利低波ETF华泰柏瑞(512890)年内累计“吸金”近60亿元",
-      "attention_score": 100,
+      "title": "红树林推出百慕大再保险Sidecar Grove Re",
+      "attention_score": 95,
       "urgency": null,
       "trust_level": "low",
       "owners": [
@@ -181,10 +169,10 @@
     },
     {
       "rank": 5,
-      "event_id": "evt_40ac78061367",
+      "event_id": "evt_1806ade270bd",
       "action_id": null,
-      "title": "红树林推出百慕大再保险Sidecar Grove Re",
-      "attention_score": 100,
+      "title": "CatIQ 将安大略省和魁北克省雷暴保险市场损失预估上调 17.5% 至 4.39 亿加元",
+      "attention_score": 95,
       "urgency": null,
       "trust_level": "low",
       "owners": [
@@ -201,12 +189,12 @@
     },
     {
       "rank": 6,
-      "event_id": "evt_1806ade270bd",
+      "event_id": "evt_db0a3669a076",
       "action_id": null,
-      "title": "CatIQ 将安大略省和魁北克省雷暴保险市场损失预估上调 17.5% 至 4.39 亿加元",
-      "attention_score": 100,
+      "title": "GC Securities 在 2026 年上半年发行了 20 只巨灾债券，总额达到创纪录的 50 亿美元：Guy Carpenter 首席执行官 Klisura",
+      "attention_score": 70,
       "urgency": null,
-      "trust_level": "low",
+      "trust_level": "medium",
       "owners": [
         "risk_review_owner"
       ],
@@ -221,10 +209,10 @@
     },
     {
       "rank": 7,
-      "event_id": "evt_db0a3669a076",
+      "event_id": "evt_92310abdea56",
       "action_id": null,
-      "title": "GC Securities 在 2026 年上半年发行了 20 只巨灾债券，总额达到创纪录的 50 亿美元：Guy Carpenter 首席执行官 Klisura",
-      "attention_score": 80,
+      "title": "传统整合公司 Marco Capital 将收购保险服务公司 Pro Global",
+      "attention_score": 70,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -241,10 +229,10 @@
     },
     {
       "rank": 8,
-      "event_id": "evt_92310abdea56",
+      "event_id": "evt_59a8566e7e13",
       "action_id": null,
-      "title": "传统整合公司 Marco Capital 将收购保险服务公司 Pro Global",
-      "attention_score": 80,
+      "title": "另类资本的崛起将为金融投资者创造更大的空间：盖伊·卡彭特的卢梭",
+      "attention_score": 70,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -261,10 +249,10 @@
     },
     {
       "rank": 9,
-      "event_id": "evt_59a8566e7e13",
+      "event_id": "evt_3429758517ea",
       "action_id": null,
-      "title": "另类资本的崛起将为金融投资者创造更大的空间：盖伊·卡彭特的卢梭",
-      "attention_score": 80,
+      "title": "国家金融监督管理总局：全面推进保险行业AI大模型合规应用指引",
+      "attention_score": 70,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -281,10 +269,10 @@
     },
     {
       "rank": 10,
-      "event_id": "evt_3429758517ea",
+      "event_id": "evt_0fe4820271f7",
       "action_id": null,
-      "title": "国家金融监督管理总局：全面推进保险行业AI大模型合规应用指引",
-      "attention_score": 80,
+      "title": "KCC 报告称，随着再保险公司/保险公司寻求更多当前风险洞察力，人工智能正在重塑猫模型",
+      "attention_score": 70,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -301,10 +289,10 @@
     },
     {
       "rank": 11,
-      "event_id": "evt_0fe4820271f7",
+      "event_id": "evt_083f21f9623f",
       "action_id": null,
-      "title": "KCC 报告称，随着再保险公司/保险公司寻求更多当前风险洞察力，人工智能正在重塑猫模型",
-      "attention_score": 80,
+      "title": "加拿大皇家银行分析师预计，定价压力和较高的CAT损失将在26年第二季度对美国保险公司造成压力",
+      "attention_score": 70,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -321,10 +309,10 @@
     },
     {
       "rank": 12,
-      "event_id": "evt_083f21f9623f",
+      "event_id": "evt_083577177db6",
       "action_id": null,
-      "title": "加拿大皇家银行分析师预计，定价压力和较高的CAT损失将在26年第二季度对美国保险公司造成压力",
-      "attention_score": 80,
+      "title": "摩根大通表示再保险定价在 2027 年之前不太可能稳定",
+      "attention_score": 70,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -341,10 +329,10 @@
     },
     {
       "rank": 13,
-      "event_id": "evt_083577177db6",
+      "event_id": "evt_03c95bd12e1d",
       "action_id": null,
-      "title": "摩根大通表示再保险定价在 2027 年之前不太可能稳定",
-      "attention_score": 80,
+      "title": "AM Best & Guy Carpenter 预计 2026 年专用再保险资本将达到创纪录的 7050 亿美元",
+      "attention_score": 70,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -361,10 +349,10 @@
     },
     {
       "rank": 14,
-      "event_id": "evt_03c95bd12e1d",
+      "event_id": "evt_fdce63d983d9",
       "action_id": null,
-      "title": "AM Best & Guy Carpenter 预计 2026 年专用再保险资本将达到创纪录的 7050 亿美元",
-      "attention_score": 80,
+      "title": "马云罕见海外投资布局公示",
+      "attention_score": 50,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -381,10 +369,10 @@
     },
     {
       "rank": 15,
-      "event_id": "evt_fdce63d983d9",
+      "event_id": "evt_f982aaace043",
       "action_id": null,
-      "title": "马云罕见海外投资布局公示",
-      "attention_score": 60,
+      "title": "由于承保和投资业绩强劲，大韩再保险 26 年第二季度净利润增长 77.6%",
+      "attention_score": 50,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -401,10 +389,10 @@
     },
     {
       "rank": 16,
-      "event_id": "evt_f982aaace043",
+      "event_id": "evt_e6c1c99f3b9f",
       "action_id": null,
-      "title": "由于承保和投资业绩强劲，大韩再保险 26 年第二季度净利润增长 77.6%",
-      "attention_score": 60,
+      "title": "条款更加标准化，但 26 年上半年保留再保险：Hiscox CUO",
+      "attention_score": 50,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -421,10 +409,10 @@
     },
     {
       "rank": 17,
-      "event_id": "evt_e833bbc251da",
+      "event_id": "evt_e5aa7bc66dfa",
       "action_id": null,
-      "title": "Talcott 与高盛合作推出价值 10 亿美元的 West Grove Re sidecar",
-      "attention_score": 60,
+      "title": "惠誉表示，非人寿再保险公司的承保利润有所改善，但该行业“具有挑战性”",
+      "attention_score": 50,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -441,10 +429,10 @@
     },
     {
       "rank": 18,
-      "event_id": "evt_e6c1c99f3b9f",
+      "event_id": "evt_e000cb8ec4c4",
       "action_id": null,
-      "title": "条款更加标准化，但 26 年上半年保留再保险：Hiscox CUO",
-      "attention_score": 60,
+      "title": "White Mountains gets $222m capital return from Ark’s Outrigger Re sidecar",
+      "attention_score": 50,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -461,10 +449,10 @@
     },
     {
       "rank": 19,
-      "event_id": "evt_e5aa7bc66dfa",
+      "event_id": "evt_df9aee1a3fa5",
       "action_id": null,
-      "title": "惠誉表示，非人寿再保险公司的承保利润有所改善，但该行业“具有挑战性”",
-      "attention_score": 60,
+      "title": "尽管市场压力，美国内陆海上保险仍保持强劲的承保业绩：AM Best",
+      "attention_score": 50,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -481,10 +469,10 @@
     },
     {
       "rank": 20,
-      "event_id": "evt_e000cb8ec4c4",
+      "event_id": "evt_da4ddc03005e",
       "action_id": null,
-      "title": "White Mountains gets $222m capital return from Ark’s Outrigger Re sidecar",
-      "attention_score": 60,
+      "title": "MSIG USA支持DEG $ 5亿基金，以扩大可持续发展项目的私人资本",
+      "attention_score": 50,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -501,10 +489,10 @@
     },
     {
       "rank": 21,
-      "event_id": "evt_df9aee1a3fa5",
+      "event_id": "evt_d6dbd6b4a736",
       "action_id": null,
-      "title": "尽管市场压力，美国内陆海上保险仍保持强劲的承保业绩：AM Best",
-      "attention_score": 60,
+      "title": "瑞士养老金 Nest 表示 ILS 投资在 2025 年“再次取得令人信服的成果”",
+      "attention_score": 50,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -521,10 +509,10 @@
     },
     {
       "rank": 22,
-      "event_id": "evt_da4ddc03005e",
+      "event_id": "evt_d5a703563d3f",
       "action_id": null,
-      "title": "MSIG USA支持DEG $ 5亿基金，以扩大可持续发展项目的私人资本",
-      "attention_score": 60,
+      "title": "未如实记载保险业务，四川鸿霖保险代理合计被罚24万元",
+      "attention_score": 50,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -541,10 +529,10 @@
     },
     {
       "rank": 23,
-      "event_id": "evt_d6dbd6b4a736",
+      "event_id": "evt_d4c6b2150c69",
       "action_id": null,
-      "title": "瑞士养老金 Nest 表示 ILS 投资在 2025 年“再次取得令人信服的成果”",
-      "attention_score": 60,
+      "title": "澳大利亚的APRA使获得另类再保险（ CAT债券和ILS ）更简单",
+      "attention_score": 50,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -561,10 +549,10 @@
     },
     {
       "rank": 24,
-      "event_id": "evt_d5a703563d3f",
+      "event_id": "evt_d42873a48e85",
       "action_id": null,
-      "title": "未如实记载保险业务，四川鸿霖保险代理合计被罚24万元",
-      "attention_score": 60,
+      "title": "Beazley 与 Integral ILS 合作在百慕大开发新的网络 ILS 基金平台",
+      "attention_score": 50,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -581,10 +569,10 @@
     },
     {
       "rank": 25,
-      "event_id": "evt_d4c6b2150c69",
+      "event_id": "evt_d323b69bc8ab",
       "action_id": null,
-      "title": "澳大利亚的APRA使获得另类再保险（ CAT债券和ILS ）更简单",
-      "attention_score": 60,
+      "title": "青岛海林保险代理被罚2万，涉保险代理业务违规等",
+      "attention_score": 50,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -601,10 +589,10 @@
     },
     {
       "rank": 26,
-      "event_id": "evt_d42873a48e85",
+      "event_id": "evt_cd1750e23fee",
       "action_id": null,
-      "title": "Beazley 与 Integral ILS 合作在百慕大开发新的网络 ILS 基金平台",
-      "attention_score": 60,
+      "title": "国家金融监督管理总局等两部门：支持再保险机构增资扩股和发行资本补充工具",
+      "attention_score": 50,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -621,10 +609,10 @@
     },
     {
       "rank": 27,
-      "event_id": "evt_d323b69bc8ab",
+      "event_id": "evt_c7b446a384d5",
       "action_id": null,
-      "title": "青岛海林保险代理被罚2万，涉保险代理业务违规等",
-      "attention_score": 60,
+      "title": "KatRisk 通过新的野火风险功能扩展了灾难建模平台",
+      "attention_score": 50,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -641,10 +629,10 @@
     },
     {
       "rank": 28,
-      "event_id": "evt_cd1750e23fee",
+      "event_id": "evt_c5c49655ca16",
       "action_id": null,
-      "title": "国家金融监督管理总局等两部门：支持再保险机构增资扩股和发行资本补充工具",
-      "attention_score": 60,
+      "title": "NextRock 公布建立人寿保险和再保险平台的计划",
+      "attention_score": 50,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -661,10 +649,10 @@
     },
     {
       "rank": 29,
-      "event_id": "evt_c7b446a384d5",
+      "event_id": "evt_c59209c8ae64",
       "action_id": null,
-      "title": "KatRisk 通过新的野火风险功能扩展了灾难建模平台",
-      "attention_score": 60,
+      "title": "稳健的资本和年金需求推动全球人寿和年金再保险公司的增长：AM Best",
+      "attention_score": 50,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
@@ -681,10 +669,10 @@
     },
     {
       "rank": 30,
-      "event_id": "evt_c5c49655ca16",
+      "event_id": "evt_c4c99c6077e2",
       "action_id": null,
-      "title": "NextRock 公布建立人寿保险和再保险平台的计划",
-      "attention_score": 60,
+      "title": "金融监管总局：依托临港新片区在跨境领域的优势 吸引保险机构拓展更多增量市场",
+      "attention_score": 50,
       "urgency": null,
       "trust_level": "medium",
       "owners": [
