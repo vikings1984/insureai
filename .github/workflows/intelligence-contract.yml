@@ -40,17 +40,18 @@ jobs:
           python3 - <<'PY'
           import json
           from pathlib import Path
+          from contract import ARTIFACT_VERSIONS
           allowed = {'single_source', 'cross_checked', 'conflicted', 'unverified'}
           data = json.loads(Path('claims.json').read_text(encoding='utf-8'))
-          assert data.get('version') == 2
+          assert data.get('version') == ARTIFACT_VERSIONS['claims.json'], data.get('version')
           assert isinstance(data.get('events'), list)
           for event in data['events']:
               for claim in event.get('claims', []):
-                  for required in ('claim_id', 'text', 'status', 'evidence_refs'):
+                  for required in ('claim_id', 'claim_type', 'claim_text', 'verification_status'):
                       assert required in claim, (event.get('event_id'), required)
-                  assert claim['status'] in allowed, claim['status']
-          assert data.get('claim_count') == data.get('cross_checked_claim_count', 0) + data.get('single_source_claim_count', 0) + data.get('unverified_claim_count', 0)
-          print(f'Generated claim artifact valid: events={data["event_count"]} claims={data["claim_count"]}')
+                  assert claim['verification_status'] in allowed, claim['verification_status']
+          assert data.get('claim_count') == data.get('cross_checked_claim_count', 0) + data.get('single_source_claim_count', 0) + data.get('unverified_claim_count', 0) + data.get('conflicted_claim_count', 0)
+          print(f'Generated claim artifact v{data["version"]} valid: events={data["event_count"]} claims={data["claim_count"]}')
           PY
       - name: Event intelligence regression tests
         run: python3 -m unittest tests.test_intelligence_model tests.test_decision_review_boundary tests.test_claims_build tests.test_claims -v
