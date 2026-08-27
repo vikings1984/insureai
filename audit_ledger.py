@@ -12,7 +12,7 @@ STAGES = (
     ("collect", "data.json", "collector"),
     ("intelligence", "intelligence.json", "intelligence"),
     ("trust", "intelligence.json", "trust"),
-    ("claims", "intelligence.json", "claims"),
+    ("claims", "claims.json", "claims"),
     ("temporal", "intelligence.json", "temporal"),
     ("decision", "intelligence.json", "decision"),
     ("decision_stability", "decision_stability.json", "decision_stability"),
@@ -35,6 +35,7 @@ STAGES = (
     ("optimization_backlog_history", "optimization_backlog_history.json", "optimization_backlog"),
     ("daily_risk_radar", "daily_risk_radar.json", "daily_risk_radar"),
     ("owner_risk_view", "owner_risk_view.json", "owner_risk_view"),
+    ("executive_terminal", "executive_terminal.json", "executive_terminal"),
 )
 
 def sha256_file(path: Path) -> str:
