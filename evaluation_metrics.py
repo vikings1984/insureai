@@ -14,6 +14,7 @@ from claims import build_claims
 from decision import build_decisions
 from intelligence import build
 from temporal import build_temporal_intelligence
+from trust import assess
 
 CLAIMS_ARTIFACT = Path(__file__).resolve().parent / "claims.json"
 CLAIM_EVIDENCE_MATCH_RATE_GATE = 0.6
@@ -156,11 +157,33 @@ def production_claim_metrics(path: Path | None = None) -> dict:
     }
 
 
+def source_tier_metrics() -> dict:
+    """来源层级指标：Tier1 单源值得 medium 以上；两个 Tier3 行业媒体互相印证不得得 high。"""
+    tier1_single = [
+        _news("国家金融监督管理总局发布保险业资金运用新规", "金融监管总局", "https://www.nfra.gov.cn/a", "2026-08-21T10:00:00+00:00", tags="金融监管总局"),
+    ]
+    tier3_pair = [
+        _news("Munich Re to acquire At-Bay for $575 million", "Insurance Journal", "https://www.insurancejournal.com/a", "2026-08-21T10:00:00+00:00"),
+        _news("Munich Re agrees to buy At-Bay for $575 million", "Reinsurance News", "https://www.reinsurancene.ws/a", "2026-08-21T11:00:00+00:00"),
+    ]
+    tier1_result = assess(tier1_single, {"source_count": 1})
+    tier3_result = assess(tier3_pair, {"source_count": 2})
+    tier1_ok = tier1_result["level"] in {"medium", "high"}
+    tier3_ok = tier3_result["level"] != "high"
+    return {
+        "tier1_single_source_trust": 1.0 if tier1_ok else 0.0,
+        "tier3_pair_not_high": 1.0 if tier3_ok else 0.0,
+        "tier1_single_source_level": tier1_result["level"],
+        "tier3_pair_level": tier3_result["level"],
+    }
+
+
 def build_metrics() -> dict:
     event = event_pair_metrics()
     claim = claim_metrics()
     temporal = temporal_metrics()
     decision = decision_metrics()
+    source_tier = source_tier_metrics()
     macro = round(sum([
         event["precision"],
         event["recall"],
@@ -174,13 +197,16 @@ def build_metrics() -> dict:
         1 - temporal["false_trend_rate_no_date"],
         1 - decision["unsafe_now_rate"],
         decision["guardrail_coverage"],
-    ]) / 12, 4)
+        source_tier["tier1_single_source_trust"],
+        source_tier["tier3_pair_not_high"],
+    ]) / 14, 4)
     return {
         "version": 2,
         "event_clustering": event,
         "claim_evidence": claim,
         "temporal": temporal,
         "decision": decision,
+        "source_authority": source_tier,
         "macro_quality": macro,
         "production": production_claim_metrics(),
     }

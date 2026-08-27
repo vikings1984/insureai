@@ -6,12 +6,19 @@ Tier 1: 监管机构/政府/交易所/公司公告/法院等一手来源
 Tier 2: Reuters/Bloomberg/FT/WSJ 等国际通讯社与财经媒体
 Tier 3: 行业媒体/专业研究机构（默认层）
 Tier 4: 博客/转载/聚合/社交媒体
+
+层级语义（authority / trust_weight / label）在 contract.SOURCE_TIERS 单一定义，
+本模块只负责 domain/source_type -> tier 的映射。
 """
 from __future__ import annotations
 
 from urllib.parse import urlparse
 
-TIER_WEIGHTS = {1: 1.0, 2: 0.85, 3: 0.65, 4: 0.45}
+from contract import SOURCE_TIERS
+
+TIER_LABELS = {tier: cfg["label"] for tier, cfg in SOURCE_TIERS.items()}
+TIER_AUTHORITY = {tier: cfg["authority"] for tier, cfg in SOURCE_TIERS.items()}
+TIER_TRUST_WEIGHTS = {tier: cfg["trust_weight"] for tier, cfg in SOURCE_TIERS.items()}
 
 TIER1_DOMAINS = (
     "gov.cn", "gov", "sec.gov", "fca.org.uk", "eiopa.eu", "naic.org",

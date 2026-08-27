@@ -13,7 +13,7 @@ from evaluation_metrics import build_metrics, production_claim_metrics
 class TestEvaluationMetrics(unittest.TestCase):
     def test_metrics_are_bounded(self):
         result = build_metrics()
-        for section in ("event_clustering", "claim_evidence", "temporal", "decision"):
+        for section in ("event_clustering", "claim_evidence", "temporal", "decision", "source_authority"):
             for key, value in result[section].items():
                 if isinstance(value, float):
                     self.assertGreaterEqual(value, 0)
@@ -30,6 +30,8 @@ class TestEvaluationMetrics(unittest.TestCase):
         self.assertEqual(result["temporal"]["false_trend_rate_no_date"], 0.0)
         self.assertEqual(result["decision"]["unsafe_now_rate"], 0.0)
         self.assertEqual(result["decision"]["guardrail_coverage"], 1.0)
+        self.assertEqual(result["source_authority"]["tier1_single_source_trust"], 1.0)
+        self.assertEqual(result["source_authority"]["tier3_pair_not_high"], 1.0)
 
     def test_build_metrics_includes_production_section(self):
         result = build_metrics()

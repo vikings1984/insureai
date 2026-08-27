@@ -22,6 +22,7 @@ from urllib.parse import urlparse
 
 from radar import build_radar
 from signal import extract_signals
+from source_tiers import TIER_AUTHORITY, tier_for_item
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(HERE, "data.json")
@@ -197,7 +198,9 @@ def _score(items: list[dict]) -> dict:
         if _event_type(item) == "personnel":
             actionability = min(actionability, 42)
             impact = min(impact, 55)
-        authority = float(item.get("source_authority") or 70)
+        declared = float(item.get("source_authority") or 0)
+        tier_authority = TIER_AUTHORITY.get(tier_for_item(item), 68)
+        authority = round(0.6 * declared + 0.4 * tier_authority) if declared else tier_authority
         confidence = min(100, max(40, authority * 0.75 + (15 if item.get("date_verified") else 0)))
         rows.append((relevance, impact, actionability, confidence))
     relevance = max(x[0] for x in rows)

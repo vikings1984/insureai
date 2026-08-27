@@ -47,6 +47,17 @@ SCHEMA_VERSIONS = {
     "audit_ledger_schema": "audit-ledger-v1",
 }
 
+# Single source of truth for the 4-tier source authority hierarchy.
+# source_tiers.py maps domain/source_type onto these tiers; trust.py,
+# claims.py and intelligence.py all weight by these values, so a tier
+# re-definition can never drift across scoring modules.
+SOURCE_TIERS = {
+    1: {"label": "监管/政府/交易所/公司公告/法院", "authority": 95, "trust_weight": 1.0},
+    2: {"label": "国际通讯社/权威财经媒体", "authority": 82, "trust_weight": 0.8},
+    3: {"label": "行业媒体/专业研究机构", "authority": 68, "trust_weight": 0.55},
+    4: {"label": "博客/转载/聚合/社交媒体", "authority": 40, "trust_weight": 0.3},
+}
+
 EVENT_REQUIRED = {"event_id", "title", "event_type", "entities", "topic", "published_at", "source_count", "article_count", "article_ids", "scores", "insight", "trust", "claims"}
 SCORE_KEYS = {"relevance", "impact", "novelty", "actionability", "confidence", "intelligence_score"}
 
