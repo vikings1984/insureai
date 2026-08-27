@@ -13,7 +13,9 @@ from pathlib import Path
 from claims import build_claims
 from decision import build_decisions
 from intelligence import build
+from radar import build_topic_trends
 from temporal import build_temporal_intelligence
+from trend_intelligence import build_event_clusters
 from trust import assess
 
 CLAIMS_ARTIFACT = Path(__file__).resolve().parent / "claims.json"
@@ -121,6 +123,76 @@ def temporal_metrics() -> dict:
     }
 
 
+def trend_metrics() -> dict:
+    """P1-1 趋势引擎指标：动力学数值正确性 + rising 解释齐备率（trend_explainability）。
+
+    全部用相对 now 构造的 hermetic 事件，不读取磁盘工件。
+    """
+    from datetime import datetime, timedelta, timezone
+
+    now = datetime.now(timezone.utc)
+
+    def ev(day_offset, domain, entity="At-Bay", title="Munich Re to acquire At-Bay"):
+        published = (now - timedelta(days=day_offset)).isoformat()
+        return {
+            "event_id": f"ev_{day_offset}_{domain}",
+            "topic": "capital_reinsurance",
+            "title": title,
+            "published_at": published,
+            "entities": [entity, "Munich Re"],
+            "source_count": 1,
+            "scores": {"intelligence_score": 80},
+            "evidence": [{"domain": domain, "source_url": f"https://{domain}/a"}],
+        }
+
+    # w0(0-7d): 3 事件两域；w1(7-14d): 1 事件；w2(14-21d): 2 事件
+    events = [
+        ev(1, "reuters.com"), ev(2, "insurancejournal.com"), ev(3, "reuters.com"),
+        ev(10, "reuters.com"),
+        ev(17, "reuters.com"), ev(18, "reuters.com"),
+    ]
+    trends = build_topic_trends(events)
+    trend = next(x for x in trends if x["topic"] == "capital_reinsurance")
+    velocity = (3 - 1) / 1
+    previous_velocity = (1 - 2) / 2
+    dynamics_ok = (
+        trend["velocity"] == round(velocity, 3)
+        and trend["acceleration"] == round(velocity - previous_velocity, 3)
+        and trend["source_diversity"] == 2
+    )
+    why = trend.get("why") or {}
+    explainability_ok = all(why.get(k) is not None for k in ("independent_events", "sources", "days", "core_entities")) and bool(why.get("event_ids"))
+
+    # rising 场景：w0 明显放量，验证 explainability 的实际计算路径而非空列表默认 1.0
+    rising_events = [
+        {"event_id": f"r{i}", "topic": "product_innovation", "title": f"Insurer launches new parametric product v{i}", "published_at": (now - timedelta(days=1)).isoformat(), "entities": ["Insurer"], "source_count": 1, "scores": {"intelligence_score": 80}, "evidence": [{"domain": "reuters.com"}]}
+        for i in range(5)
+    ] + [
+        {"event_id": "r_prev", "topic": "product_innovation", "title": "Insurer launches new parametric product", "published_at": (now - timedelta(days=10)).isoformat(), "entities": ["Insurer"], "source_count": 1, "scores": {"intelligence_score": 80}, "evidence": [{"domain": "reuters.com"}]},
+    ]
+    rising_trends = build_topic_trends(rising_events)
+    rising_topic = next(x for x in rising_trends if x["topic"] == "product_innovation")
+    assert rising_topic["direction"] == "rising"
+
+    # cluster：同 topic 相似事件聚为一，不同实体分开
+    cluster_events = [
+        {"event_id": "c1", "topic": "capital_reinsurance", "title": "Munich Re to acquire At-Bay", "published_at": now.isoformat(), "entities": ["Munich Re", "At-Bay"], "evidence": []},
+        {"event_id": "c2", "topic": "capital_reinsurance", "title": "Munich Re seals At-Bay deal", "published_at": (now - timedelta(hours=2)).isoformat(), "entities": ["Munich Re", "At-Bay"], "evidence": []},
+        {"event_id": "c3", "topic": "capital_reinsurance", "title": "Lloyd appoints new chairman of syndicate", "published_at": (now - timedelta(hours=4)).isoformat(), "entities": ["Lloyd"], "evidence": []},
+    ]
+    clusters = build_event_clusters(cluster_events, now=now)
+    cluster_ok = len(clusters) == 2 and {c["event_count"] for c in clusters} == {2, 1}
+
+    rising = [x for x in trends if x["direction"] == "rising"]
+    rising_explained = sum(1 for x in rising if (x.get("why") or {}).get("independent_events") is not None)
+    return {
+        "dynamics_correctness": 1.0 if dynamics_ok else 0.0,
+        "trend_explainability": _safe_div(rising_explained, len(rising)) if rising else 1.0,
+        "cluster_unit_precision": 1.0 if cluster_ok else 0.0,
+        "why": why,
+    }
+
+
 def decision_metrics() -> dict:
     events = [
         {"event_id": "safe", "event_type": "regulatory", "topic": "regulatory_change", "scores": {"intelligence_score": 90}, "trust": {"level": "high", "conflict": False}},
@@ -182,6 +254,7 @@ def build_metrics() -> dict:
     event = event_pair_metrics()
     claim = claim_metrics()
     temporal = temporal_metrics()
+    trend = trend_metrics()
     decision = decision_metrics()
     source_tier = source_tier_metrics()
     macro = round(sum([
@@ -205,6 +278,7 @@ def build_metrics() -> dict:
         "event_clustering": event,
         "claim_evidence": claim,
         "temporal": temporal,
+        "trend_intelligence": trend,
         "decision": decision,
         "source_authority": source_tier,
         "macro_quality": macro,

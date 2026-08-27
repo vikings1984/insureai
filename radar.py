@@ -6,8 +6,10 @@
 确定性、可解释、无需外部 API。
 """
 from collections import Counter, defaultdict
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from math import log1p
+
+from contract import ARTIFACT_VERSIONS
 
 TOPIC_LABELS = {
     "ai_intelligent": "AI智能化", "pension_finance": "养老金融",
@@ -77,6 +79,79 @@ def build_entity_radar(events, limit=12):
     return result[:limit]
 
 
+def _event_domains(event) -> set:
+    domains = set()
+    for row in event.get("evidence") or []:
+        domain = str(row.get("domain") or "").lower().strip()
+        if domain:
+            domains.add(domain.removeprefix("www."))
+    return domains
+
+
+def _topic_dynamics(topic_events, now):
+    """TRD-2: velocity / acceleration / persistence / source_diversity。
+
+    velocity 为最近 7 天事件数相对前 7 天的变化率；acceleration 为 velocity
+    相对再前一个 7 天窗口的变化；persistence 为从最新事件日往前连续有
+    事件的天数；source_diversity 为 7 天窗口内的独立域数。
+    """
+    windows = [[] for _ in range(3)]
+    for event in topic_events:
+        ts = _ts(event.get("published_at")).timestamp()
+        age_days = (now.timestamp() - ts) / 86400
+        if 0 <= age_days < 7:
+            windows[0].append(event)
+        elif 7 <= age_days < 14:
+            windows[1].append(event)
+        elif 14 <= age_days < 21:
+            windows[2].append(event)
+    n0, n1, n2 = (len(w) for w in windows)
+    velocity = round((n0 - n1) / max(1, n1), 3)
+    previous_velocity = round((n1 - n2) / max(1, n2), 3)
+    acceleration = round(velocity - previous_velocity, 3)
+
+    active_days = {_ts(e.get("published_at")).date() for e in topic_events}
+    persistence = 0
+    if active_days:
+        day = max(active_days)
+        while day in active_days and persistence < 30:
+            persistence += 1
+            day -= timedelta(days=1)
+
+    domains = set()
+    for event in windows[0]:
+        domains |= _event_domains(event)
+    return {
+        "velocity": velocity,
+        "acceleration": acceleration,
+        "persistence": persistence,
+        "source_diversity": len(domains),
+        "active_domains": sorted(domains)[:8],
+    }
+
+
+def _trend_why(topic_events, dynamics):
+    """TRD-3: 每条趋势附四要素解释，供 UI 直接渲染且可追溯到事件列表。"""
+    now = datetime.now(timezone.utc)
+    recent = [e for e in topic_events if (now - _ts(e.get("published_at"))).total_seconds() <= 7 * 86400]
+    entities = Counter()
+    for event in recent:
+        for entity in event.get("entities") or []:
+            name = str(entity).strip()
+            if len(name) >= 2 and name.lower() not in ENTITY_STOPWORDS:
+                entities[name] += 1
+    domains = set()
+    for event in recent:
+        domains |= _event_domains(event)
+    return {
+        "independent_events": len(recent),
+        "sources": len(domains),
+        "days": dynamics["persistence"],
+        "core_entities": [name for name, _ in entities.most_common(3)],
+        "event_ids": [e.get("event_id") for e in sorted(recent, key=lambda x: _ts(x.get("published_at")), reverse=True)[:10]],
+    }
+
+
 def build_topic_trends(events, limit=8):
     now = datetime.now(timezone.utc)
     current_start = now.timestamp() - 7 * 86400
@@ -120,6 +195,8 @@ def build_topic_trends(events, limit=8):
             direction = "stable"
             strength = max(25, min(75, round(65 - abs(delta) * 40)))
         confidence = "low" if len(cur) + len(prev) < 3 else ("medium" if len(cur) + len(prev) < 6 else "high")
+        dynamics = _topic_dynamics(bucket["all"], now)
+        why = _trend_why(bucket["all"], dynamics)
         result.append({
             "topic": topic,
             "topic_label": TOPIC_LABELS.get(topic, topic),
@@ -131,6 +208,11 @@ def build_topic_trends(events, limit=8):
             "direction": direction,
             "strength": strength,
             "confidence": confidence,
+            "velocity": dynamics["velocity"],
+            "acceleration": dynamics["acceleration"],
+            "persistence": dynamics["persistence"],
+            "source_diversity": dynamics["source_diversity"],
+            "why": why,
         })
     order = {"rising": 0, "stable": 1, "falling": 2}
     result.sort(key=lambda x: (order.get(x["direction"], 3), -x["strength"], -abs(x["delta"])))
@@ -141,10 +223,10 @@ def build_radar(events):
     entities = build_entity_radar(events)
     trends = build_topic_trends(events)
     return {
-        "version": 1,
+        "version": ARTIFACT_VERSIONS["radar.json"],
         "entity_radar": entities,
         "topic_trends": trends,
-        "principle": "监测谁正在发生变化，以及哪些主题正在形成趋势",
+        "principle": "监测谁正在发生变化，以及哪些主题正在形成趋势；趋势动力学（velocity/acceleration/persistence）只描述已发生的事件分布",
         "stats": {
             "entities": len(entities),
             "trending_topics": sum(1 for x in trends if x["direction"] == "rising"),

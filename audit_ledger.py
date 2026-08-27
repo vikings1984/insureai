@@ -14,6 +14,7 @@ STAGES = (
     ("trust", "intelligence.json", "trust"),
     ("claims", "claims.json", "claims"),
     ("temporal", "intelligence.json", "temporal"),
+    ("trend_intelligence", "radar.json", "trend_intelligence"),
     ("decision", "intelligence.json", "decision"),
     ("decision_stability", "decision_stability.json", "decision_stability"),
     ("decision_credibility", "decision_credibility.json", "decision_credibility"),

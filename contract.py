@@ -24,6 +24,7 @@ ARTIFACT_VERSIONS = {
     "daily_risk_radar.json": 4,
     "owner_risk_view.json": 2,
     "trend_attribution.json": 1,
+    "radar.json": 2,
     "review_queue.json": 3,
     "change_impact.json": 1,
     "audit_ledger.json": 1,
