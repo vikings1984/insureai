@@ -168,7 +168,10 @@ def _cluster(items: list[dict]) -> dict[str, list[dict]]:
             anchor_match = bool(anchor and rep_anchor and anchor == rep_anchor)
             anchor_conflict = bool(anchor and rep_anchor and anchor != rep_anchor)
             same_type = _event_type(item) == _event_type(rep_item)
-            if anchor_conflict and score < 0.72:
+            # anchor 只是 tags 的首个实体（编辑排序而非语义）；实体集合高度重叠时
+            # anchor 冲突只是语态差异（主动/被动），不得硬阻断合并造成假拆分。
+            entity_overlap = _entity_similarity(item, rep_item)
+            if anchor_conflict and entity_overlap < 0.5 and score < 0.72:
                 continue
             accept = score >= 0.52 or (anchor_match and same_type and score >= 0.30)
             if accept and score > best_score:

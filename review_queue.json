@@ -78,6 +78,54 @@
       "trend_attribution": null
     },
     {
+      "event_id": "evt_ceb11946ab87",
+      "title": "瑞士再保险：2026 年上半年全球受保巨灾损失达 420 亿美元，创 2020 年以来上半年最低水平",
+      "event_type": "claims_loss",
+      "topic": "capital_reinsurance",
+      "priority": 85,
+      "status": "pending",
+      "reasons": [
+        {
+          "type": "conflict",
+          "reason": "trust layer detected source conflict"
+        },
+        {
+          "type": "change_impact",
+          "reason": "downstream judgement changed; risk=medium"
+        }
+      ],
+      "article_ids": [
+        540,
+        542
+      ],
+      "source_count": 2,
+      "trust_level": "low",
+      "intelligence_score": 79,
+      "decision": null,
+      "change_impact": {
+        "event_id": "evt_ceb11946ab87",
+        "impact": "judgement_changed",
+        "risk": "medium",
+        "changes": [
+          {
+            "field": "trust.level",
+            "from": "medium",
+            "to": "low"
+          }
+        ]
+      },
+      "evidence_availability": {
+        "version": 1,
+        "level": "high",
+        "reason": "输入数据具备足够日期覆盖且未被判定为过期",
+        "freshness_status": "ok",
+        "date_coverage": 1.0,
+        "stale": false,
+        "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency"
+      },
+      "trend_attribution": null
+    },
+    {
       "event_id": "evt_7635b5984895",
       "title": "慕尼黑再保险 (Munich Re) 跻身劳合社全球 50 家最大再保险公司之列：AM Best",
       "event_type": "claims_loss",
@@ -326,10 +374,6 @@
         {
           "type": "claim_conflict",
           "reason": "1 条命题存在支持/矛盾证据冲突，需人工裁决"
-        },
-        {
-          "type": "change_impact",
-          "reason": "downstream judgement changed; risk=low"
         }
       ],
       "article_ids": [
@@ -340,18 +384,7 @@
       "trust_level": "medium",
       "intelligence_score": 77,
       "decision": null,
-      "change_impact": {
-        "event_id": "evt_96c336ca5844",
-        "impact": "judgement_changed",
-        "risk": "low",
-        "changes": [
-          {
-            "field": "trust.level",
-            "from": "low",
-            "to": "medium"
-          }
-        ]
-      },
+      "change_impact": null,
       "evidence_availability": {
         "version": 1,
         "level": "high",
@@ -3225,38 +3258,6 @@
       ],
       "article_ids": [
         1148
-      ],
-      "source_count": 1,
-      "trust_level": "medium",
-      "intelligence_score": 81,
-      "decision": null,
-      "change_impact": null,
-      "evidence_availability": {
-        "version": 1,
-        "level": "high",
-        "reason": "输入数据具备足够日期覆盖且未被判定为过期",
-        "freshness_status": "ok",
-        "date_coverage": 1.0,
-        "stale": false,
-        "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency"
-      },
-      "trend_attribution": null
-    },
-    {
-      "event_id": "evt_8de3f64eb0f3",
-      "title": "太平资产、国寿投资因保险资金运用不规范被金融监管总局处罚",
-      "event_type": "regulatory",
-      "topic": "regulatory_change",
-      "priority": 30,
-      "status": "pending",
-      "reasons": [
-        {
-          "type": "event_cluster",
-          "reason": "high-impact single-article event; review cluster boundary"
-        }
-      ],
-      "article_ids": [
-        1150
       ],
       "source_count": 1,
       "trust_level": "medium",

@@ -27,13 +27,22 @@ class BenchmarkRegressionTests(unittest.TestCase):
         self.assertEqual(result["unsafe_now_rate"], 0.0)
         self.assertEqual(result["human_review_recall"], 1.0)
 
+    def test_split_benchmark_zero_false_split_and_guard(self):
+        import json
+        data = json.loads(benchmark.FIXTURE.read_text(encoding="utf-8"))
+        result = benchmark.split_benchmark(data["split_cases"])
+        self.assertEqual(result["false_split_rate"], 0.0)
+        self.assertEqual(result["recall"], 1.0)
+        self.assertEqual(result["false_merge_rate"], 0.0)
+
     def test_end_to_end_benchmark_meets_gate(self):
         import json
         data = json.loads(benchmark.FIXTURE.read_text(encoding="utf-8"))
         event = benchmark.event_benchmark(data["event_cases"])
+        split = benchmark.split_benchmark(data["split_cases"])
         claim = benchmark.claim_benchmark(data["claim_cases"])
         decision = benchmark.decision_benchmark(data["decision_cases"])
-        macro = (event["precision"] + event["recall"] + (1 - event["false_merge_rate"]) + claim["cross_check_accuracy"] + claim["single_source_state_accuracy"] + (1 - claim["single_source_false_cross_check_rate"]) + (1 - decision["unsafe_now_rate"]) + decision["human_review_recall"]) / 8
+        macro = (event["precision"] + event["recall"] + (1 - event["false_merge_rate"]) + (1 - split["false_split_rate"]) + claim["cross_check_accuracy"] + claim["single_source_state_accuracy"] + (1 - claim["single_source_false_cross_check_rate"]) + (1 - decision["unsafe_now_rate"]) + decision["human_review_recall"]) / 9
         self.assertGreaterEqual(macro, 0.95)
 
 

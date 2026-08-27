@@ -70,6 +70,35 @@ def event_benchmark(fixtures: list[dict]) -> dict:
     return pair_metrics(actual, expected_positive, expected_positive | different_pairs)
 
 
+def split_benchmark(fixtures: list[dict]) -> dict:
+    """False Split 检测：同一事件的不同表述必须合并进同一事件。
+
+    false_split_rate = 漏合并的应合并对 / 全部应合并对；守卫用例（同实体
+    不同动作）的误合并计为 false_merge_rate，防止修复假拆分时矫枉过正。
+    """
+    expected_positive: set[tuple[str, str]] = set()
+    different_pairs: set[tuple[str, str]] = set()
+    for case in fixtures:
+        for pair in case.get("same_event_pairs", []):
+            expected_positive.add(tuple(sorted(pair)))
+        for pair in case.get("different_event_pairs", []):
+            different_pairs.add(tuple(sorted(pair)))
+    actual: set[tuple[str, str]] = set()
+    for case in fixtures:
+        rows = [news(x) for x in case["articles"]]
+        result = build({"news": rows})
+        for event in result.get("events", []):
+            ids = [str(x) for x in event.get("article_ids") or []]
+            for i, left in enumerate(ids):
+                for right in ids[i + 1:]:
+                    actual.add(tuple(sorted((left, right))))
+    metrics = pair_metrics(actual, expected_positive, expected_positive | different_pairs)
+    metrics["false_split_rate"] = round(
+        metrics["false_negative"] / len(expected_positive), 4
+    ) if expected_positive else 0.0
+    return metrics
+
+
 def claim_benchmark(fixtures: list[dict]) -> dict:
     positive_case = next(x for x in fixtures if x["id"] == "claim_cross_checked_001")
     single_case = next(x for x in fixtures if x["id"] == "claim_single_source_001")
@@ -116,15 +145,18 @@ def decision_benchmark(fixtures: list[dict]) -> dict:
 def main() -> None:
     data = json.loads(FIXTURE.read_text(encoding="utf-8"))
     event = event_benchmark(data["event_cases"])
+    split = split_benchmark(data.get("split_cases", []))
     claim = claim_benchmark(data["claim_cases"])
     decision = decision_benchmark(data["decision_cases"])
     safety_pass = (
         decision["unsafe_now_rate"] == 0.0
         and claim["single_source_false_cross_check_rate"] == 0.0
         and event["false_merge_rate"] == 0.0
+        and split["false_split_rate"] == 0.0
+        and split["false_merge_rate"] == 0.0
     )
-    macro = round((event["precision"] + event["recall"] + (1 - event["false_merge_rate"]) + claim["cross_check_accuracy"] + claim["single_source_state_accuracy"] + (1 - claim["single_source_false_cross_check_rate"]) + (1 - decision["unsafe_now_rate"]) + decision["human_review_recall"]) / 8, 4)
-    result = {"version": 1, "benchmark": "insureai_core_benchmark", "macro_quality": macro, "safety_pass": safety_pass, "event": event, "claim_evidence": claim, "decision": decision}
+    macro = round((event["precision"] + event["recall"] + (1 - event["false_merge_rate"]) + (1 - split["false_split_rate"]) + claim["cross_check_accuracy"] + claim["single_source_state_accuracy"] + (1 - claim["single_source_false_cross_check_rate"]) + (1 - decision["unsafe_now_rate"]) + decision["human_review_recall"]) / 9, 4)
+    result = {"version": 2, "benchmark": "insureai_core_benchmark", "macro_quality": macro, "safety_pass": safety_pass, "event": event, "split": split, "claim_evidence": claim, "decision": decision}
     OUTPUT.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(result, ensure_ascii=False, indent=2))
     if not safety_pass or macro < 0.95:

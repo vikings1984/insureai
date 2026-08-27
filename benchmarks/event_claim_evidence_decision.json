@@ -1,7 +1,7 @@
 {
-  "version": 1,
+  "version": 2,
   "name": "insureai_core_benchmark",
-  "description": "人工标注的最小核心基准集，用于评估 Event / Claim / Evidence / Decision 四层能力。",
+  "description": "人工标注的最小核心基准集，用于评估 Event / Claim / Evidence / Decision 四层能力。v2 增补 split_cases：同一事件多种表述必须合并（False Split 检测）。",
   "policy": {
     "production_data_is_excluded": true,
     "expected_outputs_are_hand_labeled": true,
@@ -25,6 +25,27 @@
       ],
       "same_event_pairs":[],
       "different_event_pairs":[["r2","r3"]]
+    }
+  ],
+  "split_cases": [
+    {
+      "id": "event_split_001",
+      "articles": [
+        {"id":"sp1","title":"Munich Re to acquire At-Bay for $575 million","source":"Reuters","published_at":"2026-08-21T11:00:00+00:00","tags":"Munich Re,At-Bay","topic":"capital_reinsurance"},
+        {"id":"sp2","title":"Munich Re seals At-Bay deal","source":"Insurance Journal","published_at":"2026-08-21T12:00:00+00:00","tags":"Munich Re,At-Bay","topic":"capital_reinsurance"},
+        {"id":"sp3","title":"At-Bay confirms acquisition by Munich Re","source":"At-Bay Press","published_at":"2026-08-21T13:00:00+00:00","tags":"At-Bay,Munich Re","topic":"capital_reinsurance"}
+      ],
+      "same_event_pairs":[["sp1","sp2"],["sp1","sp3"],["sp2","sp3"]],
+      "different_event_pairs":[]
+    },
+    {
+      "id": "event_split_guard_001",
+      "articles": [
+        {"id":"gd1","title":"Munich Re to acquire At-Bay for $575 million","source":"Reuters","published_at":"2026-08-21T11:00:00+00:00","tags":"Munich Re,At-Bay","topic":"capital_reinsurance"},
+        {"id":"gd2","title":"At-Bay and Munich Re launch cyber insurance partnership","source":"Insurance Journal","published_at":"2026-08-21T12:00:00+00:00","tags":"At-Bay,Munich Re","topic":"digital_transformation"}
+      ],
+      "same_event_pairs":[],
+      "different_event_pairs":[["gd1","gd2"]]
     }
   ],
   "claim_cases": [
