@@ -57,9 +57,10 @@ def _case_claims() -> EvalResult:
     ]
     event = {"event_id": "evt_eval", "title": "Munich Re 收购 At-Bay"}
     result = build_claims(rows, event)
-    numeric = next(c for c in result["claims"] if c["type"] == "numeric")
-    passed = result["coverage"] == 100 and numeric["status"] == "cross_checked"
-    return EvalResult("claim_evidence", passed, f"coverage={result['coverage']} numeric={numeric['status']}")
+    amount = next(c for c in result["claims"] if c["claim_type"] == "transaction_amount")
+    propositions = [c for c in result["claims"] if c["claim_type"] != "event_summary"]
+    passed = result["coverage"] == 100 and amount["verification_status"] == "cross_checked" and len(propositions) >= 3
+    return EvalResult("claim_evidence", passed, f"coverage={result['coverage']} amount={amount['verification_status']} propositions={len(propositions)}")
 
 
 def _case_temporal() -> EvalResult:

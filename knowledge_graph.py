@@ -14,7 +14,7 @@ CLAIMS = ROOT / "claims.json"
 OUTPUT = ROOT / "knowledge_graph.json"
 
 NODE_TYPES = {"Company", "Person", "Product", "Event", "Regulation", "Claim", "Evidence", "Topic"}
-REL_TYPES = {"PARTICIPATES_IN", "MENTIONS", "ABOUT", "SUPPORTS", "EVIDENCES", "RELATED_TO", "GOVERNS", "INVOLVES"}
+REL_TYPES = {"PARTICIPATES_IN", "MENTIONS", "ABOUT", "SUPPORTS", "CONTRADICTS", "EVIDENCES", "RELATED_TO", "GOVERNS", "INVOLVES"}
 
 
 def load(path: Path) -> dict:
@@ -87,25 +87,26 @@ def build() -> dict:
     for event_group in claims_doc.get("events") or []:
         eid = event_nodes.get(event_group.get("event_id"))
         for claim in event_group.get("claims") or []:
-            cid = add_node(nodes, "Claim", f"{event_group.get('event_id')}:{claim.get('claim_id')}", text=claim.get("text"), status=claim.get("status"), confidence=claim.get("confidence"), independent_domains=claim.get("independent_domains"), event_id=event_group.get("event_id"))
+            claim_key = claim.get("claim_id") or f"{event_group.get('event_id')}:{len(nodes)}"
+            cid = add_node(nodes, "Claim", claim_key, claim_text=claim.get("claim_text") or claim.get("text"), claim_type=claim.get("claim_type"), verification_status=claim.get("verification_status") or claim.get("status"), confidence=claim.get("confidence"), independent_domains=claim.get("independent_domains"), event_id=event_group.get("event_id"))
             if eid:
                 add_edge(edges, cid, "INVOLVES", eid, confidence=0.9)
-            for evidence in claim.get("evidence") or []:
-                ref = evidence.get("evidence_id") or evidence.get("source_url") or evidence.get("source_name")
-                ev_id = evidence_nodes.get(ref) or add_node(nodes, "Evidence", ref or "unknown", source_name=evidence.get("source_name"), domain=evidence.get("domain"), published_at=evidence.get("published_at"))
-                evidence_nodes[ref] = ev_id
-                add_edge(edges, ev_id, "SUPPORTS", cid, evidence_refs=[ref], confidence=min(1.0, float(claim.get("confidence", 0) or 0) / 100))
-            for entity in claim.get("entities") or entities(claim.get("text") or ""):
+            for relation, field_name in (("SUPPORTS", "supporting_evidence"), ("CONTRADICTS", "contradicting_evidence")):
+                for evidence in claim.get(field_name) or []:
+                    ref = evidence.get("evidence_id") or evidence.get("source_url") or evidence.get("source_name")
+                    ev_id = evidence_nodes.get(ref) or add_node(nodes, "Evidence", ref or "unknown", source_name=evidence.get("source_name"), domain=evidence.get("domain"), source_tier=evidence.get("source_tier"), published_at=evidence.get("published_at"))
+                    evidence_nodes[ref] = ev_id
+                    add_edge(edges, ev_id, relation, cid, evidence_refs=[ref], confidence=min(1.0, float(claim.get("confidence", 0) or 0) / 100))
+            for entity in [x for x in (claim.get("subject"), claim.get("object")) if x] or claim.get("entities") or entities(claim.get("claim_text") or claim.get("text") or ""):
                 nid = add_node(nodes, "Company", entity)
                 add_edge(edges, nid, "MENTIONS", cid, confidence=0.8)
-            if claim.get("type") == "numeric":
-                for value in claim.get("numbers") or []:
-                    pid = add_node(nodes, "Product", f"numeric:{value}", raw=value, semantic_type="numeric_fact")
-                    add_edge(edges, cid, "RELATED_TO", pid, confidence=0.6)
-            if claim.get("type") == "date":
-                for value in claim.get("dates") or []:
-                    rid = add_node(nodes, "Regulation", f"date:{value}", raw=value, semantic_type="date_fact")
-                    add_edge(edges, cid, "RELATED_TO", rid, confidence=0.6)
+            value = claim.get("value") or {}
+            if value.get("normalized") is not None:
+                pid = add_node(nodes, "Product", f"amount:{value['normalized']}", raw=value.get("raw"), semantic_type="amount_fact")
+                add_edge(edges, cid, "RELATED_TO", pid, confidence=0.6)
+            if value.get("iso"):
+                rid = add_node(nodes, "Regulation", f"date:{value['iso']}", raw=value.get("raw"), semantic_type="date_fact")
+                add_edge(edges, cid, "RELATED_TO", rid, confidence=0.6)
 
     result = {
         "version": 2,

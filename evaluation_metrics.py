@@ -72,19 +72,28 @@ def claim_metrics() -> dict:
         _news("Munich Re agrees to buy At-Bay for $575 million", "Insurance Journal", "https://insurancejournal.com/a", "2026-08-21T11:00:00+00:00"),
     ]
     single = multi[:1]
-    positive = build_claims(multi, {"title": "Munich Re 收购 At-Bay"})
-    negative = build_claims(single, {"title": "Munich Re 收购 At-Bay"})
-    numeric = next(c for c in positive["claims"] if c["type"] == "numeric")
-    predicted_positive = [numeric["status"] == "cross_checked"]
+    conflict = [
+        _news("Munich Re to acquire At-Bay for $575 million", "Reuters", "https://reuters.com/a", "2026-08-21T10:00:00+00:00"),
+        _news("Munich Re agrees to buy At-Bay for $600 million", "Insurance Journal", "https://insurancejournal.com/a", "2026-08-21T11:00:00+00:00"),
+    ]
+    positive = build_claims(multi, {"event_id": "evt_m", "title": "Munich Re 收购 At-Bay"})
+    negative = build_claims(single, {"event_id": "evt_s", "title": "Munich Re 收购 At-Bay"})
+    conflicted = build_claims(conflict, {"event_id": "evt_c", "title": "Munich Re 收购 At-Bay"})
+    amount = next(c for c in positive["claims"] if c["claim_type"] == "transaction_amount")
+    predicted_positive = [amount["verification_status"] == "cross_checked"]
     actual_positive = [True]
-    single_cross_checked = any(c["status"] == "cross_checked" for c in negative["claims"])
+    single_cross_checked = any(c["verification_status"] == "cross_checked" for c in negative["claims"])
     tp = int(predicted_positive[0] and actual_positive[0])
     fp = int(any(predicted_positive) and not any(actual_positive))
+    propositions = [c for c in positive["claims"] if c["claim_type"] != "event_summary"]
+    conflict_detected = any(c["verification_status"] == "conflicted" for c in conflicted["claims"])
     return {
         "cross_check_precision": _safe_div(tp, tp + fp),
         "cross_check_recall": _safe_div(tp, 1),
         "single_source_false_cross_check_rate": 1.0 if single_cross_checked else 0.0,
         "multi_source_coverage": positive["coverage"] / 100,
+        "claim_proposition_coverage": _safe_div(len(propositions), 3) if len(propositions) < 3 else 1.0,
+        "claim_conflict_recall": 1.0 if conflict_detected else 0.0,
     }
 
 
@@ -130,13 +139,15 @@ def build_metrics() -> dict:
         claim["cross_check_precision"],
         claim["cross_check_recall"],
         1 - claim["single_source_false_cross_check_rate"],
+        claim["claim_proposition_coverage"],
+        claim["claim_conflict_recall"],
         temporal["accelerating_recall"],
         1 - temporal["false_trend_rate_no_date"],
         1 - decision["unsafe_now_rate"],
         decision["guardrail_coverage"],
-    ]) / 10, 4)
+    ]) / 12, 4)
     return {
-        "version": 1,
+        "version": 2,
         "event_clustering": event,
         "claim_evidence": claim,
         "temporal": temporal,

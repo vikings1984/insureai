@@ -30,5 +30,17 @@ class TestReviewQueue(unittest.TestCase):
         result=build_review_queue(data,trend_attribution=attr); item=result['items'][0]
         self.assertIn('trend_noise_guard',{x['type'] for x in item['reasons']})
 
+    def test_conflicted_claims_enter_review_queue(self):
+        data={"events":[{"event_id":"evt6","title":"Amount dispute event","scores":{"intelligence_score":70},"trust":{"level":"high","conflict":False},"claims":{"coverage":100,"claims":[{"claim_id":"evt6/c1","claim_type":"transaction_amount","claim_text":"交易金额为 $575 million","verification_status":"conflicted","supporting_evidence":[{"evidence_id":"a1"}],"contradicting_evidence":[{"evidence_id":"a2"}]}]},"article_count":2,"article_ids":["a1","a2"],"source_count":2}],"decisions":[{"event_id":"evt6","urgency":"watch","action":"watch"}],"temporal":{"topic_signals":[]}}
+        result=build_review_queue(data); self.assertEqual(result['generated_count'],1); item=result['items'][0]
+        self.assertIn('claim_conflict',{x['type'] for x in item['reasons']})
+        self.assertGreaterEqual(item['priority'],60)
+
+    def test_event_without_claim_conflict_has_no_claim_conflict_reason(self):
+        data={"events":[{"event_id":"evt7","title":"Clean event","scores":{"intelligence_score":70},"trust":{"level":"high","conflict":False},"claims":{"coverage":50,"claims":[{"claim_id":"evt7/c1","claim_type":"event_summary","claim_text":"干净事件","verification_status":"single_source"}]},"article_count":2,"article_ids":["a1","a2"],"source_count":2}],"decisions":[{"event_id":"evt7","urgency":"watch","action":"watch"}],"temporal":{"topic_signals":[]}}
+        result=build_review_queue(data)
+        for item in result['items']:
+            self.assertNotIn('claim_conflict',{x['type'] for x in item['reasons']})
+
 # CI retrigger only; no runtime behavior change.
 if __name__=='__main__': unittest.main()

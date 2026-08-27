@@ -1,16 +1,40 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://vikings1984.github.io/insureai/schemas/claim.schema.json",
-  "title": "InsureAI Claim",
+  "title": "InsureAI Claim (v3, proposition-level)",
   "type": "object",
-  "required": ["claim_id", "text", "status", "evidence_refs"],
+  "required": ["claim_id", "claim_type", "claim_text", "verification_status", "evidence_refs"],
   "properties": {
     "claim_id": {"type": "string", "minLength": 1},
-    "text": {"type": "string", "minLength": 1},
-    "type": {"type": "string"},
-    "status": {"enum": ["single_source", "cross_checked", "conflicted", "unverified"]},
+    "event_id": {"type": ["string", "null"]},
+    "claim_type": {"type": "string", "enum": [
+      "acquisition_intent", "transaction_amount", "transaction_scope", "strategic_context",
+      "regulatory_action", "fine_amount", "effective_date", "product_launch", "product_amount",
+      "capital_raise", "capital_amount", "rating_change", "rating_amount", "executive_change",
+      "market_entry", "market_amount", "loss_event", "loss_amount", "event_summary", "reported_amount"
+    ]},
+    "claim_text": {"type": "string", "minLength": 1},
+    "subject": {"type": ["string", "null"]},
+    "object": {"type": ["string", "null"]},
+    "value": {
+      "type": ["object", "null"],
+      "properties": {
+        "raw": {"type": "string"},
+        "normalized": {"type": "number"},
+        "iso": {"type": "string"},
+        "currency": {"type": ["string", "null"]}
+      }
+    },
+    "source_articles": {"type": "array"},
+    "supporting_evidence": {"type": "array"},
+    "contradicting_evidence": {"type": "array"},
     "evidence_refs": {"type": "array"},
-    "confidence": {"type": "number", "minimum": 0, "maximum": 100}
+    "evidence_count": {"type": "number"},
+    "independent_domains": {"type": "number"},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 100},
+    "verification_status": {"enum": ["single_source", "cross_checked", "conflicted", "unverified"]},
+    "first_seen": {"type": ["string", "null"]},
+    "last_confirmed": {"type": ["string", "null"]}
   },
   "additionalProperties": true
 }

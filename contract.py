@@ -17,6 +17,7 @@ EXPECTED_VERSION = 7
 # validation script both read from this map, so a version bump in a generator
 # can never silently drift out of sync with the pipeline's contract gate.
 ARTIFACT_VERSIONS = {
+    "claims.json": 3,
     "decision_stability.json": 1,
     "decision_history.json": 1,
     "decision_credibility.json": 3,

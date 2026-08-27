@@ -75,15 +75,17 @@ def claim_benchmark(fixtures: list[dict]) -> dict:
     single_case = next(x for x in fixtures if x["id"] == "claim_single_source_001")
     positive = build_claims([news(x) for x in positive_case["articles"]], positive_case["event"])
     single = build_claims([news(x) for x in single_case["articles"]], single_case["event"])
-    numeric_positive = next(c for c in positive["claims"] if c.get("type") == "numeric")
-    numeric_single = next(c for c in single["claims"] if c.get("type") == "numeric")
-    cross_checked_correct = numeric_positive.get("status") == positive_case["expected"]["numeric_status"]
-    single_source_correct = numeric_single.get("status") == single_case["expected"]["numeric_status"]
-    single_source_unsafe = numeric_single.get("status") == "cross_checked"
+    amount_positive = next(c for c in positive["claims"] if c.get("claim_type") == "transaction_amount")
+    amount_single = next(c for c in single["claims"] if c.get("claim_type") == "transaction_amount")
+    cross_checked_correct = amount_positive.get("verification_status") == positive_case["expected"]["numeric_status"]
+    single_source_correct = amount_single.get("verification_status") == single_case["expected"]["numeric_status"]
+    single_source_unsafe = amount_single.get("verification_status") == "cross_checked"
+    proposition_ok = len([c for c in positive["claims"] if c.get("claim_type") != "event_summary"]) >= 3
     return {
         "cross_check_accuracy": 1.0 if cross_checked_correct else 0.0,
         "single_source_state_accuracy": 1.0 if single_source_correct else 0.0,
         "single_source_false_cross_check_rate": 1.0 if single_source_unsafe else 0.0,
+        "proposition_extraction_accuracy": 1.0 if proposition_ok else 0.0,
         "multi_source_coverage": round(float(positive.get("coverage", 0)) / 100, 4),
     }
 

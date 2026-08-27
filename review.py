@@ -21,6 +21,8 @@ def _priority(event, decision, counterfactual=None, impact=None, evidence_availa
     elif trust == 'medium': priority += 10
     if (event.get('trust') or {}).get('conflict'): priority += 30
     if float((event.get('claims') or {}).get('coverage') or 0) < 80: priority += 20
+    conflicted_claims = sum(1 for x in (event.get('claims') or {}).get('claims', []) if x.get('verification_status') == 'conflicted')
+    if conflicted_claims: priority += 40
     if decision and decision.get('urgency') == 'now' and trust != 'high': priority += 30
     if counterfactual and counterfactual.get('changed'): priority += 15
     if impact and impact.get('impact') in {'judgement_changed','event_set_changed'}:
@@ -40,6 +42,8 @@ def _candidate_reasons(event, decision, temporal, counterfactual, impact=None, e
     reasons=[]; trust=event.get('trust') or {}; claims=event.get('claims') or {}; scores=event.get('scores') or {}
     if trust.get('conflict'): reasons.append({'type':'conflict','reason':'trust layer detected source conflict'})
     if float(claims.get('coverage') or 0) < 80: reasons.append({'type':'evidence','reason':f"claim evidence coverage={claims.get('coverage', 0)}"})
+    conflicted = [x for x in claims.get('claims', []) if x.get('verification_status') == 'conflicted']
+    if conflicted: reasons.append({'type':'claim_conflict','reason':f"{len(conflicted)} 条命题存在支持/矛盾证据冲突，需人工裁决"})
     if trust.get('level') == 'low' and int(scores.get('intelligence_score') or 0) >= 80: reasons.append({'type':'evidence','reason':'high-value event has low trust'})
     if decision and decision.get('urgency') == 'now' and trust.get('level') != 'high': reasons.append({'type':'decision','reason':'now recommendation without high trust'})
     signal=next((x for x in (temporal or {}).get('topic_signals', []) if x.get('topic') == event.get('topic')), None)

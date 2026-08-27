@@ -26,6 +26,7 @@ def main():
     conflicts=0
     claims_total=0
     claims_cross_checked=0
+    claims_conflicted=0
     for e in intel.get("events",[]):
         level=e.get("trust",{}).get("level","low")
         levels[level]=levels.get(level,0)+1
@@ -33,8 +34,9 @@ def main():
         c=e.get("claims",{})
         claims_total += len(c.get("claims",[]))
         claims_cross_checked += int(c.get("cross_checked",0))
+        claims_conflicted += int(c.get("conflicted",0))
     intel["trust_stats"]={"high":levels.get("high",0),"medium":levels.get("medium",0),"low":levels.get("low",0),"conflicts":conflicts}
-    intel["claim_stats"]={"claims":claims_total,"cross_checked":claims_cross_checked,"coverage":round(100*claims_cross_checked/claims_total) if claims_total else 0}
+    intel["claim_stats"]={"claims":claims_total,"cross_checked":claims_cross_checked,"conflicted":claims_conflicted,"coverage":round(100*claims_cross_checked/claims_total) if claims_total else 0}
     with open(INTEL+".tmp","w",encoding="utf-8") as f: json.dump(intel,f,ensure_ascii=False,indent=2); f.write("\n")
     os.replace(INTEL+".tmp",INTEL)
     print("Trust + claims: %s events, conflicts=%s, claims=%s"%(len(intel.get("events",[])),conflicts,claims_total))
