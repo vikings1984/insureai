@@ -1,5 +1,7 @@
 # InsureAI 持续优化计划
 
+> **注（2026-08-27）**：v1.0 阶段计划已完成历史使命，v1.5 阶段的 Issue 级实施计划见 `docs/V1.5_ROADMAP.md`（含 Claim Intelligence、Evidence Graph、Source Tier、False Split、Trend Engine、Decision Card、KG 查询、benchmark v2 等拆解）。
+
 > 目标：把 InsureAI 从“资讯聚合 + 智能分析”持续收敛为可验证的 Insurance Intelligence & Decision Support Platform。
 
 ## 总体链路
