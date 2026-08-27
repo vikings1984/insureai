@@ -32,7 +32,14 @@ jobs:
           if [ -n "$(git status --porcelain data.json inbox.json data/translation_cache.json)" ]; then
             git add data.json inbox.json data/translation_cache.json
             git commit -m "chore: auto-collect news core $(date +%F)"
-            git push origin HEAD:${{ github.ref_name }}
+            git fetch origin "${{ github.ref_name }}"
+            if git rebase "origin/${{ github.ref_name }}"; then
+              git push origin HEAD:${{ github.ref_name }}
+            else
+              echo 'Remote advanced concurrently; dropping this collect push (next scheduled run re-publishes)'
+              git rebase --abort
+              git reset --merge
+            fi
           else echo "no new data"; fi
 
   analyze:
@@ -216,7 +223,18 @@ jobs:
             git commit -m "chore: auto-collect + intelligence + claims + graph + executive terminal $(date +%F)"
           else echo "no changes"; fi
       - name: Push (triggers GitHub Pages redeploy)
-        run: git push origin HEAD:${{ github.ref_name }}
+        run: |
+          git fetch origin "${{ github.ref_name }}"
+          if [ "$(git rev-parse HEAD)" = "$(git rev-parse "origin/${{ github.ref_name }}")" ]; then
+            echo 'nothing to push'; exit 0
+          fi
+          if git rebase "origin/${{ github.ref_name }}"; then
+            git push origin HEAD:${{ github.ref_name }}
+          else
+            echo 'Remote advanced concurrently; dropping this analyze push (next scheduled run re-publishes)'
+            git rebase --abort
+            git reset --merge
+          fi
       - name: Notify on failure
         if: failure()
         uses: actions/github-script@v7
