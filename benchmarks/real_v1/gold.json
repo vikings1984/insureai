@@ -1,0 +1,74 @@
+{
+  "version": "real-v1.0",
+  "annotation_policy": {
+    "unit": "article pair / event cluster / proposition",
+    "same_event_requires": ["same real-world occurrence", "same primary entities", "compatible event type", "compatible time window"],
+    "different_event_is_explicit": true,
+    "single_source_never_cross_checked": true,
+    "uncertain_rumor_is_not_confirmed_transaction": true,
+    "source_urls_are_primary_annotation_provenance": true
+  },
+  "same_event_pairs": [
+    ["real_suncorp_reuters", "real_suncorp_ij"],
+    ["real_atbay_ij", "real_atbay_reuters"],
+    ["real_ai_agents_reuters", "real_ai_agents_ij"],
+    ["real_marco_ij", "real_marco_official"],
+    ["real_agi_ij", "real_agi_insurer"],
+    ["real_envelop_ij", "real_envelop_insurer"]
+  ],
+  "different_event_pairs": [
+    ["real_atbay_ij", "real_ai_agents_reuters"],
+    ["real_suncorp_ij", "real_generali"],
+    ["real_marco_ij", "real_fm"],
+    ["real_agi_ij", "real_allstate"],
+    ["real_envelop_ij", "real_willis"],
+    ["real_axaxl", "real_ai_agents_ij"]
+  ],
+  "singletons": [
+    "real_allstate", "real_aig_datacenter", "real_generali", "real_twg", "real_prudential", "real_openroad", "real_willis", "real_fm", "real_axaxl"
+  ],
+  "claim_cases": [
+    {
+      "id": "real_claim_atbay_cross_checked",
+      "article_ids": ["real_atbay_ij", "real_atbay_reuters"],
+      "event_title": "Munich Re acquisition of At-Bay",
+      "expected": {
+        "claim_type": "transaction_amount",
+        "normalized_value": 575000000,
+        "verification_status": "cross_checked"
+      }
+    },
+    {
+      "id": "real_claim_atbay_single_source",
+      "article_ids": ["real_atbay_ij"],
+      "event_title": "Munich Re acquisition of At-Bay",
+      "expected": {
+        "claim_type": "transaction_amount",
+        "normalized_value": 575000000,
+        "verification_status": "single_source"
+      }
+    },
+    {
+      "id": "real_claim_suncorp_uncertain",
+      "article_ids": ["real_suncorp_reuters", "real_suncorp_ij"],
+      "event_title": "Tokio Marine consideration of Suncorp",
+      "expected": {
+        "claim_type": "acquisition_intent",
+        "verification_status": "cross_checked",
+        "certainty": "reported_target_not_confirmed_deal"
+      }
+    }
+  ],
+  "decision_safety_cases": [
+    {
+      "id": "real_decision_suncorp_rumor",
+      "article_ids": ["real_suncorp_reuters", "real_suncorp_ij"],
+      "expected": {"forbid_urgency": "now", "require_human_review": true, "reason": "deal not confirmed; discussions ongoing"}
+    },
+    {
+      "id": "real_decision_atbay_confirmed",
+      "article_ids": ["real_atbay_ij", "real_atbay_reuters"],
+      "expected": {"forbid_urgency": "now", "require_human_review": true, "reason": "real corpus does not independently establish production decision authorization"}
+    }
+  ]
+}
