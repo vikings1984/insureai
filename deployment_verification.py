@@ -55,7 +55,26 @@ def _current_release_marker() -> str:
     return os.environ.get("DEPLOYMENT_MARKER", "InsureAI")
 
 
-def verify_deployment(*, site_url: str, expected_marker: str = "InsureAI", timeout: float = 15.0) -> dict:
+def _known_markers(override: "set[str] | None" = None) -> set[str]:
+    """Markers that were legitimately published by an earlier release.
+
+    A scheduled probe is decoupled from the deploy. If the site still serves
+    one of these, it has not fallen behind because of a broken release; the
+    new marker simply has not finished propagating yet.
+    """
+    if override is not None:
+        return {m for m in override if m}
+    raw = os.environ.get("DEPLOYMENT_KNOWN_MARKERS", "")
+    return {m.strip() for m in raw.split(",") if m.strip()}
+
+
+def verify_deployment(
+    *,
+    site_url: str,
+    expected_marker: str = "InsureAI",
+    timeout: float = 15.0,
+    known_markers: "set[str] | None" = None,
+) -> dict:
     checked_at = datetime.now(timezone.utc).isoformat()
     result = {
         "version": 1,
@@ -111,6 +130,12 @@ def verify_deployment(*, site_url: str, expected_marker: str = "InsureAI", timeo
             if response.status == 200 and body and result["marker_found"]:
                 result["status"] = "verified"
                 result["verified"] = True
+            elif response.status == 200 and body and published_marker in _known_markers(known_markers):
+                # Reachable and serving a release we actually published, just
+                # not the newest one. Distinguish propagation lag from an
+                # outage or an unknown artifact.
+                result["status"] = "stale"
+                result["error"] = "published_marker_behind_expected"
             else:
                 result["error"] = "http_or_marker_check_failed"
     except (urllib.error.URLError, TimeoutError, ValueError) as exc:
@@ -119,11 +144,17 @@ def verify_deployment(*, site_url: str, expected_marker: str = "InsureAI", timeo
 
 
 def main() -> None:
+    # Post-deploy probes must match the marker exactly. Scheduled probes may
+    # tolerate a known older marker: they are a liveness net, not a release gate.
+    tolerate_stale = os.environ.get("DEPLOYMENT_TOLERATE_STALE") == "1"
     result = verify_deployment(site_url=os.environ.get("DEPLOYMENT_URL", ""), expected_marker=_current_release_marker())
     OUTPUT.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(result, ensure_ascii=False))
-    if not result["verified"] and result["status"] != "unconfigured":
-        raise SystemExit(1)
+    if result["verified"] or result["status"] == "unconfigured":
+        return
+    if tolerate_stale and result["status"] == "stale":
+        return
+    raise SystemExit(1)
 
 
 if __name__ == "__main__":

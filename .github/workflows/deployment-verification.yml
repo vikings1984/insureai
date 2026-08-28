@@ -1,5 +1,10 @@
 name: Deployment Verification
 on:
+  # Deliberately decoupled from the deploy chain: this is the liveness net that
+  # catches drift between deploys (outage, rollback, manual edit), so it must
+  # keep running even when no deploy happened. The release gate lives in
+  # deploy-cloudflare.yml, which verifies inline immediately after publishing
+  # and is therefore already aligned with the deploy.
   schedule:
     - cron: '15 */6 * * *'
   workflow_dispatch:
@@ -9,6 +14,11 @@ permissions:
 env:
   DEPLOYMENT_URL: ${{ vars.DEPLOYMENT_URL || '' }}
   DEPLOYMENT_MARKER: "InsureAI"
+  # This probe runs on its own clock, so the site may legitimately still be
+  # serving the previous release while a fresh marker is propagating. That is
+  # reported as `stale` and must not fail: an outage and a slow publish are
+  # different problems. The strict marker gate is in deploy-cloudflare.yml.
+  DEPLOYMENT_TOLERATE_STALE: '1'
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -19,6 +29,25 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
+      - name: Collect markers published by recent releases
+        run: |
+          python3 - <<'PY' >> "$GITHUB_ENV"
+          import json
+          from pathlib import Path
+          markers = set()
+          for name in ("deployment_verification_history.json", "deployment_verification.json"):
+              path = Path(name)
+              if path.exists():
+                  try:
+                      row = json.loads(path.read_text(encoding="utf-8"))
+                  except json.JSONDecodeError:
+                      continue
+                  for entry in (row if isinstance(row, list) else [row]):
+                      marker = entry.get("release_marker")
+                      if marker:
+                          markers.add(marker)
+          print(f"DEPLOYMENT_KNOWN_MARKERS={','.join(sorted(markers))}")
+          PY
       - name: Verify published deployment
         continue-on-error: true
         run: |
@@ -75,14 +104,19 @@ jobs:
           name: deployment-verification-${{ github.run_id }}
           path: deployment_verification_latest.json
           if-no-files-found: error
-      - name: Enforce verification result
+      - name: Enforce liveness
         if: env.DEPLOYMENT_URL != ''
         run: |
           python3 - <<'PY'
           import json
           result = json.load(open('deployment_verification_latest.json'))
-          assert result.get('verified') is True, result
-          print('Published deployment verified')
+          # `stale` means reachable and serving a release we actually published,
+          # just not the newest marker: the new one is still propagating. That
+          # is not an outage. Anything else, including an unknown marker, is.
+          assert result.get('status') in {'verified', 'stale'}, result
+          assert result.get('http_status') == 200, result
+          assert result.get('release_marker'), result
+          print(f"Deployment reachable: status={result.get('status')} marker={result.get('release_marker')}")
           PY
       - name: Report deployment URL configuration
         if: env.DEPLOYMENT_URL == ''

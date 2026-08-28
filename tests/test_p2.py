@@ -98,6 +98,29 @@ class P2Tests(unittest.TestCase):
         self.assertEqual(result["watchlist_hits"], 1)
         self.assertEqual(result["brief"][0]["watchlist_matches"], ["ai"])
 
+    def test_topic_scoped_watchlist_still_requires_keywords(self):
+        """A topic filter narrows the candidate set; it must not satisfy the
+        keyword filter on its own. Folding the topic slug into the keyword
+        haystack made "AI" match `ai_intelligent`, so every event in the topic
+        counted as a watchlist hit.
+        """
+        watchlist = {
+            "id": "ai", "name": "AI保险", "enabled": True,
+            "topics": ["ai_intelligent"], "keywords": ["AI", "大模型"],
+            "priority_boost": 8,
+        }
+        on_topic_without_keywords = _event(
+            "e1", "马云罕见海外投资布局公示", 70, topic="ai_intelligent"
+        )
+        on_topic_with_keywords = _event(
+            "e2", "保险公司 大模型 智能核保平台上线", 70, topic="ai_intelligent"
+        )
+        off_topic = _event("e3", "再保险资本充足率调整", 70, topic="capital_reinsurance")
+
+        self.assertFalse(p2_intelligence._match_watchlist(on_topic_without_keywords, watchlist))
+        self.assertTrue(p2_intelligence._match_watchlist(on_topic_with_keywords, watchlist))
+        self.assertFalse(p2_intelligence._match_watchlist(off_topic, watchlist))
+
     def test_load_news_accepts_production_data_shape(self):
         """`data.json` is a dict; P2 previously passed it straight through and
         crashed inside the clustering engine."""

@@ -101,6 +101,54 @@ class TestDeploymentVerification(unittest.TestCase):
         self.assertEqual(result["error"], "http_or_marker_check_failed")
 
     @patch("deployment_verification.urllib.request.urlopen")
+    def test_previously_published_marker_is_stale_not_failed(self, urlopen):
+        """A scheduled probe runs on its own clock. If the site still serves a
+        marker we really published, that is propagation lag, not an outage.
+        """
+        urlopen.return_value = _Response(
+            b'<html><head><meta name="insureai-release-marker" content="insureai-previous"></head></html>'
+        )
+        result = verify_deployment(
+            site_url="https://example.test",
+            expected_marker="insureai-newest",
+            known_markers={"insureai-previous"},
+        )
+        self.assertFalse(result["verified"])
+        self.assertEqual(result["status"], "stale")
+        self.assertEqual(result["error"], "published_marker_behind_expected")
+        self.assertEqual(result["release_marker"], "insureai-previous")
+        self.assertEqual(result["http_status"], 200)
+
+    @patch("deployment_verification.urllib.request.urlopen")
+    def test_unknown_marker_still_fails_even_with_known_markers(self, urlopen):
+        urlopen.return_value = _Response(
+            b'<html><head><meta name="insureai-release-marker" content="insureai-who-knows"></head></html>'
+        )
+        result = verify_deployment(
+            site_url="https://example.test",
+            expected_marker="insureai-newest",
+            known_markers={"insureai-previous"},
+        )
+        self.assertFalse(result["verified"])
+        self.assertEqual(result["status"], "failed")
+        self.assertEqual(result["error"], "http_or_marker_check_failed")
+
+    @patch("deployment_verification.urllib.request.urlopen")
+    def test_stale_is_reported_on_200_only(self, urlopen):
+        """An unreachable or non-200 site is never mere propagation lag."""
+        urlopen.return_value = _Response(
+            b'<html><head><meta name="insureai-release-marker" content="insureai-previous"></head></html>',
+            content_type="application/json",
+        )
+        result = verify_deployment(
+            site_url="https://example.test",
+            expected_marker="insureai-newest",
+            known_markers={"insureai-previous"},
+        )
+        self.assertEqual(result["status"], "failed")
+        self.assertEqual(result["error"], "unexpected_content_type")
+
+    @patch("deployment_verification.urllib.request.urlopen")
     def test_wrong_release_marker_does_not_verify(self, urlopen):
         urlopen.return_value = _Response(
             b'<html><head><meta name="insureai-release-marker" content="insureai-old"></head></html>'

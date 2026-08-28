@@ -60,10 +60,13 @@ def load_news(path: str | Path) -> list[dict]:
 
 
 def _match_watchlist(event: dict, watchlist: dict) -> bool:
+    # `topic` is deliberately excluded from the keyword haystack: topics are
+    # machine slugs such as `ai_intelligent`, so folding them in made every
+    # keyword (e.g. "AI") match its own topic slug and turned a topic-scoped
+    # watchlist into "every event in that topic".
     text = " ".join([
         event.get("title") or "",
         event.get("summary") or "",
-        event.get("topic") or "",
         " ".join(event.get("entities") or []),
     ]).lower()
     keywords = [str(x).lower() for x in (watchlist.get("keywords") or [])]
