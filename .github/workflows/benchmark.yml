@@ -19,9 +19,11 @@ jobs:
         with:
           python-version: '3.11'
       - name: Benchmark syntax check
-        run: python3 -m py_compile benchmark.py tests/test_benchmark.py
+        run: python3 -m py_compile benchmark.py real_data_benchmark.py tests/test_benchmark.py
       - name: Run core intelligence benchmark
         run: python3 benchmark.py
+      - name: Run P1-4 real-data annotation benchmark
+        run: python3 real_data_benchmark.py
       - name: Run benchmark regression tests
         run: python3 -m unittest tests.test_benchmark -v
       - name: Publish benchmark result summary
@@ -29,4 +31,7 @@ jobs:
         run: |
           if [ -f benchmark_results.json ]; then
             python3 -c "import json; r=json.load(open('benchmark_results.json', encoding='utf-8')); print('macro_quality=' + str(r.get('macro_quality'))); print('safety_pass=' + str(r.get('safety_pass'))); print('event_false_merge_rate=' + str(r.get('event',{}).get('false_merge_rate'))); print('event_false_split_rate=' + str(r.get('split',{}).get('false_split_rate'))); print('single_source_false_cross_check_rate=' + str(r.get('claim_evidence',{}).get('single_source_false_cross_check_rate'))); print('unsafe_now_rate=' + str(r.get('decision',{}).get('unsafe_now_rate')))"
+          fi
+          if [ -f real_benchmark_results.json ]; then
+            python3 -c "import json; r=json.load(open('real_benchmark_results.json', encoding='utf-8')); print('real_macro_quality=' + str(r.get('macro_quality'))); print('real_event_false_merge_rate=' + str(r.get('event',{}).get('false_merge_rate'))); print('real_event_false_split_rate=' + str(r.get('event',{}).get('false_split_rate'))); print('real_single_source_false_cross_check_rate=' + str(r.get('claim_evidence',{}).get('single_source_false_cross_check_rate'))); print('real_claim_accuracy=' + str(r.get('claim_evidence',{}).get('accuracy')))"
           fi
