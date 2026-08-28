@@ -21,6 +21,7 @@ EXPECTED_VERSION = 8
 # can never silently drift out of sync with the pipeline's contract gate.
 ARTIFACT_VERSIONS = {
     "claims.json": 3,
+    "knowledge_graph.json": 3,
     "decision_stability.json": 1,
     "decision_history.json": 1,
     "decision_credibility.json": 3,

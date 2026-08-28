@@ -28,10 +28,11 @@ jobs:
           python3 - <<'PY'
           import json
           from pathlib import Path
+          from contract import ARTIFACT_VERSIONS
           graph=json.loads(Path('knowledge_graph.json').read_text(encoding='utf-8'))
           schema=json.loads(Path('knowledge_graph.schema.json').read_text(encoding='utf-8'))
           assert graph['graph'] == 'insureai_traceable_knowledge_graph'
-          assert graph['version'] == 2
+          assert graph['version'] == ARTIFACT_VERSIONS['knowledge_graph.json']
           assert graph['stats']['node_count'] == len(graph['nodes'])
           assert graph['stats']['edge_count'] == len(graph['edges'])
           node_ids={n['id'] for n in graph['nodes']}

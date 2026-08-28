@@ -8,6 +8,8 @@ import re
 from pathlib import Path
 from urllib.parse import urlparse
 
+from contract import ARTIFACT_VERSIONS
+
 ROOT = Path(__file__).resolve().parent
 INTELLIGENCE = ROOT / "intelligence.json"
 CLAIMS = ROOT / "claims.json"
@@ -113,7 +115,7 @@ def build() -> dict:
         type_counts[node["type"]] = type_counts.get(node["type"], 0) + 1
     event_dates = sorted(x["published_at"] for x in nodes.values() if x["type"] == "Event" and x.get("published_at"))
     result = {
-        "version": 3,
+        "version": ARTIFACT_VERSIONS["knowledge_graph.json"],
         "graph": "insureai_traceable_knowledge_graph",
         "node_types": sorted(NODE_TYPES),
         "relationship_types": sorted(REL_TYPES),

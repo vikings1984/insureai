@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import knowledge_graph
+from contract import ARTIFACT_VERSIONS
 from kg_query import entity_recent, topic_crossover
 
 
@@ -79,7 +80,7 @@ class KnowledgeGraphTests(unittest.TestCase):
 
     def test_event_nodes_carry_timestamp_and_stats_v3(self):
         result = self._build()
-        self.assertEqual(result["version"], 3)
+        self.assertEqual(result["version"], ARTIFACT_VERSIONS["knowledge_graph.json"])
         events = [n for n in result["nodes"] if n["type"] == "Event"]
         self.assertEqual({n.get("published_at") for n in events}, {
             "2026-08-27T00:00:00Z", "2026-07-28T00:00:00Z",
