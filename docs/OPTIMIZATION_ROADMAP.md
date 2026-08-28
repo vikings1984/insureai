@@ -32,8 +32,10 @@ Signal → Event → Claim → Evidence → Trust → Insight → Decision → H
 - [x] Event → Claim → Evidence → Decision 页面闭环基础能力
 - [x] 全量测试与 Intelligence Contract 稳定通过
 - [x] Executive Terminal 第一版：artifact + 页面 + Daily Collect 自动生成
-- [x] Deployment Verification 最终线上回写状态全链路实测 —— `deployment_verification.json`：`status=verified`、`http_status=200`、`marker_found=true`（2026-08-28 实测）
-- [x] Release Provenance 在最新发布上出现 verified 状态 —— `release_provenance.json::deployment` 含 `status/release_match/trend.classification=recovered`
+- [x] Deployment Verification 最终线上回写状态全链路实测 —— `deployment_verification.json`：`status=verified`、`http_status=200`、`marker_found=true`（2026-08-28T14:12:24Z 实测，随发布链回写）
+  - ⚠️ **已知抖动（未闭环）**：定时核查 `deployment-verification.yml`（每 6 小时）近 6 次中 3 次失败，根因是 **marker 漂移** —— 该 job checkout 仓库 HEAD 后取当前 `release_marker` 去比对线上，而 `release_manifest.py` 每次运行都会重新盖章；若核查落在「daily-collect 已盖章、Cloudflare 尚未完成发布/传播」的窗口内，线上仍是旧 marker，即判定 `marker_found=false` 而失败。站点本身始终 `http_status=200`，下一轮通常自愈（`deployment_trend.classification=recovered`）。
+  - 待定（属策略判断，未擅自改动门禁语义）：把定时核查从「与 HEAD marker 强一致」改为「线上 marker 必须属于最近 N 个已发布 marker 之一」，或让核查对齐发布链完成后再触发，以区分**真实发布不一致**与**传播延迟**。
+- [x] Release Provenance 在最新发布上出现 verified 状态 —— `release_provenance.json::deployment` 含 `status/release_match/trend.classification=recovered`（受上一条 marker 漂移影响，`release_match` 会周期性回落到 false 再自愈）
 - [x] Claims benchmark 与反证指标 —— `benchmarks/real_v1/baseline.json`：`status=validated`，21 篇真实语料 / 6 正例对 / 6 负例对 / 3 claim 用例，macro_quality=1.0
 - [x] Knowledge Graph 第一版 —— `knowledge_graph.json` v3：9517 节点 / 12686 边，`kg_query.py` 提供实体检索、Topic×Entity 交叉、一跳邻居
 - [x] Executive Terminal 第二阶段：决策事项聚合、历史趋势与管理层操作闭环 —— `executive_terminal.json` v3 含 what_changed / what_is_accelerating / what_needs_attention / what_needs_human_decision；决策卡六要素 + 8 角色分发（`decision_context_coverage=1.0`）

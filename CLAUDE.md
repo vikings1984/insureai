@@ -71,6 +71,8 @@
 - 研究主题关键词需定期扩充：`digital_transformation` 和 `ai_intelligent` 的"数字化"归属前者(digital_transformation)，已从后者(ai_intelligent)移除避免冲突。同主题内须避免子串包含关系（如"数字化"已覆盖"数字化转型/建设/升级"），跨主题须避免关键词重复（如"线上化"仅属于 channel_transformation）。
 - 搜狗反爬：一次性跑全部关键词易触发验证码；已改为每日轮换 3 词（`_rotate_queries` 按 yday 偏移），检测到"验证码/antispider"即中断该通道。搜索结果标题的高亮标签去掉后，中文间残留空格须清理。
 - 翻译端点：Google gtx 对长文本偶发超时，MyMemory 兜底但每日有匿名配额；译文必须校验含中文（防接口返回英文错误提示被当译文入库）。
+- **部署验证抖动（已知，未闭环）**：`deployment-verification.yml` 每 6 小时核查一次，近半数失败。根因**不是站点故障而是 marker 漂移** —— `release_manifest.py` 每次运行都重新盖章，核查 job 拿 HEAD 的 marker 去比对线上，落在「已盖章 / Cloudflare 未发布完」窗口内就 `marker_found=false`。站点始终 HTTP 200，下一轮自愈（`deployment_trend.classification=recovered`）。判读 CI 时不要把这类红色当宕机。修复涉及门禁语义取舍（区分"发布不一致"与"传播延迟"），未擅自改动。
+- **改模块名必须搜 `.github`**：ripgrep / Grep 工具默认跳过隐藏目录。重命名 `signal.py` 时漏改 `intelligence-contract.yml` 的 `py_compile`，推送后该 workflow 直接失败。已由 `tests/test_module_hygiene.py::WorkflowReferenceTests` 兜底（校验 workflow 引用的每个 `.py` 都真实存在）。
 
 ## 深入文档
 - 人类接入 / 部署 / 用法 → `README.md`
