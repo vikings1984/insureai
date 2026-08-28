@@ -99,6 +99,25 @@ jobs:
         run: python3 review.py
       - name: Attribute review feedback to modules
         run: python3 feedback_attribution.py
+      - name: Build knowledge graph
+        run: python3 knowledge_graph.py
+      - name: Validate knowledge graph
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          graph=json.loads(Path('knowledge_graph.json').read_text(encoding='utf-8'))
+          assert graph['graph'] == 'insureai_traceable_knowledge_graph'
+          assert graph['stats']['node_count'] == len(graph['nodes'])
+          assert graph['stats']['edge_count'] == len(graph['edges'])
+          node_ids={n['id'] for n in graph['nodes']}
+          for edge in graph['edges']:
+              assert edge['source'] in node_ids
+              assert edge['target'] in node_ids
+              assert 0 <= edge['confidence'] <= 1
+          assert graph['stats']['node_count'] > 0, 'knowledge graph must not be empty when intelligence artifacts exist'
+          print('Knowledge graph valid:', graph['stats'])
+          PY
       - name: Build module health profile
         run: python3 module_health.py
       - name: Build module health trend
@@ -142,25 +161,6 @@ jobs:
         env:
           GITHUB_SHA: ${{ github.sha }}
         run: python3 executive_terminal.py
-      - name: Build knowledge graph
-        run: python3 knowledge_graph.py
-      - name: Validate knowledge graph
-        run: |
-          python3 - <<'PY'
-          import json
-          from pathlib import Path
-          graph=json.loads(Path('knowledge_graph.json').read_text(encoding='utf-8'))
-          assert graph['graph'] == 'insureai_traceable_knowledge_graph'
-          assert graph['stats']['node_count'] == len(graph['nodes'])
-          assert graph['stats']['edge_count'] == len(graph['edges'])
-          node_ids={n['id'] for n in graph['nodes']}
-          for edge in graph['edges']:
-              assert edge['source'] in node_ids
-              assert edge['target'] in node_ids
-              assert 0 <= edge['confidence'] <= 1
-          assert graph['stats']['node_count'] > 0, 'knowledge graph must not be empty when intelligence artifacts exist'
-          print('Knowledge graph valid:', graph['stats'])
-          PY
       - name: Build final analytical audit ledger
         run: python3 audit_ledger.py
       - name: Validate final analytical audit ledger

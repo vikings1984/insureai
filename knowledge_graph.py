@@ -69,7 +69,7 @@ def build() -> dict:
 
     for event in events:
         event_key = event.get("event_id") or event.get("title") or "unknown"
-        eid = add_node(nodes, "Event", event_key, title=event.get("title"), topic=event.get("topic"), trust=event.get("trust"), evidence_status=event.get("evidence_status"), source_count=event.get("source_count"))
+        eid = add_node(nodes, "Event", event_key, title=event.get("title"), topic=event.get("topic"), trust=event.get("trust"), evidence_status=event.get("evidence_status"), source_count=event.get("source_count"), published_at=event.get("published_at"))
         event_nodes[event.get("event_id")] = eid
         tid = add_node(nodes, "Topic", event.get("topic") or "")
         add_edge(edges, eid, "ABOUT", tid, confidence=0.9)
@@ -108,8 +108,12 @@ def build() -> dict:
                 rid = add_node(nodes, "Regulation", f"date:{value['iso']}", raw=value.get("raw"), semantic_type="date_fact")
                 add_edge(edges, cid, "RELATED_TO", rid, confidence=0.6)
 
+    type_counts: dict[str, int] = {}
+    for node in nodes.values():
+        type_counts[node["type"]] = type_counts.get(node["type"], 0) + 1
+    event_dates = sorted(x["published_at"] for x in nodes.values() if x["type"] == "Event" and x.get("published_at"))
     result = {
-        "version": 2,
+        "version": 3,
         "graph": "insureai_traceable_knowledge_graph",
         "node_types": sorted(NODE_TYPES),
         "relationship_types": sorted(REL_TYPES),
@@ -120,6 +124,8 @@ def build() -> dict:
             "edge_count": len(edges),
             "event_count": len(events),
             "claim_count": sum(len(x.get("claims") or []) for x in claims_doc.get("events") or []),
+            "node_types": dict(sorted(type_counts.items(), key=lambda kv: -kv[1])),
+            "latest_event_at": event_dates[-1] if event_dates else "",
         },
     }
     OUTPUT.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

@@ -32,6 +32,14 @@ Since version 8 every decision card carries a `context` object whose six element
 
 `intelligence.json.decisions` stays the executive-lens flat list for downstream consumers; `intelligence.json.decisions_by_role` groups the top 12 cards per role. `decision_stats.decision_context_coverage` reports the six-element completeness rate across all role cards and the production quality gate requires it ≥ 0.9.
 
+## Knowledge graph (v3)
+
+`knowledge_graph.json` is a derived, provenance-first artifact built from `intelligence.json` + `claims.json`:
+
+- Since version 3 every `Event` node carries `published_at`, and `stats` carries `node_types` (per-type counts) and `latest_event_at` (max event timestamp).
+- The query layer (`kg_query.py`) is read-only: `entity_recent` anchors its 90-day window on the graph's own `latest_event_at` so answers are reproducible regardless of query time; claims without timestamps inherit the time of the event they `INVOLVES`.
+- `module_health.json` carries a `knowledge_graph` module row sourced from the graph stats; an empty graph (node or edge count 0) is `critical` with priority 100, and the daily workflow asserts `node_count > 0` before release (kg_nonempty_gate).
+
 ## Lineage
 
 `data_contract.components` contains short SHA-256 fingerprints for the major sections of the generated intelligence document. These are integrity fingerprints, not source authenticity proofs.
