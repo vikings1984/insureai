@@ -39,6 +39,7 @@ ANALYTICAL_STEPS = [
     [sys.executable, "optimization_backlog.py"],
     [sys.executable, "daily_risk_radar.py"],
     [sys.executable, "owner_risk_view.py"],
+    [sys.executable, "p2_intelligence.py"],
     [sys.executable, "freshness.py"],
     [sys.executable, "evidence_availability.py"],
     [sys.executable, "prerender.py", "--site-url", os.environ.get("SITE_URL", "https://vikings1984.github.io/insureai")],

@@ -37,6 +37,7 @@ STAGES = (
     ("daily_risk_radar", "daily_risk_radar.json", "daily_risk_radar"),
     ("owner_risk_view", "owner_risk_view.json", "owner_risk_view"),
     ("executive_terminal", "executive_terminal.json", "executive_terminal"),
+    ("p2_daily_brief", "p2_daily_brief.json", "p2_intelligence"),
 )
 
 def sha256_file(path: Path) -> str:

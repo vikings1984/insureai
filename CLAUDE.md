@@ -37,10 +37,13 @@
 - `prerender.py`：生成 JSON-LD / 首屏静态列表 / `sitemap.xml`。
 - `collect_research.py`：深度研究页半自动采集（零依赖，复用 `collect.py` 工具）；维护 `research.json`，每周 CI 触发。白皮书聚焦版三重门控：①机构域名白名单 `RESEARCH_DOMAINS`（媒体网站不算研究报告）②财报噪声排除 `EARNINGS_NOISE_RE` ③标题须含报告型名词（报告/白皮书/研报/展望/report/whitepaper/sigma…）；`--clean` 可清洗历史 auto 条目（curated 条目永不动）。**方向驱动补充**：每次运行统计 8 方向报告数，低于 `RESEARCH_TOPIC_MIN=3` 的方向自动触发「方向主题页 `TOPIC_SOURCES` + 搜狗定向搜索」，尾部输出方向覆盖报告，缺口提示人工经 inbox/MCP 补充。
 - `scripts/quality_score.py`：CI 中跑采集质量评分，写 `data/quality/`。
-- `data.json`：前端加载的资讯数据（**由管道生成，勿大段手改**；当前 ~900 条 / v2.3.x）。
+- `data.json`：前端加载的资讯数据（**由管道生成，勿大段手改**；2026-08-28 实测 1586 条 / 1532 事件）。**顶层是 dict**（`news` / `sources` / `days` / `version` / `last_updated` / `source_health`），取文章列表必须走 `data["news"]`——`p2_intelligence.py::load_news()` 已封装此契约。
 - `research.json`：权威研究报告（深度研究页数据源）。**半自动闭环**：`collect_research.py` 每周自动发现机构新报告并标 `auto=True` 写入；人工精炼 `key_data/key_insight` 后把条目标 `curated=True`（CI 永不覆盖）；无 `auto` 字段的历史人工条也视为 `curated`。`renderResearch` 据此显示「⚙ 自动收录·待精炼」或「✓ 精编」徽标。
 - `index.html`：SPA 骨架；`<meta name="data-url" content="data.json">` 同源加载；`feedback-email=157247839@qq.com` 已配置。含 ARIA 可访问性标签、localStorage LRU 自动清理（含配额耗尽降级）。
-- `tests/`：标准库 unittest，共 136 用例 —— `test_collect.py`(18) / `test_dedup.py`(9) / `test_stock_noise.py`(22) / `test_research_topics_v2.py`(18) / `test_research_filter.py`（财报噪声/白名单门控/方向补充缺口检测）/ `test_sogou_sources.py`（搜狗解析/轮换/链接解析）/ `test_translate.py`（双端点解析/缓存/预算）。
+- `tests/`：标准库 unittest，**2026-08-28 实测 423 用例全绿**（`python3 -m unittest discover tests/`）。核心：`test_collect.py`(18) / `test_dedup.py`(9) / `test_stock_noise.py`(22) / `test_research_topics_v2.py`(18) / `test_research_filter.py` / `test_sogou_sources.py` / `test_translate.py` / `test_p2.py`(8) / `test_module_hygiene.py`(3)。
+- `intelligence_signal.py`：Signal Layer（战略/监管/市场/技术/财务）。⚠️ **原名 `signal.py`，与 Python 标准库 `signal` 同名，已重命名** —— 遮蔽标准库会让 `intelligence.py` 的导入在 sys.path 顺序不同的环境下直接 ImportError（曾导致 9 个测试模块导入失败）。`tests/test_module_hygiene.py` 已锁定此约束，**禁止新建任何与标准库同名的模块**。
+- `p2_intelligence.py`：P2 每日情报闭环（Daily Brief → Watchlist → Monitoring → Feedback）。产出 `p2_daily_brief.json`（已进 audit ledger 与 CI 门禁），用户状态持久化在 `p2_state.json`（随仓库提交以跨次运行累积反馈）。用法：`python3 p2_intelligence.py --watchlist '{"id":"ai","name":"AI保险","topics":["ai_intelligent"],"keywords":["AI"],"priority_boost":8}'`。⚠️ 事件的智能分在 `event["scores"]["intelligence_score"]`，**不是** `event["intelligence_score"]`。
+- `benchmarks/real_v1/`：P1-4 真实语料人工标注基准（21 篇真实文章 / 6 正例对 / 6 负例对 / 3 claim 用例），`baseline.json` 已 `validated`，改算法前先跑它对拍。
 - 旧 `config.json` 已废弃（配置内嵌于 `collect.py` 常量中），归档于 `archive/main/data/config.json`。
 
 ## 采集通道（6 条）

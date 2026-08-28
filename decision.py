@@ -27,7 +27,7 @@ IMPACT_FACETS = {
 }
 # 类型未命中时，信号分面的影响强度按 45% 折算（次要影响不得高于类型直接命中的主影响）。
 SIGNAL_FACET_RATIO = 0.45
-# 与 signal.py 的"有意义信号"阈值保持一致的分面在位判定线。
+# 与 intelligence_signal.py 的"有意义信号"阈值保持一致的分面在位判定线。
 FACET_PRESENT_THRESHOLD = 28
 
 OPPORTUNITY_BY_TYPE = {

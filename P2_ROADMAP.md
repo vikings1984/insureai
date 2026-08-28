@@ -1,5 +1,8 @@
 # P2 Intelligence Operating Loop
 
+> **2026-08-28 状态**：v1.0 已实现并**接入主发布流水线**（`daily-collect.yml` 构建 + 校验 → `p2_daily_brief.json` → audit ledger 第 29 阶段 + fail-closed 非空门禁）。
+> 复核时发现两个仅凭合成 fixture 无法暴露的缺陷，已修复：`data.json` 顶层是 dict 被当 list 传入导致崩溃；`daily_priority` 读错字段路径（`event["intelligence_score"]` vs 实际 `event["scores"]["intelligence_score"]`）导致排序全 0。详见 `docs/V1.5_ROADMAP.md` 的 P2 小节。
+
 ## Target loop
 
 `Daily Intelligence Brief -> Personalized Watchlist -> Continuous Monitoring -> Decision Feedback Loop`

@@ -6,9 +6,11 @@
 
 当前仓库的**生产主线是清晰的**：`insureai` 是唯一应用与发布主线，`cloudflare/workers-autoconfig` 属于部署专项分支。当前没有发现开放 Pull Request，因此历史 feature 分支没有正在进行的 PR 合并义务。
 
-但仓库仍存在大量历史 `feature/*` 分支（当前审计可见 100+），其中包含明显的迭代/试验命名，例如 `eval-final*`、`*-v2`、`*-final*`。这些分支不应继续被视为架构组成部分。
+本审计时仓库可见历史 `feature/*` 分支 100+，其中包含明显的迭代/试验命名，例如 `eval-final*`、`*-v2`、`*-final*`。这些分支不应继续被视为架构组成部分。
 
 **处理原则：先审计、后删除；不通过 force-push 重写 `insureai` 历史。**
+
+> **2026-08-28 复核更新**：清理已完成。当前远程分支仅剩 2 条 —— `insureai`（canonical）与 `cloudflare/workers-autoconfig`（deployment-specific），历史 `feature/*` 已全部移除。孤儿分支的持续检查已由 `.github/workflows/branch-hygiene.yml` 自动化（每周一生成候选报告 Issue，只报告不删除）。
 
 ## 2. 分支分类
 
@@ -83,6 +85,7 @@ collect
 → scenario / action / readiness
 → audit / contract / evaluation
 → review / health / backlog / radar / owner view
+→ p2 daily brief
 → release manifest
 → final audit
 → restamp release
@@ -117,8 +120,9 @@ collect
 - [x] release quality 与 deployment verification 已分离
 - [x] artifact provenance 已纳入发布链
 - [x] 开放 PR 审计：当前无开放 PR
-- [ ] 历史 feature 分支逐项确认并删除
-- [ ] 定期自动检查孤儿分支
+- [x] 历史 feature 分支逐项确认并删除（2026-08-28 复核：远程分支仅剩 2 条）
+- [x] 定期自动检查孤儿分支（`branch-hygiene.yml` 每周一自动出候选报告）
+- [x] P2 产物纳入发布链（`p2_daily_brief.json` 进 audit ledger + 非空门禁）
 
 ## 9. 后续维护标准
 

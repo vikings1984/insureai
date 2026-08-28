@@ -20,6 +20,7 @@ from intelligence import build as build_intelligence
 ROOT = Path(__file__).resolve().parent
 STATE_PATH = Path(os.environ.get("INSUREAI_P2_STATE", ROOT / "p2_state.json"))
 OUTPUT_PATH = ROOT / "p2_daily_brief.json"
+BRIEF_LIMIT = 20
 
 DEFAULT_STATE = {
     "version": "p2-v1.0",
@@ -43,6 +44,21 @@ def save_state(state: dict[str, Any]) -> None:
     STATE_PATH.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
+def load_news(path: str | Path) -> list[dict]:
+    """Return the article list from a production data file.
+
+    `data.json` is a dict (`{"news": [...], "sources": [...], ...}`), while
+    callers and tests pass a bare article list. Normalise both so the
+    intelligence engine always receives `list[dict]`.
+    """
+    raw = json.loads(Path(path).read_text(encoding="utf-8"))
+    if isinstance(raw, dict):
+        raw = raw.get("news", [])
+    if not isinstance(raw, list):
+        raise ValueError(f"unsupported news payload: {type(raw).__name__}")
+    return [x for x in raw if isinstance(x, dict)]
+
+
 def _match_watchlist(event: dict, watchlist: dict) -> bool:
     text = " ".join([
         event.get("title") or "",
@@ -57,8 +73,20 @@ def _match_watchlist(event: dict, watchlist: dict) -> bool:
     return topic_ok and keyword_ok
 
 
+def _intelligence_score(event: dict) -> int:
+    """Read the intelligence score from the engine's canonical location.
+
+    The engine emits `event["scores"]["intelligence_score"]`. A top-level
+    fallback is kept only for hand-built fixtures.
+    """
+    scores = event.get("scores")
+    if isinstance(scores, dict) and scores.get("intelligence_score") is not None:
+        return int(scores["intelligence_score"])
+    return int(event.get("intelligence_score") or 0)
+
+
 def _priority(event: dict, watchlist: dict | None = None) -> int:
-    score = int(event.get("intelligence_score") or 0)
+    score = _intelligence_score(event)
     if watchlist:
         score += int(watchlist.get("priority_boost") or 0)
     return min(100, score)
@@ -85,11 +113,11 @@ def daily_brief(news: list[dict], state: dict) -> dict:
         item["daily_priority"] = score
         item["watchlist_matches"] = [w.get("id") for w in matched]
         rows.append(item)
-    rows.sort(key=lambda x: (x.get("daily_priority", 0), x.get("intelligence_score", 0)), reverse=True)
+    rows.sort(key=lambda x: (x.get("daily_priority", 0), _intelligence_score(x)), reverse=True)
     return {
         "version": "p2-v1.0",
         "generated_at": now(),
-        "brief": rows[:20],
+        "brief": rows[:BRIEF_LIMIT],
         "watchlist_hits": sum(1 for x in rows if x.get("watchlist_matches")),
         "event_count": len(rows),
         "feedback_applied": len(state.get("feedback", [])),
@@ -149,7 +177,7 @@ def main() -> None:
         record_feedback(state, args.feedback[0], args.feedback[1], args.feedback[2])
     if args.monitor:
         register_monitor(state, args.monitor[0], args.monitor[1])
-    news = json.loads(Path(args.news).read_text(encoding="utf-8"))
+    news = load_news(args.news)
     result = run(news, state)
     print(json.dumps(result, ensure_ascii=False, indent=2))
 

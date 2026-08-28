@@ -131,10 +131,12 @@ Decision
 | --- | --- |
 | `collect.py` | 日常资讯采集、过滤、评分与合并 |
 | `collect_research.py` | 研究报告发现与门控 |
-| `signal.py` | 透明、可解释的 Signal Layer |
+| `intelligence_signal.py` | 透明、可解释的 Signal Layer（原名 `signal.py`，因与 Python 标准库 `signal` 模块同名而重命名） |
 | `intelligence.py` | Event / Evidence / Insight 核心引擎 |
 | `intelligence.html` | Radar / Event / Evidence / Executive 工作台 |
 | `decision.py` | 角色化、advisory-only 决策支持 |
+| `p2_intelligence.py` | 每日情报简报 / 关注清单 / 持续监控 / 决策反馈闭环，产出 `p2_daily_brief.json` |
+| `benchmarks/real_v1/` | 真实语料人工标注基准（P1-4，v1.0 已锁定） |
 | `schemas/` | Article / Claim / Evidence / Event / Decision 契约 |
 | `benchmark/` | 事件聚类回归基线 |
 | `evaluation_metrics.py` | 质量指标与评估门 |

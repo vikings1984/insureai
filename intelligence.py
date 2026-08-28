@@ -21,7 +21,7 @@ from datetime import datetime, timezone
 from urllib.parse import urlparse
 
 from radar import build_radar
-from signal import extract_signals
+from intelligence_signal import extract_signals
 from source_tiers import TIER_AUTHORITY, tier_for_item
 
 HERE = os.path.dirname(os.path.abspath(__file__))
