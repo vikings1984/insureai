@@ -18,7 +18,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Syntax check canonical intelligence modules
-        run: python3 -m py_compile signal.py intelligence.py claims.py claims_build.py decision.py
+        run: python3 -m py_compile intelligence_signal.py intelligence.py claims.py claims_build.py decision.py
       - name: Validate schema files are valid JSON
         run: |
           python3 - <<'PY'

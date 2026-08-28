@@ -10,6 +10,7 @@ path ordering luck, so no module may be named after a stdlib module.
 from __future__ import annotations
 
 import importlib.util
+import re
 import sys
 import unittest
 from pathlib import Path
@@ -52,6 +53,44 @@ class ModuleHygieneTests(unittest.TestCase):
         assert spec is not None and spec.origin is not None
         self.assertNotIn("insureai", spec.origin)
         self.assertNotEqual(Path(spec.origin).resolve(), (ROOT / "intelligence_signal.py").resolve())
+
+
+def _workflow_python_targets() -> list[tuple[str, str]]:
+    """Collect the `.py` paths that workflows compile or execute."""
+    targets: list[tuple[str, str]] = []
+    workflows = ROOT / ".github" / "workflows"
+    if not workflows.is_dir():
+        return targets
+    for workflow in sorted(workflows.glob("*.yml")):
+        for line in workflow.read_text(encoding="utf-8").splitlines():
+            if "py_compile" in line or re.match(r"^\s*run: python3 [\w./-]+\.py", line):
+                for token in re.findall(r"[\w][\w./-]*\.py", line):
+                    targets.append((str(workflow.relative_to(ROOT)), token))
+    return targets
+
+
+class WorkflowReferenceTests(unittest.TestCase):
+    """Renaming or deleting a module must not leave stale workflow references.
+
+    After `signal.py` was renamed, `intelligence-contract.yml` still compiled
+    the old name and the workflow failed on its next run.
+    """
+
+    def test_workflows_reference_existing_python_files(self):
+        targets = _workflow_python_targets()
+        self.assertTrue(targets, "expected to find python targets in workflows")
+
+        missing = [
+            f"{workflow}: {target}"
+            for workflow, target in targets
+            if not (ROOT / target).is_file()
+        ]
+        self.assertEqual(
+            missing,
+            [],
+            "workflows reference python files that no longer exist; update the "
+            "workflow whenever a module is renamed or removed",
+        )
 
 
 if __name__ == "__main__":
