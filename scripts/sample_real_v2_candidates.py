@@ -47,7 +47,16 @@ TITLE_ENTITY_RE = re.compile(r"\b([A-Z][a-zA-Z0-9&.\-]+(?:\s+[A-Z][a-zA-Z0-9&.\-
 ORG_SUFFIX = re.compile(
     r"(insurance|re|group|bank|holdings|capital|partners|ag|sa|ltd|inc|llc|corp|"
     r"global|financial|technologies|tech|analytics|risk|underwriting|brokerage|markets|"
-    r"assurance|mutual|health)$",
+    r"assurance|mutual|health|ventures|management|solutions)$",
+    re.I,
+)
+# 标题回退抽取会把通用领域名词（premium/income/reinsurance/capital...）误当实体，
+# 污染聚簇与跨篇配对。这里显式排除这些"非机构名"词。
+GENERIC_NOUN = re.compile(
+    r"^(premium|premiums|income|incomes|reinsurance|capital|fee|fees|agreement|"
+    r"agreements|coinsurance|bond|bonds|growth|profit|profits|revenue|revenues|cor|"
+    r"underwriting|specialty|exchange|partnership|renewals|net|operating|combined|"
+    r"ratio|quarter)$",
     re.I,
 )
 STOPWORDS = {"the", "a", "an", "in", "on", "of", "for", "to", "and", "as"}
@@ -61,9 +70,29 @@ def _title_entities(title: str) -> list[str]:
             words = words[1:]
         if not words:
             continue
-        if len(words) == 1 and not ORG_SUFFIX.search(words[0]) and not words[0].isupper():
-            continue  # 过滤常见单大写词（非机构后缀、非全大写缩写）
-        out.append(" ".join(words).lower())
+        if len(words) == 1:
+            tok = words[0]
+            # 单大写词：仅机构后缀或全大写缩写才算实体；通用名词一律排除
+            if GENERIC_NOUN.search(tok):
+                continue
+            if not ORG_SUFFIX.search(tok) and not tok.isupper():
+                continue
+            out.append(tok.lower())
+        else:
+            # 多词短语：若以通用名词结尾则不是机构名
+            if GENERIC_NOUN.search(words[-1]):
+                continue
+            out.append(" ".join(words).lower())
+    return out
+
+
+def _specific_entities(entities: list[str]) -> set[str]:
+    """只保留"具体机构名"实体（多词 / 机构后缀 / 全大写缩写），用于跨篇同 deal 配对。"""
+    out: set[str] = set()
+    for e in entities:
+        words = e.split()
+        if len(words) >= 2 or ORG_SUFFIX.search(e) or (len(e) <= 6 and e.isupper()):
+            out.add(e)
     return out
 
 
@@ -91,23 +120,55 @@ def _signals(text: str) -> set[str]:
     return s
 
 
-def _cluster(items: list[dict]) -> dict[str, list[dict]]:
-    """按实体集合签名聚类（同实体集合 = 同一事件候选）。"""
-    out: dict[frozenset, list[dict]] = defaultdict(list)
+def _norm_tokens(text: str) -> set[str]:
+    """Normalized content-word tokens for title-overlap (deal/theme) comparison."""
+    text = (text or "").lower()
+    toks = re.findall(r"[a-z0-9][a-z0-9.&+\-]{2,}", text)
+    return {t for t in toks if t not in STOPWORDS}
+
+
+def _jaccard(a: set[str], b: set[str]) -> float:
+    if not a or not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+# 同 deal 的报道标题高度重叠；同公司不同事件（不同任命/收购）重叠很低。
+# 用标题 token Jaccard 代替"实体集合签名"，避免把仅共享裸主题词的报道误聚成一簇。
+MERGE_THRESH = 0.32
+
+
+def _cluster(items: list[dict]) -> list[list[dict]]:
+    """按标题 token 相似度贪心聚簇（同 deal/主题 = 同一事件候选）。
+
+    旧逻辑按实体集合签名聚簇，而生产数据几乎无 tags、实体抽取退化为裸主题词
+    （"ils"/"ai"），导致不同 deal 被误聚成一簇（过聚簇）。改为标题重叠后，
+    multi_source 候选才是真正的同事件多源覆盖，rumor 才能找到同 deal 的
+    rumor+confirmed 两篇。
+    """
+    clusters: list[list[dict]] = []
+    reps: list[set[str]] = []
     for it in items:
-        ents = _entities(it.get("tags", ""), it.get("title", ""))
-        if not ents:
-            continue
-        sig = frozenset(ents)
-        out[sig].append(it)
-    return out
+        toks = _norm_tokens(it.get("title", ""))
+        best, best_j = None, MERGE_THRESH
+        for i, rep in enumerate(reps):
+            j = _jaccard(rep, toks)
+            if j >= best_j:
+                best, best_j = i, j
+        if best is not None:
+            clusters[best].append(it)
+            reps[best] |= toks
+        else:
+            clusters.append([it])
+            reps.append(toks)
+    return clusters
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Sample proposed P1-4.1 benchmark candidates from production news")
     parser.add_argument("--news", default=str(ROOT / "data.json"))
     parser.add_argument("--out", default=str(ROOT / "benchmarks" / "real_v2" / "candidates.json"))
-    parser.add_argument("--max-per-dimension", type=int, default=15)
+    parser.add_argument("--max-per-dimension", type=int, default=150)
     args = parser.parse_args()
 
     news = json.loads(Path(args.news).read_text(encoding="utf-8")).get("news", [])
@@ -118,6 +179,7 @@ def main() -> None:
         if not ents:
             continue
         it["_entities"] = ents
+        it["_specific"] = _specific_entities(ents)
         it["_signals"] = _signals(f"{it.get('title','')} {it.get('summary','')}")
         by_primary[ents[0]].append(it)
 
@@ -157,32 +219,58 @@ def main() -> None:
             ],
         })
 
+    # 跨篇同 deal 判定：两篇共享 >=1 个具体机构名实体（收购方/标的/当事方），
+    # 且标题高重叠（同 deal 措辞）。后者用于剔除"泛泛提及同公司的不同事件"误配。
+    # 实测（1634 篇快照）：rumor/confirm 几乎只共现于同篇，跨篇同 deal 配对=0，
+    # 故 rumor_to_confirmed / contradiction 两维在此数据天然稀疏（逻辑保留，换更大数据即生效）。
+    def _share_deal(a: dict, b: dict) -> bool:
+        if not (a.get("_specific", set()) & b.get("_specific", set())):
+            return False
+        rt = _norm_tokens(a.get("title", ""))
+        bt = _norm_tokens(b.get("title", ""))
+        return _jaccard(rt, bt) >= 0.30
+
     for primary, items in by_primary.items():
         clusters = _cluster(items)
-        # 同一 primary 下的不同实体集合 = 不同事件 → 跨集合提出 different_event 对
-        sigs = list(clusters.values())
-        if len(sigs) >= 2:
-            # 取每集合最多 1 篇代表，构造"同公司不同事件"候选
-            reps = [c[0] for c in sigs if len(c) >= 1]
-            if len(reps) >= 2:
-                add(primary, "same_company_diff_event", "different_event", reps[:2],
-                    f"同一主体 '{primary}' 出现不同实体集合（不同动作/事件），建议标为不同事件")
-        for sig, cluster_items in clusters.items():
+        for ci, cl in enumerate(clusters):
+            for x in cl:
+                x["_cluster"] = ci
+        cluster_reps = [c for c in clusters if c]
+        # 同一主体下不同 deal 簇 = 不同事件 → 跨簇两两组合提 different_event 对
+        # （可从一个主体派生多对，扩充候选池；每对都来自不同 deal 簇，必为不同事件）
+        if len(cluster_reps) >= 2:
+            for i in range(len(cluster_reps)):
+                for j in range(i + 1, len(cluster_reps)):
+                    add(primary, "same_company_diff_event", "different_event",
+                        [cluster_reps[i][0], cluster_reps[j][0]],
+                        f"同一主体 '{primary}' 出现不同 deal/主题簇（不同动作/事件），建议标为不同事件")
+        # 同一 deal 被 2-5 个来源覆盖 → 真同事件多源候选（放宽到 2 源）
+        for cluster_items in clusters:
             n = len(cluster_items)
-            sigs_set = set(sig)
-            any_rumor = any("rumor" in x["_signals"] for x in cluster_items)
-            any_confirm = any("confirm" in x["_signals"] for x in cluster_items)
-            any_deny = any("deny" in x["_signals"] for x in cluster_items)
-            any_affirm = any("affirm" in x["_signals"] for x in cluster_items)
-            if 3 <= n <= 5:
+            if 2 <= n <= 5:
                 add(primary, "multi_source_3_5", "same_event", cluster_items,
-                    f"同实体集合被 {n} 个来源覆盖，建议合并为单一事件并交叉验证")
-            if any_rumor and any_confirm:
-                add(primary, "rumor_to_confirmed", "same_event", cluster_items,
-                    "同一事件同时存在'据称/洽谈'与'已确认'报道，建议标为同一事件（rumor→confirmed）")
-            if any_deny and any_affirm:
-                add(primary, "contradiction", "same_event", cluster_items,
-                    "同一事件存在相互冲突报道（否认 vs 确认），建议人工裁决，引擎应保持分离")
+                    f"同 deal/主题被 {n} 个来源覆盖，建议合并为单一事件并交叉验证")
+        # 跨簇 rumor→confirmed / contradiction：同主体、不同簇、共享具体实体。
+        # 实测（1634 篇快照）：rumor/confirm/deny/affirm 信号几乎只共现于同篇，
+        # 跨篇同 deal 配对=0，故这两维在本数据天然稀疏（逻辑保留，换更大数据即生效）。
+        rumor_arts = [x for c in clusters for x in c if "rumor" in x["_signals"]]
+        confirm_arts = [x for c in clusters for x in c if "confirm" in x["_signals"]]
+        deny_arts = [x for c in clusters for x in c if "deny" in x["_signals"]]
+        affirm_arts = [x for c in clusters for x in c if "affirm" in x["_signals"]]
+        for r in rumor_arts:
+            for c in confirm_arts:
+                if r["id"] == c["id"] or r["_cluster"] == c["_cluster"]:
+                    continue
+                if _share_deal(r, c):
+                    add(primary, "rumor_to_confirmed", "same_event", [r, c],
+                        "同主体、不同簇、共享具体实体：'据称/洽谈'篇与'已确认'篇，建议标为同一事件（rumor→confirmed）")
+        for d in deny_arts:
+            for a in affirm_arts:
+                if d["id"] == a["id"] or d["_cluster"] == a["_cluster"]:
+                    continue
+                if _share_deal(d, a):
+                    add(primary, "contradiction", "different_event", [d, a],
+                        "同主体、不同簇、共享具体实体：'否认'与'确认'冲突报道，建议人工裁决，引擎应保持分离")
 
     out = {
         "version": "real-v2.0-candidates",
