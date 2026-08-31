@@ -142,7 +142,7 @@ def _event_similarity(a: dict, b: dict) -> float:
     type_bonus = 0.15 if _event_type(a) == _event_type(b) else 0.0
     return min(1.0, 0.55 * token + 0.30 * entity + type_bonus)
 
-def _within_window(a: dict, b: dict, hours: int = 96) -> bool:
+def _within_window(a: dict, b: dict, hours: int = 720) -> bool:
     ta, tb = _timestamp(a), _timestamp(b)
     minimum = datetime.min.replace(tzinfo=timezone.utc)
     if ta == minimum or tb == minimum:
@@ -161,9 +161,15 @@ def _cluster(items: list[dict]) -> dict[str, list[dict]]:
         best_score = 0.0
         anchor = _entity_anchor(item)
         for rep_key, rep_item in representatives:
-            if not _within_window(item, rep_item):
+            sim = _event_similarity(item, rep_item)
+            # 持续性事件（合作/会议/系列 webinar）报道间隔常以周/月计，
+            # 96h 硬窗口会把同 deal 真同事件切成多个单源事件 → false_split。
+            # 放宽到 720h（30天）；超时但标题/实体相似度仍极高（>=0.70）的
+            # 真同事件（如跨更长窗口的同一收购后续报道）仍允许合并，
+            # 由 score>=0.52 与 anchor_conflict 守卫兜底防误合（Sprint 4 / 方案C）。
+            if not _within_window(item, rep_item) and sim < 0.70:
                 continue
-            score = _event_similarity(item, rep_item)
+            score = sim
             rep_anchor = _entity_anchor(rep_item)
             anchor_match = bool(anchor and rep_anchor and anchor == rep_anchor)
             anchor_conflict = bool(anchor and rep_anchor and anchor != rep_anchor)

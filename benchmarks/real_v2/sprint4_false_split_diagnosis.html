@@ -1,0 +1,50 @@
+<!doctype html><html lang="zh" data-page-node-id="cdEXpEsAMeU4H4WggEPyCU"><head data-page-node-id="RI4c5C6r0AZVzhRXsiAYHJ"><meta charset="utf-8" data-page-node-id="M3BgqC7xqjmuMbmZBWVduJ"><meta name="viewport" content="width=device-width,initial-scale=1" data-page-node-id="suorx3fFVSLMhD3NOGJhcT">
+<title>Sprint 4 诊断 · false_split 根因</title><style>
+*{box-sizing:border-box}body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;margin:0;background:#f5f6f8;color:#1a1a1a;padding:24px}
+h1{font-size:20px;margin:0 0 4px} .sub{color:#666;font-size:13px;margin-bottom:16px}
+.box{background:#fff;border:1px solid #e3e6ea;border-radius:12px;padding:16px;margin-bottom:14px}
+.box h2{font-size:15px;margin:0 0 10px}
+.cards{display:grid;gap:10px} .card{background:#fafbfc;border:1px solid #eef0f4;border-radius:10px;padding:10px 12px}
+.card.bad{border-left:4px solid #b42318} .card.ok{border-left:4px solid #1a7f3c}
+.hd{font-size:13.5px;margin-bottom:4px} .kv{font-size:12.5px;color:#444;line-height:1.6}
+.tag{font-size:11px;font-weight:700;padding:1px 7px;border-radius:10px;margin-left:6px} .tag.bad{background:#fdeaea;color:#b42318} .tag.ok{background:#e6f7ec;color:#1a7f3c}
+code{background:#eef0f4;padding:1px 5px;border-radius:4px;font-size:12px}
+table{width:100%;border-collapse:collapse;font-size:12.5px} th,td{border:1px solid #e3e6ea;padding:7px 8px;text-align:center}
+th{background:#f0f2f5} .rec{background:#fff7e6} .y{color:#1a7f3c;font-weight:700} .n{color:#b42318;font-weight:700}
+.note{font-size:12.5px;color:#555;line-height:1.7} .q{background:#eef4ff;border-left:4px solid #2563eb;padding:10px 12px;border-radius:8px;font-size:13px;line-height:1.7;margin-top:6px}
+</style></head><body data-page-node-id="6NDxneOA5EDC9fAkD1TNtw">
+<h1 data-page-node-id="7wWjw53lye1VTqgZ1ubZ1c">Sprint 4 诊断 · false_split=0.3 根因与修复方案</h1>
+<div class="sub" data-page-node-id="NcuUZqaIAfqDMIaqDgowQR">锚点：swiss re·artemis·risky future 三对真同事件被引擎拆分 · 来源 real 集 + intelligence.build 实时归因</div>
+
+<div class="box" data-page-node-id="k4dZsJSlsyrmurcjNFdmA7"><h2 data-page-node-id="8F4gO0kInmzmwcKlUdvEXs">① 根因：<code data-page-node-id="BuD6juMk9dttFxAjE9mujG">_within_window(item, rep, hours=96)</code> 硬窗口</h2>
+<div class="cards" data-page-node-id="Fqm4WqTPNmJ43yr6Ahgpro"><div class="card bad" data-page-node-id="VN8VHztgMAVORm4W6JmJpH"><div class="hd" data-page-node-id="XSCPpbOO4TpDqCXlRJ1s7r"><b data-page-node-id="24CY4daswI9Adz2Ihqt6n7">swiss re / SAS</b> #532·#950
+      <span class="tag bad" data-page-node-id="ApJJz4bt8c99MqCGavznbe">拆❌</span></div>
+      <div class="kv" data-page-node-id="ivRdzRGsGcDVsyQGIjQhZF">间隔 <b data-page-node-id="hbkzTG46KF6GnHfeC3Ys1M">358h</b> · within_96h=<b data-page-node-id="xfkcxiZtHCSiHnoVNRJiHJ">False</b> · similarity=<b data-page-node-id="0bnarPUQqtvFBNaFyDE26D">0.725</b></div>
+      <div class="kv" data-page-node-id="CpKKJWFXEFrxwk0Od1wvge">anchor=<code data-page-node-id="iSYT1HlDgUv1WDgJndhFyf">swiss re</code> · 共享实体=[&#x27;ai-driven&#x27;, &#x27;sas&#x27;, &#x27;swiss re&#x27;]</div></div><div class="card bad" data-page-node-id="CfFvogAcsnByH2XK4BC780"><div class="hd" data-page-node-id="B166yXxqwSyIyPlvBcS5HO"><b data-page-node-id="YzSC59ErImD3Niic3nXWmu">artemis london</b> #302·#830
+      <span class="tag bad" data-page-node-id="j6dmVupabDMEO5FMjdtRkB">拆❌</span></div>
+      <div class="kv" data-page-node-id="t4Q8Jt5EYq6ucsyXzlI5zg">间隔 <b data-page-node-id="NVaK44QJQZhme6HtMFhUrO">387h</b> · within_96h=<b data-page-node-id="3ZXjrxCgU86t3Nx8bEGiHn">False</b> · similarity=<b data-page-node-id="v2mYiYFCbIydzSOS19EHOJ">0.533</b></div>
+      <div class="kv" data-page-node-id="UIfl8sKoQ8qGGNmhlwtB4w">anchor=<code data-page-node-id="ze1BccXTEKetdPMSPbYQ8T">artemis london</code> · 共享实体=[&#x27;artemis london&#x27;, &#x27;who&#x27;]</div></div><div class="card bad" data-page-node-id="6Cgh9xAPicvnPrBuCuGVFs"><div class="hd" data-page-node-id="bzgwwD6aJHrxEtNsTJ28nK"><b data-page-node-id="3RC5PoatoiggOnTRAJijbJ">risky future</b> #194·#1491
+      <span class="tag bad" data-page-node-id="RvVKBdOs5L25zgg1ZFxgMp">拆❌</span></div>
+      <div class="kv" data-page-node-id="Ml2BEXYG5Q8oeHr1OwFmyJ">间隔 <b data-page-node-id="DRKRwYhhXHdfhEOiqZ852d">1160h</b> · within_96h=<b data-page-node-id="zrl9QjBv5IPz4x8QOt2UIv">False</b> · similarity=<b data-page-node-id="Pjp639ptLiOmhTVaFtKVzz">0.333</b></div>
+      <div class="kv" data-page-node-id="KkzMxDzSgXE9ZyQoBWYpzI">anchor=<code data-page-node-id="Z1nDESf6Cgc1tOmN8Fw9O4">register</code> · 共享实体=[&#x27;demo day&#x27;, &#x27;register&#x27;, &#x27;risky future ai tools&#x27;]</div></div></div>
+<div class="note" data-page-node-id="OF9l87vg4yFxi7qF1OdkgS">三对全部间隔远超 96h，第一道门直接跳过相似度比较 → 拆成单源事件。其中 swiss re(0.725)/artemis(0.533) 相似度本已越过 0.52 合并门槛，窗口是唯一阻断；risky future(0.333) 标题差异大、锚点为噪声 <code data-page-node-id="uHLUuwG7kQgWE0D4R2JqOK">register</code>，即便放宽窗口也难合并。</div>
+</div>
+
+<div class="box" data-page-node-id="m7JSrQZQMfOD3Zt0OfJdqA"><h2 data-page-node-id="glPOebpk4Uv0xTaW9HZ2ID">② 修复方案对比</h2>
+<table data-page-node-id="xf5yqzocUdIEovDzv86DKL"><tr data-page-node-id="0yvkSw8WqQFHHSzOTre35R"><th data-page-node-id="JlHcVt1FTDxDe5g3iepsjU">方案</th><th data-page-node-id="BpWUeMbtBANsslxTgRCE6J">改动</th><th data-page-node-id="1CzPopVClFUQnABuBkWuTG">swiss re<br data-page-node-id="VXIXZjCgkshBSVTgRYPNtv">0.725/358h</th><th data-page-node-id="16tk4luUKS5gDLNH2BvYXE">artemis<br data-page-node-id="1mZnBWe2kfXaWSOiRN8FZ8">0.533/386h</th><th data-page-node-id="GhiBZZ4yaNsjoAjiEgIByt">risky future<br data-page-node-id="N2iGr3sEuHYeFQqNLXkke5">0.333/1160h</th><th data-page-node-id="FugEX0MbfvsADhAaD6zTdL">false_merge 风险</th></tr>
+<tr data-page-node-id="ZmvlMyGUxhwZ3qiD70MNyw"><td data-page-node-id="FY6mN7AwjYdiywqtFpU59U">现状</td><td data-page-node-id="ucoonO2lBxeR3zsq822gV8">96h 硬窗</td><td class="n" data-page-node-id="UFP84PUtGXiJrBFdlaJVX9">拆</td><td class="n" data-page-node-id="umAOko3ERZJvbe7A5OU5oA">拆</td><td class="n" data-page-node-id="F5W6SEcUCUnrvqwUedubKk">拆</td><td data-page-node-id="JftO19xUum86ehoq1F3Y5T">0（基线）</td></tr>
+<tr data-page-node-id="ljEU7kgZC8Wqnw9MwBp8pg"><td data-page-node-id="kY7TyrJsLd4ManQEeu09E4">A 软门 0.70</td><td data-page-node-id="5H1N4aZFJ1RVW6UX5bthRo">超时但 sim≥0.70 仍合</td><td class="y" data-page-node-id="0FlxrWrgOonoDBJgfZ4w7v">合✅</td><td class="n" data-page-node-id="ufsq834GzR9nEUclAqH6r2">拆（0.533&lt;0.70）</td><td class="n" data-page-node-id="c43AsEmqYSpNZDjNgXugnz">拆</td><td data-page-node-id="d8eaPboJbjdgVVW9yEVqlp">低</td></tr>
+<tr data-page-node-id="A2G2ic8icrJWhGwb6Bqq8J"><td data-page-node-id="7sktpRTyus4QuYrYrcdsFy">B 窗 720h</td><td data-page-node-id="EHnSqNghj1YbQs6HMd2G1N">窗口放宽到 30 天</td><td class="y" data-page-node-id="FIAvBdtS4nt6tXaX2AUosA">合✅</td><td class="y" data-page-node-id="W7qUSIAXOIVJXH206vq5gq">合✅</td><td class="n" data-page-node-id="f8pi6zwacL5pqH21xBHGAy">拆（1160&gt;720）</td><td data-page-node-id="ioFdlVIM0C2AjLiQKri9RQ">中（需三基准回归）</td></tr>
+<tr class="rec" data-page-node-id="eE1AZtDSOJHErEPt6XXbAT"><td data-page-node-id="Rgb18XBOkHSriDHG5BeDCp"><b data-page-node-id="p0QFUVcXCIH0Z88dxrm0fy">C 组合（推荐）</b></td><td data-page-node-id="D6TT0CnlZdScnI48CfR2gH">窗 720h + 超时软门 0.70</td><td class="y" data-page-node-id="Gq0PDHtdHcUAnRKGm6UiFW">合✅</td><td class="y" data-page-node-id="A8xSWIiHd02g7K5rbpH6WH">合✅</td><td class="n" data-page-node-id="UAhCfqEHngc04HZHjdgO3v">拆（需你确认是否算同）</td><td data-page-node-id="E9lDURusXZozkNhrczoPqv">中（需回归）</td></tr>
+</table>
+<div class="note" data-page-node-id="esEoZlmt04y3fwuwaR8Qrr">方案 C 能把明确的两例（swiss re + artemis，同 anchor、同 deal、sim≥0.52）修复；risky future 因 sim 仅 0.333、锚点噪声，建议<b data-page-node-id="s3IWK3H2GzPVbLisKarot5">不强行合并</b>——视为人工宽泛判定的"系列同事件"，可降级为 optional 或单独标注。false_split 由 0.3 → ≈0.1（仅剩 risky future 1 例）。</div>
+</div>
+
+<div class="box" data-page-node-id="VxRbqLjH52H4znyQ0wZyoL"><h2 data-page-node-id="yNHGvCQKWjhoUn2bbcxrFV">③ 待你拍板（五个不外包：边界 / 验收留你）</h2>
+<div class="q" data-page-node-id="qaKrz7xspLlsAuD0Joc5Rs">
+1. <b data-page-node-id="8B1fn5saK8MUjWe1HD0sGF">时间窗放宽到多少？</b> 推荐 720h（30天）；若要覆盖 risky future 的 48 天需 1200h+，但窗口越长 false_merge 风险越高。<br data-page-node-id="jlAZyGhhQCpuhjm7M1TgPF">
+2. <b data-page-node-id="HzPTPwJCQ5bDEtYtIFrTGa">risky future 是否必须算同事件？</b> 若必须，需更激进修复（基于 core entity 系列而非标题相似度）；若否，false_split 目标 0.1 即可。<br data-page-node-id="SoxbIOYuHDVyWkXSD4JFDe">
+3. <b data-page-node-id="2VKbV7QcRAGKEYyR60mNGf">验收门槛：</b>放宽后 false_merge 必须保持 0（v1 冻结基准 / curated v2 / real 三套全跑回归，P0-4 教训）。
+</div>
+</div>
+</body></html>
