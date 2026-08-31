@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>InsureAI · Executive Home</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;color:#172033;background:#f4f6f8;line-height:1.5}
+*{box-sizing:border-box}
+body{margin:0}
+.shell{max-width:1340px;margin:auto;padding:24px}
+.top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:18px;flex-wrap:wrap}
+.brand{font-size:24px;font-weight:800}
+.brand span{color:#f97316}
+.muted{color:#667085;font-size:13px}
+.btn{padding:8px 12px;border:1px solid #d0d5dd;border-radius:10px;background:#fff;text-decoration:none;color:#344054;font-size:13px}
+.btn:hover{border-color:#98a2b3}
+.kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:18px}
+.kpi{background:#fff;border:1px solid #e4e7ec;border-radius:14px;padding:14px}
+.kpi .n{font-size:26px;font-weight:800;line-height:1.1}
+.kpi .l{font-size:12px;color:#667085;margin-top:4px}
+.kpi .s{font-size:11px;color:#98a2b3;margin-top:2px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+.card{background:#fff;border:1px solid #e4e7ec;border-radius:14px;padding:18px;min-width:0}
+.title{font-size:17px;font-weight:750;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.badge{font-size:12px;font-weight:700;color:#344054;background:#f2f4f7;border-radius:999px;padding:2px 9px}
+.item{padding:12px 0;border-top:1px solid #eaecf0}
+.item:first-child{border-top:0}
+.row{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.row strong{font-size:14px;font-weight:650}
+.meta{color:#667085;font-size:12px;margin-top:3px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.tag{display:inline-flex;padding:2px 8px;border-radius:999px;background:#f2f4f7;font-size:11px;color:#475467}
+.hot{color:#b42318;background:#fef3f2}
+.mid{color:#b54708;background:#fffaeb}
+.low{color:#067647;background:#ecfdf3}
+.wl{color:#6941c6;background:#f4ebff}
+.chg{color:#175cd3;background:#eff8ff}
+.empty{text-align:center;padding:28px;color:#667085;font-size:13px}
+.footer{margin-top:8px;color:#667085;font-size:12px;border-top:1px solid #eaecf0;padding-top:14px}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
+@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.kpi-grid{grid-template-columns:repeat(2,1fr)}.top{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="top">
+    <div>
+      <div class="brand">Insure<span>AI</span> · Executive Home</div>
+      <div class="muted">管理层情报工作台 — 只聚合既有 artifact 中的事实，不补写未验证结论。数据随采集/复核重跑自动更新。</div>
+    </div>
+    <div>
+      <a class="btn" href="./intelligence.html">Intelligence</a>
+      <a class="btn" href="./review-ui.html">Human Review</a>
+      <a class="btn" href="./">主站</a>
+      <button class="btn" id="refresh" type="button">刷新</button>
+    </div>
+  </div>
+
+  <div id="kpis" class="kpi-grid"><div class="empty">加载中…</div></div>
+
+  <div class="grid">
+    <section class="card"><div class="title">Today's 5 <span id="c-today" class="badge"></span></div><div id="today" class="list"></div></section>
+    <section class="card"><div class="title">My Watchlist <span id="c-wl" class="badge"></span></div><div id="wl" class="list"></div></section>
+  </div>
+  <div class="grid">
+    <section class="card"><div class="title">Event Changes <span id="c-chg" class="badge"></span></div><div id="chg" class="list"></div></section>
+    <section class="card"><div class="title">Emerging Risks <span id="c-risk" class="badge"></span></div><div id="risk" class="list"></div></section>
+  </div>
+  <div class="grid">
+    <section class="card"><div class="title">Decisions Pending <span id="c-pend" class="badge"></span></div><div id="pend" class="list"></div></section>
+    <section class="card"><div class="title">Recently Acted <span id="c-acted" class="badge"></span></div><div id="acted" class="list"></div></section>
+  </div>
+
+  <div class="footer" id="release"></div>
+</div>
+
+<script>
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=d=>{ if(!d) return '—'; try{ return new Date(d).toISOString().slice(0,10);}catch(e){ return String(d).slice(0,10);} };
+const prClass=v=> (v==null)?'tag':(v>=80?'hot':v>=60?'mid':'low');
+
+async function get(u){ const r=await fetch(u+'?t='+Date.now(),{cache:'no-store'}); if(!r.ok) throw Error(u+' → HTTP '+r.status); return r.json(); }
+
+function render(){
+  Promise.all([
+    get('./p2_daily_brief.json'),
+    get('./review_queue.json'),
+    get('./p2_state.json')
+  ]).then(([brief,queue,state])=>{
+    const B=brief.brief||[], Q=queue.items||[], W=(state.watchlists||[]).filter(w=>w.enabled!==false);
+
+    // ---- KPI strip ----
+    const wlHits=brief.watchlist_hits ?? B.reduce((n,e)=>n+((e.watchlist_matches||[]).length),0);
+    const changes=Q.filter(i=>i.change_impact);
+    const risks=Q.filter(i=>i.trust_level==='low');
+    const pend=Q.filter(i=>i.decision===null).sort((a,b)=>(b.priority||0)-(a.priority||0));
+    const acted=Q.filter(i=>i.decision).sort((a,b)=>(b.priority||0)-(a.priority||0));
+    const kpis=[
+      ['今日情报', B.length, 'Daily Brief 事件'],
+      ['Watchlist 命中', wlHits, '个性化关注触发'],
+      ['事件变化', changes.length, '下游判断已变'],
+      ['新兴风险', risks.length, '低可信待证'],
+      ['待决决策', pend.length, '需人工拍板'],
+      ['近期已决', acted.length, '已落决策']
+    ];
+    document.getElementById('kpis').innerHTML=kpis.map(k=>
+      `<div class="kpi"><div class="n">${esc(k[1])}</div><div class="l">${esc(k[0])}</div><div class="s">${esc(k[2])}</div></div>`).join('');
+
+    // ---- Today's 5 ----
+    const today=B.slice().sort((a,b)=>(b.daily_priority||0)-(a.daily_priority||0)).slice(0,5);
+    setBadge('c-today', B.length);
+    document.getElementById('today').innerHTML=today.map(e=>`
+      <div class="item">
+        <div class="row"><strong>${esc(e.title)}</strong><span class="tag ${prClass(e.daily_priority)}">P${esc(e.daily_priority??'—')}</span></div>
+        <div class="meta">${esc(e.topic_label||e.topic||'')} · ${fmt(e.published_at)} · 情报分 ${esc(e.scores?.intelligence_score??'—')}${e.evidence_status?(' · '+esc(e.evidence_status)):''}</div>
+        ${(e.watchlist_matches||[]).length?`<div class="tags">${e.watchlist_matches.map(m=>`<span class="tag wl">★ ${esc(m)}</span>`).join('')}</div>`:''}
+      </div>`).join('')||'<div class="empty">暂无今日情报</div>';
+
+    // ---- My Watchlist ----
+    setBadge('c-wl', W.length);
+    document.getElementById('wl').innerHTML=W.map(w=>{
+      const matched=B.filter(e=>(e.watchlist_matches||[]).includes(w.id));
+      return `
+      <div class="item">
+        <div class="row"><strong>${esc(w.name||w.id)}</strong><span class="tag wl">+${esc(w.priority_boost??0)} 权重</span></div>
+        <div class="meta">主题 ${esc((w.topics||[]).join(', '))} · 关键词 ${esc((w.keywords||[]).join(', '))} · 命中 ${matched.length} 条</div>
+        <div class="tags">${matched.slice(0,5).map(e=>`<span class="tag">${esc(e.title.slice(0,40))}</span>`).join('')}</div>
+      </div>`;
+    }).join('')||'<div class="empty">未配置 Watchlist</div>';
+
+    // ---- Event Changes ----
+    setBadge('c-chg', changes.length);
+    document.getElementById('chg').innerHTML=changes.sort((a,b)=>(b.priority||0)-(a.priority||0)).map(i=>`
+      <div class="item">
+        <div class="row"><strong>${esc(i.title)}</strong><span class="tag ${prClass(i.priority)}">P${esc(i.priority??'—')}</span></div>
+        <div class="meta">${esc(i.event_type||'')} · 风险 ${(i.change_impact.risk||'—')}</div>
+        <div class="tags"><span class="tag chg">${(i.change_impact.impact||'changed')}</span>${i.trust_level?`<span class="tag ${i.trust_level==='low'?'hot':'low'}">trust ${esc(i.trust_level)}</span>`:''}</div>
+      </div>`).join('')||'<div class="empty">暂无事件变化</div>';
+
+    // ---- Emerging Risks ----
+    setBadge('c-risk', risks.length);
+    document.getElementById('risk').innerHTML=risks.sort((a,b)=>(b.priority||0)-(a.priority||0)).map(i=>{
+      const rs=(i.reasons||[]).map(r=>r.type).filter(Boolean);
+      return `
+      <div class="item">
+        <div class="row"><strong>${esc(i.title)}</strong><span class="tag ${prClass(i.priority)}">P${esc(i.priority??'—')}</span></div>
+        <div class="meta">${esc(i.event_type||'')} · 信源 ${esc(i.source_count??'—')}</div>
+        <div class="tags"><span class="tag hot">trust ${esc(i.trust_level)}</span>${rs.map(r=>`<span class="tag">${esc(r)}</span>`).join('')}</div>
+      </div>`;
+    }).join('')||'<div class="empty">暂无新兴风险</div>';
+
+    // ---- Decisions Pending (cap display, show count) ----
+    setBadge('c-pend', pend.length);
+    const showPend=pend.slice(0,18);
+    document.getElementById('pend').innerHTML=showPend.map(i=>{
+      const rs=(i.reasons||[]).map(r=>r.type).filter(Boolean);
+      const arts=(i.article_ids||[]).slice(0,4).map(a=>`<span class="tag">文 ${esc(a)}</span>`).join('');
+      return `
+      <div class="item">
+        <div class="row"><strong>${esc(i.title)}</strong><span class="tag ${prClass(i.priority)}">P${esc(i.priority??'—')}</span></div>
+        <div class="meta">${esc(i.event_type||'')} · ${(i.trust_level||'—')}</div>
+        <div class="tags">${rs.map(r=>`<span class="tag">${esc(r)}</span>`).join('')}${arts}</div>
+      </div>`;
+    }).join('')||'<div class="empty">无待决决策</div>';
+    if(pend.length>showPend.length){ const d=document.getElementById('pend'); const n=document.createElement('div'); n.className='empty'; n.textContent='显示前 '+showPend.length+' / 共 '+pend.length+' 条'; d.appendChild(n); }
+
+    // ---- Recently Acted ----
+    setBadge('c-acted', acted.length);
+    document.getElementById('acted').innerHTML=acted.map(i=>{
+      const dec=i.decision||{};
+      return `
+      <div class="item">
+        <div class="row"><strong>${esc(i.title)}</strong><span class="tag ${prClass(i.priority)}">P${esc(i.priority??'—')}</span></div>
+        <div class="meta">urgency ${esc(dec.urgency||'—')} · action ${esc(dec.action||'—')}</div>
+        <div class="tags">${dec.note?`<span class="tag low">${esc(String(dec.note).slice(0,40))}</span>`:''}</div>
+      </div>`;
+    }).join('')||'<div class="empty">暂无近期已决事项</div>';
+
+    document.getElementById('release').innerHTML=
+      `数据来源：p2_daily_brief.json（生成于 ${fmt(brief.generated_at)}）· review_queue.json（${esc(queue.generated_count??Q.length)} 条）· p2_state.json（${W.length} 个 Watchlist）。`+
+      ` 事件总数 ${esc(brief.event_count??'—')}。本站仅聚合既有 artifact，不自动补写未验证结论。`;
+  }).catch(e=>{
+    document.getElementById('kpis').innerHTML='<div class="empty">数据加载失败：'+esc(e.message)+'。请通过 GitHub Pages 站点访问，不要直接以本地文件打开。</div>';
+  });
+}
+function setBadge(id,n){ const el=document.getElementById(id); if(el) el.textContent=n; }
+document.getElementById('refresh').addEventListener('click',render);
+render();
+</script>
+</body>
+</html>
