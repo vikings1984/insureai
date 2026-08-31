@@ -16,6 +16,7 @@
 from __future__ import annotations
 
 import argparse
+import itertools
 import json
 import re
 from collections import defaultdict
@@ -86,14 +87,29 @@ def _title_entities(title: str) -> list[str]:
     return out
 
 
+# 单字母/国家类缩写不应算作具体机构实体（避免 "us"/"uk"/"ai" 等误当 deal 实体）
+_ACRONYM_NOISE = {"us", "uk", "eu", "un", "ny", "ca", "tx", "ai", "il", "re"}
+
+
 def _specific_entities(entities: list[str]) -> set[str]:
-    """只保留"具体机构名"实体（多词 / 机构后缀 / 全大写缩写），用于跨篇同 deal 配对。"""
+    """只保留"具体机构名 / deal 实体"（多词 / 机构后缀 / 2-5 字母缩写如 SAS·AIG·QBE），
+    用于跨篇同 deal 配对与 multi_source 守卫。"""
     out: set[str] = set()
     for e in entities:
         words = e.split()
-        if len(words) >= 2 or ORG_SUFFIX.search(e) or (len(e) <= 6 and e.isupper()):
+        if len(words) >= 2 or ORG_SUFFIX.search(e) or (2 <= len(e) <= 5 and e not in _ACRONYM_NOISE):
             out.add(e)
     return out
+
+
+def _min_pairwise_title_jac(items: list[dict]) -> float:
+    """簇内文章两两标题 Jaccard 的最小值（簇内紧密度）。单篇/无重叠返回 1.0。"""
+    if len(items) < 2:
+        return 1.0
+    best = 1.0
+    for a, b in itertools.combinations(items, 2):
+        best = min(best, _jaccard(_norm_tokens(a.get("title", "")), _norm_tokens(b.get("title", ""))))
+    return best
 
 
 def _entities(tags: str, title: str = "") -> list[str]:
@@ -248,7 +264,17 @@ def main() -> None:
         for cluster_items in clusters:
             n = len(cluster_items)
             if 2 <= n <= 5:
-                add(primary, "multi_source_3_5", "same_event", cluster_items,
+                # 真同事件守卫（去 multi_source 噪声）：簇内须共享"具体 deal 子实体"
+                # （收购标的/人名/产品/风暴名/会议名，且不止公司名），或标题高度重叠
+                # （同措辞）。仅共享公司名 / 模板化不同事件（不同收购·任命·cat bond·报告）
+                # 一律排除。实测纯标题重叠无法区分噪声（willis_re 真同事件@0.33 vs
+                # inszone 噪声@0.50），故加具体子实体共享守卫。
+                shared = set.intersection(*(set(it["_specific"]) for it in cluster_items))
+                cluster_primary = cluster_items[0]["_entities"][0]
+                tight_title = _min_pairwise_title_jac(cluster_items) >= 0.50
+                if not (shared - {cluster_primary}) and not tight_title:
+                    continue
+                add(cluster_primary, "multi_source_3_5", "same_event", cluster_items,
                     f"同 deal/主题被 {n} 个来源覆盖，建议合并为单一事件并交叉验证")
         # 跨簇 rumor→confirmed / contradiction：同主体、不同簇、共享具体实体。
         # 实测（1634 篇快照）：rumor/confirm/deny/affirm 信号几乎只共现于同篇，
