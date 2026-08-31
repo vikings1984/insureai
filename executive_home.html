@@ -38,6 +38,19 @@ body{margin:0}
 .chg{color:#175cd3;background:#eff8ff}
 .empty{text-align:center;padding:28px;color:#667085;font-size:13px}
 .footer{margin-top:8px;color:#667085;font-size:12px;border-top:1px solid #eaecf0;padding-top:14px}
+.kg-card{margin-bottom:18px}
+.kg-open{float:right;font-size:12px;padding:5px 10px}
+.kg-wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:22px}
+.kg-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
+.kg-kpi{background:#f8fafc;border:1px solid #eef2f5;border-radius:10px;padding:10px}
+.kg-kpi .n{font-size:20px;font-weight:800}
+.kg-kpi .l{font-size:11px;color:#667085;margin-top:2px}
+.kg-h{font-size:13px;font-weight:700;color:#475467;margin:4px 0 10px}
+.kg-row{display:grid;grid-template-columns:90px 1fr 52px;align-items:center;gap:8px;margin:7px 0;font-size:12px}
+.kg-row .nm{color:#344054;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kg-bar{height:8px;border-radius:999px;background:#dbeafe}
+.kg-row b{text-align:right;color:#344054}
+@media(max-width:760px){.kg-wrap{grid-template-columns:1fr}.kg-kpis{grid-template-columns:repeat(2,1fr)}}
 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
 @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:760px){.grid{grid-template-columns:1fr}.kpi-grid{grid-template-columns:repeat(2,1fr)}.top{flex-direction:column}}
@@ -73,6 +86,11 @@ body{margin:0}
     <section class="card"><div class="title">Recently Acted <span id="c-acted" class="badge"></span></div><div id="acted" class="list"></div></section>
   </div>
 
+  <div class="card kg-card">
+    <div class="title">Knowledge Graph 概览 <span id="c-kg" class="badge"></span> <a class="btn kg-open" href="./knowledge-graph.html">打开图谱查看器 →</a></div>
+    <div id="kg" class="kg-wrap"><div class="empty">加载中…</div></div>
+  </div>
+
   <div class="footer" id="release"></div>
 </div>
 
@@ -87,8 +105,10 @@ function render(){
   Promise.all([
     get('./p2_daily_brief.json'),
     get('./review_queue.json'),
-    get('./p2_state.json')
-  ]).then(([brief,queue,state])=>{
+    get('./p2_state.json'),
+    // KG 单独降级：图谱取不到时其余模块照常渲染（置 null，不抛错）
+    get('./knowledge_graph.json').catch(()=>null)
+  ]).then(([brief,queue,state,kg])=>{
     const B=brief.brief||[], Q=queue.items||[], W=(state.watchlists||[]).filter(w=>w.enabled!==false);
 
     // ---- KPI strip ----
@@ -179,11 +199,32 @@ function render(){
     }).join('')||'<div class="empty">暂无近期已决事项</div>';
 
     document.getElementById('release').innerHTML=
-      `数据来源：p2_daily_brief.json（生成于 ${fmt(brief.generated_at)}）· review_queue.json（${esc(queue.generated_count??Q.length)} 条）· p2_state.json（${W.length} 个 Watchlist）。`+
+      `数据来源：p2_daily_brief.json（生成于 ${fmt(brief.generated_at)}）· review_queue.json（${esc(queue.generated_count??Q.length)} 条）· p2_state.json（${W.length} 个 Watchlist）· `+
+      (kg?`knowledge_graph.json（v${esc(kg.version)} · 更新至 ${fmt(kg.stats?.latest_event_at)}）`:'knowledge_graph.json（暂不可用）')+'。'+
       ` 事件总数 ${esc(brief.event_count??'—')}。本站仅聚合既有 artifact，不自动补写未验证结论。`;
+    loadKG(kg);
   }).catch(e=>{
     document.getElementById('kpis').innerHTML='<div class="empty">数据加载失败：'+esc(e.message)+'。请通过 GitHub Pages 站点访问，不要直接以本地文件打开。</div>';
   });
+}
+// Knowledge Graph 渲染：复用主 Promise 已取回的 kg；为 null 时仅本卡片降级，不影响其余模块
+function loadKG(kg){
+  (async()=>{
+    if(!kg){ setBadge('c-kg','不可用'); document.getElementById('kg').innerHTML='<div class="empty">知识图谱数据暂不可用（knowledge_graph.json 未生成或加载失败）。其余模块不受影响。</div>'; return; }
+    const S=kg.stats||{}, nt=S.node_types||{};
+    const rel={}; for(const e of (kg.edges||[])) rel[e.relationship]=(rel[e.relationship]||0)+1;
+    const topRel=Object.entries(rel).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    const topType=Object.entries(nt).sort((a,b)=>b[1]-a[1]);
+    const maxT=Math.max(1,...topType.map(x=>x[1])), maxR=Math.max(1,...topRel.map(x=>x[1]));
+    setBadge('c-kg', (S.node_count??'?')+' 节点 / '+(S.edge_count??'?')+' 关系');
+    document.getElementById('kg').innerHTML=
+      `<div class="kg-kpis">`+[['节点',S.node_count],['关系',S.edge_count],['事件',S.event_count],['Claim',S.claim_count],['Topic',nt.Topic]].map(x=>
+        `<div class="kg-kpi"><div class="n">${esc(x[1]??'—')}</div><div class="l">${esc(x[0])}</div></div>`).join('')+`</div>`+
+      `<div><div class="kg-h">顶级实体类型</div>`+topType.map(([t,c])=>
+        `<div class="kg-row"><span class="nm">${esc(t)}</span><span class="kg-bar" style="width:${Math.round(c/maxT*100)}%"></span><b>${esc(c)}</b></div>`).join('')+`</div>`+
+      `<div><div class="kg-h">顶级关系</div>`+topRel.map(([r,c])=>
+        `<div class="kg-row"><span class="nm">${esc(r)}</span><span class="kg-bar" style="width:${Math.round(c/maxR*100)}%"></span><b>${esc(c)}</b></div>`).join('')+`</div>`;
+  })().catch(e=>{ setBadge('c-kg','错误'); document.getElementById('kg').innerHTML='<div class="empty">知识图谱渲染失败：'+esc(e.message)+'。其余模块不受影响。</div>'; });
 }
 function setBadge(id,n){ const el=document.getElementById(id); if(el) el.textContent=n; }
 document.getElementById('refresh').addEventListener('click',render);
