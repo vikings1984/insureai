@@ -140,18 +140,20 @@ def run_benchmark(articles_path: Path, gold_path: Path, out_path: Path) -> dict:
     articles_by_id = {x["id"]: x for x in articles}
     event = event_metrics(articles, gold)
     claim = claim_metrics(articles_by_id, gold)
-    macro = round(
-        (
-            event["precision"]
-            + event["recall"]
-            + (1 - event["false_merge_rate"])
-            + (1 - event["false_split_rate"])
-            + claim["accuracy"]
-            + (1 - claim["single_source_false_cross_check_rate"])
-        )
-        / 6,
-        4,
-    )
+    # Component-aware macro: real-data expansions may carry zero claim cases
+    # (claim truth requires human labeling), so exclude claim accuracy from the
+    # average rather than letting it pull macro to ~0.67 on event-only quality.
+    # Curated v2 has claim cases -> all 6 components, identical to before.
+    components = [
+        event["precision"],
+        event["recall"],
+        1 - event["false_merge_rate"],
+        1 - event["false_split_rate"],
+        1 - claim["single_source_false_cross_check_rate"],
+    ]
+    if claim["case_count"] > 0:
+        components.append(claim["accuracy"])
+    macro = round(sum(components) / len(components), 4)
     is_v2 = "v2" in str(gold_path)
     result = {
         "version": gold["version"],
