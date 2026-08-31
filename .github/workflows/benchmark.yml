@@ -19,7 +19,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Benchmark syntax check
-        run: python3 -m py_compile benchmark.py real_data_benchmark.py tests/test_benchmark.py tests/test_real_data_benchmark_v2.py scripts/sample_real_v2_candidates.py
+        run: python3 -m py_compile benchmark.py real_data_benchmark.py tests/test_benchmark.py tests/test_real_data_benchmark_v2.py scripts/sample_real_v2_candidates.py scripts/promote_real_v2_candidates.py
       - name: Run core intelligence benchmark
         run: python3 benchmark.py
       - name: Run P1-4 real-data annotation benchmark
@@ -30,6 +30,15 @@ jobs:
         run: python3 -m unittest tests.test_benchmark -v
       - name: Run P1-4.1 benchmark regression tests
         run: python3 -m unittest tests.test_real_data_benchmark_v2 -v
+      - name: Run P1-4.1 expanded real-data set (if human-promoted)
+        if: always()
+        run: |
+          if [ -f benchmarks/real_v2/gold_real.json ]; then
+            python3 real_data_benchmark.py --articles benchmarks/real_v2/articles_real.json --gold benchmarks/real_v2/gold_real.json --out real_benchmark_v2_real_results.json
+            python3 -c "import json; r=json.load(open('real_benchmark_v2_real_results.json', encoding='utf-8')); print('real_expanded_macro_quality=' + str(r.get('macro_quality'))); print('real_expanded_false_merge_rate=' + str(r.get('event',{}).get('false_merge_rate'))); print('real_expanded_false_split_rate=' + str(r.get('event',{}).get('false_split_rate'))); print('real_expanded_single_source_false_cross_check_rate=' + str(r.get('claim_evidence',{}).get('single_source_false_cross_check_rate')))"
+          else
+            echo "no human-promoted real set yet (run: python3 scripts/promote_real_v2_candidates.py apply)"
+          fi
       - name: Publish benchmark result summary
         if: always()
         run: |
