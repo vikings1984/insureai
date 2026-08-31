@@ -1,9 +1,9 @@
 {
   "version": 1,
   "principle": "高价值结论必须在去除单一关键输入后保持合理稳健，否则进入人工复核。",
-  "total_cases": 2932,
-  "fragile_cases": 1,
-  "fragility_rate": 0.0003,
+  "total_cases": 2968,
+  "fragile_cases": 0,
+  "fragility_rate": 0.0,
   "cases": [
     {
       "event_id": "evt_92310abdea56",
@@ -262,6 +262,22 @@
       "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
     },
     {
+      "event_id": "evt_a75c8e446fcd",
+      "scenario": "remove_conflict_flag",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
+    },
+    {
+      "event_id": "evt_a75c8e446fcd",
+      "scenario": "remove_topic_trend_signal",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
+    },
+    {
       "event_id": "evt_0b848c9301cc",
       "scenario": "remove_conflict_flag",
       "baseline_urgency": "watch",
@@ -1064,17 +1080,17 @@
     {
       "event_id": "evt_71a9c54d4096",
       "scenario": "remove_conflict_flag",
-      "baseline_urgency": "soon",
-      "counterfactual_urgency": "soon",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
       "changed": false,
       "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
     },
     {
       "event_id": "evt_71a9c54d4096",
       "scenario": "remove_topic_trend_signal",
-      "baseline_urgency": "soon",
+      "baseline_urgency": "watch",
       "counterfactual_urgency": "watch",
-      "changed": true,
+      "changed": false,
       "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
     },
     {
@@ -1830,6 +1846,38 @@
       "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
     },
     {
+      "event_id": "evt_9b890d7d9c84",
+      "scenario": "remove_conflict_flag",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
+    },
+    {
+      "event_id": "evt_9b890d7d9c84",
+      "scenario": "remove_topic_trend_signal",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
+    },
+    {
+      "event_id": "evt_19a1a6784124",
+      "scenario": "remove_conflict_flag",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
+    },
+    {
+      "event_id": "evt_19a1a6784124",
+      "scenario": "remove_topic_trend_signal",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
+    },
+    {
       "event_id": "evt_8604dfa1c3fc",
       "scenario": "remove_conflict_flag",
       "baseline_urgency": "watch",
@@ -1855,22 +1903,6 @@
     },
     {
       "event_id": "evt_4f89f60a21b3",
-      "scenario": "remove_topic_trend_signal",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
-    },
-    {
-      "event_id": "evt_660f25fa8b65",
-      "scenario": "remove_conflict_flag",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
-    },
-    {
-      "event_id": "evt_660f25fa8b65",
       "scenario": "remove_topic_trend_signal",
       "baseline_urgency": "watch",
       "counterfactual_urgency": "watch",
@@ -3014,6 +3046,22 @@
       "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
     },
     {
+      "event_id": "evt_ae0fed1e390f",
+      "scenario": "remove_conflict_flag",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
+    },
+    {
+      "event_id": "evt_ae0fed1e390f",
+      "scenario": "remove_topic_trend_signal",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
+    },
+    {
       "event_id": "evt_f7edfd8f6698",
       "scenario": "remove_conflict_flag",
       "baseline_urgency": "watch",
@@ -3951,54 +3999,6 @@
     },
     {
       "event_id": "evt_9bb526f8e14b",
-      "scenario": "remove_topic_trend_signal",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
-    },
-    {
-      "event_id": "evt_2001419ee115",
-      "scenario": "remove_conflict_flag",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
-    },
-    {
-      "event_id": "evt_2001419ee115",
-      "scenario": "remove_topic_trend_signal",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
-    },
-    {
-      "event_id": "evt_a7ae811819b5",
-      "scenario": "remove_conflict_flag",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
-    },
-    {
-      "event_id": "evt_a7ae811819b5",
-      "scenario": "remove_topic_trend_signal",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
-    },
-    {
-      "event_id": "evt_b10248e46cbf",
-      "scenario": "remove_conflict_flag",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
-    },
-    {
-      "event_id": "evt_b10248e46cbf",
       "scenario": "remove_topic_trend_signal",
       "baseline_urgency": "watch",
       "counterfactual_urgency": "watch",
