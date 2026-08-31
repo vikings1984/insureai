@@ -5,7 +5,8 @@
   "note": "NOT ground truth. Human review required before promotion into gold.json (benchmarks/real_v2/gold.json).",
   "counts": {
     "rumor_to_confirmed": 6,
-    "same_company_diff_event": 15,
+    "same_company_diff_event": 14,
+    "same_event_verified": 1,
     "multi_source_3_5": 9
   },
   "total_candidates": 30,
@@ -221,10 +222,10 @@
     },
     {
       "id": "cand_verisk_same_company_diff_event_04",
-      "dimension": "same_company_diff_event",
-      "proposed_relation": "different_event",
+      "dimension": "same_event_verified",
+      "proposed_relation": "same_event",
       "primary_entity": "verisk",
-      "rationale": "同一主体 'verisk' 出现不同实体集合（不同动作/事件），建议标为不同事件",
+      "rationale": "Verisk promotes Harry White / White to Head of Property Claim Services (PCS) — 同一任命，实为 SAME event（原采样误标为同公司不同事件）",
       "needs_human_review": true,
       "review_status": "proposed",
       "article_count": 2,

@@ -173,7 +173,19 @@ def _cluster(items: list[dict]) -> dict[str, list[dict]]:
             entity_overlap = _entity_similarity(item, rep_item)
             if anchor_conflict and entity_overlap < 0.5 and score < 0.72:
                 continue
-            accept = score >= 0.52 or (anchor_match and same_type and score >= 0.30)
+            # Same-anchor, same-type articles that share ONLY the company name
+            # (no specific sub-entity in common) are distinct events — e.g. two
+            # different appointments at one company — and must not be merged.
+            # Genuine same-event coverage (e.g. the same acquisition target
+            # reported by two sources) shares a sub-entity beyond the anchor and
+            # still merges. This fixes false merges on real data (Swiss Re 35/65,
+            # two different appointments) without breaking the frozen v1 AGI
+            # Heller-Kowitz same-event pair (shares the deal target entity).
+            shared_entities = set(_entities(item)) & set(_entities(rep_item))
+            specific_shared = shared_entities - {anchor, rep_anchor}
+            accept = score >= 0.52 or (
+                anchor_match and same_type and (specific_shared or score >= 0.42)
+            )
             if accept and score > best_score:
                 matched, best_score = rep_key, score
         if matched:

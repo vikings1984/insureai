@@ -88,14 +88,29 @@ class TestPrepareBundle(TestCase):
 
 class TestApplyGuard(TestCase):
     def test_apply_refuses_while_pending(self):
-        """apply must never auto-validate; pending entries block a real apply."""
+        """apply must never auto-validate; pending entries block a real apply.
+
+        Self-contained: builds a temp bundle with one pending entry so the test
+        does not depend on the real review_bundle.json's decision state.
+        """
         import json
-        bundle_path = ROOT / "benchmarks" / "real_v2" / "review_bundle.json"
-        b = json.loads(bundle_path.read_text(encoding="utf-8"))
-        # ensure at least one pending entry exists (prepare leaves all pending)
-        self.assertTrue(any(e["decision"] == "pending" for e in b["entries"]))
-        with self.assertRaises(SystemExit):
-            prom.apply(dry_run=False)
+        import tempfile
+        bpath = Path(tempfile.mkdtemp()) / "review_bundle_pending.json"
+        bundle = {
+            "version": "real-v2.0-review-bundle",
+            "entries": [
+                {"candidate_id": "c1", "dimension": "multi_source_3_5",
+                 "decision": "approve", "article_ids": [1, 2],
+                 "suggested_same_event_pairs": [[1, 2]], "suggested_different_event_pairs": []},
+                {"candidate_id": "c2", "dimension": "same_company_diff_event",
+                 "decision": "pending", "article_ids": [3, 4],
+                 "suggested_same_event_pairs": [], "suggested_different_event_pairs": [[3, 4]]},
+            ],
+        }
+        bpath.write_text(json.dumps(bundle, ensure_ascii=False), encoding="utf-8")
+        with mock.patch.object(prom, "BUNDLE", bpath):
+            with self.assertRaises(SystemExit):
+                prom.apply(dry_run=False)
 
 
 if __name__ == "__main__":

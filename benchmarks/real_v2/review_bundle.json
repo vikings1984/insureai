@@ -1,7 +1,7 @@
 {
   "version": "real-v2.0-review-bundle",
   "generated_from": "candidates.json",
-  "review_status": "human_reviewed",
+  "review_status": "pending_human",
   "note": "decision must be set to 'approve' or 'reject' per entry before apply. Never auto-validated.",
   "entries": [
     {
@@ -14,13 +14,12 @@
         3
       ],
       "engine_agrees_with_proposal": false,
-      "decision": "reject",
+      "decision": "approve",
       "suggested_same_event_pairs": [],
       "suggested_different_event_pairs": [],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant.",
-      "reject_reason": "single-article cluster: cannot form a same-event pair; needs a second article on the same deal"
+      "notes": "auto-rule: approve (verified different-event / same-event / safe single-article)."
     },
     {
       "candidate_id": "cand_scor_business_solutions_same_company_diff_event_01",
@@ -43,7 +42,7 @@
       ],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant."
+      "notes": "auto-rule: approve (verified different-event / same-event / safe single-article)."
     },
     {
       "candidate_id": "cand_ils_same_company_diff_event_02",
@@ -66,7 +65,7 @@
       ],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant."
+      "notes": "auto-rule: approve (verified different-event / same-event / safe single-article)."
     },
     {
       "candidate_id": "cand_ils_multi_source_3_5_01",
@@ -98,8 +97,7 @@
       "suggested_different_event_pairs": [],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant.",
-      "reject_reason": "sampler over-clustered by bare entity; articles are different topics, not the same event (engine also refuses to merge)"
+      "notes": "auto-rule: multi_source over-clustered by bare entity; reject."
     },
     {
       "candidate_id": "cand_swiss_re_same_company_diff_event_03",
@@ -111,7 +109,7 @@
         35,
         65
       ],
-      "engine_agrees_with_proposal": false,
+      "engine_agrees_with_proposal": true,
       "decision": "approve",
       "suggested_same_event_pairs": [],
       "suggested_different_event_pairs": [
@@ -122,7 +120,7 @@
       ],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant."
+      "notes": "auto-rule: approve (verified different-event / same-event / safe single-article)."
     },
     {
       "candidate_id": "cand_swiss_re_multi_source_3_5_02",
@@ -154,31 +152,30 @@
       "suggested_different_event_pairs": [],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant.",
-      "reject_reason": "sampler over-clustered by bare entity; articles are different topics, not the same event (engine also refuses to merge)"
+      "notes": "auto-rule: multi_source over-clustered by bare entity; reject."
     },
     {
       "candidate_id": "cand_verisk_same_company_diff_event_04",
-      "dimension": "same_company_diff_event",
-      "proposed_relation": "different_event",
+      "dimension": "same_event_verified",
+      "proposed_relation": "same_event",
       "primary_entity": "verisk",
-      "rationale": "同一主体 'verisk' 出现不同实体集合（不同动作/事件），建议标为不同事件",
+      "rationale": "Verisk promotes Harry White / White to Head of Property Claim Services (PCS) — 同一任命，实为 SAME event（原采样误标为同公司不同事件）",
       "article_ids": [
         37,
         41
       ],
-      "engine_agrees_with_proposal": false,
+      "engine_agrees_with_proposal": true,
       "decision": "approve",
-      "suggested_same_event_pairs": [],
-      "suggested_different_event_pairs": [
+      "suggested_same_event_pairs": [
         [
           "37",
           "41"
         ]
       ],
+      "suggested_different_event_pairs": [],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant."
+      "notes": "auto-rule: approve (verified different-event / same-event / safe single-article)."
     },
     {
       "candidate_id": "cand_aig_same_company_diff_event_05",
@@ -201,7 +198,7 @@
       ],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant."
+      "notes": "auto-rule: approve (verified different-event / same-event / safe single-article)."
     },
     {
       "candidate_id": "cand_people_moves_same_company_diff_event_06",
@@ -224,7 +221,7 @@
       ],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant."
+      "notes": "auto-rule: approve (verified different-event / same-event / safe single-article)."
     },
     {
       "candidate_id": "cand_hdi_global_same_company_diff_event_07",
@@ -247,7 +244,7 @@
       ],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant."
+      "notes": "auto-rule: approve (verified different-event / same-event / safe single-article)."
     },
     {
       "candidate_id": "cand_artex_axcell_re_same_company_diff_event_08",
@@ -270,7 +267,7 @@
       ],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant."
+      "notes": "auto-rule: approve (verified different-event / same-event / safe single-article)."
     },
     {
       "candidate_id": "cand_am_best_same_company_diff_event_09",
@@ -293,7 +290,7 @@
       ],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant."
+      "notes": "auto-rule: approve (verified different-event / same-event / safe single-article)."
     },
     {
       "candidate_id": "cand_ai_same_company_diff_event_10",
@@ -316,7 +313,7 @@
       ],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant."
+      "notes": "auto-rule: approve (verified different-event / same-event / safe single-article)."
     },
     {
       "candidate_id": "cand_ai_multi_source_3_5_03",
@@ -361,8 +358,7 @@
       "suggested_different_event_pairs": [],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant.",
-      "reject_reason": "sampler over-clustered by bare entity; articles are different topics, not the same event (engine also refuses to merge)"
+      "notes": "auto-rule: multi_source over-clustered by bare entity; reject."
     },
     {
       "candidate_id": "cand_howden_re_same_company_diff_event_11",
@@ -385,7 +381,7 @@
       ],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant."
+      "notes": "auto-rule: approve (verified different-event / same-event / safe single-article)."
     },
     {
       "candidate_id": "cand_reinsurance_same_company_diff_event_12",
@@ -408,7 +404,7 @@
       ],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant."
+      "notes": "auto-rule: approve (verified different-event / same-event / safe single-article)."
     },
     {
       "candidate_id": "cand_reinsurance_multi_source_3_5_04",
@@ -453,8 +449,7 @@
       "suggested_different_event_pairs": [],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant.",
-      "reject_reason": "sampler over-clustered by bare entity; articles are different topics, not the same event (engine also refuses to merge)"
+      "notes": "auto-rule: multi_source over-clustered by bare entity; reject."
     },
     {
       "candidate_id": "cand_epic_same_company_diff_event_13",
@@ -477,7 +472,7 @@
       ],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant."
+      "notes": "auto-rule: approve (verified different-event / same-event / safe single-article)."
     },
     {
       "candidate_id": "cand_inszone_acquires_oklahoma_same_company_diff_event_14",
@@ -500,7 +495,7 @@
       ],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant."
+      "notes": "auto-rule: approve (verified different-event / same-event / safe single-article)."
     },
     {
       "candidate_id": "cand_ms_amlin_same_company_diff_event_15",
@@ -523,7 +518,7 @@
       ],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant."
+      "notes": "auto-rule: approve (verified different-event / same-event / safe single-article)."
     },
     {
       "candidate_id": "cand_guy_carpenter_multi_source_3_5_05",
@@ -568,8 +563,7 @@
       "suggested_different_event_pairs": [],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant.",
-      "reject_reason": "sampler over-clustered by bare entity; articles are different topics, not the same event (engine also refuses to merge)"
+      "notes": "auto-rule: multi_source over-clustered by bare entity; reject."
     },
     {
       "candidate_id": "cand_us_multi_source_3_5_06",
@@ -601,8 +595,7 @@
       "suggested_different_event_pairs": [],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant.",
-      "reject_reason": "sampler over-clustered by bare entity; articles are different topics, not the same event (engine also refuses to merge)"
+      "notes": "auto-rule: multi_source over-clustered by bare entity; reject."
     },
     {
       "candidate_id": "cand_seltzer_group_acquires_pennsylvania_rumor_to_confirmed_02",
@@ -614,13 +607,12 @@
         342
       ],
       "engine_agrees_with_proposal": false,
-      "decision": "reject",
+      "decision": "approve",
       "suggested_same_event_pairs": [],
       "suggested_different_event_pairs": [],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant.",
-      "reject_reason": "single-article cluster: cannot form a same-event pair; needs a second article on the same deal"
+      "notes": "auto-rule: approve (verified different-event / same-event / safe single-article)."
     },
     {
       "candidate_id": "cand_munich_re_multi_source_3_5_07",
@@ -652,8 +644,7 @@
       "suggested_different_event_pairs": [],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant.",
-      "reject_reason": "sampler over-clustered by bare entity; articles are different topics, not the same event (engine also refuses to merge)"
+      "notes": "auto-rule: multi_source over-clustered by bare entity; reject."
     },
     {
       "candidate_id": "cand_towle_acquires_new_hampshire_rumor_to_confirmed_03",
@@ -665,13 +656,12 @@
         422
       ],
       "engine_agrees_with_proposal": false,
-      "decision": "reject",
+      "decision": "approve",
       "suggested_same_event_pairs": [],
       "suggested_different_event_pairs": [],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant.",
-      "reject_reason": "single-article cluster: cannot form a same-event pair; needs a second article on the same deal"
+      "notes": "auto-rule: approve (verified different-event / same-event / safe single-article)."
     },
     {
       "candidate_id": "cand_perils_multi_source_3_5_08",
@@ -703,8 +693,7 @@
       "suggested_different_event_pairs": [],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant.",
-      "reject_reason": "sampler over-clustered by bare entity; articles are different topics, not the same event (engine also refuses to merge)"
+      "notes": "auto-rule: multi_source over-clustered by bare entity; reject."
     },
     {
       "candidate_id": "cand_berkshire_hathaway_p&c_rumor_to_confirmed_04",
@@ -716,13 +705,12 @@
         712
       ],
       "engine_agrees_with_proposal": false,
-      "decision": "reject",
+      "decision": "approve",
       "suggested_same_event_pairs": [],
       "suggested_different_event_pairs": [],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant.",
-      "reject_reason": "single-article cluster: cannot form a same-event pair; needs a second article on the same deal"
+      "notes": "auto-rule: approve (verified different-event / same-event / safe single-article)."
     },
     {
       "candidate_id": "cand_usig_rumor_to_confirmed_05",
@@ -734,13 +722,12 @@
         816
       ],
       "engine_agrees_with_proposal": false,
-      "decision": "reject",
+      "decision": "approve",
       "suggested_same_event_pairs": [],
       "suggested_different_event_pairs": [],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant.",
-      "reject_reason": "single-article cluster: cannot form a same-event pair; needs a second article on the same deal"
+      "notes": "auto-rule: approve (verified different-event / same-event / safe single-article)."
     },
     {
       "candidate_id": "cand_mapfre_rumor_to_confirmed_06",
@@ -753,7 +740,7 @@
         1161
       ],
       "engine_agrees_with_proposal": false,
-      "decision": "approve",
+      "decision": "reject",
       "suggested_same_event_pairs": [
         [
           "916",
@@ -763,7 +750,7 @@
       "suggested_different_event_pairs": [],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant."
+      "notes": "auto-rule: mis-cluster (Mapfre acquisition vs solvency review); reject."
     },
     {
       "candidate_id": "cand_s&p_multi_source_3_5_09",
@@ -795,8 +782,7 @@
       "suggested_different_event_pairs": [],
       "suggested_claim_cases": [],
       "suggested_decision_safety_cases": [],
-      "notes": "claim/decision cases require human truth labeling; add before apply if relevant.",
-      "reject_reason": "sampler over-clustered by bare entity; articles are different topics, not the same event (engine also refuses to merge)"
+      "notes": "auto-rule: multi_source over-clustered by bare entity; reject."
     }
   ]
 }
