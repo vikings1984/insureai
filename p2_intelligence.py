@@ -139,11 +139,34 @@ def upsert_watchlist(state: dict, watchlist: dict) -> dict:
     return watchlist
 
 
-def record_feedback(state: dict, event_id: str, label: str, note: str = "") -> dict:
+def record_feedback(state: dict, event_id: str, label: str, note: str = "",
+                   importance: int | None = None, confidence: int | None = None,
+                   outcome: str | None = None, user_id: str | None = None) -> dict:
+    """记录一条决策反馈。
+
+    Sprint 2（P2.2）扩展：在原有 label 之上补充决策质量信号，构成
+    Decision Feedback Dataset。全部新增字段可选、向后兼容（旧 CLI 调用不受影响）。
+    - importance/confidence: 1..5，用户对事件重要性与自身把握的评分
+    - outcome: 自由文本，事后结果（如"已采纳并调整再保策略"）
+    - user_id: 多用户场景下区分来源（当前单用户可留空）
+    """
     allowed = {"useful", "important", "noise", "irrelevant", "incorrect", "acted_on"}
     if label not in allowed:
         raise ValueError(f"label must be one of {sorted(allowed)}")
-    row = {"event_id": event_id, "label": label, "note": note, "created_at": now()}
+    if importance is not None and not (1 <= int(importance) <= 5):
+        raise ValueError("importance must be 1..5")
+    if confidence is not None and not (1 <= int(confidence) <= 5):
+        raise ValueError("confidence must be 1..5")
+    row = {
+        "event_id": event_id,
+        "label": label,
+        "note": note,
+        "importance": importance,
+        "confidence": confidence,
+        "outcome": outcome,
+        "user_id": user_id,
+        "created_at": now(),
+    }
     state.setdefault("feedback", []).append(row)
     save_state(state)
     return row
