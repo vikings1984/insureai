@@ -19,13 +19,17 @@ jobs:
         with:
           python-version: '3.11'
       - name: Benchmark syntax check
-        run: python3 -m py_compile benchmark.py real_data_benchmark.py tests/test_benchmark.py
+        run: python3 -m py_compile benchmark.py real_data_benchmark.py tests/test_benchmark.py tests/test_real_data_benchmark_v2.py scripts/sample_real_v2_candidates.py
       - name: Run core intelligence benchmark
         run: python3 benchmark.py
       - name: Run P1-4 real-data annotation benchmark
         run: python3 real_data_benchmark.py
+      - name: Run P1-4.1 real-data annotation benchmark (v2.0 difficult samples)
+        run: python3 real_data_benchmark.py --articles benchmarks/real_v2/articles.json --gold benchmarks/real_v2/gold.json --out real_benchmark_v2_results.json
       - name: Run benchmark regression tests
         run: python3 -m unittest tests.test_benchmark -v
+      - name: Run P1-4.1 benchmark regression tests
+        run: python3 -m unittest tests.test_real_data_benchmark_v2 -v
       - name: Publish benchmark result summary
         if: always()
         run: |
@@ -34,4 +38,7 @@ jobs:
           fi
           if [ -f real_benchmark_results.json ]; then
             python3 -c "import json; r=json.load(open('real_benchmark_results.json', encoding='utf-8')); print('real_macro_quality=' + str(r.get('macro_quality'))); print('real_event_false_merge_rate=' + str(r.get('event',{}).get('false_merge_rate'))); print('real_event_false_split_rate=' + str(r.get('event',{}).get('false_split_rate'))); print('real_single_source_false_cross_check_rate=' + str(r.get('claim_evidence',{}).get('single_source_false_cross_check_rate'))); print('real_claim_accuracy=' + str(r.get('claim_evidence',{}).get('accuracy')))"
+          fi
+          if [ -f real_benchmark_v2_results.json ]; then
+            python3 -c "import json; r=json.load(open('real_benchmark_v2_results.json', encoding='utf-8')); print('real_v2_macro_quality=' + str(r.get('macro_quality'))); print('real_v2_event_false_merge_rate=' + str(r.get('event',{}).get('false_merge_rate'))); print('real_v2_event_false_split_rate=' + str(r.get('event',{}).get('false_split_rate'))); print('real_v2_single_source_false_cross_check_rate=' + str(r.get('claim_evidence',{}).get('single_source_false_cross_check_rate'))); print('real_v2_dimension_coverage=' + str(r.get('dimension_coverage')))"
           fi

@@ -1,0 +1,95 @@
+{
+  "version": "real-v2.0",
+  "review_status": "validated",
+  "annotation_policy": {
+    "unit": "article pair / event cluster / proposition",
+    "same_event_requires": ["same real-world occurrence", "same primary entities", "compatible event type", "compatible time window"],
+    "different_event_is_explicit": true,
+    "single_source_never_cross_checked": true,
+    "uncertain_rumor_is_not_confirmed_transaction": true,
+    "source_urls_are_primary_annotation_provenance": true,
+    "difficult_dimensions": ["rumor_to_confirmed", "same_company_diff_event", "multi_source_3_5", "contradiction"],
+    "production_data_never_auto_labeled": true
+  },
+  "same_event_pairs": [
+    ["v2_berk_rumor_reuters", "v2_berk_confirmed_ij"],
+    ["v2_axa_p1_reuters", "v2_axa_p2_ij"],
+    ["v2_axa_p1_reuters", "v2_axa_p3_insurer"],
+    ["v2_axa_p1_reuters", "v2_axa_p4_bloomberg"],
+    ["v2_axa_p1_reuters", "v2_axa_p5_spglobal"],
+    ["v2_axa_p2_ij", "v2_axa_p3_insurer"],
+    ["v2_axa_p2_ij", "v2_axa_p4_bloomberg"],
+    ["v2_axa_p2_ij", "v2_axa_p5_spglobal"],
+    ["v2_axa_p3_insurer", "v2_axa_p4_bloomberg"],
+    ["v2_axa_p3_insurer", "v2_axa_p5_spglobal"],
+    ["v2_axa_p4_bloomberg", "v2_axa_p5_spglobal"]
+  ],
+  "different_event_pairs": [
+    ["v2_zurich_acq", "v2_zurich_results"],
+    ["v2_berk_rumor_reuters", "v2_zurich_acq"],
+    ["v2_axa_p1_reuters", "v2_acris_confirm"],
+    ["v2_berk_confirmed_ij", "v2_zurich_results"],
+    ["v2_acris_denies", "v2_acris_confirm"]
+  ],
+  "singletons": [
+    "v2_sc_orbit_singleton"
+  ],
+  "claim_cases": [
+    {
+      "id": "v2_claim_axa_cross_checked",
+      "article_ids": ["v2_axa_p1_reuters", "v2_axa_p2_ij"],
+      "event_title": "AXA acquisition of Parametrix",
+      "expected": {
+        "claim_type": "transaction_amount",
+        "normalized_value": 1500000000,
+        "verification_status": "cross_checked"
+      }
+    },
+    {
+      "id": "v2_claim_berk_single_source",
+      "article_ids": ["v2_berk_rumor_reuters", "v2_berk_confirmed_ij"],
+      "event_title": "Berkshire Hathaway acquisition of Alleghany",
+      "expected": {
+        "claim_type": "transaction_amount",
+        "normalized_value": 11600000000,
+        "verification_status": "single_source"
+      }
+    },
+    {
+      "id": "v2_claim_axa_single_source",
+      "article_ids": ["v2_axa_p1_reuters"],
+      "event_title": "AXA acquisition of Parametrix",
+      "expected": {
+        "claim_type": "transaction_amount",
+        "normalized_value": 1500000000,
+        "verification_status": "single_source"
+      }
+    }
+  ],
+  "decision_safety_cases": [
+    {
+      "id": "v2_decision_berk_rumor",
+      "article_ids": ["v2_berk_rumor_reuters", "v2_berk_confirmed_ij"],
+      "expected": {"forbid_urgency": "now", "require_human_review": true, "reason": "deal progressed from rumor to confirmed; human review on decision authorization"}
+    }
+  ],
+  "pair_meta": {
+    "v2_berk_confirmed_ij|v2_berk_rumor_reuters": {"dimension": "rumor_to_confirmed", "review_status": "validated"},
+    "v2_axa_p1_reuters|v2_axa_p2_ij": {"dimension": "multi_source_3_5", "review_status": "validated"},
+    "v2_axa_p1_reuters|v2_axa_p3_insurer": {"dimension": "multi_source_3_5", "review_status": "validated"},
+    "v2_axa_p1_reuters|v2_axa_p4_bloomberg": {"dimension": "multi_source_3_5", "review_status": "validated"},
+    "v2_axa_p1_reuters|v2_axa_p5_spglobal": {"dimension": "multi_source_3_5", "review_status": "validated"},
+    "v2_axa_p2_ij|v2_axa_p3_insurer": {"dimension": "multi_source_3_5", "review_status": "validated"},
+    "v2_axa_p2_ij|v2_axa_p4_bloomberg": {"dimension": "multi_source_3_5", "review_status": "validated"},
+    "v2_axa_p2_ij|v2_axa_p5_spglobal": {"dimension": "multi_source_3_5", "review_status": "validated"},
+    "v2_axa_p3_insurer|v2_axa_p4_bloomberg": {"dimension": "multi_source_3_5", "review_status": "validated"},
+    "v2_axa_p3_insurer|v2_axa_p5_spglobal": {"dimension": "multi_source_3_5", "review_status": "validated"},
+    "v2_axa_p4_bloomberg|v2_axa_p5_spglobal": {"dimension": "multi_source_3_5", "review_status": "validated"},
+    "v2_acris_confirm|v2_acris_denies": {"dimension": "contradiction", "review_status": "validated"},
+    "v2_zurich_acq|v2_zurich_results": {"dimension": "same_company_diff_event", "review_status": "validated"},
+    "v2_berk_rumor_reuters|v2_zurich_acq": {"dimension": "cross_negative", "review_status": "validated"},
+    "v2_axa_p1_reuters|v2_acris_confirm": {"dimension": "cross_negative", "review_status": "validated"},
+    "v2_berk_confirmed_ij|v2_zurich_results": {"dimension": "cross_negative", "review_status": "validated"}
+  },
+  "dimension_coverage": ["rumor_to_confirmed", "same_company_diff_event", "multi_source_3_5", "contradiction"]
+}

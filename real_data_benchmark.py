@@ -12,9 +12,13 @@ Gate philosophy:
 - a single source may never become cross_checked;
 - explicit different-event pairs must never be merged;
 - expected same-event pairs must not be split.
+
+v1.0 (default) is frozen. Pass --articles/--gold/--out to run the P1-4.1
+expansion (benchmarks/real_v2).
 """
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 
@@ -123,9 +127,16 @@ def claim_metrics(articles_by_id: dict[str, dict], gold: dict) -> dict:
     }
 
 
-def main() -> None:
-    articles = _load(CORPUS)
-    gold = _load(GOLD)
+def run_benchmark(articles_path: Path, gold_path: Path, out_path: Path) -> dict:
+    """Run the real-data annotation benchmark against a given corpus+gold.
+
+    v1.0 (default) is frozen; pass real_v2 paths for the P1-4.1 expansion.
+    """
+    articles_path = articles_path.resolve()
+    gold_path = gold_path.resolve()
+    out_path = out_path.resolve()
+    articles = _load(articles_path)
+    gold = _load(gold_path)
     articles_by_id = {x["id"]: x for x in articles}
     event = event_metrics(articles, gold)
     claim = claim_metrics(articles_by_id, gold)
@@ -137,28 +148,41 @@ def main() -> None:
             + (1 - event["false_split_rate"])
             + claim["accuracy"]
             + (1 - claim["single_source_false_cross_check_rate"])
-        ) / 6,
+        )
+        / 6,
         4,
     )
+    is_v2 = "v2" in str(gold_path)
     result = {
         "version": gold["version"],
-        "benchmark": "insureai_real_data_annotation_v1",
+        "benchmark": "insureai_real_data_annotation_v2" if is_v2 else "insureai_real_data_annotation_v1",
         "macro_quality": macro,
         "event": event,
         "claim_evidence": claim,
+        "dimension_coverage": gold.get("dimension_coverage", {}),
         "provenance": {
-            "corpus": str(CORPUS.relative_to(ROOT)),
-            "gold": str(GOLD.relative_to(ROOT)),
+            "corpus": str(articles_path.relative_to(ROOT)),
+            "gold": str(gold_path.relative_to(ROOT)),
             "production_data_used": False,
             "article_bodies_stored": False,
         },
     }
-    OUTPUT.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    out_path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return result
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="InsureAI P1-4 real-data annotation benchmark")
+    parser.add_argument("--articles", default=str(CORPUS), help="corpus articles.json (default: real_v1)")
+    parser.add_argument("--gold", default=str(GOLD), help="gold annotations json (default: real_v1)")
+    parser.add_argument("--out", default=str(OUTPUT), help="output results json (default: real_benchmark_results.json)")
+    args = parser.parse_args()
+    result = run_benchmark(Path(args.articles), Path(args.gold), Path(args.out))
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
     # P1-4 is a baseline quality report, not yet the production v1.0 gate.
     # Fail only on hard safety regressions; quality target is reported explicitly.
-    if event["false_merge_rate"] != 0.0 or event["false_split_rate"] != 0.0 or claim["single_source_false_cross_check_rate"] != 0.0:
+    if result["event"]["false_merge_rate"] != 0.0 or result["event"]["false_split_rate"] != 0.0 or result["claim_evidence"]["single_source_false_cross_check_rate"] != 0.0:
         raise SystemExit(1)
 
 

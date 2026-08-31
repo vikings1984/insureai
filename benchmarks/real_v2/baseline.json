@@ -1,0 +1,33 @@
+{
+  "version": "real-v2.0",
+  "status": "validated",
+  "validated_commit": "",
+  "validated_at": "2026-08-31T15:43:00Z",
+  "benchmark": "insureai_real_data_annotation_v2",
+  "corpus_articles": 12,
+  "annotated_positive_pairs": 11,
+  "annotated_negative_pairs": 5,
+  "claim_cases": 3,
+  "difficult_dimensions_covered": ["rumor_to_confirmed", "same_company_diff_event", "multi_source_3_5", "contradiction"],
+  "metrics": {
+    "macro_quality": 1.0,
+    "event_precision": 1.0,
+    "event_recall": 1.0,
+    "false_merge_rate": 0.0,
+    "false_split_rate": 0.0,
+    "claim_accuracy": 1.0,
+    "single_source_false_cross_check_rate": 0.0
+  },
+  "safety": {
+    "real_data_hard_safety_pass": true,
+    "false_merge_rate": 0.0,
+    "false_split_rate": 0.0,
+    "single_source_false_cross_check_rate": 0.0
+  },
+  "provenance": {
+    "production_data_used": false,
+    "article_bodies_stored": false,
+    "gold_annotations_hand_labeled": true,
+    "candidates_mechanism": "scripts/sample_real_v2_candidates.py -> candidates.json (review_status=proposed), human-promoted into gold.json"
+  }
+}
