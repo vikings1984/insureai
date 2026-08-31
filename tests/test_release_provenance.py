@@ -128,6 +128,58 @@ class TestReleaseProvenance(unittest.TestCase):
         self.assertFalse(updated["deployment"]["release_match"])
         self.assertEqual(updated["deployment"]["release_marker"], "insureai-release-old")
 
+    def test_lagging_site_is_stale_not_failed(self):
+        """`stale` carries an explanatory error, so it must not be swallowed by
+        the generic error branch. Reporting it as `failed` blocks the release
+        pipeline that would publish the fix, so the site can never catch up.
+        """
+        root = self._root()
+        (root / "release_provenance.json").write_text(json.dumps(build_provenance(
+            source_commit="commit-123", site_url="https://example.test", root=root
+        )), encoding="utf-8")
+        (root / "deployment_verification.json").write_text(json.dumps({
+            "version": 1,
+            "status": "stale",
+            "verified": False,
+            "site_url": "https://example.test",
+            "final_url": "https://example.test/",
+            "expected_marker": "insureai-release-new",
+            "release_marker": "insureai-release-old",
+            "http_status": 200,
+            "marker_found": False,
+            "error": "published_marker_behind_expected",
+            "checked_at": "2026-08-31T00:00:00+00:00",
+        }), encoding="utf-8")
+        (root / "deployment_verification_history.json").write_text("[]", encoding="utf-8")
+
+        updated = build_provenance(source_commit="commit-new", site_url="https://example.test", root=root)
+        self.assertEqual(updated["deployment"]["status"], "stale")
+        self.assertFalse(updated["deployment"]["verified"])
+
+    def test_unknown_marker_is_still_failed(self):
+        """Tolerating lag must not become tolerating anything."""
+        root = self._root()
+        (root / "release_provenance.json").write_text(json.dumps(build_provenance(
+            source_commit="commit-123", site_url="https://example.test", root=root
+        )), encoding="utf-8")
+        (root / "deployment_verification.json").write_text(json.dumps({
+            "version": 1,
+            "status": "failed",
+            "verified": False,
+            "site_url": "https://example.test",
+            "final_url": "https://example.test/",
+            "expected_marker": "insureai-release-new",
+            "release_marker": "insureai-who-knows",
+            "http_status": 200,
+            "marker_found": False,
+            "error": "http_or_marker_check_failed",
+            "checked_at": "2026-08-31T00:00:00+00:00",
+        }), encoding="utf-8")
+        (root / "deployment_verification_history.json").write_text("[]", encoding="utf-8")
+
+        updated = build_provenance(source_commit="commit-new", site_url="https://example.test", root=root)
+        self.assertEqual(updated["deployment"]["status"], "failed")
+
     def test_unconfigured_deployment_is_configuration_debt(self):
         root = self._root()
         (root / "deployment_verification.json").write_text(json.dumps({

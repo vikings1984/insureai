@@ -50,6 +50,12 @@ def _normalize_deployment_status(*, deployment: dict, release_status: str = "pen
     raw = deployment.get("status")
     if raw == "unconfigured" or deployment.get("error") == "site_url_missing":
         return "configuration_debt"
+    # `stale` carries an explanatory error ("published_marker_behind_expected"),
+    # so it must be classified before the generic error branch below. Otherwise
+    # a merely lagging site is reported as `failed`, which blocks the release
+    # pipeline that would publish the fix - a self-sustaining deadlock.
+    if raw == "stale":
+        return "stale"
     if raw == "failed" or deployment.get("error"):
         return "failed"
     if raw in {"pending", "unknown", "configuration_debt", "stale"}:
