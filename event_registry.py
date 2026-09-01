@@ -277,6 +277,11 @@ def validate(registry: dict) -> None:
             )
 
 
+def load_registry() -> dict:
+    """加载已落盘的 canonical registry；缺失返回空 dict（不伪造）。"""
+    return _load(OUTPUT)
+
+
 def build_artifacts(generated_at: str | None = None) -> dict:
     """从 daily_brief + review_queue + second_brain 实体时间线自举并落盘。
 
