@@ -75,6 +75,15 @@ body{margin:0}
 .st.structurally_unavailable{background:#f2f4f7;color:#475467}
 .st.upstream_noise{background:#fffaeb;color:#b54708}
 .pm-caveat{color:#667085;font-size:11.5px;margin-top:8px;line-height:1.5}
+.sb-card{margin-bottom:18px}
+.sb-wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.sb-role{background:#f8fafc;border:1px solid #eef2f5;border-radius:12px;padding:14px;min-width:0}
+.sb-role h4{font-size:15px;font-weight:750;margin:0 0 2px;color:#172033}
+.sb-role .d{font-size:12px;color:#667085;margin-bottom:10px}
+.sb-k{font-size:12px;font-weight:700;color:#475467;margin:9px 0 4px}
+.sb-ent{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0}
+.sb-ent .e{background:#eff8ff;color:#175cd3;border-radius:999px;padding:3px 9px;font-size:11.5px}
+@media(max-width:760px){.sb-wrap{grid-template-columns:1fr}}
 @media(max-width:760px){.pm-wrap{grid-template-columns:1fr}.pm-kpis{grid-template-columns:repeat(2,1fr)}}
 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
 @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(3,1fr)}}
@@ -125,6 +134,13 @@ body{margin:0}
     <div id="pm" class="pm-wrap"><div class="empty">加载中…</div></div>
   </div>
 
+  <div class="card sb-card">
+    <div class="title">Second Brain · 角色视图 <span id="c-sb" class="badge"></span>
+      <span class="kg-open"><a class="btn" href="./personal_memory.html">Personal Memory →</a></span>
+    </div>
+    <div id="sb" class="sb-wrap"><div class="empty">加载中…</div></div>
+  </div>
+
   <div class="footer" id="release"></div>
 </div>
 
@@ -143,8 +159,10 @@ function render(){
     // KG 单独降级：图谱取不到时其余模块照常渲染（置 null，不抛错）
     get('./knowledge_graph.json').catch(()=>null),
     // Personal Memory 同理单独降级
-    get('./p2_personal_memory.json').catch(()=>null)
-  ]).then(([brief,queue,state,kg,mem])=>{
+    get('./p2_personal_memory.json').catch(()=>null),
+    // Second Brain 角色视图同理单独降级
+    get('./second_brain.json').catch(()=>null)
+  ]).then(([brief,queue,state,kg,mem,sb])=>{
     const B=brief.brief||[], Q=queue.items||[], W=(state.watchlists||[]).filter(w=>w.enabled!==false);
 
     // ---- KPI strip ----
@@ -237,9 +255,11 @@ function render(){
     document.getElementById('release').innerHTML=
       `数据来源：p2_daily_brief.json（生成于 ${fmt(brief.generated_at)}）· review_queue.json（${esc(queue.generated_count??Q.length)} 条）· p2_state.json（${W.length} 个 Watchlist）· `+
       (kg?`knowledge_graph.json（v${esc(kg.version)} · 更新至 ${fmt(kg.stats?.latest_event_at)}）`:'knowledge_graph.json（暂不可用）')+'。'+
+      (sb?` second_brain.json（v${esc(sb.version)} · ${Object.keys(sb.roles||{}).length} 角色 / ${(sb.entity_threads||[]).length} 实体线 / ${(sb.open_questions||[]).length} 开放问题）已接入。`:'')+
       ` 事件总数 ${esc(brief.event_count??'—')}。本站仅聚合既有 artifact，不自动补写未验证结论。`;
     loadKG(kg);
     loadMemory(mem);
+    loadSecondBrain(sb);
   }).catch(e=>{
     document.getElementById('kpis').innerHTML='<div class="empty">数据加载失败：'+esc(e.message)+'。请通过 GitHub Pages 站点访问，不要直接以本地文件打开。</div>';
   });
@@ -291,6 +311,29 @@ function loadMemory(mem){
       `</div>`+
       (gaps.length?`<div class="pm-note">推断缺口 ${gaps.length} 项 — ${esc(blocked?.reason||'推不出的维度已显式记录，未伪造偏好')}。完整见 Personal Memory 页。</div>`:'');
   })().catch(e=>{ setBadge('c-pm','错误'); document.getElementById('pm').innerHTML='<div class="empty">个人记忆层渲染失败：'+esc(e.message)+'。其余模块不受影响。</div>'; });
+}
+// Second Brain 角色视图：复用主 Promise 已取回的 sb（second_brain.json）；为 null 时仅本卡片降级
+function loadSecondBrain(sb){
+  if(!sb){ setBadge('c-sb','不可用'); document.getElementById('sb').innerHTML='<div class="empty">Second Brain 暂不可用（second_brain.json 未生成）。其余模块不受影响。</div>'; return; }
+  const order=['strategy','operations','risk'];
+  const roles=order.filter(r=>sb.roles&&sb.roles[r]).map(rid=>{
+    const r=sb.roles[rid]; const me=r.memory_entries||[];
+    const hits=(r.watchlists||[]).reduce((n,w)=>n+(w.hit_count||0),0);
+    return `<div class="sb-role">
+      <h4>${esc(r.label||rid)}</h4>
+      <div class="d">${esc(r.desc||'')}</div>
+      <div class="sb-k">关注清单（${esc((r.watchlists||[]).length)}）· 命中 ${esc(hits)}</div>
+      <div class="sb-ent">${(r.watchlists||[]).map(w=>`<span class="e">${esc(w.name||w.id)}</span>`).join('')||'<span class="muted">—</span>'}</div>
+      <div class="sb-k">高频主题 / 实体</div>
+      <div class="sb-ent">${(r.top_topics||[]).slice(0,4).map(t=>`<span class="e">${esc(t.key)}×${esc(t.count)}</span>`).join('')}${(r.top_entities||[]).slice(0,4).map(t=>`<span class="e">${esc(t.key)}×${esc(t.count)}</span>`).join('')}</div>
+      <div class="sb-k">决策记忆（${esc(me.length)}）</div>
+      <div class="meta">${me.length?me.slice(0,3).map(e=>'· '+esc(e.title.slice(0,30))).join('<br>'):'该角色暂无已落决策'}</div>
+    </div>`;
+  }).join('');
+  setBadge('c-sb', (sb.roles?Object.keys(sb.roles).length:0)+' 角色 / '+(sb.entity_threads?sb.entity_threads.length:0)+' 实体线 / '+(sb.open_questions?sb.open_questions.length:0)+' 开放');
+  document.getElementById('sb').innerHTML=roles||'<div class="empty">无角色视图。</div>';
+  const oq=sb.open_questions||[];
+  if(oq.length){ const n=document.createElement('div'); n.className='pm-caveat'; n.style.gridColumn='1 / -1'; n.innerHTML='开放问题 '+oq.length+' 项已写入 Personal Memory 页 · 原则：'+esc(sb.principle||'只读既有事实，不伪造偏好'); document.getElementById('sb').appendChild(n); }
 }
 function setBadge(id,n){ const el=document.getElementById(id); if(el) el.textContent=n; }
 document.getElementById('refresh').addEventListener('click',render);

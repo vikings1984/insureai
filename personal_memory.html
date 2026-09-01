@@ -51,6 +51,12 @@ body{margin:0}
 .aff{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .aff .col h4{font-size:13px;color:#475467;margin:0 0 8px}
 .empty{text-align:center;padding:28px;color:#667085;font-size:13px}
+.roles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.role{border:1px solid #eaecf0;border-radius:12px;padding:14px;min-width:0}
+.role h3{font-size:15px;font-weight:750;margin:0 0 2px;color:#172033}
+.role .rd{font-size:12px;color:#667085;margin-bottom:10px}
+.role .rs{font-size:12px;font-weight:700;color:#475467;margin:10px 0 5px}
+@media(max-width:1100px){.roles{grid-template-columns:1fr}}
 .footer{margin-top:8px;color:#667085;font-size:12px;border-top:1px solid #eaecf0;padding-top:14px}
 @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){.grid{grid-template-columns:1fr}.aff{grid-template-columns:1fr}.top{flex-direction:column}}
@@ -84,6 +90,12 @@ body{margin:0}
 
   <section class="card"><div class="title">推断纪律 · Gaps（推不出的维度） <span id="c-gap" class="badge"></span></div><div id="gaps"></div></section>
 
+  <section class="card" style="margin-bottom:18px"><div class="title">角色视图 · Role-based Second Brain <span id="c-sb" class="badge"></span></div><div class="muted" style="margin-bottom:12px">只读 second_brain.json 的过滤结果；不新增事实、不伪造偏好。每个角色 = 一组显式声明的 Watchlist + 主题切片。</div><div id="roles" class="roles"></div></section>
+
+  <section class="card" style="margin-bottom:18px"><div class="title">实体时间线 · Entity Threads（事件发布时间证据链） <span id="c-et" class="badge"></span></div><div id="et" class="list"></div></section>
+
+  <section class="card" style="margin-bottom:18px"><div class="title">开放问题 · Open Questions（Second Brain 推不出项） <span id="c-oq" class="badge"></span></div><div id="oq"></div></section>
+
   <div class="footer" id="release"></div>
 </div>
 
@@ -97,8 +109,9 @@ function render(){
   Promise.all([
     get('./p2_personal_memory.json').catch(()=>null),
     get('./p2_state.json').catch(()=>null),
-    get('./review_queue.json').catch(()=>null)
-  ]).then(([mem,state,queue])=>{
+    get('./review_queue.json').catch(()=>null),
+    get('./second_brain.json').catch(()=>null)
+  ]).then(([mem,state,queue,sb])=>{
     // 优先用权威产物；缺失则实时派生
     let live=false;
     if(!mem){
@@ -184,9 +197,55 @@ function render(){
         <div><div class="d">${esc(g.dimension||'—')}</div><div class="r">${esc(g.reason||'')}</div>${g.unblock?`<div class="u">解锁：${esc(g.unblock)}</div>`:''}</div>
       </div>`).join('')||'<div class="empty">无推断缺口记录。</div>';
 
+    // ---- Role-based Second Brain（P2.6，只读 second_brain.json） ----
+    if(sb){
+      const order=['strategy','operations','risk'];
+      const roleKeys=order.filter(r=>sb.roles&&sb.roles[r]);
+      setBadge('c-sb', roleKeys.length+' 角色');
+      document.getElementById('roles').innerHTML=roleKeys.map(rid=>{
+        const r=sb.roles[rid]; const me=r.memory_entries||[];
+        return `<div class="role">
+          <h3>${esc(r.label||rid)}</h3>
+          <div class="rd">${esc(r.desc||'')} · 切片主题 ${esc((r.topics||[]).length)} 个</div>
+          <div class="rs">关注清单（${esc((r.watchlists||[]).length)}）</div>
+          <div class="tags">${(r.watchlists||[]).map(w=>`<span class="tag wl">${esc(w.name||w.id)} ×${esc(w.hit_count??0)}</span>`).join('')||'<span class="muted">—</span>'}</div>
+          <div class="rs">高频主题</div>
+          <div class="tags">${(r.top_topics||[]).slice(0,5).map(t=>`<span class="tag">${esc(t.key)} <b>×${esc(t.count)}</b></span>`).join('')||'<span class="muted">—</span>'}</div>
+          <div class="rs">高频实体</div>
+          <div class="tags">${(r.top_entities||[]).slice(0,5).map(t=>`<span class="tag ent ov">${esc(t.key)} <b>×${esc(t.count)}</b></span>`).join('')||'<span class="muted">—</span>'}</div>
+          <div class="rs">决策记忆（${esc(me.length)}）</div>
+          ${me.length?me.slice(0,4).map(e=>`<div class="meta" style="margin-top:4px">· ${esc(e.title.slice(0,36))}</div>`).join(''):'<div class="meta">该角色暂无已落决策</div>'}
+        </div>`;
+      }).join('');
+
+      // ---- Entity Threads ----
+      const et=sb.entity_threads||[];
+      setBadge('c-et', et.length);
+      document.getElementById('et').innerHTML=et.slice(0,12).map(th=>`
+        <div class="item">
+          <div class="row"><strong>${esc(th.entity)}</strong><span class="tag ent">${esc(th.type||'')} · ${esc(th.event_count??0)} 事件</span></div>
+          <div class="meta">${fmt(th.first_seen)} → ${fmt(th.last_seen)}</div>
+          <div class="tags">${(th.events||[]).slice(0,4).map(e=>`<span class="tag">${esc(e.title.slice(0,34))}</span>`).join('')}</div>
+        </div>`).join('')+(et.length>12?`<div class="meta" style="margin-top:6px">显示前 12 / 共 ${et.length} 条实体时间线</div>`:'');
+
+      // ---- Open Questions ----
+      const oq=sb.open_questions||[];
+      setBadge('c-oq', oq.length);
+      document.getElementById('oq').innerHTML=oq.map(g=>`
+        <div class="gap">
+          <span class="b st ${esc(g.status||'')}">${esc(g.status||'—')}</span>
+          <div><div class="d">${esc(g.dimension||'—')}</div><div class="r">${esc(g.reason||'')}</div>${g.unblock?`<div class="u">解锁：${esc(g.unblock)}</div>`:''}</div>
+        </div>`).join('')||'<div class="empty">无开放问题。</div>';
+    }else{
+      document.getElementById('roles').innerHTML='<div class="empty">second_brain.json 暂不可用（P2.6 未生成或加载失败）。其余模块不受影响。</div>';
+      document.getElementById('et').innerHTML='<div class="empty">实体时间线暂不可用。</div>';
+      document.getElementById('oq').innerHTML='<div class="empty">开放问题暂不可用。</div>';
+    }
+
     document.getElementById('release').innerHTML=
       (live?'数据来源（实时派生）：p2_state.json + review_queue.json。'
           :`数据来源：p2_personal_memory.json（v${esc(mem.version||'?')} · 生成于 ${fmt(mem.generated_at)}）· 原则：${esc(mem.principle||'—')}。`)+
+      (sb?` second_brain.json（v${esc(sb.version||'?')} · ${Object.keys(sb.roles||{}).length} 角色 / ${(sb.entity_threads||[]).length} 实体线 / ${(sb.open_questions||[]).length} 开放问题）已接入。`:'')+
       ' 本站仅聚合既有 artifact，不自动补写未验证结论。';
   }).catch(e=>{
     document.getElementById('kpis').innerHTML='<div class="empty">数据加载失败：'+esc(e.message)+'。请通过 GitHub Pages 站点访问，不要直接以本地文件打开。</div>';
