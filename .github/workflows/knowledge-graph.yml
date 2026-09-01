@@ -8,6 +8,7 @@ on:
       - 'claims.json'
       - 'knowledge_graph.py'
       - 'knowledge_graph.schema.json'
+      - 'scripts/build_kg_viz.py'
   workflow_dispatch:
 
 permissions:
@@ -45,13 +46,26 @@ jobs:
           PY
       - name: Graph lineage regression
         run: python3 -m unittest tests.test_knowledge_graph -v
+
+      # 可视化预采样：把 6MB 全量图谱压成 381KB 的 kg_viz.json 供 kg-visual.html 渲染。
+      # 为什么必须在 CI 里跑而不是手工生成一次：kg_viz.json 是 knowledge_graph.json
+      # 的派生品，图谱每日刷新后若不重建，页面会一直渲染过期子图——这类「静默过期」
+      # 不会让任何测试变红，只能靠流水线保证。构建本身 0.15s，确定性输出（除
+      # generated_at），因此不会造成无意义的产物 churn。
+      - name: Build KG visualization sample
+        run: python3 scripts/build_kg_viz.py
+      - name: Validate kg_viz.json (fail-closed)
+        run: python3 scripts/build_kg_viz.py --validate-only
+      - name: KG viz sampling regression
+        run: python3 -m unittest tests.test_build_kg_viz -v
+
       - name: Commit graph artifact
         run: |
           git config user.name "insureai-bot"
           git config user.email "bot@insureai.local"
-          if [ -n "$(git status --porcelain knowledge_graph.json)" ]; then
-            git add knowledge_graph.json
-            git commit -m "chore: refresh knowledge graph [skip ci]"
+          if [ -n "$(git status --porcelain knowledge_graph.json kg_viz.json)" ]; then
+            git add knowledge_graph.json kg_viz.json
+            git commit -m "chore: refresh knowledge graph + viz sample [skip ci]"
             git push origin HEAD:${{ github.ref_name }}
           else
             echo "no graph changes"

@@ -39,7 +39,8 @@ body{margin:0}
 .empty{text-align:center;padding:28px;color:#667085;font-size:13px}
 .footer{margin-top:8px;color:#667085;font-size:12px;border-top:1px solid #eaecf0;padding-top:14px}
 .kg-card{margin-bottom:18px}
-.kg-open{float:right;font-size:12px;padding:5px 10px}
+.kg-open{margin-left:auto;display:flex;gap:8px}
+.kg-open .btn{font-size:12px;padding:5px 10px}
 .kg-wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:22px}
 .kg-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
 .kg-kpi{background:#f8fafc;border:1px solid #eef2f5;border-radius:10px;padding:10px}
@@ -87,7 +88,9 @@ body{margin:0}
   </div>
 
   <div class="card kg-card">
-    <div class="title">Knowledge Graph 概览 <span id="c-kg" class="badge"></span> <a class="btn kg-open" href="./knowledge-graph.html">打开图谱查看器 →</a></div>
+    <div class="title">Knowledge Graph 概览 <span id="c-kg" class="badge"></span>
+      <span class="kg-open"><a class="btn" href="./knowledge-graph.html">实体查询</a><a class="btn" href="./kg-visual.html">力导向图 →</a></span>
+    </div>
     <div id="kg" class="kg-wrap"><div class="empty">加载中…</div></div>
   </div>
 

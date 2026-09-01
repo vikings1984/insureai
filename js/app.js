@@ -557,10 +557,14 @@
 
     // ===== Page Switching =====
     function switchPage(page, fromHash) {
-      // Executive Home 是独立静态页面（非 SPA 视图）：点击即从 SPA 跳转到 ./executive_home.html
-      if (page === 'executive') { window.location.href = './executive_home.html'; return; }
-      // Knowledge Graph 是独立静态页面（非 SPA 视图）：点击即从 SPA 跳转到 ./knowledge-graph.html
-      if (page === 'knowledge') { window.location.href = './knowledge-graph.html'; return; }
+      // 独立静态页面（非 SPA 视图）：点击即从 SPA 跳转过去。集中成表，
+      // 避免每加一个独立页就多一个 if 分支（此前 executive / knowledge 已是两处重复）。
+      const STANDALONE_PAGES = {
+        executive: './executive_home.html',
+        knowledge: './knowledge-graph.html',
+        kgviz: './kg-visual.html'
+      };
+      if (STANDALONE_PAGES[page]) { window.location.href = STANDALONE_PAGES[page]; return; }
       state.page = page;
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       const targetPage = document.getElementById('page-' + page);
@@ -610,7 +614,7 @@
         return;
       }
       const page = hash.replace(/^#\//, '').split('?')[0];
-      const valid = ['featured', 'all', 'daily', 'research', 'submit', 'about', 'log', 'feedback', 'executive', 'knowledge'];
+      const valid = ['featured', 'all', 'daily', 'research', 'submit', 'about', 'log', 'feedback', 'executive', 'knowledge', 'kgviz'];
       switchPage(valid.includes(page) ? page : 'featured', true);
     }
     window.addEventListener('hashchange', applyRouteFromHash);
