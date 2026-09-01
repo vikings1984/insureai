@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>InsureAI · Personal Memory</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;color:#172033;background:#f4f6f8;line-height:1.5}
+*{box-sizing:border-box}
+body{margin:0}
+.shell{max-width:1340px;margin:auto;padding:24px}
+.top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:18px;flex-wrap:wrap}
+.brand{font-size:24px;font-weight:800}.brand span{color:#f97316}
+.muted{color:#667085;font-size:13px}
+.btn{padding:8px 12px;border:1px solid #d0d5dd;border-radius:10px;background:#fff;text-decoration:none;color:#344054;font-size:13px}
+.btn:hover{border-color:#98a2b3}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.kpi{background:#fff;border:1px solid #e4e7ec;border-radius:14px;padding:14px}
+.kpi .n{font-size:26px;font-weight:800;line-height:1.1}.kpi .l{font-size:12px;color:#667085;margin-top:4px}.kpi .s{font-size:11px;color:#98a2b3;margin-top:2px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+.card{background:#fff;border:1px solid #e4e7ec;border-radius:14px;padding:18px;min-width:0}
+.title{font-size:17px;font-weight:750;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.badge{font-size:12px;font-weight:700;color:#344054;background:#f2f4f7;border-radius:999px;padding:2px 9px}
+.item{padding:12px 0;border-top:1px solid #eaecf0}
+.item:first-child{border-top:0}
+.row{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.row strong{font-size:14px;font-weight:650}
+.meta{color:#667085;font-size:12px;margin-top:3px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.tag{display:inline-flex;padding:2px 8px;border-radius:999px;background:#f2f4f7;font-size:11px;color:#475467}
+.intent{color:#6941c6;background:#f4ebff}
+.act{color:#067647;background:#ecfdf3}
+.hot{color:#b42318;background:#fef3f2}
+.mid{color:#b54708;background:#fffaeb}
+.low{color:#067647;background:#ecfdf3}
+.wl{color:#175cd3;background:#eff8ff}
+.ent{color:#6941c6;background:#f4ebff}
+.ent.ov{color:#067647;background:#ecfdf3}
+.note{background:#fffaeb;border:1px solid #fedf89;color:#b54708;border-radius:10px;padding:10px 12px;font-size:12px;margin-bottom:16px;line-height:1.55}
+.note.green{background:#ecfdf3;border-color:#abefc6;color:#067647}
+.gap{display:flex;gap:10px;padding:10px 0;border-top:1px solid #eaecf0}
+.gap:first-child{border-top:0}
+.gap .b{flex:0 0 auto}
+.gap .d{font-size:13.5px;font-weight:650;color:#344054}
+.gap .r{color:#667085;font-size:12px;margin-top:2px;line-height:1.5}
+.gap .u{color:#175cd3;font-size:12px;margin-top:2px}
+.st{display:inline-block;border-radius:999px;padding:1px 8px;font-size:10.5px;font-weight:700}
+.st.empty,.st.insufficient_sample{background:#fef3f2;color:#b42318}
+.st.structurally_unavailable{background:#f2f4f7;color:#475467}
+.st.upstream_noise{background:#fffaeb;color:#b54708}
+.aff{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.aff .col h4{font-size:13px;color:#475467;margin:0 0 8px}
+.empty{text-align:center;padding:28px;color:#667085;font-size:13px}
+.footer{margin-top:8px;color:#667085;font-size:12px;border-top:1px solid #eaecf0;padding-top:14px}
+@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.aff{grid-template-columns:1fr}.top{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="top">
+    <div>
+      <div class="brand">Insure<span>AI</span> · Personal Memory</div>
+      <div class="muted">个人记忆层 — 沉淀「我关注什么（意图）」与「我决了什么（行动）」，并诚实记录「推不出的维度（缺口）」。是 Second Brain 的前置。优先读 p2_personal_memory.json（CI 每日生成），缺失时实时派生。</div>
+    </div>
+    <div>
+      <a class="btn" href="./executive_home.html">Executive Home</a>
+      <a class="btn" href="./kg-graph.html">KG 力导向</a>
+      <a class="btn" href="./">主站</a>
+      <button class="btn" id="refresh" type="button">刷新</button>
+    </div>
+  </div>
+
+  <div id="kpis" class="kpi-grid"><div class="empty">加载中…</div></div>
+
+  <div id="note" class="note" style="display:none"></div>
+
+  <div class="grid">
+    <section class="card"><div class="title">关注意图 · Watchlists <span id="c-wl" class="badge"></span></div><div id="wl" class="list"></div></section>
+    <section class="card"><div class="title">决策记忆 · Memory Entries <span id="c-me" class="badge"></span></div><div id="me" class="list"></div></section>
+  </div>
+
+  <section class="card" style="margin-bottom:18px"><div class="title">实体亲和 · Acted vs Watched <span id="c-ea" class="badge"></span></div><div id="ea"></div></section>
+
+  <section class="card"><div class="title">推断纪律 · Gaps（推不出的维度） <span id="c-gap" class="badge"></span></div><div id="gaps"></div></section>
+
+  <div class="footer" id="release"></div>
+</div>
+
+<script>
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=d=>{ if(!d) return '—'; try{ return new Date(d).toISOString().slice(0,10);}catch(e){ return String(d).slice(0,10);} };
+const prClass=v=> (v==null)?'tag':(v>=80?'hot':v>=60?'mid':'low');
+async function get(u){ const r=await fetch(u+'?t='+Date.now(),{cache:'no-store'}); if(!r.ok) throw Error(u+' → HTTP '+r.status); return r.json(); }
+
+function render(){
+  Promise.all([
+    get('./p2_personal_memory.json').catch(()=>null),
+    get('./p2_state.json').catch(()=>null),
+    get('./review_queue.json').catch(()=>null)
+  ]).then(([mem,state,queue])=>{
+    // 优先用权威产物；缺失则实时派生
+    let live=false;
+    if(!mem){
+      live=true;
+      const W=(state&&state.watchlists||[]).filter(w=>w.enabled!==false);
+      const acted=(queue&&queue.items||[]).filter(i=>i.decision).sort((a,b)=>(b.priority||0)-(a.priority||0));
+      mem={
+        watchlists: { items: W },
+        memory_entries: acted.map(i=>({event_id:i.event_id,title:i.title,topic:i.topic,event_type:i.event_type,
+          priority:i.priority,decision:i.decision,event_published_at:i.published_at,entities:[]})),
+        entity_affinity:null,
+        decisions:{observations:{sample_size:acted.length},conclusion_blocked:null},
+        gaps:[{dimension:'实体亲和 / 偏好结论',status:'structurally_unavailable',reason:'未生成 p2_personal_memory.json，仅实时派生基础意图与行动',unblock:'CI 运行 p2_personal_memory.py 后自动填充'}]
+      };
+    }
+    const wlMap=mem.watchlists||{}, W=wlMap.items||[];
+    const me=mem.memory_entries||[];
+    const obs=mem.decisions?.observations||{};
+    const ea=mem.entity_affinity||null;
+    const gaps=mem.gaps||[];
+    const blocked=mem.decisions?.conclusion_blocked;
+
+    // ---- KPI ----
+    const kpis=[
+      ['关注清单', W.length, '意图层'],
+      ['记忆条目', me.length, '行动层（已落决策）'],
+      ['行动实体', (ea&&ea.acted_entities||[]).length, '实体亲和'],
+      ['推断缺口', gaps.length, '诚实记录未推断项']
+    ];
+    document.getElementById('kpis').innerHTML=kpis.map(k=>
+      `<div class="kpi"><div class="n">${esc(k[1])}</div><div class="l">${esc(k[0])}</div><div class="s">${esc(k[2])}</div></div>`).join('');
+
+    // ---- 降级提示 ----
+    const noteEl=document.getElementById('note');
+    if(live){ noteEl.style.display='block'; noteEl.className='note';
+      noteEl.textContent='当前为实时派生视图（未检测到 p2_personal_memory.json 产物）。实体亲和与偏好结论缺失；运行 p2_personal_memory.py 后将以权威产物呈现。'; }
+    else if(blocked){ noteEl.style.display='block'; noteEl.className='note';
+      noteEl.textContent='偏好结论已按纪律阻塞：'+esc(blocked.reason||''); }
+    else noteEl.style.display='none';
+
+    // ---- Watchlists ----
+    setBadge('c-wl', W.length);
+    document.getElementById('wl').innerHTML=W.map(w=>`
+      <div class="item">
+        <div class="row"><strong>${esc(w.name||w.id)}</strong><span class="tag intent">+${esc(w.priority_boost??0)} 权重</span></div>
+        <div class="meta">${w.updated_at?('更新 '+fmt(w.updated_at)):''} · 命中简报 ${esc(w.hit_count??0)} 条</div>
+        <div class="tags"><span class="tag wl">主题 ${esc((w.topics||[]).join(', ')||'—')}</span>${(w.keywords||[]).map(k=>`<span class="tag">${esc(k)}</span>`).join('')}</div>
+      </div>`).join('')||'<div class="empty">未配置 Watchlist（意图层为空）</div>';
+
+    // ---- Memory Entries ----
+    setBadge('c-me', me.length);
+    document.getElementById('me').innerHTML=me.map(e=>{
+      const d=e.decision||{};
+      return `
+      <div class="item">
+        <div class="row"><strong>${esc(e.title)}</strong><span class="tag ${prClass(e.priority)}">P${esc(e.priority??'—')}</span></div>
+        <div class="meta">${esc(e.topic||'')} · urgency ${esc(d.urgency||'—')} · ${fmt(e.event_published_at)}</div>
+        <div class="tags"><span class="tag act">行动：${esc(d.action||'—')}</span>${(e.entities||[]).slice(0,5).map(x=>`<span class="tag ent ov">${esc(x)}</span>`).join('')}</div>
+      </div>`;
+    }).join('')||'<div class="empty">暂无已决事项（行动层为空）</div>';
+
+    // ---- Entity Affinity ----
+    setBadge('c-ea', ea?((ea.acted_entities||[]).length+' / '+(ea.watched_entities||[]).length):'—');
+    if(ea){
+      const ov=(ea.overlap_entities||[]);
+      document.getElementById('ea').innerHTML=
+        `<div class="aff">`+
+          `<div class="col"><h4>我行动过的实体（${esc((ea.acted_entities||[]).length)}）</h4>${(ea.acted_entities||[]).slice(0,20).map(x=>`<span class="tag ent">${esc(x.key)} <b>×${esc(x.count)}</b></span>`).join(' ')||'<span class="muted">无</span>'}</div>`+
+          `<div class="col"><h4>我关注的实体（${esc((ea.watched_entities||[]).length)}）</h4>${(ea.watched_entities||[]).slice(0,20).map(x=>`<span class="tag ent ov">${esc(x.key)} <b>×${esc(x.count)}</b></span>`).join(' ')||'<span class="muted">无</span>'}</div>`+
+        `</div>`+
+        (ov.length?`<div style="margin-top:12px" class="meta">重叠（既关注又行动）${ov.length} 个：${ov.slice(0,20).map(x=>esc(x.key)+'×'+esc(x.count)).join('、')}</div>`:'')+
+        (ea.quality?`<div class="meta" style="margin-top:6px">数据质量：${esc(ea.quality)}</div>`:'')+
+        (ea.basis?`<div class="meta" style="margin-top:2px">依据：${esc(ea.basis)}</div>`:'');
+    }else{
+      document.getElementById('ea').innerHTML='<div class="empty">实体亲和需 p2_personal_memory.json 产物（实时派生视图不含此维度）。</div>';
+    }
+
+    // ---- Gaps（纪律） ----
+    setBadge('c-gap', gaps.length);
+    document.getElementById('gaps').innerHTML=gaps.map(g=>`
+      <div class="gap">
+        <span class="b st ${esc(g.status||'')}">${esc(g.status||'—')}</span>
+        <div><div class="d">${esc(g.dimension||'—')}</div><div class="r">${esc(g.reason||'')}</div>${g.unblock?`<div class="u">解锁：${esc(g.unblock)}</div>`:''}</div>
+      </div>`).join('')||'<div class="empty">无推断缺口记录。</div>';
+
+    document.getElementById('release').innerHTML=
+      (live?'数据来源（实时派生）：p2_state.json + review_queue.json。'
+          :`数据来源：p2_personal_memory.json（v${esc(mem.version||'?')} · 生成于 ${fmt(mem.generated_at)}）· 原则：${esc(mem.principle||'—')}。`)+
+      ' 本站仅聚合既有 artifact，不自动补写未验证结论。';
+  }).catch(e=>{
+    document.getElementById('kpis').innerHTML='<div class="empty">数据加载失败：'+esc(e.message)+'。请通过 GitHub Pages 站点访问，不要直接以本地文件打开。</div>';
+  });
+}
+function setBadge(id,n){ const el=document.getElementById(id); if(el) el.textContent=n; }
+document.getElementById('refresh').addEventListener('click',render);
+render();
+</script>
+</body>
+</html>

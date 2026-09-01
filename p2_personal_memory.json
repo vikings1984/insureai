@@ -1,0 +1,589 @@
+{
+  "version": "p2.5-v1.0",
+  "generated_at": "2026-09-01T03:50:35Z",
+  "principle": "只聚合既有 artifact 中的事实；观察与结论分离，样本不足时不出结论，不伪造时间线",
+  "sources": {
+    "p2_state.json": {
+      "watchlists": 1,
+      "feedback": 0,
+      "monitoring": 0
+    },
+    "review_queue.json": {
+      "items": 100,
+      "decided": 11,
+      "pending": 89
+    },
+    "p2_daily_brief.json": {
+      "brief": 20
+    },
+    "knowledge_graph.json": {
+      "events_indexed": 1578
+    }
+  },
+  "watchlists": {
+    "enabled_count": 1,
+    "items": [
+      {
+        "id": "ai",
+        "name": "AI保险",
+        "topics": [
+          "ai_intelligent"
+        ],
+        "keywords": [
+          "AI",
+          "大模型"
+        ],
+        "priority_boost": 8,
+        "updated_at": "2026-08-28T15:58:53.203477+00:00",
+        "hit_count": 18,
+        "hit_topics": {
+          "ai_intelligent": 18
+        },
+        "hit_terms": [
+          {
+            "key": "ai",
+            "count": 7
+          },
+          {
+            "key": "ai-driven",
+            "count": 1
+          },
+          {
+            "key": "ai-native",
+            "count": 1
+          },
+          {
+            "key": "ai-powered",
+            "count": 1
+          },
+          {
+            "key": "athena cyber division launches",
+            "count": 1
+          },
+          {
+            "key": "bain",
+            "count": 1
+          },
+          {
+            "key": "brookmont",
+            "count": 1
+          },
+          {
+            "key": "california small businesses",
+            "count": 1
+          }
+        ]
+      }
+    ],
+    "total_hits": 18,
+    "distinct_hit_events": 18,
+    "top_topics": [
+      {
+        "key": "ai_intelligent",
+        "count": 18
+      }
+    ],
+    "top_terms": [
+      {
+        "key": "ai",
+        "count": 7
+      },
+      {
+        "key": "ai-driven",
+        "count": 1
+      },
+      {
+        "key": "ai-native",
+        "count": 1
+      },
+      {
+        "key": "ai-powered",
+        "count": 1
+      },
+      {
+        "key": "athena cyber division launches",
+        "count": 1
+      },
+      {
+        "key": "bain",
+        "count": 1
+      },
+      {
+        "key": "brookmont",
+        "count": 1
+      },
+      {
+        "key": "california small businesses",
+        "count": 1
+      },
+      {
+        "key": "can reinsurers maintain underwriting",
+        "count": 1
+      },
+      {
+        "key": "competition return",
+        "count": 1
+      }
+    ],
+    "hit_event_ids": [
+      "evt_0fe4820271f7",
+      "evt_17ac052b3d05",
+      "evt_3429758517ea",
+      "evt_3791fbae5423",
+      "evt_38bc62c79877",
+      "evt_4ab64cddfbfd",
+      "evt_4f69ecca5fb8",
+      "evt_537ccb653095",
+      "evt_53fc6ce246ed",
+      "evt_619f3c77c64b",
+      "evt_70ec4f14bf25",
+      "evt_80c94ac46f0b",
+      "evt_8e8471b4d668",
+      "evt_963182b006fe",
+      "evt_a6d9ffbdcf80",
+      "evt_b96fc0550f82",
+      "evt_bc369073060b",
+      "evt_c3c925bd319e"
+    ]
+  },
+  "decisions": {
+    "observations": {
+      "sample_size": 11,
+      "by_urgency": {
+        "watch": 11
+      },
+      "by_action": {
+        "检查监管暴露与经营影响": 1,
+        "评估战略与资本影响": 1,
+        "复核资本配置与竞争格局": 6,
+        "评估市场与竞争响应": 2,
+        "保持跟踪，等待更多独立证据或业务信号": 1
+      },
+      "by_topic": {
+        "ai_intelligent": 2,
+        "capital_reinsurance": 9
+      },
+      "by_event_type": {
+        "regulatory": 1,
+        "acquisition": 1,
+        "capital": 6,
+        "market_entry": 2,
+        "claims_loss": 1
+      }
+    },
+    "conclusions": [],
+    "conclusion_blocked": {
+      "reason": "样本仅 11 条，低于 30 条阈值；且已落决策的 urgency 取值单一（['watch']），无区分度",
+      "need": "再累计 19 条决策，且需出现不同 urgency 取值"
+    }
+  },
+  "entity_affinity": {
+    "basis": "knowledge_graph.json 中 Event --PARTICIPATES_IN--> Company 的一跳邻居（不做多跳扩散）",
+    "acted_entities": [
+      {
+        "key": "AM Best",
+        "count": 2
+      },
+      {
+        "key": "Guy Carpenter",
+        "count": 2
+      },
+      {
+        "key": "CUO Musselle",
+        "count": 1
+      },
+      {
+        "key": "GC Securities",
+        "count": 1
+      },
+      {
+        "key": "Hiscox",
+        "count": 1
+      },
+      {
+        "key": "KCC",
+        "count": 1
+      },
+      {
+        "key": "Klisura",
+        "count": 1
+      },
+      {
+        "key": "Marco Capital",
+        "count": 1
+      },
+      {
+        "key": "Nicholas Tan",
+        "count": 1
+      },
+      {
+        "key": "Pro Global",
+        "count": 1
+      }
+    ],
+    "watched_entities": [
+      {
+        "key": "AI",
+        "count": 4
+      },
+      {
+        "key": "Athena Cyber",
+        "count": 1
+      },
+      {
+        "key": "Bain",
+        "count": 1
+      },
+      {
+        "key": "Brookmont",
+        "count": 1
+      },
+      {
+        "key": "Cortex",
+        "count": 1
+      },
+      {
+        "key": "Cowbell",
+        "count": 1
+      },
+      {
+        "key": "Cytora",
+        "count": 1
+      },
+      {
+        "key": "Ethan Powell",
+        "count": 1
+      },
+      {
+        "key": "Fire-Zone",
+        "count": 1
+      },
+      {
+        "key": "KCC",
+        "count": 1
+      }
+    ],
+    "overlap_entities": [
+      {
+        "key": "KCC",
+        "count": 1
+      },
+      {
+        "key": "保险公司",
+        "count": 1
+      },
+      {
+        "key": "全面推进保险",
+        "count": 1
+      },
+      {
+        "key": "随着再保险公司",
+        "count": 1
+      }
+    ],
+    "acted_event_count": 11,
+    "watched_event_count": 18,
+    "quality": {
+      "cleaning": "none",
+      "caveat": "Company 节点来自上游实体抽取，含标题片段噪声（如把句首状语当成机构名收录），因此 acted_entities / overlap_entities 中可能出现非机构条目。",
+      "where_to_fix": "knowledge_graph.py 的实体抽取侧（本模块的下游清洗只会掩盖问题）"
+    }
+  },
+  "backlog": {
+    "sample_size": 89,
+    "by_topic": {
+      "capital_reinsurance": 55,
+      "ai_intelligent": 10,
+      "product_innovation": 6,
+      "regulatory_change": 9,
+      "climate_catastrophe": 2,
+      "pension_finance": 4,
+      "channel_transformation": 1
+    },
+    "by_event_type": {
+      "claims_loss": 10,
+      "industry_update": 10,
+      "product": 10,
+      "regulatory": 22,
+      "market_entry": 7,
+      "capital": 21,
+      "acquisition": 2,
+      "rating": 7
+    },
+    "by_trust_level": {
+      "low": 7,
+      "medium": 82
+    },
+    "top_by_priority": [
+      {
+        "event_id": "evt_4b12fa2f9f1b",
+        "title": "我国保险资金运用余额首次突破40万亿元！红利低波ETF华泰柏瑞(512890)年内累计“吸金”近60亿元",
+        "priority": 100,
+        "topic": "capital_reinsurance"
+      },
+      {
+        "event_id": "evt_7099dec26227",
+        "title": "PERILS 将风暴 Goretti 造成的行业损失预估下调至 4.68 亿欧元",
+        "priority": 100,
+        "topic": "capital_reinsurance"
+      },
+      {
+        "event_id": "evt_ceb11946ab87",
+        "title": "瑞士再保险：2026 年上半年全球受保巨灾损失达 420 亿美元，创 2020 年以来上半年最低水平",
+        "priority": 100,
+        "topic": "capital_reinsurance"
+      },
+      {
+        "event_id": "evt_1806ade270bd",
+        "title": "CatIQ 将安大略省和魁北克省雷暴保险市场损失预估上调 17.5% 至 4.39 亿加元",
+        "priority": 75,
+        "topic": "ai_intelligent"
+      },
+      {
+        "event_id": "evt_40ac78061367",
+        "title": "红树林推出百慕大再保险Sidecar Grove Re",
+        "priority": 75,
+        "topic": "product_innovation"
+      },
+      {
+        "event_id": "evt_578b5faa780f",
+        "title": "Verisk 晋升 Harry White 为财产索赔服务主管",
+        "priority": 75,
+        "topic": "ai_intelligent"
+      },
+      {
+        "event_id": "evt_7635b5984895",
+        "title": "慕尼黑再保险 (Munich Re) 跻身劳合社全球 50 家最大再保险公司之列：AM Best",
+        "priority": 75,
+        "topic": "capital_reinsurance"
+      },
+      {
+        "event_id": "evt_4ea1c2a12d3a",
+        "title": "KCC：预计 2026 年美国承保的 SCS 损失将低于平均水平",
+        "priority": 70,
+        "topic": "capital_reinsurance"
+      },
+      {
+        "event_id": "evt_96c336ca5844",
+        "title": "美洲开发银行通过瑞士再保险为伯利兹安排巨灾互换",
+        "priority": 70,
+        "topic": "capital_reinsurance"
+      },
+      {
+        "event_id": "evt_a59c768903c0",
+        "title": "深圳发布《科技保险目录》",
+        "priority": 70,
+        "topic": "ai_intelligent"
+      }
+    ]
+  },
+  "gaps": [
+    {
+      "dimension": "反馈偏好（useful/noise/incorrect…）",
+      "status": "empty",
+      "reason": "p2_state.json 的 feedback 为空数组 —— 尚无任何显式反馈记录",
+      "unblock": "在 Human Review 中对条目给出 label（useful/important/noise/irrelevant/incorrect/acted_on）后自动填充"
+    },
+    {
+      "dimension": "持续跟踪偏好（snoozed/resolved）",
+      "status": "empty",
+      "reason": "p2_state.json 的 monitoring 为空数组 —— 尚无跟踪书签",
+      "unblock": "对事件启用跟踪（active）或抑制（snoozed/resolved）后自动填充"
+    },
+    {
+      "dimension": "决策偏好结论",
+      "status": "insufficient_sample",
+      "reason": "已决决策 11 条 < 阈值 30 条；且已落决策的 decision 对象无时间戳，无法计算决策时延",
+      "unblock": "累计 30 条决策；若需 Time-to-Decision，需先给 decision 记录写入决策时间"
+    },
+    {
+      "dimension": "记忆时间线（按决策先后排序）",
+      "status": "structurally_unavailable",
+      "reason": "decision 对象只有 urgency 与 action 两个字段，没有决策时间戳；按其他字段排序等于伪造先后顺序",
+      "unblock": "在 decision 中记录 decided_at，之后本模块才会产出按时间排序的记忆条目"
+    },
+    {
+      "dimension": "关注主体准确性",
+      "status": "upstream_noise",
+      "reason": "knowledge_graph.json 的 Company 节点存在抽取噪声：标题片段被当成机构名收录（例如从「随着再保险公司/保险公司寻求…」抽出「随着再保险公司」）。本层不静默清洗，否则等于用启发式规则替用户决定真相。",
+      "unblock": "在 knowledge_graph.py 的实体抽取侧收紧约束（如过滤句首状语片段、限制机构名长度与词性模式），清洗后本层的 acted_entities 会自动变干净"
+    }
+  ],
+  "memory_entries": [
+    {
+      "event_id": "evt_3429758517ea",
+      "title": "国家金融监督管理总局：全面推进保险行业AI大模型合规应用指引",
+      "topic": "ai_intelligent",
+      "event_type": "regulatory",
+      "priority": 70,
+      "decision": {
+        "urgency": "watch",
+        "action": "检查监管暴露与经营影响"
+      },
+      "event_published_at": "2026-06-12T09:00:00Z",
+      "entities": [
+        "全面推进保险"
+      ]
+    },
+    {
+      "event_id": "evt_03c95bd12e1d",
+      "title": "AM Best & Guy Carpenter 预计 2026 年专用再保险资本将达到创纪录的 7050 亿美元",
+      "topic": "capital_reinsurance",
+      "event_type": "capital",
+      "priority": 50,
+      "decision": {
+        "urgency": "watch",
+        "action": "复核资本配置与竞争格局"
+      },
+      "event_published_at": "2026-08-10T13:00:31Z",
+      "entities": [
+        "AM Best",
+        "Guy Carpenter",
+        "年专用再保险"
+      ]
+    },
+    {
+      "event_id": "evt_083577177db6",
+      "title": "摩根大通表示再保险定价在 2027 年之前不太可能稳定",
+      "topic": "capital_reinsurance",
+      "event_type": "capital",
+      "priority": 50,
+      "decision": {
+        "urgency": "watch",
+        "action": "复核资本配置与竞争格局"
+      },
+      "event_published_at": "2026-08-03T12:00:25Z",
+      "entities": [
+        "摩根大通表示再保险"
+      ]
+    },
+    {
+      "event_id": "evt_083f21f9623f",
+      "title": "加拿大皇家银行分析师预计，定价压力和较高的CAT损失将在26年第二季度对美国保险公司造成压力",
+      "topic": "capital_reinsurance",
+      "event_type": "capital",
+      "priority": 50,
+      "decision": {
+        "urgency": "watch",
+        "action": "复核资本配置与竞争格局"
+      },
+      "event_published_at": "2026-07-13T15:00:27Z",
+      "entities": [
+        "加拿大皇家银行",
+        "年第二季度对美国保险公司"
+      ]
+    },
+    {
+      "event_id": "evt_0fe4820271f7",
+      "title": "KCC 报告称，随着再保险公司/保险公司寻求更多当前风险洞察力，人工智能正在重塑猫模型",
+      "topic": "ai_intelligent",
+      "event_type": "capital",
+      "priority": 50,
+      "decision": {
+        "urgency": "watch",
+        "action": "复核资本配置与竞争格局"
+      },
+      "event_published_at": "2026-08-19T15:00:02Z",
+      "entities": [
+        "KCC",
+        "保险公司",
+        "随着再保险公司"
+      ]
+    },
+    {
+      "event_id": "evt_59a8566e7e13",
+      "title": "另类资本的崛起将为金融投资者创造更大的空间：盖伊·卡彭特的卢梭",
+      "topic": "capital_reinsurance",
+      "event_type": "market_entry",
+      "priority": 50,
+      "decision": {
+        "urgency": "watch",
+        "action": "评估市场与竞争响应"
+      },
+      "event_published_at": "2026-08-13T13:00:30Z",
+      "entities": []
+    },
+    {
+      "event_id": "evt_92310abdea56",
+      "title": "传统整合公司 Marco Capital 将收购保险服务公司 Pro Global",
+      "topic": "capital_reinsurance",
+      "event_type": "acquisition",
+      "priority": 50,
+      "decision": {
+        "urgency": "watch",
+        "action": "评估战略与资本影响"
+      },
+      "event_published_at": "2026-08-20T15:58:14Z",
+      "entities": [
+        "Marco Capital",
+        "Pro Global",
+        "传统整合公司",
+        "将收购保险服务公司"
+      ]
+    },
+    {
+      "event_id": "evt_db0a3669a076",
+      "title": "GC Securities 在 2026 年上半年发行了 20 只巨灾债券，总额达到创纪录的 50 亿美元：Guy Carpenter 首席执行官 Klisura",
+      "topic": "capital_reinsurance",
+      "event_type": "capital",
+      "priority": 50,
+      "decision": {
+        "urgency": "watch",
+        "action": "复核资本配置与竞争格局"
+      },
+      "event_published_at": "2026-07-21T14:41:14Z",
+      "entities": [
+        "GC Securities",
+        "Guy Carpenter",
+        "Klisura"
+      ]
+    },
+    {
+      "event_id": "evt_08302d0d9012",
+      "title": "费马在新加坡聘请了尼古拉斯·谭 (Nicholas Tan)。亚太地区扩张继续进行，包括设立日本办事处",
+      "topic": "capital_reinsurance",
+      "event_type": "capital",
+      "priority": 30,
+      "decision": {
+        "urgency": "watch",
+        "action": "复核资本配置与竞争格局"
+      },
+      "event_published_at": "2026-08-19T07:45:13Z",
+      "entities": [
+        "Nicholas Tan"
+      ]
+    },
+    {
+      "event_id": "evt_1796cf449991",
+      "title": "第三方资本有助于 Hiscox 的市场相关性，扩大承保能力：CUO Musselle",
+      "topic": "capital_reinsurance",
+      "event_type": "market_entry",
+      "priority": 30,
+      "decision": {
+        "urgency": "watch",
+        "action": "评估市场与竞争响应"
+      },
+      "event_published_at": "2026-08-05T13:00:23Z",
+      "entities": [
+        "CUO Musselle",
+        "Hiscox"
+      ]
+    },
+    {
+      "event_id": "evt_1f7f48882aac",
+      "title": "尽管热情不断高涨，人工智能在再保险领域的采用可能仍将是渐进的：AM Best",
+      "topic": "capital_reinsurance",
+      "event_type": "claims_loss",
+      "priority": 30,
+      "decision": {
+        "urgency": "watch",
+        "action": "保持跟踪，等待更多独立证据或业务信号"
+      },
+      "event_published_at": "2026-08-14T13:30:26Z",
+      "entities": [
+        "AM Best",
+        "人工智能在再保险"
+      ]
+    }
+  ]
+}

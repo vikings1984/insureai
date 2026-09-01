@@ -562,7 +562,8 @@
       const STANDALONE_PAGES = {
         executive: './executive_home.html',
         knowledge: './knowledge-graph.html',
-        kgviz: './kg-visual.html'
+        kgviz: './kg-graph.html',
+        memory: './personal_memory.html'
       };
       if (STANDALONE_PAGES[page]) { window.location.href = STANDALONE_PAGES[page]; return; }
       state.page = page;
@@ -614,7 +615,7 @@
         return;
       }
       const page = hash.replace(/^#\//, '').split('?')[0];
-      const valid = ['featured', 'all', 'daily', 'research', 'submit', 'about', 'log', 'feedback', 'executive', 'knowledge', 'kgviz'];
+      const valid = ['featured', 'all', 'daily', 'research', 'submit', 'about', 'log', 'feedback', 'executive', 'knowledge', 'kgviz', 'memory'];
       switchPage(valid.includes(page) ? page : 'featured', true);
     }
     window.addEventListener('hashchange', applyRouteFromHash);

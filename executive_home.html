@@ -52,6 +52,30 @@ body{margin:0}
 .kg-bar{height:8px;border-radius:999px;background:#dbeafe}
 .kg-row b{text-align:right;color:#344054}
 @media(max-width:760px){.kg-wrap{grid-template-columns:1fr}.kg-kpis{grid-template-columns:repeat(2,1fr)}}
+.pm-card{margin-bottom:18px}
+.pm-wrap{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.pm-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
+.pm-kpi{background:#f8fafc;border:1px solid #eef2f5;border-radius:10px;padding:10px}
+.pm-kpi .n{font-size:20px;font-weight:800}
+.pm-kpi .l{font-size:11px;color:#667085;margin-top:2px}
+.pm-note{background:#fffaeb;border:1px solid #fedf89;color:#b54708;border-radius:10px;padding:9px 11px;font-size:12px;margin:8px 0 4px;line-height:1.55}
+.pm-wl{padding:9px 0;border-top:1px solid #f2f4f7}
+.pm-wl:first-child{border-top:0}
+.pm-wl .nm{font-size:13.5px;font-weight:650;color:#172033}
+.pm-ent{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+.pm-ent .e{background:#f4ebff;color:#6941c6;border-radius:999px;padding:3px 9px;font-size:11.5px}
+.pm-ent .e.ov{background:#ecfdf3;color:#067647}
+.pm-gap{padding:8px 0;border-top:1px solid #f2f4f7;font-size:12px}
+.pm-gap:first-child{border-top:0}
+.pm-gap .d{font-weight:650;color:#344054}
+.pm-gap .r{color:#667085;margin-top:2px;line-height:1.5}
+.pm-gap .u{color:#175cd3;margin-top:2px}
+.st{display:inline-block;border-radius:999px;padding:1px 7px;font-size:10.5px;font-weight:700;margin-right:6px}
+.st.empty,.st.insufficient_sample{background:#fef3f2;color:#b42318}
+.st.structurally_unavailable{background:#f2f4f7;color:#475467}
+.st.upstream_noise{background:#fffaeb;color:#b54708}
+.pm-caveat{color:#667085;font-size:11.5px;margin-top:8px;line-height:1.5}
+@media(max-width:760px){.pm-wrap{grid-template-columns:1fr}.pm-kpis{grid-template-columns:repeat(2,1fr)}}
 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
 @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:760px){.grid{grid-template-columns:1fr}.kpi-grid{grid-template-columns:repeat(2,1fr)}.top{flex-direction:column}}
@@ -94,6 +118,13 @@ body{margin:0}
     <div id="kg" class="kg-wrap"><div class="empty">加载中…</div></div>
   </div>
 
+  <div class="card pm-card">
+    <div class="title">Personal Memory <span id="c-pm" class="badge"></span>
+      <span class="kg-open"><a class="btn" href="./review-ui.html">去复核</a></span>
+    </div>
+    <div id="pm" class="pm-wrap"><div class="empty">加载中…</div></div>
+  </div>
+
   <div class="footer" id="release"></div>
 </div>
 
@@ -110,8 +141,10 @@ function render(){
     get('./review_queue.json'),
     get('./p2_state.json'),
     // KG 单独降级：图谱取不到时其余模块照常渲染（置 null，不抛错）
-    get('./knowledge_graph.json').catch(()=>null)
-  ]).then(([brief,queue,state,kg])=>{
+    get('./knowledge_graph.json').catch(()=>null),
+    // Personal Memory 同理单独降级
+    get('./p2_personal_memory.json').catch(()=>null)
+  ]).then(([brief,queue,state,kg,mem])=>{
     const B=brief.brief||[], Q=queue.items||[], W=(state.watchlists||[]).filter(w=>w.enabled!==false);
 
     // ---- KPI strip ----
@@ -206,6 +239,7 @@ function render(){
       (kg?`knowledge_graph.json（v${esc(kg.version)} · 更新至 ${fmt(kg.stats?.latest_event_at)}）`:'knowledge_graph.json（暂不可用）')+'。'+
       ` 事件总数 ${esc(brief.event_count??'—')}。本站仅聚合既有 artifact，不自动补写未验证结论。`;
     loadKG(kg);
+    loadMemory(mem);
   }).catch(e=>{
     document.getElementById('kpis').innerHTML='<div class="empty">数据加载失败：'+esc(e.message)+'。请通过 GitHub Pages 站点访问，不要直接以本地文件打开。</div>';
   });
@@ -228,6 +262,35 @@ function loadKG(kg){
       `<div><div class="kg-h">顶级关系</div>`+topRel.map(([r,c])=>
         `<div class="kg-row"><span class="nm">${esc(r)}</span><span class="kg-bar" style="width:${Math.round(c/maxR*100)}%"></span><b>${esc(c)}</b></div>`).join('')+`</div>`;
   })().catch(e=>{ setBadge('c-kg','错误'); document.getElementById('kg').innerHTML='<div class="empty">知识图谱渲染失败：'+esc(e.message)+'。其余模块不受影响。</div>'; });
+}
+// Personal Memory 卡片：复用主 Promise 已取回的 mem（p2_personal_memory.json）；为 null 时仅本卡片降级
+function loadMemory(mem){
+  (async()=>{
+    if(!mem){ setBadge('c-pm','不可用'); document.getElementById('pm').innerHTML='<div class="empty">个人记忆层暂不可用（p2_personal_memory.json 未生成）。其余模块不受影响。</div>'; return; }
+    const wlMap=mem.watchlists||{}; const W=wlMap.items||[];
+    const me=mem.memory_entries||[];
+    const obs=mem.decisions?.observations||{};
+    const ea=mem.entity_affinity||{};
+    const gaps=mem.gaps||[];
+    const blocked=mem.decisions?.conclusion_blocked;
+    setBadge('c-pm', W.length+' 关注 / '+me.length+' 记忆');
+    document.getElementById('pm').innerHTML=
+      `<div class="pm-kpis">`+[
+        ['关注', W.length],['记忆', me.length],['行动实体', (ea.acted_entities||[]).length],
+        ['观察样本', obs.sample_size||me.length],['推断缺口', gaps.length]
+      ].map(x=>`<div class="pm-kpi"><div class="n">${esc(x[1])}</div><div class="l">${esc(x[0])}</div></div>`).join('')+`</div>`+
+      `<div class="pm-wrap">`+
+        `<div><div class="kg-h">关注意图（Watchlists）</div>`+(W.length?W.map(w=>`
+          <div class="pm-wl"><div class="nm">${esc(w.name||w.id)}</div>
+          <div class="pm-ent">${(w.topics||[]).map(t=>`<span class="e">${esc(t)}</span>`).join('')}${(w.keywords||[]).map(k=>`<span class="e ov">${esc(k)}</span>`).join('')}</div>
+          <div class="meta">+${esc(w.priority_boost??0)} 权重 · 命中 ${esc(w.hit_count??0)} 条</div></div>`).join(''):'<div class="empty">未配置关注清单</div>')+`</div>`+
+        `<div><div class="kg-h">决策记忆（已落 ${me.length}）</div>`+(me.length?me.slice(0,12).map(e=>`
+          <div class="pm-wl"><div class="nm">${esc(e.title)}</div>
+          <div class="pm-ent">${e.topic?`<span class="e">${esc(e.topic)}</span>`:''}${(e.entities||[]).slice(0,4).map(x=>`<span class="e ov">${esc(x)}</span>`).join('')}</div>
+          <div class="meta">urgency ${esc(e.decision?.urgency||'—')} · ${esc(e.decision?.action||'—')}</div></div>`).join('')+(me.length>12?`<div class="pm-caveat">显示前 12 / 共 ${me.length} 条 · 完整见 Personal Memory 页</div>`:''):'<div class="empty">暂无已决事项</div>')+`</div>`+
+      `</div>`+
+      (gaps.length?`<div class="pm-note">推断缺口 ${gaps.length} 项 — ${esc(blocked?.reason||'推不出的维度已显式记录，未伪造偏好')}。完整见 Personal Memory 页。</div>`:'');
+  })().catch(e=>{ setBadge('c-pm','错误'); document.getElementById('pm').innerHTML='<div class="empty">个人记忆层渲染失败：'+esc(e.message)+'。其余模块不受影响。</div>'; });
 }
 function setBadge(id,n){ const el=document.getElementById(id); if(el) el.textContent=n; }
 document.getElementById('refresh').addEventListener('click',render);
