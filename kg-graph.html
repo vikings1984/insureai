@@ -99,18 +99,26 @@ function degreeOf(nodes,edges){
 
 function computeView(topic, topn){
   const deg=degreeOf(G.nodes,G.edges);
-  const byId=new Map(G.nodes.map(n=>[n.id,n]));
+  const A=buildAdj(G.nodes,G.edges);
   let pool;
   if(!topic){
-    pool=G.nodes.slice().sort((a,b)=>(deg.get(b.id)||0)-(deg.get(a.id)||0)).slice(0,topn);
+    // 全部模式：以 Top-N 度中心性 hub 为中心，保留其一跳邻居（按度截断邻居数，不回切到 topn）
+    // → 富化、避免 hub 之间边稀疏；最终规模 ≤ 2×topn，力导向仍可实时。
+    const hubs=G.nodes.slice().sort((a,b)=>(deg.get(b.id)||0)-(deg.get(a.id)||0)).slice(0,topn);
+    const hubIds=new Set(hubs.map(n=>n.id));
+    const nbIds=new Set();
+    for(const h of hubs) for(const nb of (A.get(h.id)||[])) if(!hubIds.has(nb)) nbIds.add(nb);
+    const nbs=[...nbIds].map(id=>({id,d:deg.get(id)||0})).sort((a,b)=>b.d-a.d).slice(0,topn).map(x=>x.id);
+    const keep=new Set([...hubIds, ...nbs]);
+    pool=G.nodes.filter(n=>keep.has(n.id));
   }else{
+    // Topic 模式：该 Topic 全部节点 + 一跳邻居，按全局度排序截断
     const seed=G.nodes.filter(n=>n.topic===topic);
-    const A=buildAdj(G.nodes,G.edges);
     const keep=new Set(seed.map(n=>n.id));
     for(const s of seed) for(const nb of (A.get(s.id)||[])) keep.add(nb);
     pool=G.nodes.filter(n=>keep.has(n.id)).sort((a,b)=>(deg.get(b.id)||0)-(deg.get(a.id)||0)).slice(0,topn);
   }
-  const inSet=new Set(pool.map(n=>n.id));
+  pool.sort((a,b)=>(deg.get(b.id)||0)-(deg.get(a.id)||0));
   const nodes=pool.map(n=>{
     const dd=deg.get(n.id)||0;
     return {id:n.id, type:n.type, label:labelFor(n), topic:n.topic||'', deg:dd,
@@ -120,7 +128,7 @@ function computeView(topic, topn){
   const edges=G.edges.filter(e=>eset.has(e.source)&&eset.has(e.target)).map(e=>({
     a:e.source,b:e.target,w:e.confidence||0.5
   }));
-  return {nodes,edges,byId};
+  return {nodes,edges};
 }
 
 // ---------- force simulation ----------
