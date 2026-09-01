@@ -278,14 +278,22 @@ def validate(registry: dict) -> None:
 
 
 def build_artifacts(generated_at: str | None = None) -> dict:
-    """从 daily_brief + review_queue 自举并落盘。"""
+    """从 daily_brief + review_queue + second_brain 实体时间线自举并落盘。
+
+    覆盖所有跨模块引用的 event_id（single source of truth）：实体时间线事件也带
+    event_id / title / topic / published_at，缺失 event_id 的条目被忽略（不伪造）。
+    """
     db = _load(ROOT / "p2_daily_brief.json")
     rq = _load(ROOT / "review_queue.json")
+    sb = _load(ROOT / "second_brain.json")
     events: list[Any] = []
     for e in (db.get("brief") or []):
         events.append((e, "daily_brief"))
     for e in (rq.get("items") or []):
         events.append((e, "review_queue"))
+    for th in (sb.get("entity_threads") or []):
+        for ev in (th.get("events") or []):
+            events.append((ev, "second_brain"))
     reg = build(events, generated_at)
     validate(reg)
     OUTPUT.write_text(json.dumps(reg, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
