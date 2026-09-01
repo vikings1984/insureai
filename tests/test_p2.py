@@ -167,5 +167,70 @@ class P2ProductionDataTests(unittest.TestCase):
         self.assertLessEqual(len(result["brief"]), p2_intelligence.BRIEF_LIMIT)
 
 
+class P2WatchlistExpansionTests(unittest.TestCase):
+    """2026-09 Watchlist 扩容回归锁：并购重组 / 监管动向 / 健康险。
+
+    这三个关注面靠关键词全局匹配（topics 留空），必须真命中生产语料；
+    upsert 不得丢失既有清单（如 ai）。
+    """
+
+    def test_expanded_watchlist_keyword_matching(self):
+        ma = {"id": "ma", "name": "并购重组", "enabled": True, "topics": [],
+              "keywords": ["并购", "收购", "股权"], "priority_boost": 7}
+        reg = {"id": "regulatory", "name": "监管动向", "enabled": True, "topics": [],
+               "keywords": ["监管", "处罚", "批复"], "priority_boost": 7}
+        health = {"id": "health", "name": "健康险", "enabled": True, "topics": [],
+                  "keywords": ["健康险", "医疗险", "惠民保", "长期护理", "护理", "重疾", "商业健康", "带病", "医疗"],
+                  "priority_boost": 7}
+        # 命中：关键词出现在 title
+        self.assertTrue(p2_intelligence._match_watchlist(
+            _event("e1", "Willis Re 收购美国 BMS Re 加速扩张", 70, topic="capital_reinsurance"), ma))
+        self.assertTrue(p2_intelligence._match_watchlist(
+            _event("e3", "陕西金融监管局推动巨灾保险机制", 70, topic="regulatory_change"), reg))
+        self.assertTrue(p2_intelligence._match_watchlist(
+            _event("e4", "人保健康推出长期护理保险产品", 70, topic="pension_finance"), health))
+        # 不命中：无相关关键词
+        self.assertFalse(p2_intelligence._match_watchlist(
+            _event("e2", "AI 大模型合规应用指引发布", 70, topic="ai_intelligent"), ma))
+        self.assertFalse(p2_intelligence._match_watchlist(
+            _event("e5", "再保险资本充足率调整", 70, topic="capital_reinsurance"), health))
+
+    def test_upsert_watchlist_preserves_existing_ids(self):
+        with tempfile.TemporaryDirectory() as d:
+            old = p2_intelligence.STATE_PATH
+            p2_intelligence.STATE_PATH = Path(d) / "state.json"
+            try:
+                state = p2_intelligence.load_state()
+                p2_intelligence.upsert_watchlist(state, {
+                    "id": "ai", "name": "AI保险", "topics": ["ai_intelligent"],
+                    "keywords": ["AI"], "priority_boost": 8})
+                p2_intelligence.upsert_watchlist(state, {
+                    "id": "ma", "name": "并购重组", "topics": [], "keywords": ["并购"], "priority_boost": 7})
+                self.assertEqual([w["id"] for w in state["watchlists"]], ["ai", "ma"])
+                # 重复 upsert 同 id 不新增重复项
+                p2_intelligence.upsert_watchlist(state, {
+                    "id": "ma", "name": "并购重组", "topics": [], "keywords": ["股权"], "priority_boost": 7})
+                self.assertEqual([w["id"] for w in state["watchlists"]], ["ai", "ma"])
+            finally:
+                p2_intelligence.STATE_PATH = old
+
+    def test_expanded_watchlists_present_and_surface_in_production(self):
+        """锁住扩容：3 个新关注面必须在已提交 p2_state.json 中，且生产数据上
+        各自在 top-20 简报内至少命中 1 条（避免静默回退到 0 命中）。"""
+        state = p2_intelligence.load_state()
+        ids = {w["id"] for w in state["watchlists"]}
+        for wid in ("ma", "regulatory", "health"):
+            self.assertIn(wid, ids, f"关注清单 {wid} 丢失")
+        data_file = Path(__file__).resolve().parents[1] / "data.json"
+        if not data_file.exists():
+            self.skipTest("data.json not present")
+        result = p2_intelligence.daily_brief(p2_intelligence.load_news(data_file), state)
+        surfaced = set()
+        for row in result["brief"]:
+            surfaced.update(row.get("watchlist_matches", []))
+        for wid in ("ma", "regulatory", "health"):
+            self.assertIn(wid, surfaced, f"{wid} 在生产数据 top-20 简报内 0 命中")
+
+
 if __name__ == "__main__":
     unittest.main()
