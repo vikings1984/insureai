@@ -1,6 +1,6 @@
 {
   "version": "p2.5-v1.0",
-  "generated_at": "2026-09-01T04:59:26Z",
+  "generated_at": "2026-09-02T01:01:09Z",
   "principle": "只聚合既有 artifact 中的事实；观察与结论分离，样本不足时不出结论，不伪造时间线",
   "sources": {
     "p2_state.json": {
@@ -18,6 +18,9 @@
     },
     "knowledge_graph.json": {
       "events_indexed": 1578
+    },
+    "decisions_ledger.json": {
+      "distinct_events": 12
     }
   },
   "watchlists": {
@@ -299,33 +302,87 @@
   },
   "decisions": {
     "observations": {
-      "sample_size": 11,
+      "sample_size": 12,
       "by_urgency": {
-        "watch": 11
+        "watch": 12
       },
       "by_action": {
-        "检查监管暴露与经营影响": 1,
         "评估战略与资本影响": 1,
+        "检查监管暴露与经营影响": 1,
         "复核资本配置与竞争格局": 6,
         "评估市场与竞争响应": 2,
-        "保持跟踪，等待更多独立证据或业务信号": 1
+        "保持跟踪，等待更多独立证据或业务信号": 2
       },
-      "by_topic": {
-        "ai_intelligent": 2,
-        "capital_reinsurance": 9
-      },
-      "by_event_type": {
-        "regulatory": 1,
-        "acquisition": 1,
-        "capital": 6,
-        "market_entry": 2,
-        "claims_loss": 1
-      }
+      "by_topic": {},
+      "by_event_type": {},
+      "has_decided_at": true
     },
+    "timeline": [
+      {
+        "event_id": "evt_92310abdea56",
+        "decided_at": "2026-09-02T00:49:50Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_3429758517ea",
+        "decided_at": "2026-09-02T00:49:50Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_083577177db6",
+        "decided_at": "2026-09-02T00:49:50Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_0fe4820271f7",
+        "decided_at": "2026-09-02T00:49:50Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_59a8566e7e13",
+        "decided_at": "2026-09-02T00:49:50Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_03c95bd12e1d",
+        "decided_at": "2026-09-02T00:49:50Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_db0a3669a076",
+        "decided_at": "2026-09-02T00:49:50Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_083f21f9623f",
+        "decided_at": "2026-09-02T00:49:50Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_08302d0d9012",
+        "decided_at": "2026-09-02T00:49:50Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_1f7f48882aac",
+        "decided_at": "2026-09-02T00:49:50Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_1796cf449991",
+        "decided_at": "2026-09-02T00:49:50Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_e833bbc251da",
+        "decided_at": "2026-09-02T00:49:50Z",
+        "urgency": "watch"
+      }
+    ],
     "conclusions": [],
     "conclusion_blocked": {
-      "reason": "样本仅 11 条，低于 30 条阈值；且已落决策的 urgency 取值单一（['watch']），无区分度",
-      "need": "再累计 19 条决策，且需出现不同 urgency 取值"
+      "reason": "样本仅 12 条，低于 30 条阈值；且已落决策的 urgency 取值单一（['watch']），无区分度",
+      "need": "再累计 18 条真实决策（来自决策账本，不伪造）"
     }
   },
   "entity_affinity": {
@@ -337,6 +394,10 @@
       },
       {
         "key": "Guy Carpenter",
+        "count": 2
+      },
+      {
+        "key": "再保险",
         "count": 2
       },
       {
@@ -365,10 +426,6 @@
       },
       {
         "key": "Nicholas Tan",
-        "count": 1
-      },
-      {
-        "key": "Pro Global",
         "count": 1
       }
     ],
@@ -436,15 +493,19 @@
         "count": 1
       },
       {
+        "key": "保险服务公司",
+        "count": 1
+      },
+      {
         "key": "全面推进保险",
         "count": 1
       },
       {
-        "key": "将收购保险服务公司",
+        "key": "再保险",
         "count": 1
       },
       {
-        "key": "随着再保险公司",
+        "key": "再保险公司",
         "count": 1
       }
     ],
@@ -549,25 +610,19 @@
       "dimension": "反馈偏好（useful/noise/incorrect…）",
       "status": "empty",
       "reason": "p2_state.json 的 feedback 为空数组 —— 尚无任何显式反馈记录",
-      "unblock": "在 Human Review 中对条目给出 label（useful/important/noise/irrelevant/incorrect/acted_on）后自动填充"
+      "unblock": "在 Human Review（review-ui.html）中对条目给出 label（useful/important/noise/irrelevant/incorrect/acted_on）后自动填充"
     },
     {
       "dimension": "持续跟踪偏好（snoozed/resolved）",
       "status": "empty",
       "reason": "p2_state.json 的 monitoring 为空数组 —— 尚无跟踪书签",
-      "unblock": "对事件启用跟踪（active）或抑制（snoozed/resolved）后自动填充"
+      "unblock": "在 Human Review 中对事件启用跟踪（active）或抑制（snoozed/resolved）后自动填充"
     },
     {
       "dimension": "决策偏好结论",
       "status": "insufficient_sample",
-      "reason": "已决决策 11 条 < 阈值 30 条；且已落决策的 decision 对象无时间戳，无法计算决策时延",
-      "unblock": "累计 30 条决策；若需 Time-to-Decision，需先给 decision 记录写入决策时间"
-    },
-    {
-      "dimension": "记忆时间线（按决策先后排序）",
-      "status": "structurally_unavailable",
-      "reason": "decision 对象只有 urgency 与 action 两个字段，没有决策时间戳；按其他字段排序等于伪造先后顺序",
-      "unblock": "在 decision 中记录 decided_at，之后本模块才会产出按时间排序的记忆条目"
+      "reason": "已决决策样本 12 条 < 阈值 30 条；结论需 ≥30 条真实决策方可输出（来自决策账本 decisions_ledger.json，不伪造）",
+      "unblock": "日常流水线持续运行使决策账本累计至 ≥30 条不同事件"
     },
     {
       "dimension": "关注主体准确性",
@@ -585,8 +640,10 @@
       "priority": 70,
       "decision": {
         "urgency": "watch",
-        "action": "检查监管暴露与经营影响"
+        "action": "检查监管暴露与经营影响",
+        "decided_at": "2026-09-02T00:49:50Z"
       },
+      "decided_at": "2026-09-02T00:49:50Z",
       "event_published_at": "2026-06-12T09:00:00Z",
       "entities": [
         "全面推进保险"
@@ -600,8 +657,10 @@
       "priority": 50,
       "decision": {
         "urgency": "watch",
-        "action": "复核资本配置与竞争格局"
+        "action": "复核资本配置与竞争格局",
+        "decided_at": "2026-09-02T00:49:50Z"
       },
+      "decided_at": "2026-09-02T00:49:50Z",
       "event_published_at": "2026-08-10T13:00:31Z",
       "entities": [
         "AM Best",
@@ -617,11 +676,13 @@
       "priority": 50,
       "decision": {
         "urgency": "watch",
-        "action": "复核资本配置与竞争格局"
+        "action": "复核资本配置与竞争格局",
+        "decided_at": "2026-09-02T00:49:50Z"
       },
+      "decided_at": "2026-09-02T00:49:50Z",
       "event_published_at": "2026-08-03T12:00:25Z",
       "entities": [
-        "摩根大通表示再保险"
+        "再保险"
       ]
     },
     {
@@ -632,8 +693,10 @@
       "priority": 50,
       "decision": {
         "urgency": "watch",
-        "action": "复核资本配置与竞争格局"
+        "action": "复核资本配置与竞争格局",
+        "decided_at": "2026-09-02T00:49:50Z"
       },
+      "decided_at": "2026-09-02T00:49:50Z",
       "event_published_at": "2026-07-13T15:00:27Z",
       "entities": [
         "加拿大皇家银行",
@@ -648,13 +711,15 @@
       "priority": 50,
       "decision": {
         "urgency": "watch",
-        "action": "复核资本配置与竞争格局"
+        "action": "复核资本配置与竞争格局",
+        "decided_at": "2026-09-02T00:49:50Z"
       },
+      "decided_at": "2026-09-02T00:49:50Z",
       "event_published_at": "2026-08-19T15:00:02Z",
       "entities": [
         "KCC",
         "保险公司",
-        "随着再保险公司"
+        "再保险公司"
       ]
     },
     {
@@ -665,8 +730,10 @@
       "priority": 50,
       "decision": {
         "urgency": "watch",
-        "action": "评估市场与竞争响应"
+        "action": "评估市场与竞争响应",
+        "decided_at": "2026-09-02T00:49:50Z"
       },
+      "decided_at": "2026-09-02T00:49:50Z",
       "event_published_at": "2026-08-13T13:00:30Z",
       "entities": []
     },
@@ -678,14 +745,16 @@
       "priority": 50,
       "decision": {
         "urgency": "watch",
-        "action": "评估战略与资本影响"
+        "action": "评估战略与资本影响",
+        "decided_at": "2026-09-02T00:49:50Z"
       },
+      "decided_at": "2026-09-02T00:49:50Z",
       "event_published_at": "2026-08-20T15:58:14Z",
       "entities": [
         "Marco Capital",
         "Pro Global",
         "传统整合公司",
-        "将收购保险服务公司"
+        "保险服务公司"
       ]
     },
     {
@@ -696,8 +765,10 @@
       "priority": 50,
       "decision": {
         "urgency": "watch",
-        "action": "复核资本配置与竞争格局"
+        "action": "复核资本配置与竞争格局",
+        "decided_at": "2026-09-02T00:49:50Z"
       },
+      "decided_at": "2026-09-02T00:49:50Z",
       "event_published_at": "2026-07-21T14:41:14Z",
       "entities": [
         "GC Securities",
@@ -713,8 +784,10 @@
       "priority": 30,
       "decision": {
         "urgency": "watch",
-        "action": "复核资本配置与竞争格局"
+        "action": "复核资本配置与竞争格局",
+        "decided_at": "2026-09-02T00:49:50Z"
       },
+      "decided_at": "2026-09-02T00:49:50Z",
       "event_published_at": "2026-08-19T07:45:13Z",
       "entities": [
         "Nicholas Tan"
@@ -728,8 +801,10 @@
       "priority": 30,
       "decision": {
         "urgency": "watch",
-        "action": "评估市场与竞争响应"
+        "action": "评估市场与竞争响应",
+        "decided_at": "2026-09-02T00:49:50Z"
       },
+      "decided_at": "2026-09-02T00:49:50Z",
       "event_published_at": "2026-08-05T13:00:23Z",
       "entities": [
         "CUO Musselle",
@@ -744,12 +819,14 @@
       "priority": 30,
       "decision": {
         "urgency": "watch",
-        "action": "保持跟踪，等待更多独立证据或业务信号"
+        "action": "保持跟踪，等待更多独立证据或业务信号",
+        "decided_at": "2026-09-02T00:49:50Z"
       },
+      "decided_at": "2026-09-02T00:49:50Z",
       "event_published_at": "2026-08-14T13:30:26Z",
       "entities": [
         "AM Best",
-        "人工智能在再保险"
+        "再保险"
       ]
     }
   ]

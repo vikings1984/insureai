@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROLE_ACTIONS = {
@@ -61,6 +62,11 @@ URGENCY = {"accelerating": "now", "forming": "soon", "cooling": "watch", "isolat
 LABELS = {"now": "高", "soon": "中", "watch": "低"}
 RANK = {"watch": 0, "soon": 1, "now": 2}
 CALIBRATION = Path(__file__).resolve().parent / "calibration.json"
+
+
+def _now() -> str:
+    """引擎产出决策的真实时间戳（UTC，秒级）。绝不伪造为用户决策时间。"""
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
 def _load_calibration() -> dict:
@@ -175,6 +181,7 @@ def build_decisions(events: list[dict], temporal: dict | None = None, role: str 
         out.append({
             "event_id": event.get("event_id"),
             "role": role,
+            "decided_at": _now(),
             "action": action,
             "urgency": urgency,
             "urgency_label": LABELS[urgency],

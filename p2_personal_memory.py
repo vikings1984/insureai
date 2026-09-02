@@ -174,19 +174,41 @@ def watchlist_profile(
 # --------------------------------------------------------------------------
 # 决策画像：观察与结论分离
 # --------------------------------------------------------------------------
-def decision_profile(acted: list[dict]) -> dict[str, Any]:
-    n = len(acted)
+def _norm_decision_record(item: dict) -> dict:
+    """把复核队列条目或账本条目统一为决策记录。
+
+    - 复核队列条目：decision 嵌套在 item["decision"] 中。
+    - 账本条目（decisions_ledger.json）：本身就是决策记录（无嵌套 decision）。
+    """
+    dec = item.get("decision") or {}
+    if not dec and ("urgency" in item or "decided_at" in item):
+        dec = item
+    return {
+        "event_id": item.get("event_id"),
+        "topic": item.get("topic"),
+        "event_type": item.get("event_type"),
+        "urgency": dec.get("urgency"),
+        "action": dec.get("action"),
+        "decided_at": dec.get("decided_at"),
+    }
+
+
+def decision_profile(records: list[dict]) -> dict[str, Any]:
+    n = len(records)
+    has_time = any(r.get("decided_at") for r in records)
     observations = {
         "sample_size": n,
-        "by_urgency": _dist([i.get("decision", {}) for i in acted], "urgency"),
-        "by_action": _dist([i.get("decision", {}) for i in acted], "action"),
-        "by_topic": _dist(acted, "topic"),
-        "by_event_type": _dist(acted, "event_type"),
+        "by_urgency": _dist(records, "urgency"),
+        "by_action": _dist(records, "action"),
+        "by_topic": _dist(records, "topic"),
+        "by_event_type": _dist(records, "event_type"),
+        "has_decided_at": has_time,
     }
 
     if n == 0:
         return {
             "observations": observations,
+            "timeline": [],
             "conclusions": [],
             "conclusion_blocked": {
                 "reason": "尚无任何已落决策",
@@ -196,11 +218,12 @@ def decision_profile(acted: list[dict]) -> dict[str, Any]:
     if n < MIN_SAMPLE_FOR_CONCLUSION:
         return {
             "observations": observations,
+            "timeline": _decision_timeline(records) if has_time else [],
             "conclusions": [],
             "conclusion_blocked": {
                 "reason": f"样本仅 {n} 条，低于 {MIN_SAMPLE_FOR_CONCLUSION} 条阈值；"
                 f"且已落决策的 urgency 取值单一（{sorted(set(observations['by_urgency']))}），无区分度",
-                "need": f"再累计 {MIN_SAMPLE_FOR_CONCLUSION - n} 条决策，且需出现不同 urgency 取值",
+                "need": f"再累计 {MIN_SAMPLE_FOR_CONCLUSION - n} 条真实决策（来自决策账本，不伪造）",
             },
         }
 
@@ -212,10 +235,27 @@ def decision_profile(acted: list[dict]) -> dict[str, Any]:
             {
                 "type": "urgency_preference",
                 "statement": f"最常采用的处置节奏是 {top[0]}（{top[1]}/{n}）",
-                "basis": "review_queue.json 已决决策的 decision.urgency 分布",
+                "basis": "决策账本/复核队列的 decision.urgency 分布（真实累计，不伪造）",
             }
         )
-    return {"observations": observations, "conclusions": conclusions, "conclusion_blocked": None}
+    return {
+        "observations": observations,
+        "timeline": _decision_timeline(records) if has_time else [],
+        "conclusions": conclusions,
+        "conclusion_blocked": None,
+    }
+
+
+def _decision_timeline(records: list[dict]) -> list[dict]:
+    """按 decided_at 升序产出决策时间线（E2 解锁的记忆时间线）。"""
+    return sorted(
+        (
+            {"event_id": r.get("event_id"), "decided_at": r["decided_at"], "urgency": r.get("urgency")}
+            for r in records
+            if r.get("decided_at")
+        ),
+        key=lambda x: x["decided_at"],
+    )
 
 
 # --------------------------------------------------------------------------
@@ -284,7 +324,8 @@ def backlog_profile(pending: list[dict]) -> dict[str, Any]:
 def memory_gaps(
     feedback: list[dict],
     monitoring: list[dict],
-    acted: list[dict],
+    sample_size: int,
+    has_decided_at: bool,
 ) -> list[dict]:
     gaps: list[dict] = []
 
@@ -294,7 +335,7 @@ def memory_gaps(
                 "dimension": "反馈偏好（useful/noise/incorrect…）",
                 "status": "empty",
                 "reason": "p2_state.json 的 feedback 为空数组 —— 尚无任何显式反馈记录",
-                "unblock": "在 Human Review 中对条目给出 label（useful/important/noise/irrelevant/incorrect/acted_on）后自动填充",
+                "unblock": "在 Human Review（review-ui.html）中对条目给出 label（useful/important/noise/irrelevant/incorrect/acted_on）后自动填充",
             }
         )
     if not monitoring:
@@ -303,33 +344,33 @@ def memory_gaps(
                 "dimension": "持续跟踪偏好（snoozed/resolved）",
                 "status": "empty",
                 "reason": "p2_state.json 的 monitoring 为空数组 —— 尚无跟踪书签",
-                "unblock": "对事件启用跟踪（active）或抑制（snoozed/resolved）后自动填充",
+                "unblock": "在 Human Review 中对事件启用跟踪（active）或抑制（snoozed/resolved）后自动填充",
             }
         )
 
-    acted_n = len(acted)
-    if acted_n < MIN_SAMPLE_FOR_CONCLUSION:
+    if sample_size < MIN_SAMPLE_FOR_CONCLUSION:
         gaps.append(
             {
                 "dimension": "决策偏好结论",
                 "status": "insufficient_sample",
-                "reason": f"已决决策 {acted_n} 条 < 阈值 {MIN_SAMPLE_FOR_CONCLUSION} 条；"
-                "且已落决策的 decision 对象无时间戳，无法计算决策时延",
-                "unblock": f"累计 {MIN_SAMPLE_FOR_CONCLUSION} 条决策；"
-                "若需 Time-to-Decision，需先给 decision 记录写入决策时间",
+                "reason": f"已决决策样本 {sample_size} 条 < 阈值 {MIN_SAMPLE_FOR_CONCLUSION} 条；"
+                "结论需 ≥30 条真实决策方可输出（来自决策账本 decisions_ledger.json，不伪造）",
+                "unblock": f"日常流水线持续运行使决策账本累计至 ≥{MIN_SAMPLE_FOR_CONCLUSION} 条不同事件",
             }
         )
 
-    # 决策不带时间戳是结构性缺口，与样本量无关，恒在
-    gaps.append(
-        {
-            "dimension": "记忆时间线（按决策先后排序）",
-            "status": "structurally_unavailable",
-            "reason": "decision 对象只有 urgency 与 action 两个字段，没有决策时间戳；"
-            "按其他字段排序等于伪造先后顺序",
-            "unblock": "在 decision 中记录 decided_at，之后本模块才会产出按时间排序的记忆条目",
-        }
-    )
+    # 记忆时间线：仅当决策普遍缺少 decided_at 时才结构性不可得；
+    # E2 已为 decision 写入真实 decided_at，故一旦样本带时间戳即解锁。
+    if not has_decided_at:
+        gaps.append(
+            {
+                "dimension": "记忆时间线（按决策先后排序）",
+                "status": "structurally_unavailable",
+                "reason": "decision 对象只有 urgency 与 action 两个字段，没有决策时间戳；"
+                "按其他字段排序等于伪造先后顺序",
+                "unblock": "在 decision 中记录 decided_at（引擎真实产出时间，非用户决策时间），本模块即产出按时间排序的记忆条目",
+            }
+        )
     # 上游图谱实体抽取噪声：会污染「关注主体」，但根因不在本层
     gaps.append(
         {
@@ -348,12 +389,28 @@ def memory_gaps(
 # --------------------------------------------------------------------------
 # 组装
 # --------------------------------------------------------------------------
+def _load_ledger_records(path: Path) -> list[dict]:
+    """读决策账本（decisions_ledger.json）并归一化为决策记录。
+
+    账本缺位不报错——它属于流水线前置环节（CI 中 decision_ledger.py 先于本模块运行）；
+    本地单独跑本模块时若无账本，自动回退到复核队列已决条目作为样本，结论纪律不变。
+    """
+    if not path.exists():
+        return []
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return []
+    return [_norm_decision_record(e) for e in (data.get("entries") or [])]
+
+
 def build(
     state: dict,
     queue: dict,
     brief: dict,
     graph: dict | None = None,
     generated_at: str | None = None,
+    ledger_path: Path | None = None,
 ) -> dict[str, Any]:
     watchlists = state.get("watchlists") or []
     feedback = state.get("feedback") or []
@@ -361,8 +418,27 @@ def build(
     items = queue.get("items") or []
     brief_items = brief.get("brief") or []
 
-    acted = [i for i in items if i.get("decision")]
+    acted_review = [i for i in items if i.get("decision")]
     pending = [i for i in items if not i.get("decision")]
+
+    # 复核队列已决条目（带 rich context：title/topic/event_type/priority/entities 来源）
+    review_records = [_norm_decision_record(i) for i in acted_review]
+
+    # 决策账本：跨日按 event_id 去重累计的真实决策，提供**诚实**的样本量。
+    # 账本条目只含 {event_id, role, urgency, action, decided_at}；
+    # 用复核队列里同 event_id 的 topic/event_type 补全，信息来自同源事件、无损。
+    ledger_records = _load_ledger_records(ledger_path or (ROOT / "decisions_ledger.json"))
+    review_by_eid = {r["event_id"]: r for r in review_records if r.get("event_id")}
+    for rec in ledger_records:
+        src = review_by_eid.get(rec.get("event_id"))
+        if src:
+            rec.setdefault("topic", src.get("topic"))
+            rec.setdefault("event_type", src.get("event_type"))
+
+    # 决策画像的样本 = 账本累计（诚实口径）；账本缺位时退回复核队列已决条目。
+    records = ledger_records if ledger_records else review_records
+    sample_size = len(records)
+    has_decided_at = any(r.get("decided_at") for r in records)
 
     event_index = build_event_index(graph) if graph else {}
     wl = watchlist_profile(watchlists, brief_items)
@@ -373,19 +449,20 @@ def build(
         "principle": "只聚合既有 artifact 中的事实；观察与结论分离，样本不足时不出结论，不伪造时间线",
         "sources": {
             "p2_state.json": {"watchlists": len(watchlists), "feedback": len(feedback), "monitoring": len(monitoring)},
-            "review_queue.json": {"items": len(items), "decided": len(acted), "pending": len(pending)},
+            "review_queue.json": {"items": len(items), "decided": len(acted_review), "pending": len(pending)},
             "p2_daily_brief.json": {"brief": len(brief_items)},
             "knowledge_graph.json": {"events_indexed": len(event_index)} if graph else None,
+            "decisions_ledger.json": {"distinct_events": sample_size} if ledger_records else None,
         },
         "watchlists": wl,
-        "decisions": decision_profile(acted),
+        "decisions": decision_profile(records),
         "entity_affinity": entity_affinity(
             event_index,
-            sorted({i.get("event_id") for i in acted if i.get("event_id")}),
+            sorted({i.get("event_id") for i in acted_review if i.get("event_id")}),
             wl["hit_event_ids"],
         ),
         "backlog": backlog_profile(pending),
-        "gaps": memory_gaps(feedback, monitoring, acted),
+        "gaps": memory_gaps(feedback, monitoring, sample_size, has_decided_at),
         "memory_entries": [
             {
                 "event_id": i.get("event_id"),
@@ -394,11 +471,13 @@ def build(
                 "event_type": i.get("event_type"),
                 "priority": i.get("priority"),
                 "decision": i.get("decision"),
+                # E2：decided_at 是引擎真实产出时间（UTC），刻意与 event_published_at 区分
+                "decided_at": (i.get("decision") or {}).get("decided_at"),
                 # 明确标注这是事件发布时间，不是决策时间
                 "event_published_at": event_index.get(i.get("event_id"), {}).get("published_at"),
                 "entities": event_index.get(i.get("event_id"), {}).get("entities", []),
             }
-            for i in sorted(acted, key=lambda x: (-(x.get("priority") or 0), x.get("event_id") or ""))
+            for i in sorted(acted_review, key=lambda x: (-(x.get("priority") or 0), x.get("event_id") or ""))
         ],
     }
 
@@ -421,14 +500,18 @@ def validate(doc: dict) -> None:
 
     obs = doc["decisions"]["observations"]
     assert isinstance(obs["sample_size"], int) and obs["sample_size"] >= 0, obs
+    assert isinstance(obs.get("has_decided_at"), bool), "decisions.observations.has_decided_at 必须为布尔"
 
     # 核心纪律：样本不足时 conclusions 必须为空，且必须给出阻塞原因
     if obs["sample_size"] < MIN_SAMPLE_FOR_CONCLUSION:
         assert doc["decisions"]["conclusions"] == [], "样本不足却输出了结论"
         assert doc["decisions"]["conclusion_blocked"], "样本不足却未给出阻塞原因"
 
-    # 记忆条目不得凭空多出：数量必须等于已决决策数
-    assert len(doc["memory_entries"]) == obs["sample_size"], "记忆条目数与已决决策数不一致"
+    # 记忆条目来自复核队列已决事件（含 rich context），其数量必须等于复核队列已决数，
+    # 而非账本累计样本量（账本含无 rich context 的引擎决策，两者口径不同、不可混比）。
+    decided = (doc["sources"].get("review_queue.json") or {}).get("decided")
+    assert decided is not None, "sources.review_queue.json.decided 缺失"
+    assert len(doc["memory_entries"]) == decided, "记忆条目数与复核队列已决数不一致"
     for e in doc["memory_entries"]:
         assert e.get("event_id"), f"记忆条目缺少 event_id: {e}"
         assert e.get("decision"), f"记忆条目不应包含未决事件: {e}"
@@ -441,6 +524,7 @@ def run(
     queue_path: Path | None = None,
     brief_path: Path | None = None,
     graph_path: Path | None = None,
+    ledger_path: Path | None = None,
     out_path: Path | None = None,
     persist: bool = True,
 ) -> dict[str, Any]:
@@ -454,7 +538,7 @@ def run(
     if gp.exists():
         graph = json.loads(gp.read_text(encoding="utf-8"))
 
-    doc = build(state, queue, brief, graph)
+    doc = build(state, queue, brief, graph, ledger_path=ledger_path or (ROOT / "decisions_ledger.json"))
     validate(doc)
     if persist:
         (out_path or OUTPUT_PATH).write_text(

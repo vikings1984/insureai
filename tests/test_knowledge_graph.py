@@ -99,6 +99,47 @@ class KnowledgeGraphTests(unittest.TestCase):
         self.assertIn("Munich Re", [x["entity"] for x in crossover["entities"]])
 
 
+class EntityExtractionNoiseTests(unittest.TestCase):
+    """E1：KG 实体抽取噪声治理 — 过滤句首状语片段、剥离中文前缀、限制长度。"""
+
+    def test_filters_sentence_initial_adverbial_fragments(self):
+        out = knowledge_graph.entities("According to sources, Munich Re 收购 At-Bay")
+        self.assertNotIn("According", out)
+        self.assertNotIn("Sources", out)
+        self.assertIn("Munich Re", out)
+        self.assertIn("At-Bay", out)
+
+    def test_keeps_mid_sentence_function_word_org(self):
+        # 句中出现的 "The Hartford" 不应被句首规则误杀
+        out = knowledge_graph.entities("瑞士再保险宣布 The Hartford 加入再保联盟")
+        self.assertIn("The Hartford", out)
+
+    def test_strips_cn_adverbial_prefix(self):
+        out = knowledge_graph.entities("随着再保险公司寻求与本地险企合作")
+        self.assertIn("再保险公司", out)
+        self.assertNotIn("随着再保险公司", out)
+
+    def test_drops_overlong_capitalized_fragment(self):
+        long = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz Insurance"
+        self.assertNotIn(long, knowledge_graph.entities(long))
+
+    def test_caps_to_twelve(self):
+        text = " ".join(f"Company{i} Group" for i in range(20))
+        self.assertLessEqual(len(knowledge_graph.entities(text)), 12)
+
+    def test_clean_cn_entity_rejects_after_strip(self):
+        # 纯状语前缀 + 非机构词，剥离后不构成机构名
+        self.assertIsNone(knowledge_graph._clean_cn_entity("随着市场"))
+        self.assertEqual(knowledge_graph._clean_cn_entity("在工商银行"), "工商银行")
+
+    def test_clean_cn_entity_splits_clause_fragment(self):
+        # 句中动词粒子切分：保留机构尾片，去掉从句与动词
+        self.assertEqual(knowledge_graph._clean_cn_entity("摩根大通表示再保险"), "再保险")
+        self.assertEqual(knowledge_graph._clean_cn_entity("将收购保险服务公司"), "保险服务公司")
+        # 真实机构名（慕尼黑再保险）不含动词粒子，原样保留
+        self.assertEqual(knowledge_graph._clean_cn_entity("慕尼黑再保险公司"), "慕尼黑再保险公司")
+
+
 if __name__ == "__main__":
     unittest.main()
 

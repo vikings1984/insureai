@@ -49,15 +49,86 @@ def add_edge(edges: dict, src: str, rel: str, dst: str, evidence_refs=None, conf
     row["confidence"] = max(row["confidence"], round(float(confidence), 4))
 
 
+# 句首状语 / 功能词：作为大写短语的「首词」且位于句首时，几乎都是标题片段而非机构名
+# （如 "According to…"、"The report said…"、"Sources said…"）。机构名极少以这些词引领，
+# 故在句首位置时直接丢弃；句中出现的同名（如 "… The Hartford 发布…"）仍保留。
+EN_ADVERB_TOKENS = {
+    "According", "Sources", "Source", "Report", "Reports", "Said", "The", "A", "An",
+    "As", "In", "On", "For", "With", "To", "From", "By", "At", "Of", "After", "Before",
+    "When", "While", "If", "But", "And", "Or", "This", "That", "These", "Those",
+    "It", "Its", "They", "Their", "We", "Our", "You", "Your", "Not", "No", "Yes",
+}
+# 机构名长度上限：超出即大概率是拼接的长句片段，而非实体
+MAX_ENTITY_CHARS = 40
+# 中文机构名前的状语/介词/将来时前缀：递归剥离后若仍含机构后缀才算有效实体
+# （"随着再保险公司" → "再保险公司"；"在X银行" → "X银行"；"将收购保险服务公司" → "保险服务公司"）
+CN_ADVERB_PREFIXES = (
+    "随着", "在", "对于", "关于", "通过", "由于", "基于", "面对", "从", "为",
+    "当", "经", "由", "受", "被", "据", "按", "依", "就", "因", "因应",
+    "将", "收购", "支持", "加快", "推进", "人工智能在",
+)
+# 句中动词粒子：标题常为「主体 + 动词 + 机构名」的从句片段（如「摩根大通表示再保险」），
+# 切分后保留以机构后缀结尾的最右片段（"再保险"），去掉从句与品牌前的动词。
+# 仅用于含明确动词粒子的候选；真实机构名（慕尼黑再保险、瑞士再保险）不含这些粒子，不受影响。
+CN_VERB_PARTICLES = (
+    "表示", "称", "宣布", "预计", "认为", "计划", "拟", "寻求", "推动", "面临",
+    "指出", "透露", "提及", "称其", "据悉", "日前", "近日",
+)
+_CN_SUFFIX = re.compile(r"(公司|集团|保险|银行|证券|基金)$")
+
+
+def _clean_cn_entity(x: str) -> str | None:
+    """中文机构名噪声治理：递归剥离句首状语前缀，再从句中动词粒子处切分保留机构尾片。
+
+    返回 None 表示剥离/切分后不再是机构名（如纯状语「随着市场」、纯动词从句）。
+    """
+    stripped = x
+    # 1) 递归剥离句首状语/介词前缀
+    changed = True
+    while changed:
+        changed = False
+        for p in CN_ADVERB_PREFIXES:
+            if stripped.startswith(p):
+                stripped = stripped[len(p):]
+                changed = True
+                break
+    # 2) 句中动词粒子切分：保留以机构后缀结尾的最右片段
+    for v in CN_VERB_PARTICLES:
+        idx = stripped.find(v)
+        if idx != -1:
+            tail = stripped[idx + len(v):]
+            if _CN_SUFFIX.search(tail) and len(tail) >= 2:
+                stripped = tail
+                break
+    if len(stripped) < 2:
+        return None
+    if not _CN_SUFFIX.search(stripped):
+        return None
+    return stripped
+
+
 def entities(text: str) -> list[str]:
-    values = re.findall(r"\b[A-Z][A-Za-z0-9&.-]*(?:\s+[A-Z][A-Za-z0-9&.-]*){0,3}", text or "")
-    values += re.findall(r"[\u4e00-\u9fff]{2,12}(?:公司|集团|保险|银行|证券|基金)", text or "")
+    text = text or ""
     out, seen = [], set()
-    for x in values:
-        x = x.strip()
+    # 英文：句首且首词为功能词/状语的片段丢弃；限制长度
+    for m in re.finditer(r"\b[A-Z][A-Za-z0-9&.-]*(?:\s+[A-Z][A-Za-z0-9&.-]*){0,3}", text):
+        x = m.group(0).strip()
+        if m.start() == 0 and x.split()[0] in EN_ADVERB_TOKENS:
+            continue
+        if len(x) > MAX_ENTITY_CHARS:
+            continue
         if len(x) >= 2 and x.lower() not in seen:
             seen.add(x.lower())
             out.append(x)
+    # 中文：剥离句首状语前缀后复查机构后缀
+    for x in re.findall(r"[\u4e00-\u9fff]{2,12}(?:公司|集团|保险|银行|证券|基金)", text):
+        x = x.strip()
+        cleaned = _clean_cn_entity(x)
+        if not cleaned or len(cleaned) > MAX_ENTITY_CHARS:
+            continue
+        if cleaned.lower() not in seen:
+            seen.add(cleaned.lower())
+            out.append(cleaned)
     return out[:12]
 
 
