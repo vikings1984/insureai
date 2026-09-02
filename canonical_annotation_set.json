@@ -1,0 +1,128 @@
+{
+  "version": "anno-v1.0",
+  "principle": "Canonical Identity 先窄后宽：acquisition/regulatory 可自动归并；product/personnel/industry_update/catastrophe/other 只做别名、不自动 merge；split 必须人工。false merge = 硬失败。",
+  "generated_at": "2026-09-02",
+  "policy_ref": "event_registry.CANONICALIZE_POLICY / should_merge",
+  "cases": [
+    {"id": "atbay-multisource-merge", "note": "同一收购多源（Reuters/FT/Bloomberg/监管）→ 一个 CE", "expect_ce_count": 1, "events": [
+      {"event_id": "evt_atbay_r", "event_type": "acquisition", "title": "At-Bay 完成 D 轮融资", "key_entity": "At-Bay"},
+      {"event_id": "evt_atbay_f", "event_type": "acquisition", "title": "At-Bay 关闭 D 轮融资（FT）", "key_entity": "At-Bay"}
+    ]},
+    {"id": "zurich-farmers-vs-covermore", "note": "Zurich Farmers vs Cover-More 必拆", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_zurich_farmers", "event_type": "acquisition", "title": "Zurich 收购 Farmers Insurance", "key_entity": "Farmers Insurance"},
+      {"event_id": "evt_zurich_covermore", "event_type": "acquisition", "title": "Zurich 收购 Cover-More", "key_entity": "Cover-More"}
+    ]},
+    {"id": "same-target-two-rounds-merge", "note": "同一标的两次融资必合", "expect_ce_count": 1, "events": [
+      {"event_id": "evt_sun_1", "event_type": "acquisition", "title": "Sunlight Mutual 获战略投资", "key_entity": "Sunlight Mutual"},
+      {"event_id": "evt_sun_2", "event_type": "acquisition", "title": "Sunlight Mutual 完成第二轮融资", "key_entity": "Sunlight Mutual"}
+    ]},
+    {"id": "aig-validus-vs-fortitude", "note": "AIG 收购 Validus vs AIG 收购 Fortitude 必拆", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_aig_validus", "event_type": "acquisition", "title": "AIG 收购 Validus Re", "key_entity": "Validus"},
+      {"event_id": "evt_aig_fortitude", "event_type": "acquisition", "title": "AIG 收购 Fortitude", "key_entity": "Fortitude"}
+    ]},
+    {"id": "reinsurer-buy-vs-sell", "note": "再保商买入 vs 出售不同业务必拆", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_mr_erp", "event_type": "acquisition", "title": "Munich Re 收购 ERP 再保组合", "key_entity": "Munich Re ERP"},
+      {"event_id": "evt_mr_us", "event_type": "acquisition", "title": "Munich Re 出售美国寿险业务", "key_entity": "Munich Re US"}
+    ]},
+    {"id": "alliance-buy-vs-sell", "note": "安联买入零售 vs 出售台湾必拆", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_al_ageas", "event_type": "acquisition", "title": "安联收购 Ageas 零售业务", "key_entity": "Ageas Retail"},
+      {"event_id": "evt_al_tw", "event_type": "acquisition", "title": "安联出售台湾人寿股权", "key_entity": "Taiwan Life"}
+    ]},
+    {"id": "different-targets-no-merge", "note": "不同标的收购不混", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_lemonade", "event_type": "acquisition", "title": "Lemonade 收购健康创企", "key_entity": "Lemonade Health"},
+      {"event_id": "evt_metromile", "event_type": "acquisition", "title": "Metromile 被收购", "key_entity": "Metromile"}
+    ]},
+    {"id": "same-entity-diff-title-merge", "note": "同实体异标题必合（key_entity 优先）", "expect_ce_count": 1, "events": [
+      {"event_id": "evt_atbay_a", "event_type": "acquisition", "title": "At-Bay raises Series D from a16z", "key_entity": "At-Bay"},
+      {"event_id": "evt_atbay_b", "event_type": "acquisition", "title": "At-Bay closes Series D financing led by a16z", "key_entity": "At-Bay"}
+    ]},
+    {"id": "one-sided-key-entity-no-assume", "note": "一方有 key_entity 另一方无 → 不臆测合并", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_x_1", "event_type": "acquisition", "title": "某创企获融资", "key_entity": "At-Bay"},
+      {"event_id": "evt_x_2", "event_type": "acquisition", "title": "某创企完成并购"}
+    ]},
+    {"id": "cross-type-acq-reg-never-merge", "note": "acquisition vs regulatory 永不合", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_acq_1", "event_type": "acquisition", "title": "At-Bay 融资", "key_entity": "At-Bay"},
+      {"event_id": "evt_reg_1", "event_type": "regulatory", "title": "金融监管总局发文", "key_entity": "金融监管总局"}
+    ]},
+    {"id": "cia-motor-vs-nonmotor", "note": "中保协车险指南 vs 非车险治理 必拆", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_cia_motor", "event_type": "regulatory", "title": "中保协车险费率指引", "key_entity": "中保协车险费率指引"},
+      {"event_id": "evt_nonmotor", "event_type": "regulatory", "title": "非车险治理方案", "key_entity": "非车险治理方案"}
+    ]},
+    {"id": "same-issuer-multisource-merge", "note": "同一监管发文多源必合", "expect_ce_count": 1, "events": [
+      {"event_id": "evt_nfra_a", "event_type": "regulatory", "title": "金融监管总局发布 AI 大模型合规指引", "key_entity": "金融监管总局AI大模型指引"},
+      {"event_id": "evt_nfra_b", "event_type": "regulatory", "title": "金融监管总局 AI 大模型合规应用指引（新华社）", "key_entity": "金融监管总局AI大模型指引"}
+    ]},
+    {"id": "ai-guide-vs-data-export", "note": "AI 指引 vs 数据出境指引 必拆", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_ai", "event_type": "regulatory", "title": "金融监管总局 AI 大模型指引", "key_entity": "金融监管总局AI大模型指引"},
+      {"event_id": "evt_data", "event_type": "regulatory", "title": "数据出境安全指引", "key_entity": "数据出境安全指引"}
+    ]},
+    {"id": "solvency2-vs-solvency3", "note": "偿二代 II vs III 必拆", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_c2", "event_type": "regulatory", "title": "偿二代二期工程", "key_entity": "偿二代II"},
+      {"event_id": "evt_c3", "event_type": "regulatory", "title": "偿二代三期工程", "key_entity": "偿二代III"}
+    ]},
+    {"id": "eu-solvency-vs-us-rbc", "note": "欧盟 Solvency II vs 美国 RBC 必拆", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_eu", "event_type": "regulatory", "title": "Solvency II 改革", "key_entity": "Solvency II"},
+      {"event_id": "evt_us", "event_type": "regulatory", "title": "US RBC 框架", "key_entity": "US RBC"}
+    ]},
+    {"id": "same-regulation-revision-merge", "note": "同一办法修订版必合", "expect_ce_count": 1, "events": [
+      {"event_id": "evt_fraud_1", "event_type": "regulatory", "title": "银保信反欺诈指引发布", "key_entity": "银保信反欺诈指引"},
+      {"event_id": "evt_fraud_2", "event_type": "regulatory", "title": "银保信反欺诈指引（修订稿）", "key_entity": "银保信反欺诈指引"}
+    ]},
+    {"id": "association-vs-regulator", "note": "协会指引 vs 监管规章 必拆", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_cia", "event_type": "regulatory", "title": "中保协行业自律指引", "key_entity": "中保协"},
+      {"event_id": "evt_nfra", "event_type": "regulatory", "title": "金融监管总局规章", "key_entity": "金融监管总局"}
+    ]},
+    {"id": "regulatory-vs-product-cross", "note": "regulatory vs product 永不合", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_reg_2", "event_type": "regulatory", "title": "金融监管总局发文", "key_entity": "金融监管总局"},
+      {"event_id": "evt_prod_1", "event_type": "product", "title": "健康险条款更新", "key_entity": "健康险条款"}
+    ]},
+    {"id": "two-products-no-merge", "note": "两款产品发布不合并（alias-only）", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_health", "event_type": "product", "title": "健康险新品", "key_entity": "健康险"},
+      {"event_id": "evt_ci", "event_type": "product", "title": "重疾险新品", "key_entity": "重疾险"}
+    ]},
+    {"id": "two-personnel-no-merge", "note": "两人事变动不合并（alias-only）", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_p1", "event_type": "personnel", "title": "高管任命", "key_entity": "张三"},
+      {"event_id": "evt_p2", "event_type": "personnel", "title": "高管离任", "key_entity": "李四"}
+    ]},
+    {"id": "two-industry-updates-no-merge", "note": "两次行业更新不合并（alias-only）", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_iu1", "event_type": "industry_update", "title": "行业白皮书", "key_entity": "行业白皮书"},
+      {"event_id": "evt_iu2", "event_type": "industry_update", "title": "市场报告", "key_entity": "市场报告"}
+    ]},
+    {"id": "product-vs-regulatory-cross", "note": "product vs regulatory 永不合", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_prod_2", "event_type": "product", "title": "车险条款", "key_entity": "车险条款"},
+      {"event_id": "evt_reg_3", "event_type": "regulatory", "title": "车险费率指引", "key_entity": "中保协车险费率指引"}
+    ]},
+    {"id": "same-product-versions-alias-only", "note": "同产品不同版本仍不自动合（alias-only 即使同 key_entity）", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_car_1", "event_type": "product", "title": "车险条款 v1", "key_entity": "车险条款"},
+      {"event_id": "evt_car_2", "event_type": "product", "title": "车险条款 v2", "key_entity": "车险条款"}
+    ]},
+    {"id": "two-personnel-same-co", "note": "同公司两人事变动不合并", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_hr1", "event_type": "personnel", "title": "阳光保险副总任命", "key_entity": "阳光保险-王"},
+      {"event_id": "evt_hr2", "event_type": "personnel", "title": "阳光保险董秘离任", "key_entity": "阳光保险-李"}
+    ]},
+    {"id": "two-catastrophes-no-merge", "note": "两场不同巨灾不合并（catastrophe 本期不自动归并）", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_cat1", "event_type": "catastrophe", "title": "飓风IDA", "key_entity": "飓风IDA"},
+      {"event_id": "evt_cat2", "event_type": "catastrophe", "title": "地震B", "key_entity": "地震B"}
+    ]},
+    {"id": "same-catastrophe-multisource", "note": "同巨灾多源仍不自动合（先窄后宽，catastrophe 不归并）", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_ida1", "event_type": "catastrophe", "title": "飓风IDA 登陆", "key_entity": "飓风IDA"},
+      {"event_id": "evt_ida2", "event_type": "catastrophe", "title": "飓风IDA 损失预估", "key_entity": "飓风IDA"}
+    ]},
+    {"id": "generic-vs-specific", "note": "other 类型不合并", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_o1", "event_type": "other", "title": "行业动态", "key_entity": "行业动态"},
+      {"event_id": "evt_o2", "event_type": "other", "title": "公司新闻", "key_entity": "公司新闻"}
+    ]},
+    {"id": "missing-event-type", "note": "缺 event_type 无法归并", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_m1", "title": "某事件A"},
+      {"event_id": "evt_m2", "title": "某事件B"}
+    ]},
+    {"id": "single-acquisition-trivial", "note": "单事件收购 → 1 CE", "expect_ce_count": 1, "events": [
+      {"event_id": "evt_single", "event_type": "acquisition", "title": "At-Bay 融资", "key_entity": "At-Bay"}
+    ]},
+    {"id": "mixed-acq-reg-merge-split", "note": "收购同实体合 + 监管独立 → 2 CE", "expect_ce_count": 2, "events": [
+      {"event_id": "evt_mix_a1", "event_type": "acquisition", "title": "At-Bay 融资", "key_entity": "At-Bay"},
+      {"event_id": "evt_mix_a2", "event_type": "acquisition", "title": "At-Bay 再融资", "key_entity": "At-Bay"},
+      {"event_id": "evt_mix_r", "event_type": "regulatory", "title": "金融监管总局发文", "key_entity": "金融监管总局"}
+    ]}
+  ]
+}

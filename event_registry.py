@@ -24,11 +24,70 @@ ROOT = Path(__file__).resolve().parent
 OUTPUT = ROOT / "canonical_events.json"
 ALIASES = ROOT / "event_id_aliases.json"
 
-VERSION = "er-v1.0"
+VERSION = "er-v1.1"
 PRINCIPLE = (
     "单一事实源：所有模块引用 canonical_event_id；跨模块统一事件身份，"
     "禁止各自持有版本。身份归并只基于真实证据，不伪造。"
 )
+
+# X2（评审修订）：event_type 分区策略 —— 先窄后宽，禁止全量通用归并。
+# canonicalize=True 的类型才可自动归并；alias_only=True 的类型只做别名、不自动 merge；
+# 其余一律不自动归并（防 false merge，见 canonical_annotation_set.json 质量门）。
+CANONICALIZE_POLICY = {
+    "acquisition":     {"canonicalize": True,  "alias_only": False},
+    "regulatory":      {"canonicalize": True,  "alias_only": False},
+    "product":         {"canonicalize": False, "alias_only": True},
+    "personnel":       {"canonicalize": False, "alias_only": True},
+    "industry_update": {"canonicalize": False, "alias_only": True},
+    "other":           {"canonicalize": False, "alias_only": True},
+}
+MANUAL_SPLIT_REQUIRED = True
+
+# event_type → lifecycle.domain（S3 插件化生命周期的基础；other/catastrophe 本期不自动归并）
+EVENT_TYPE_DOMAIN = {
+    "acquisition": "acquisition",
+    "merger": "acquisition",
+    "regulatory": "regulatory",
+    "regulation": "regulatory",
+    "catastrophe": "catastrophe",
+    "catastrophe_risk": "catastrophe",
+}
+
+
+def event_type_domain(event_type: str) -> str:
+    return EVENT_TYPE_DOMAIN.get(event_type) or "other"
+
+
+def may_auto_merge(event_type: str) -> bool:
+    """只有 acquisition/regulatory 可自动归并；其余（含 product/personnel/industry_update）只做别名。"""
+    return bool(CANONICALIZE_POLICY.get(event_type, {}).get("canonicalize"))
+
+
+def _title_jaccard(a: str, b: str) -> float:
+    sa, sb = set(a.lower().split()), set(b.lower().split())
+    if not sa or not sb:
+        return 0.0
+    return len(sa & sb) / len(sa | sb)
+
+
+def should_merge(a: dict, b: dict) -> bool:
+    """S2 自动归并的单一决策点（质量门可调）：同 event_type 且（同 key_entity 或标题 Jaccard≥0.85）。
+
+    - 不同 event_type / alias-only 类型 → 永不自动归并（false merge 防护）；
+    - key_entity 显式给出时以它为准（最稳），否则退化为高标题重叠；
+    - 一方有 key_entity、另一方没有 → 不臆测合并。
+    """
+    ta, tb = a.get("event_type"), b.get("event_type")
+    if not ta or not tb or ta != tb:
+        return False
+    if not may_auto_merge(ta):
+        return False
+    ka, kb = a.get("key_entity"), b.get("key_entity")
+    if ka and kb:
+        return ka == kb
+    if ka or kb:
+        return False
+    return _title_jaccard(a.get("title", ""), b.get("title", "")) >= 0.85
 
 
 def _now() -> str:
@@ -61,6 +120,7 @@ def _norm_event(e: dict, origin: str) -> dict:
         "title": e.get("title") or "",
         "topic": e.get("topic") or "",
         "event_type": e.get("event_type") or "",
+        "key_entity": e.get("key_entity") or "",
         "published_at": e.get("published_at") or "",
     }
 
@@ -94,6 +154,8 @@ def build(events: list[dict], generated_at: str | None = None) -> dict:
                 "title": ne["title"],
                 "topic": ne["topic"],
                 "event_type": ne["event_type"],
+                "domain": event_type_domain(ne["event_type"]),
+                "key_entity": ne["key_entity"],
                 "sources": [],
                 "aliases": [],
                 "merged_from": [],
@@ -195,8 +257,14 @@ def merge(registry: dict, target: str, source: str) -> dict:
     return registry
 
 
-def split(registry: dict, canonical_event_id: str, event_ids: list[str], generated_at: str | None = None) -> str:
-    """把某 canonical 下的部分 event_id 拆为新 canonical（身份分裂修正）。返回新 id。"""
+def split(registry: dict, canonical_event_id: str, event_ids: list[str], generated_at: str | None = None, method: str = "manual") -> str:
+    """把某 canonical 下的部分 event_id 拆为新 canonical（身份分裂修正）。返回新 id。
+
+    X2（评审修订）：split 必须人工触发（MANUAL_SPLIT_REQUIRED），禁止自动拆分——自动拆分
+    会把不同现实事件"对齐"到错误剧本，比不拆更糟。
+    """
+    if MANUAL_SPLIT_REQUIRED and method != "manual":
+        raise RuntimeError("split 必须人工触发（MANUAL_SPLIT_REQUIRED）；禁止自动拆分")
     ce = registry.get("canonical_events", {})
     if canonical_event_id not in ce:
         raise KeyError(f"split 源不存在: {canonical_event_id}")
@@ -209,12 +277,15 @@ def split(registry: dict, canonical_event_id: str, event_ids: list[str], generat
         "title": parent["title"],
         "topic": parent["topic"],
         "event_type": parent["event_type"],
+        "domain": parent.get("domain"),
+        "key_entity": parent.get("key_entity"),
         "sources": [],
         "aliases": [],
         "merged_from": [],
         "split_into": [],
         "stage": parent.get("stage"),
         "status": "active",
+        "split_method": method,
         "created_at": generated_at,
         "updated_at": generated_at,
     }
@@ -264,6 +335,12 @@ def validate(registry: dict) -> None:
         # merged 必须指向存在 target
         if rec.get("status") == "merged":
             assert rec.get("merged_into") in ids, f"merged_into 悬空: {rec.get('merged_into')}"
+        # X2：alias-only 类型不允许被自动归并（merged_from 必须为空）
+        if not may_auto_merge(rec.get("event_type", "")):
+            assert not rec.get("merged_from"), f"alias-only 类型不应有 merged_from: {cev}"
+        # X2：split 必须为人工触发
+        if rec.get("split_method") and rec["split_method"] != "manual":
+            assert False, f"split 必须为人工: {cev}"
         # by_event_id 必须覆盖所有活跃 canonical 的 sources
     for eid, cev in registry["by_event_id"].items():
         assert cev in ids, f"by_event_id 悬空: {eid}→{cev}"
@@ -275,6 +352,49 @@ def validate(registry: dict) -> None:
             assert registry["by_event_id"].get(src["event_id"]) == cev, (
                 f"source 未覆盖: {src['event_id']} 未指向 {cev}"
             )
+
+
+def validate_against_annotations(anno_path: str | Path | None = None) -> dict:
+    """质量门（每 Sprint 跑）：用 canonical_annotation_set.json 标注样例断言归并行为。
+
+    用 should_merge 做并查集分组，断言每组事件数 == 样例声明的 expect_ce_count；
+    false merge / 漏合 = 硬失败（断言抛错）。返回 {cases, passed, failed}。
+    """
+    anno_path = Path(anno_path) if anno_path else ROOT / "canonical_annotation_set.json"
+    anno = _load(anno_path)
+    results: dict[str, Any] = {"cases": 0, "passed": 0, "failed": []}
+    for case in anno.get("cases", []):
+        results["cases"] += 1
+        events = case.get("events", [])
+        parent = list(range(len(events)))
+
+        def find(x: int) -> int:
+            while parent[x] != x:
+                parent[x] = parent[parent[x]]
+                x = parent[x]
+            return x
+
+        def union(x: int, y: int) -> None:
+            parent[find(x)] = find(y)
+
+        for i in range(len(events)):
+            for j in range(i + 1, len(events)):
+                if should_merge(events[i], events[j]):
+                    union(i, j)
+        groups = len({find(i) for i in range(len(events))})
+        expected = case.get("expect_ce_count")
+        if expected is None:
+            results["failed"].append(f"{case.get('id')}: 缺 expect_ce_count")
+            continue
+        if groups == expected:
+            results["passed"] += 1
+        else:
+            results["failed"].append(
+                f"{case.get('id')}: 期望 {expected} CE，实得 {groups}（{case.get('note', '')}）"
+            )
+    if results["failed"]:
+        raise AssertionError("标注质量门失败: " + "; ".join(results["failed"]))
+    return results
 
 
 def load_registry() -> dict:

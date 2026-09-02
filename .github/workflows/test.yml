@@ -103,7 +103,7 @@ jobs:
       - name: Human review queue test
         run: python3 -m unittest tests.test_review tests.test_promote_reviews -v
       - name: E3 feedback import + site page + X1 convergence contract test
-        run: python3 -m unittest tests.test_p2_import_feedback tests.test_site_pages tests.test_x1_convergence -v
+        run: python3 -m unittest tests.test_p2_import_feedback tests.test_site_pages tests.test_x1_convergence tests.test_canonical_annotations -v
       - name: Validate committed p2_state feedback schema
         run: |
           python3 - <<'PY'
