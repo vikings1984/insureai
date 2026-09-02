@@ -1,0 +1,137 @@
+{
+  "version": "alert-v1.0",
+  "generated_at": "2026-09-02T01:35:51Z",
+  "principle": "两层收敛：Internal Diff（事实）→ Semantic Alert（≤8 条聚合）；delta 不伪造、首跑仅种子、告警不改写业务判断",
+  "meta": {
+    "total_events": 1578,
+    "baseline_present": true,
+    "basis": "delta_vs_baseline",
+    "internal_diff_count": 0,
+    "alert_count": 8,
+    "max_alerts": 8,
+    "alert_type_counts": {
+      "DECISION_REQUIRED": 8
+    }
+  },
+  "internal_diffs": [],
+  "semantic_alerts": [
+    {
+      "type": "DECISION_REQUIRED",
+      "canonical_event_id": "cev_3b319a51fffd",
+      "event_id": "evt_b15303e657b2",
+      "title": "加拿大监管机构增加巨灾债券作为资本信贷再保险的一种形式",
+      "topic": "capital_reinsurance",
+      "severity": "high",
+      "rationale": "待人工复核、暂无决策记录（日报优先级 91）",
+      "basis": "standing",
+      "changed_fields": [
+        "review_required"
+      ]
+    },
+    {
+      "type": "DECISION_REQUIRED",
+      "canonical_event_id": "cev_96ad5d9212a7",
+      "event_id": "evt_bc369073060b",
+      "title": "中国平安亮相世界人工智能大会 发布医疗、保险、支付领域最新AI成果 AI驱动“综合金融+医疗养老”服务升级",
+      "topic": "ai_intelligent",
+      "severity": "high",
+      "rationale": "待人工复核、暂无决策记录（日报优先级 91）",
+      "basis": "standing",
+      "changed_fields": [
+        "review_required"
+      ]
+    },
+    {
+      "type": "DECISION_REQUIRED",
+      "canonical_event_id": "cev_2dad639a2a08",
+      "event_id": "evt_2eaf272711a7",
+      "title": "陕西金融监管局：推动建成全国首个省市联动多层次综合巨灾保险机制",
+      "topic": "capital_reinsurance",
+      "severity": "high",
+      "rationale": "待人工复核、暂无决策记录（日报优先级 90）",
+      "basis": "standing",
+      "changed_fields": [
+        "review_required"
+      ]
+    },
+    {
+      "type": "DECISION_REQUIRED",
+      "canonical_event_id": "cev_f75127f8ccbc",
+      "event_id": "evt_cd1750e23fee",
+      "title": "国家金融监督管理总局等两部门：支持再保险机构增资扩股和发行资本补充工具",
+      "topic": "capital_reinsurance",
+      "severity": "high",
+      "rationale": "待人工复核、暂无决策记录（日报优先级 90）",
+      "basis": "standing",
+      "changed_fields": [
+        "review_required"
+      ]
+    },
+    {
+      "type": "DECISION_REQUIRED",
+      "canonical_event_id": "cev_43731806412d",
+      "event_id": "evt_7f010a567259",
+      "title": "金融监管总局：2026年二季度保险业偿付能力充足率保持行业高位",
+      "topic": "regulatory_change",
+      "severity": "high",
+      "rationale": "待人工复核、暂无决策记录（日报优先级 90）",
+      "basis": "standing",
+      "changed_fields": [
+        "review_required"
+      ]
+    },
+    {
+      "type": "DECISION_REQUIRED",
+      "canonical_event_id": "cev_1939edbf6926",
+      "event_id": "evt_2a40eace85a9",
+      "title": "Willis Re 收购美国 BMS Re，加速美国扩张",
+      "topic": "capital_reinsurance",
+      "severity": "high",
+      "rationale": "待人工复核、暂无决策记录（日报优先级 89）",
+      "basis": "standing",
+      "changed_fields": [
+        "review_required"
+      ]
+    },
+    {
+      "type": "DECISION_REQUIRED",
+      "canonical_event_id": "cev_eba17edb2326",
+      "event_id": "evt_91d81f0c844f",
+      "title": "OPTIS：2026 年上半年保险业并购步伐下降 15%",
+      "topic": "capital_reinsurance",
+      "severity": "high",
+      "rationale": "待人工复核、暂无决策记录（日报优先级 89）",
+      "basis": "standing",
+      "changed_fields": [
+        "review_required"
+      ]
+    },
+    {
+      "type": "DECISION_REQUIRED",
+      "canonical_event_id": "cev_55200e519bc6",
+      "event_id": "evt_9c3a168bcc68",
+      "title": "欧盟委员会批准苏黎世收购 Beazley",
+      "topic": "ai_intelligent",
+      "severity": "high",
+      "rationale": "待人工复核、暂无决策记录（日报优先级 89）",
+      "basis": "standing",
+      "changed_fields": [
+        "review_required"
+      ]
+    }
+  ],
+  "open_questions": [
+    {
+      "dimension": "非并购事件生命周期阶段",
+      "status": "not_applicable",
+      "reason": "EVENT_STAGE_CHANGED 仅适用于 acquisition 类 canonical event（lifecycle 覆盖 16/141）",
+      "unblock": "其余事件靠 MATERIAL / RISK / DECISION 三类语义告警覆盖"
+    },
+    {
+      "dimension": "决策人工确认",
+      "status": "delegated",
+      "reason": "告警中的决策紧急度来自 intelligence.json 引擎产出，不改写业务判断",
+      "unblock": "high-impact action 仍由 Human Review 确认（见 decision.guardrail）"
+    }
+  ]
+}
