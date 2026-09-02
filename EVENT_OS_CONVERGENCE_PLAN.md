@@ -1,7 +1,7 @@
 # InsureAI · Event OS 主链收口改进方案
 
 > 综合来源：Grok 报告 `grok_report.pdf`（图像型，无法直接抽文本，主体以贴出的战略长文为准）+ 战略自评长文 + 仓库实测校准。
-> 日期：2026-09-01。状态：规划草案（未提交）。
+> 日期：2026-09-01 起；最后更新 2026-09-02。状态：E1–E3 / S1–S6 已落地，X1 已收口（各段 ✅ 行与 §8 技术债）。
 
 ---
 
@@ -16,7 +16,8 @@
 
 **结论**：事件有"局部身份"（监控 fingerprint + 每事件 event_id），但**没有跨模块的全局 Canonical Event 身份层**。这正是长文"主脊柱未收敛"判断的命门——多个模块未来可能"都在工作，但说的不是同一个事件"。
 
-数据快照（上一轮实测）：事件语料 1554/1578 · 4 Watchlist（275 命中）· 已决 11/100（89 待决）· KG 9805 节点 · feedback=0 / monitoring=0。
+数据快照（2026-09-02 实测）：事件语料 1634（data.json，非滚动窗口，逐日增长）· 4 Watchlist · 已决 11/100（89 待决，样本 12<30 未解锁偏好结论）· KG 节点 ~9805 · feedback=0 / monitoring=0（采集桥已就位，待真人输入）。
+> 性能实测：CI `unittest discover` 全量中，`tests.test_p2.P2WatchlistExpansionTests.test_expanded_watchlists_present_and_surface_in_production` 在 1634 条真实数据上耗时 **72.7s** 且随数据量**二次增长**（`intelligence._cluster` 全对相似度 + 逐对重复计算 `_entities`/`_event_type`）。详见 §8。
 
 ---
 
@@ -48,6 +49,7 @@
 | **E2** | `decision` 加 `decided_at` 时间戳 + 累计决策样本至 ≥30 | 流程 + 轻量工程 | 记忆时间线（structurally_unavailable）、决策偏好结论（insufficient_sample）、Lifecycle.Decision 阶段、Decision Funnel | Human Review 持续落 decision |
 | **E1** | KG 实体抽取噪声治理（过滤句首状语片段、限制机构名长度/词性） | 纯工程 | 干净实体 → 更准确的 canonical 解析与 entity_threads（upstream_noise） | 无 |
 | **E3** | feedback / monitoring 采集（Review UI 支持 label + 跟踪书签，写入 `p2_state.json`） | 流程 + UX | Lifecycle.Feedback 阶段、个性化信号（empty→有） | 无 |
+| **E3** ✅ 已交付 `40c178c` | 新建 `review-ui.html`（修复 executive_home 两处死链）+ 交互化 `review-ui.js`（6 标签 + 跟踪书签，导出 JSON / GitHub Issue）+ fail-closed 导入器 `p2_import_feedback.py` + 契约测试 `test_site_pages.py`；CI 加 py_compile/测试步骤/`p2_state` schema 守卫。**真实 feedback 仍为 0**——采集桥就位，待真人打标签后方解锁 Lifecycle.Feedback 与个性化信号。 | 流程 + UX | Lifecycle.Feedback 阶段、个性化信号（empty→有） | 无 |
 
 ### P0-B · 主链脊柱（两文档核心）
 
@@ -62,7 +64,8 @@
 
 ### P1 · 收敛（Executive Home 换源不增卡）
 
-- **X1**：Event Changes ← `p2_alerts`；Decisions Pending ← decision funnel；Watchlist / Second Brain / KG ← canonical event。Dashboard → Event Operating Console。
+- **X1** ✅ 已交付 `92c824d`：Event Changes 卡换源 `p2_alerts.json`（S4 `semantic_alerts`，实时 8 条）；Decisions Pending 卡换源 `decisions_pending.json`（S5 `top_pending` + `meta.pending_by_tier`，待决 89 / now 13 / soon 22 / watch 54 / 已决 11，样本 12<30 未解锁偏好结论）；所有事件卡以 `canonical_events.json` 的 `canonical_event_id` 为单一事实源锚点（`⌖`，`by_event_id` 兜底）。新增 `tests/test_x1_convergence.py`（9 项：代码契约 + 数据契约 + 单事实源完整性）并接入 `test.yml`。**未新增卡片**——Dashboard→Event Operating Console 仅换源。
+- 旧派生路径（`review_queue.change_impact` / `decision===null`）已彻底移除，契约测试 `test_old_review_queue_path_removed` 守护不回归。
 
 ---
 
@@ -95,7 +98,18 @@ E2(decided_at+样本) ─┼─→ S1(Registry) → S2(Resolver) → S3(Lifecycl
 E3(feedback) ───────┘                                  │            │
                                                        S5(Funnel)   S6(Replay)
                                                             │            │
-                                                            └──→ X1(Exec Home 换源)
+                                                            └──→ X1(Exec Home 换源) ✅ 92c824d
 ```
 
 > 说明：E2 是单一最高杠杆（解锁 5/7 开放问题），且含流程侧（需 Human Review 落 decision）；E1 是纯工程高 ROI；S1/S2 是脊柱起点，复用既有 event_id + fingerprint，不推倒重来。
+
+---
+
+## 8. 已知技术债（实测，非阻塞）
+
+### T1 · `build_intelligence` / `daily_brief` 二次复杂度（性能债）
+- **实测**：1634 条真实新闻上 `daily_brief` 耗时 ~72.7s 单测、~160s 全量；n 翻倍耗时 ×4（典型 O(n²)）。
+- **根因**：`intelligence.py:152 _cluster` 全对相似度；内部 `_event_type`/`_entities`/`_norm` 逐对重复计算（无记忆化）。cProfile：`_event_type` 310,998 次、`_entities` 441,252 次、`re.sub` 933,805 次（n=400）。
+- **影响面**：`p2_intelligence.py` 在 `daily-collect.yml` + `test.yml` 均被调用 → CI 该步随 data.json 增长二次变慢（data.json 当前 1634、非滚动窗口，长期累积）。
+- **状态**：与 E3 无关（E3 未触碰 intelligence 评分路径）。**待办**：先加 `_entities`/`_event_type` 记忆化（~常量级加速、行为可字节校验），再视需引入分桶/阻断策略消除 O(n²)。属独立优化，不在本 Sprint 强制出口。
+- **纪律约束**：行为须保持确定性——优化后 `intelligence.json` 关键字段需与现状对齐（回归测试 `test_intelligence*` 已覆盖），严禁为提速改变事件合并/评分结果。
