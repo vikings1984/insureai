@@ -1,15 +1,20 @@
 {
-  "version": "ir-v1.0",
-  "registry_version": "er-v1.0",
-  "generated_at": "2026-09-01T10:38:56Z",
+  "version": "ir-v1.1",
+  "registry_version": "er-v1.1",
+  "generated_at": "2026-09-02T14:28:18Z",
   "principle": "单一事实源：所有模块引用 canonical_event_id；resolver 只解析、不发明身份。合并与分裂由证据 + 人工 review 决定，resolver 仅产出候选。",
   "total_references": 141,
   "resolved": 141,
   "unresolved": 0,
   "unresolved_rate": 0.0,
   "unresolved_samples": [],
+  "partition_stats": {
+    "other": 109,
+    "regulatory": 28,
+    "acquisition": 4
+  },
   "candidate_merges": {
-    "count": 10,
+    "count": 7,
     "status": "proposed",
     "items": [
       {
@@ -35,6 +40,7 @@
           "evt_d77c270827ce",
           "evt_963182b006fe"
         ],
+        "domain": "other",
         "evidence": "实体共现（AI 跨 8 个 canonical event）",
         "status": "proposed"
       },
@@ -61,6 +67,7 @@
           "evt_955491a7515f",
           "evt_63164bd5c318"
         ],
+        "domain": "other",
         "evidence": "实体共现（AM Best 跨 8 个 canonical event）",
         "status": "proposed"
       },
@@ -75,25 +82,8 @@
           "evt_58b4a1f7bf79",
           "evt_2a40eace85a9"
         ],
+        "domain": "other",
         "evidence": "实体共现（BMS Re 跨 2 个 canonical event）",
-        "status": "proposed"
-      },
-      {
-        "entity": "Beazley",
-        "type": "Company",
-        "canonical_ids": [
-          "cev_55200e519bc6",
-          "cev_5a02096e49fc",
-          "cev_697299c3b9e9",
-          "cev_ddeabda6b23b"
-        ],
-        "event_ids": [
-          "evt_9c3a168bcc68",
-          "evt_ae66b3e5b306",
-          "evt_848f008ece6f",
-          "evt_d42873a48e85"
-        ],
-        "evidence": "实体共现（Beazley 跨 4 个 canonical event）",
         "status": "proposed"
       },
       {
@@ -113,6 +103,7 @@
           "evt_03c95bd12e1d",
           "evt_dca6160d63d0"
         ],
+        "domain": "other",
         "evidence": "实体共现（Guy Carpenter 跨 5 个 canonical event）",
         "status": "proposed"
       },
@@ -127,6 +118,7 @@
           "evt_1796cf449991",
           "evt_c5472f50fe4d"
         ],
+        "domain": "other",
         "evidence": "实体共现（Hiscox 跨 2 个 canonical event）",
         "status": "proposed"
       },
@@ -145,35 +137,8 @@
           "evt_4ea1c2a12d3a",
           "evt_0fe4820271f7"
         ],
+        "domain": "other",
         "evidence": "实体共现（KCC 跨 4 个 canonical event）",
-        "status": "proposed"
-      },
-      {
-        "entity": "Marco Capital",
-        "type": "Company",
-        "canonical_ids": [
-          "cev_19fb66c82902",
-          "cev_452fc8c90797"
-        ],
-        "event_ids": [
-          "evt_3096cade8a53",
-          "evt_92310abdea56"
-        ],
-        "evidence": "实体共现（Marco Capital 跨 2 个 canonical event）",
-        "status": "proposed"
-      },
-      {
-        "entity": "Pro Global",
-        "type": "Company",
-        "canonical_ids": [
-          "cev_19fb66c82902",
-          "cev_452fc8c90797"
-        ],
-        "event_ids": [
-          "evt_3096cade8a53",
-          "evt_92310abdea56"
-        ],
-        "evidence": "实体共现（Pro Global 跨 2 个 canonical event）",
         "status": "proposed"
       },
       {
@@ -199,15 +164,20 @@
           "evt_8ca381407829",
           "evt_eb6ce6e664f1"
         ],
+        "domain": "other",
         "evidence": "实体共现（保险公司 跨 8 个 canonical event）",
         "status": "proposed"
       }
     ]
+  },
+  "generic_review": {
+    "count": 0,
+    "items": []
   },
   "fingerprint_bridge": {
     "mapped": 0,
     "total_in_map": 0,
     "note": "fingerprint 为模块级质量趋势键，仅经证据映射桥接到 canonical；无映射→不解析（不伪造）"
   },
-  "open_note": "候选合并为 observation，需 S2 证据阈值 + 人工 review 方可执行 event_registry.merge；fingerprint 桥接待 review/decision 落证据后填充 resolver_fingerprint_map.json。"
+  "open_note": "候选合并为 observation，需 S2 证据阈值 + 人工 review 方可执行 event_registry.merge；generic_entities_only 进复核不进 CE；fingerprint 桥接待 review/decision 落证据后填充 resolver_fingerprint_map.json。"
 }

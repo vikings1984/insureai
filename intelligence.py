@@ -207,6 +207,24 @@ def _domain(item: dict) -> str:
     except Exception:
         return ""
 
+
+def _resolve_canonical_event_id(event_id: str) -> str | None:
+    """单一事实源：把局部 event_id 解析到全局 canonical_event_id（失败回退 None，不伪造）。
+
+    X2（评审修订）：事件详情页以 CE_xxxx 为事件身份锚点；解析依赖 event_registry +
+    canonical_events.json，缺失或异常时安全回退，绝不发明身份。
+    """
+    if not event_id:
+        return None
+    try:
+        import event_registry as _er
+        reg = _er.load_registry()
+        if reg:
+            return _er.resolve(event_id, reg)
+    except Exception:
+        return None
+    return None
+
 def _score(items: list[dict]) -> dict:
     rows = []
     for item in items:
@@ -290,7 +308,7 @@ def build(data: dict) -> dict:
         review_required = evidence_coverage < 75 or event_type in {"regulatory", "rating", "claims_loss"}
         conflict = False
         trust_level = _trust(evidence_coverage, conflict)
-        events.append({"event_id": "evt_" + event_id, "event_fingerprint": _event_fingerprint(lead), "event_fingerprint_version": FINGERPRINT_VERSION, "title": lead.get("title_zh") or lead.get("title") or "", "event_type": event_type, "entities": entities, "topic": lead.get("research_topic"), "topic_label": TOPIC_LABELS.get(lead.get("research_topic"), "保险行业"), "published_at": lead.get("published_at"), "source_count": len({x.get("source_name") for x in items if x.get("source_name")}), "article_count": len(items), "article_ids": [x.get("id") for x in items if x.get("id") is not None], "scores": scores, "evidence": evidence, "evidence_coverage": evidence_coverage, "evidence_status": evidence_status, "review_required": review_required, "trust": {"level": trust_level, "conflict": conflict}, "insight": _insight(items, scores, event_type, entities)})
+        events.append({"event_id": "evt_" + event_id, "event_fingerprint": _event_fingerprint(lead), "event_fingerprint_version": FINGERPRINT_VERSION, "canonical_event_id": _resolve_canonical_event_id("evt_" + event_id), "title": lead.get("title_zh") or lead.get("title") or "", "event_type": event_type, "entities": entities, "topic": lead.get("research_topic"), "topic_label": TOPIC_LABELS.get(lead.get("research_topic"), "保险行业"), "published_at": lead.get("published_at"), "source_count": len({x.get("source_name") for x in items if x.get("source_name")}), "article_count": len(items), "article_ids": [x.get("id") for x in items if x.get("id") is not None], "scores": scores, "evidence": evidence, "evidence_coverage": evidence_coverage, "evidence_status": evidence_status, "review_required": review_required, "trust": {"level": trust_level, "conflict": conflict}, "insight": _insight(items, scores, event_type, entities)})
     events.sort(key=lambda x: (x["scores"]["intelligence_score"], x.get("published_at") or ""), reverse=True)
     today = datetime.now(timezone.utc).date().isoformat()
     daily = [e for e in events if (e.get("published_at") or "").startswith(today)][:5] or events[:5]

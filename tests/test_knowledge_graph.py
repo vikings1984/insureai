@@ -98,6 +98,42 @@ class KnowledgeGraphTests(unittest.TestCase):
         crossover = topic_crossover(result, ["capital_reinsurance", "ai_intelligent"])
         self.assertIn("Munich Re", [x["entity"] for x in crossover["entities"]])
 
+    def test_event_nodes_reference_canonical_event_id(self):
+        """X2（评审修订）：KG Event 节点引用 canonical_event_id（单一事实源锚点）。
+
+        registry 存在且 event_id 可解析时，Event 节点携带 canonical_event_id；
+        不可解析的事件不伪造身份（canonical_event_id 缺省），canonical_event_count 仅计可解析者。
+        """
+        intelligence, claims = _fixture()
+        canonical = {
+            "version": "er-v1.1",
+            "canonical_events": {"cev_e1": {"canonical_event_id": "cev_e1", "event_type": "acquisition"}},
+            "by_event_id": {"e1": "cev_e1"},
+            "aliases": {},
+        }
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            (root / "intelligence.json").write_text(json.dumps(intelligence), encoding="utf-8")
+            (root / "claims.json").write_text(json.dumps(claims), encoding="utf-8")
+            (root / "canonical_events.json").write_text(json.dumps(canonical), encoding="utf-8")
+            old = {k: getattr(knowledge_graph, k) for k in ("ROOT", "INTELLIGENCE", "CLAIMS", "CANONICAL", "OUTPUT")}
+            knowledge_graph.ROOT = root
+            knowledge_graph.INTELLIGENCE = root / "intelligence.json"
+            knowledge_graph.CLAIMS = root / "claims.json"
+            knowledge_graph.CANONICAL = root / "canonical_events.json"
+            knowledge_graph.OUTPUT = root / "knowledge_graph.json"
+            try:
+                result = knowledge_graph.build()
+            finally:
+                for k, v in old.items():
+                    setattr(knowledge_graph, k, v)
+        events = [n for n in result["nodes"] if n["type"] == "Event"]
+        e1_nodes = [n for n in events if n.get("event_id") == "e1"]
+        self.assertEqual(len(e1_nodes), 1)
+        self.assertEqual(e1_nodes[0]["canonical_event_id"], "cev_e1")
+        # e2 无 registry 映射 → 不伪造身份，canonical_event_count 只计可解析者
+        self.assertEqual(result["stats"]["canonical_event_count"], 1)
+
 
 class EntityExtractionNoiseTests(unittest.TestCase):
     """E1：KG 实体抽取噪声治理 — 过滤句首状语片段、剥离中文前缀、限制长度。"""

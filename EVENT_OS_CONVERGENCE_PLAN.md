@@ -173,9 +173,13 @@ Event OS 核心主链 60 → **目标 80（三周后）**，不写 95；Second B
 | KG | 节点 ID 引用 canonical_event_id |
 | E1/E2/E3 | 保持（E2 扩 acted_at） |
 
-### 9.10 Sprint 1 进度（当前）
+### 9.10 Sprint 1 进度（当前：✅ 已收口）
 - ✅ `event_registry.py` er-v1.1：CANONICALIZE_POLICY / event_type_domain / may_auto_merge / should_merge / validate_against_annotations / split 人工门；build 记录 domain+key_entity（向后兼容 X1 的 by_event_id/count）。
 - ✅ `canonical_annotation_set.json`：30 条标注（必合/必拆/alias-only/跨类型/缺类型），质量门基线。
 - ✅ `tests/test_canonical_annotations.py`：12 项（策略 / should_merge / 30 标注门 / split 人工门 / build 向后兼容），全绿。
 - ✅ `canonical_events.json` 重建为 er-v1.1（141 canonical，domain/key_entity 增补，by_event_id/count 不变）。
-- ⬜ 余下 Sprint 1：S2 分区解析接入、`事件详情`页露出 `CE_xxxx`、KG 节点引用 CE、CI 加 test_canonical_annotations。
+- ✅ **S2 分区解析接入**（`identity_resolver.py` ir-v1.1）：partition_classify / resolve_with_partition / 跨 domain 合并门（应各自为 CE，不伪造跨类合并）/ generic_entities_only 进复核不进 CE / build_report 增 partition_stats + generic_review；`tests/test_identity_resolver.py` 扩至 15 项；`resolver_report.json` 重建（partition：acquisition=4 / regulatory=28 / other=109；candidate_merges=7）。
+- ✅ **事件详情页露出 `CE_xxxx`**：`intelligence.py` build 为每个 event 解析并附带 `canonical_event_id`（单一事实源，失败回退 None 不伪造）；`intelligence.html` 详情头部 `⌖ CE_xxxx` 徽标（ED-1 白名单追加 `canonical_event_id`，契约仍全绿）；`event-intelligence.html` 详情补 `Canonical Event: ⌖ …`；`intelligence.json` 重建（1554 events 注入 canonical_event_id）。
+- ✅ **KG 节点引用 canonical_event_id**：`knowledge_graph.py` build 解析 event_id→CE，Event 节点以 canonical_event_id 为 key（同 CE 多源坍缩为单节点）、节点携带 canonical_event_id；不可解析者回退 event_id 不伪造；`stats.canonical_event_count` 统计；`tests/test_knowledge_graph.py` 扩至 11 项；`knowledge_graph.json` + `kg_viz.json` 重建（1554 Event 节点中 134 引用 CE，符合 narrow-first 覆盖预期）。
+- ✅ **CI**：`test.yml` 已含 `tests.test_canonical_annotations`（Sprint 1 出口门）。
+- 🟡 下一站 Sprint 2（§9.3）：S3 domain 插件（acquisition 先）+ S4 两层准入 + X1 Home 改三行。

@@ -31,7 +31,7 @@ STATE_FIELDS = {"data", "reviewQueue"}
 RENDERER_INTERNAL = {"spans"}
 
 ARTIFACT_FIELDS = {
-    "event_id", "title", "event_type", "topic_label", "evidence", "evidence_coverage",
+    "event_id", "canonical_event_id", "title", "event_type", "topic_label", "evidence", "evidence_coverage",
     "evidence_status", "review_required", "source_count", "insight", "trust", "claims", "scores",
     "what_happened", "why_it_matters", "who_is_affected", "what_to_watch", "human_review_required",
     "signals", "coverage", "cross_checked", "conflicted",

@@ -10,9 +10,15 @@ from urllib.parse import urlparse
 
 from contract import ARTIFACT_VERSIONS
 
+try:
+    import event_registry as er
+except Exception:  # 解析层不可用时 KG 仍可构建（回退 event_id，不阻断）
+    er = None
+
 ROOT = Path(__file__).resolve().parent
 INTELLIGENCE = ROOT / "intelligence.json"
 CLAIMS = ROOT / "claims.json"
+CANONICAL = ROOT / "canonical_events.json"
 OUTPUT = ROOT / "knowledge_graph.json"
 
 NODE_TYPES = {"Company", "Person", "Product", "Event", "Regulation", "Claim", "Evidence", "Topic"}
@@ -132,18 +138,36 @@ def entities(text: str) -> list[str]:
     return out[:12]
 
 
+def _load_registry() -> dict | None:
+    """加载 S1 全局注册表（读 CANONICAL 路径）；缺失/异常安全回退 None（KG 仍可构建，仅不引用 canonical）。"""
+    if er is None or not CANONICAL.exists():
+        return None
+    try:
+        return json.loads(CANONICAL.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+
 def build() -> dict:
     intelligence = load(INTELLIGENCE)
     claims_doc = load(CLAIMS)
+    registry = _load_registry()
     events = intelligence.get("events") or []
     nodes, edges = {}, {}
     evidence_nodes = {}
     event_nodes = {}
 
     for event in events:
-        event_key = event.get("event_id") or event.get("title") or "unknown"
-        eid = add_node(nodes, "Event", event_key, title=event.get("title"), topic=event.get("topic"), trust=event.get("trust"), evidence_status=event.get("evidence_status"), source_count=event.get("source_count"), published_at=event.get("published_at"))
-        event_nodes[event.get("event_id")] = eid
+        eid_raw = event.get("event_id")
+        # 单一事实源：事件节点以 canonical_event_id 为锚点（同 CE 多源坍缩为同一节点）。
+        # 解析失败/无 registry 时回退 event_id，绝不伪造身份。
+        cev = er.resolve(eid_raw, registry) if (er and registry) else None
+        event_key = cev or eid_raw or event.get("title") or "unknown"
+        eid = add_node(nodes, "Event", event_key, title=event.get("title"), canonical_event_id=cev, event_id=eid_raw, topic=event.get("topic"), trust=event.get("trust"), evidence_status=event.get("evidence_status"), source_count=event.get("source_count"), published_at=event.get("published_at"))
+        # 两种键都映射到同一节点 id：raw event_id（claim 关联）与 canonical_event_id（同 CE 坍缩）
+        event_nodes[eid_raw] = eid
+        if cev:
+            event_nodes[cev] = eid
         tid = add_node(nodes, "Topic", event.get("topic") or "")
         add_edge(edges, eid, "ABOUT", tid, confidence=0.9)
         title = event.get("title") or event.get("summary") or event.get("insight") or ""
@@ -158,7 +182,10 @@ def build() -> dict:
             add_edge(edges, ev_id, "EVIDENCES", eid, confidence=1.0)
 
     for event_group in claims_doc.get("events") or []:
-        eid = event_nodes.get(event_group.get("event_id"))
+        # claim 分组按 raw event_id 或 canonical_event_id 关联（同 CE 多源共享一个节点）
+        geid = event_group.get("event_id")
+        cev_g = er.resolve(geid, registry) if (er and registry) else None
+        eid = event_nodes.get(cev_g) or event_nodes.get(geid)
         for claim in event_group.get("claims") or []:
             claim_key = claim.get("claim_id") or f"{event_group.get('event_id')}:{len(nodes)}"
             cid = add_node(nodes, "Claim", claim_key, claim_text=claim.get("claim_text") or claim.get("text"), claim_type=claim.get("claim_type"), verification_status=claim.get("verification_status") or claim.get("status"), confidence=claim.get("confidence"), independent_domains=claim.get("independent_domains"), event_id=event_group.get("event_id"))
@@ -185,6 +212,7 @@ def build() -> dict:
     for node in nodes.values():
         type_counts[node["type"]] = type_counts.get(node["type"], 0) + 1
     event_dates = sorted(x["published_at"] for x in nodes.values() if x["type"] == "Event" and x.get("published_at"))
+    canonical_event_nodes = sum(1 for n in nodes.values() if n["type"] == "Event" and n.get("canonical_event_id"))
     result = {
         "version": ARTIFACT_VERSIONS["knowledge_graph.json"],
         "graph": "insureai_traceable_knowledge_graph",
@@ -197,6 +225,7 @@ def build() -> dict:
             "edge_count": len(edges),
             "event_count": len(events),
             "claim_count": sum(len(x.get("claims") or []) for x in claims_doc.get("events") or []),
+            "canonical_event_count": canonical_event_nodes,
             "node_types": dict(sorted(type_counts.items(), key=lambda kv: -kv[1])),
             "latest_event_at": event_dates[-1] if event_dates else "",
         },
