@@ -14,7 +14,9 @@ from p2_import_feedback import (
     ALLOWED_LABELS,
     ALLOWED_STATUS,
     VERSION,
+    _resolve_ceid,
     import_payload,
+    load_by_event_id,
     load_payload,
     merge_state,
     normalize_feedback,
@@ -22,6 +24,7 @@ from p2_import_feedback import (
     run,
     validate_feedback_row,
     validate_monitor_row,
+    validate_state,
 )
 
 
@@ -63,9 +66,11 @@ class TestSchemaAlignment(unittest.TestCase):
         self.assertEqual(len(accepted), 1)
         self.assertEqual(rejected, [])
         row = accepted[0]
-        for key in ("event_id", "label", "note", "importance", "confidence",
+        for key in ("event_id", "canonical_event_id", "label", "note", "importance", "confidence",
                     "outcome", "user_id", "created_at"):
             self.assertIn(key, row)
+        # 无 registry 时 fail-soft：canonical 退化为原始 id（不丢数据）
+        self.assertEqual(accepted[0]["canonical_event_id"], "e1")
 
 
 class TestFeedbackValidation(unittest.TestCase):
@@ -139,22 +144,72 @@ class TestDedup(unittest.TestCase):
 
 class TestMerge(unittest.TestCase):
     def test_merge_replaces_existing_and_keeps_others(self):
-        state = _state(feedback=[{"event_id": "e1", "label": "useful", "created_at": "2000-01-01T00:00:00+00:00"}],
-                       monitoring=[{"watchlist_id": "ai", "event_id": "e1", "status": "active",
-                                    "updated_at": "2000-01-01T00:00:00+00:00"}])
+        state = _state(feedback=[{"event_id": "e1", "canonical_event_id": "cev_1", "label": "useful",
+                                  "created_at": "2000-01-01T00:00:00+00:00"}],
+                       monitoring=[{"watchlist_id": "ai", "event_id": "e1", "canonical_event_id": "cev_1",
+                                    "status": "active", "updated_at": "2000-01-01T00:00:00+00:00"}])
         merged = merge_state(state,
-                             [{"event_id": "e1", "label": "useful", "created_at": "2026-09-02T00:00:00+00:00"}],
-                             [{"watchlist_id": "ma", "event_id": "e2", "status": "active",
-                               "updated_at": "2026-09-02T00:00:00+00:00"}])
-        self.assertEqual(len(merged["feedback"]), 1)  # 覆盖而非追加
+                             [{"event_id": "e1", "canonical_event_id": "cev_1", "label": "useful",
+                               "created_at": "2026-09-02T00:00:00+00:00"}],
+                             [{"watchlist_id": "ma", "event_id": "e2", "canonical_event_id": "cev_2",
+                               "status": "active", "updated_at": "2026-09-02T00:00:00+00:00"}])
+        self.assertEqual(len(merged["feedback"]), 1)  # 覆盖而非追加（按 canonical 去重）
         self.assertEqual(merged["feedback"][0]["created_at"], "2026-09-02T00:00:00+00:00")
-        self.assertEqual(len(merged["monitoring"]), 2)  # 不同 (watchlist,event) 保留
+        self.assertEqual(len(merged["monitoring"]), 2)  # 不同 (watchlist,canonical) 保留
 
     def test_merge_does_not_mutate_input_state(self):
-        state = _state(feedback=[{"event_id": "old", "label": "useful"}])
-        merge_state(state, [{"event_id": "new", "label": "noise", "created_at": "2026-09-02T00:00:00+00:00"}], [])
+        state = _state(feedback=[{"event_id": "old", "canonical_event_id": "cev_old", "label": "useful"}])
+        merge_state(state, [{"event_id": "new", "canonical_event_id": "cev_new", "label": "noise",
+                             "created_at": "2026-09-02T00:00:00+00:00"}], [])
         self.assertEqual(len(state["feedback"]), 1)  # 原 state 未被污染
         self.assertEqual(state["feedback"][0]["event_id"], "old")
+
+
+class TestCanonicalEventId(unittest.TestCase):
+    """§9.5 E3 反馈挂接 canonical_event_id：event_id → cev_ 归一化 + fail-closed 守卫。"""
+
+    def test_resolve_ceid_via_registry(self):
+        self.assertEqual(_resolve_ceid("evt_1", {"evt_1": "cev_1"}), "cev_1")
+        self.assertEqual(_resolve_ceid("evt_x", {}), None)  # 不在 registry → None
+
+    def test_resolve_ceid_failsoft_without_registry(self):
+        self.assertEqual(_resolve_ceid("evt_1", None), "evt_1")  # 缺 registry 退化为原始 id
+
+    def test_feedback_event_id_normalized_to_canonical(self):
+        accepted, _ = normalize_feedback([_fb("evt_1", "useful")], {"ai"}, {"evt_1": "cev_1"})
+        self.assertEqual(len(accepted), 1)
+        self.assertEqual(accepted[0]["canonical_event_id"], "cev_1")
+        self.assertEqual(accepted[0]["event_id"], "evt_1")  # 原始 id 保留可追溯
+
+    def test_unresolvable_event_id_rejected_fail_closed(self):
+        """event_id 无法解析为 canonical 时按 fail-closed 拒绝，绝不落到原始 id。"""
+        accepted, rejected = normalize_feedback([_fb("evt_ghost", "useful")], {"ai"}, {"evt_1": "cev_1"})
+        self.assertEqual(accepted, [])
+        self.assertEqual(len(rejected), 1)
+        self.assertTrue(any("canonical_event_id" in r for r in rejected[0]["reasons"]))
+
+    def test_monitoring_event_id_normalized_to_canonical(self):
+        accepted, _ = normalize_monitoring([_mon("ai", "evt_1", "active")], {"ai"}, {"evt_1": "cev_1"})
+        self.assertEqual(accepted[0]["canonical_event_id"], "cev_1")
+
+    def test_validate_state_rejects_missing_canonical(self):
+        with self.assertRaises(AssertionError):
+            validate_state({"feedback": [{"event_id": "e1", "label": "useful"}]})
+        with self.assertRaises(AssertionError):
+            validate_state({"monitoring": [{"watchlist_id": "ai", "event_id": "e1", "status": "active"}]})
+        # 两条都锚定 canonical 应通过
+        validate_state({"feedback": [{"canonical_event_id": "cev_1", "label": "useful"}],
+                        "monitoring": [{"watchlist_id": "ai", "canonical_event_id": "cev_1", "status": "active"}]})
+
+
+class TestLoadByEventId(unittest.TestCase):
+    def test_loads_by_event_id_from_registry(self):
+        with tempfile.TemporaryDirectory() as d:
+            ce = Path(d) / "canonical_events.json"
+            ce.write_text(json.dumps({"by_event_id": {"evt_1": "cev_1"}}), encoding="utf-8")
+            self.assertEqual(load_by_event_id(ce), {"evt_1": "cev_1"})
+            # 缺文件 → None（fail-soft）
+            self.assertIsNone(load_by_event_id(Path(d) / "missing.json"))
 
 
 class TestHonesty(unittest.TestCase):
@@ -207,8 +262,14 @@ class TestLoadPayload(unittest.TestCase):
 
 
 class TestRunEndToEnd(unittest.TestCase):
+    def _registry(self, d: str, mapping: dict) -> Path:
+        ce = Path(d) / "canonical_events.json"
+        ce.write_text(json.dumps({"by_event_id": mapping}), encoding="utf-8")
+        return ce
+
     def test_run_merges_and_persists(self):
         with tempfile.TemporaryDirectory() as d:
+            ce = self._registry(d, {"evt_1": "cev_1", "evt_2": "cev_2"})
             payload = Path(d) / "export.json"
             payload.write_text(json.dumps({
                 "feedback": [_fb("evt_1", "useful", note="很关键"), _fb("evt_2", "bogus")],
@@ -216,7 +277,7 @@ class TestRunEndToEnd(unittest.TestCase):
             }), encoding="utf-8")
             state_path = Path(d) / "p2_state.json"
             state_path.write_text(json.dumps(_state()), encoding="utf-8")
-            report = run(payload, state_path, persist=True)
+            report = run(payload, state_path, ce_path=ce, persist=True)
             self.assertEqual(report["imported_feedback"], 1)
             self.assertEqual(report["rejected_feedback"], 1)
             self.assertEqual(report["imported_monitoring"], 1)
@@ -224,16 +285,36 @@ class TestRunEndToEnd(unittest.TestCase):
             saved = json.loads(state_path.read_text(encoding="utf-8"))
             self.assertEqual(len(saved["feedback"]), 1)
             self.assertEqual(saved["feedback"][0]["note"], "很关键")
+            self.assertEqual(saved["feedback"][0]["canonical_event_id"], "cev_1")
             self.assertEqual(len(saved["monitoring"]), 1)
+
+    def test_run_rejects_unresolvable_event_id_fail_closed(self):
+        """event_id 不在 registry 时整行被拒绝，不静默落到原始 id。"""
+        with tempfile.TemporaryDirectory() as d:
+            ce = self._registry(d, {"evt_1": "cev_1"})  # evt_ghost 不在映射内
+            payload = Path(d) / "export.json"
+            payload.write_text(json.dumps({
+                "feedback": [_fb("evt_ghost", "useful")], "monitoring": [_mon("ai", "evt_ghost", "active")],
+            }), encoding="utf-8")
+            state_path = Path(d) / "p2_state.json"
+            state_path.write_text(json.dumps(_state()), encoding="utf-8")
+            report = run(payload, state_path, ce_path=ce, persist=True)
+            self.assertEqual(report["imported_feedback"], 0)
+            self.assertEqual(report["rejected_feedback"], 1)
+            self.assertEqual(report["imported_monitoring"], 0)
+            self.assertEqual(report["rejected_monitoring"], 1)
+            saved = json.loads(state_path.read_text(encoding="utf-8"))
+            self.assertEqual(len(saved["feedback"]), 0)  # 无脏数据落地
 
     def test_run_no_persist_leaves_file_untouched(self):
         with tempfile.TemporaryDirectory() as d:
+            ce = self._registry(d, {"evt_1": "cev_1"})
             payload = Path(d) / "export.json"
             payload.write_text(json.dumps({"feedback": [_fb("evt_1", "useful")], "monitoring": []}), encoding="utf-8")
             state_path = Path(d) / "p2_state.json"
             original = json.dumps(_state())
             state_path.write_text(original, encoding="utf-8")
-            run(payload, state_path, persist=False)
+            run(payload, state_path, ce_path=ce, persist=False)
             self.assertEqual(state_path.read_text(encoding="utf-8"), original)
 
 

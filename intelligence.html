@@ -22,6 +22,7 @@
     .dec-item{border:1px solid #eaecf0;border-radius:10px;padding:10px 11px;margin-bottom:7px}.dec-guard{margin-top:6px;font-size:10.5px;color:#9a3412;background:#fff7ed;border-radius:6px;padding:6px 8px;line-height:1.5}.detail-boundary{font-size:11px;color:#667085;border:1px dashed #d0d5dd;border-radius:10px;padding:10px;line-height:1.55}.review-box ul{margin:6px 0 0;padding-left:16px;font-size:11px;line-height:1.6}.fn-row{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}.fn-chip{font-size:9.5px;color:#0f2c44;background:#eef4fa;border:1px solid #d7e5f2;border-radius:4px;padding:1px 6px}.dec-ctx{font-size:10.5px;color:#667085;margin-top:3px}.dec-ctx.opp{color:#1a7f4b}.dec-ctx.risk{color:#b3452e}.dec-next{font-size:10.5px;color:#0f2c44;font-weight:600;margin-top:4px}.role-lens{margin-bottom:8px}.role-chip{display:inline-block;font-size:10px;color:#47546a;background:#f8fafc;border:1px solid #e4e9ef;border-radius:8px;padding:3px 8px;margin:2px 4px 2px 0}.role-chip b{color:#0f2c44;margin-right:4px}
     @media(max-width:1050px){.grid{grid-template-columns:repeat(2,1fr)}.radar,.main{grid-template-columns:1fr}.detail{position:static}.signal-grid{grid-template-columns:repeat(3,1fr)}.conflict-sides{grid-template-columns:1fr}}
     @media(max-width:600px){.shell{padding:14px}.grid,.executive-grid{grid-template-columns:1fr 1fr}.signal-grid{grid-template-columns:1fr 1fr}.kpi{font-size:24px}.detail-grid{grid-template-columns:1fr}}
+    .replay-chain{position:relative;margin:10px 0 0;padding-left:18px}.replay-chain::before{content:"";position:absolute;left:5px;top:4px;bottom:4px;width:2px;background:#e4e7ec}.replay-node{position:relative;padding:6px 0 10px}.replay-node::before{content:"";position:absolute;left:-16px;top:8px;width:10px;height:10px;border-radius:50%;background:#cbd5e1;border:2px solid #fff}.replay-node.transition::before{background:#175cd3}.replay-date{font-size:10px;color:#667085}.replay-stage{font-weight:700;font-size:13px}.replay-ev{font-size:10px;color:#475467}
   </style>
 </head>
 <body>
@@ -42,7 +43,7 @@
 
   <div class="main">
     <section class="card"><div class="section-title">保险情报事件</div><div class="muted" style="margin-bottom:12px">优先展示高情报价值事件；单一来源、高风险主题默认进入人工复核。</div><div id="events"><div class="empty">正在加载 intelligence.json…</div></div></section>
-    <aside class="card detail"><div class="section-title">事件详情</div><div id="detail"><div class="empty">点击左侧事件查看证据和建议</div></div></aside>
+    <aside class="card detail"><div class="section-title">事件详情</div><div id="detail"><div class="empty">点击左侧事件查看证据和建议</div></div><div id="replay" style="margin-top:16px;border-top:1px solid #eaecf0;padding-top:14px"><div class="section-title">事件回放时间轴（S6 · 为何今天变重要）</div><div id="replay-body"><div class="empty">点击事件查看回放链</div></div></div></aside>
   </div>
 </div>
 <script>
@@ -209,8 +210,37 @@
         <div class="dblock-title">Human Review 状态</div>
         ${reviewHtml}
       </section>`;
+    if(cev) renderReplay(cev);
   }
   /* detail-renderer:end */
+
+  /* S6 页内 Replay 时间轴（挂钩 event_replays.json，非新功能）：
+     独立于上面的 locked 渲染器，只读取 event_replays.json，不引入 artifact 之外的事实。 */
+  async function renderReplay(cev){
+    const body = document.getElementById('replay-body');
+    if(!body) return;
+    if(!cev){ body.innerHTML='<div class="empty">该事件无 Canonical Event 身份，无法回放。</div>'; return; }
+    try{
+      const res = await fetch('event_replays.json?t=' + Date.now(), {cache:'no-store'});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const data = await res.json();
+      const rp = (data.replays||[]).find(r => r.canonical_event_id === cev);
+      if(!rp){ body.innerHTML='<div class="empty">回放累计器暂无该 Canonical Event 的快照（首跑仅播种，运行数日后显现跨期变化）。</div>'; return; }
+      const chain = (rp.replay_chain||[]).map(s=>{
+        const isT = (rp.transitions||[]).some(t => t.date === s.date);
+        return `<div class="replay-node ${isT?'transition':''}"><div class="replay-date">${esc(s.date)}</div><div class="replay-stage">阶段 ${esc(s.stage)}</div><div class="replay-ev">证据 ${esc(s.evidence_count)} · 命题 ${esc(s.proposition_count)} · 信源 ${esc(s.source_count)}</div></div>`;
+      }).join('');
+      const tr = (rp.transitions||[]).map(t=>`<span class="pill review">${esc(t.from)} → ${esc(t.to)} @ ${esc(t.date)}</span>`).join(' ');
+      body.innerHTML = `
+        <div class="detail-grid" style="margin-top:8px"><div><div class="muted">当前阶段</div><div>${esc(rp.current_stage)}</div></div><div><div class="muted">快照数</div><div>${esc(rp.snapshot_count)}</div></div><div><div class="muted">首次观测</div><div>${esc(rp.first_seen)}</div></div><div><div class="muted">最近观测</div><div>${esc(rp.last_seen)}</div></div></div>
+        <div class="replay-chain">${chain}</div>
+        ${tr?`<div style="margin-top:8px"><div class="muted" style="font-size:11px;margin-bottom:4px">阶段跃迁</div>${tr}</div>`:''}
+        <div class="detail-boundary" style="margin-top:10px"><b>为何今天变重要：</b>${esc(rp.why_important_today)}</div>
+        <div class="muted" style="margin-top:8px">下一步（生命周期顺序事实，非预测）：${esc((rp.next_stage_projection||{}).stage||'不适用')} · ${esc((rp.next_stage_projection||{}).basis||'')}</div>`;
+    }catch(err){
+      body.innerHTML='<div class="empty">暂无 event_replays.json。请先运行 replay_projection.py 生成回放产物。</div>';
+    }
+  }
   load();
 })();
 </script>

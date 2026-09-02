@@ -40,7 +40,11 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent
 OUTPUT_PATH = ROOT / "second_brain.json"
 
-VERSION = "sb-v1.0"
+VERSION = "sb-v1.1"
+
+# 角色冻结（§9.5）：Second Brain 只承认这三档角色切片，顺序与集合均不可漂移。
+# 角色归属「用户属于什么角色」是偏好结论，样本不支持，故显式冻结、禁止推断。
+ROLE_FROZEN = ("strategy", "operations", "risk")
 
 # 角色 → 关注面 的显式映射。
 # 这些是「用户先前在 Watchlist / 轨迹里点名的方向」，由本模块透明声明；
@@ -137,7 +141,11 @@ def role_views(pm: dict, brief_items: list[dict]) -> dict[str, dict]:
 # --------------------------------------------------------------------------
 # 实体跨事件时间线：同一主体在图谱里参与过的事件，按发布时间串起来
 # --------------------------------------------------------------------------
-def build_entity_threads(graph: dict, tracked_names: list[str]) -> list[dict]:
+def build_entity_threads(
+    graph: dict,
+    tracked_names: list[str],
+    by_event_id: dict[str, str] | None = None,
+) -> list[dict]:
     nodes = graph.get("nodes", [])
     edges = graph.get("edges", [])
     by_id = {n["id"]: n for n in nodes}
@@ -152,6 +160,17 @@ def build_entity_threads(graph: dict, tracked_names: list[str]) -> list[dict]:
         adj.setdefault(e["source"], []).append((e["target"], e["relationship"]))
         adj.setdefault(e["target"], []).append((e["source"], e["relationship"]))
 
+    def _resolve_ceid(t: dict) -> str:
+        """FK 升级（§9.5）：事件引用统一收敛到 canonical_event_id。
+
+        优先级：节点自带 canonical_event_id → 自带 event_id → by_event_id(name/event_id)。
+        by_event_id 缺失时退化为 name 字段，保证图谱缺 canonical 列也不崩（fail-soft）。
+        """
+        raw = t.get("canonical_event_id") or t.get("event_id") or t.get("name")
+        if by_event_id:
+            return by_event_id.get(raw) or by_event_id.get(t.get("event_id")) or raw
+        return raw
+
     threads: list[dict] = []
     for name in tracked_names:
         eid = name_to_id.get(name)
@@ -164,7 +183,8 @@ def build_entity_threads(graph: dict, tracked_names: list[str]) -> list[dict]:
             t = by_id.get(tid)
             if t and t.get("type") == "Event":
                 evs.append({
-                    "event_id": t.get("name"),
+                    # 单一事实源锚点 = canonical_event_id（取代旧 raw event_id）
+                    "canonical_event_id": _resolve_ceid(t),
                     "title": t.get("title"),
                     "topic": t.get("topic"),
                     # 事件发布时间，不是决策时间
@@ -172,7 +192,7 @@ def build_entity_threads(graph: dict, tracked_names: list[str]) -> list[dict]:
                 })
         if not evs:
             continue
-        evs.sort(key=lambda x: (x["published_at"] or "", x["event_id"] or ""))
+        evs.sort(key=lambda x: (x["published_at"] or "", x["canonical_event_id"] or ""))
         evs = evs[:MAX_EVENTS_PER_THREAD]
         pubs = [e["published_at"] for e in evs if e["published_at"]]
         threads.append({
@@ -252,6 +272,7 @@ def build(
     brief: dict,
     pm: dict,
     graph: dict | None = None,
+    by_event_id: dict[str, str] | None = None,
     generated_at: str | None = None,
 ) -> dict[str, Any]:
     watchlists = state.get("watchlists") or []
@@ -261,7 +282,7 @@ def build(
     pending = [i for i in items if not i.get("decision")]
 
     roles = role_views(pm, brief_items)
-    threads = build_entity_threads(graph, _tracked_entities(pm)) if graph else []
+    threads = build_entity_threads(graph, _tracked_entities(pm), by_event_id) if graph else []
     oq = open_questions(pm, roles)
 
     return {
@@ -269,11 +290,14 @@ def build(
         "generated_at": generated_at or _now(),
         "principle": "角色视图只读既有记忆的过滤结果；不新增事实、不伪造偏好；"
                      "推不出的维度写入 open_questions",
+        # 角色冻结（§9.5）：显式声明第二大脑只承认这三档切片，禁止从数据推断角色归属
+        "role_freeze": list(ROLE_FROZEN),
         "sources": {
             "p2_state.json": {"watchlists": len(watchlists)},
             "review_queue.json": {"items": len(items), "decided": len(acted), "pending": len(pending)},
             "p2_daily_brief.json": {"brief": len(brief_items)},
             "p2_personal_memory.json": {"version": pm.get("version")},
+            "canonical_events.json": {"by_event_id": len(by_event_id)} if by_event_id else None,
             "knowledge_graph.json": {"threads_built": len(threads)} if graph else None,
         },
         "roles": roles,
@@ -285,11 +309,13 @@ def build(
 def validate(doc: dict) -> None:
     """fail-closed 校验：结构不对就让 CI 红，而不是让角色面静默显示空。"""
     assert doc.get("version") == VERSION, f"version 错误: {doc.get('version')}"
-    for key in ("generated_at", "principle", "sources", "roles", "entity_threads", "open_questions"):
+    for key in ("generated_at", "principle", "role_freeze", "sources", "roles", "entity_threads", "open_questions"):
         assert key in doc, f"缺少字段: {key}"
 
-    # 角色必须是显式声明的三档，不多不少
-    assert set(doc["roles"]) == set(ROLE_CONFIG), f"roles 与 ROLE_CONFIG 不一致: {set(doc['roles'])}"
+    # 角色冻结（§9.5）：角色切片集合与顺序必须严格等于冻结集，禁止漂移/推断
+    assert list(doc["role_freeze"]) == list(ROLE_FROZEN), \
+        f"role_freeze 与冻结集不一致: {doc['role_freeze']} (期望 {list(ROLE_FROZEN)})"
+    assert set(doc["roles"]) == set(ROLE_FROZEN), f"roles 与冻结集不一致: {set(doc['roles'])}"
     for rid, r in doc["roles"].items():
         for f in ("label", "desc", "watchlist_ids", "topics", "watchlists", "top_topics", "top_entities", "memory_entries"):
             assert f in r, f"角色 {rid} 缺字段: {f}"
@@ -297,10 +323,10 @@ def validate(doc: dict) -> None:
         ids = {w["id"] for w in r["watchlists"]}
         assert set(r["watchlist_ids"]) <= ids, f"角色 {rid} 的 watchlists 与声明不一致"
 
-    # 时间线：事件必须带 event_id；时间线不得凭空超出跟踪实体数
+    # 时间线：事件必须带 canonical_event_id（FK 升级，单一事实源锚点）
     for t in doc["entity_threads"]:
         for e in t["events"]:
-            assert e.get("event_id"), f"实体时间线事件缺 event_id: {e}"
+            assert e.get("canonical_event_id"), f"实体时间线事件缺 canonical_event_id: {e}"
 
     # 纪律：推不出的维度必须显式记录（当前状态必然非空）
     assert isinstance(doc["open_questions"], list) and doc["open_questions"], \
@@ -313,6 +339,7 @@ def run(
     brief_path: Path | None = None,
     pm_path: Path | None = None,
     graph_path: Path | None = None,
+    ce_path: Path | None = None,
     out_path: Path | None = None,
     persist: bool = True,
 ) -> dict[str, Any]:
@@ -327,7 +354,14 @@ def run(
     if gp.exists():
         graph = json.loads(gp.read_text(encoding="utf-8"))
 
-    doc = build(state, queue, brief, pm, graph)
+    # S1 Canonical Event Registry（可选）：提供 event_id → canonical_event_id 的 FK 解析。
+    # 缺失时实体时间线退化为 name 兜底，不影响角色视图产出（fail-soft）。
+    by_event_id: dict[str, str] | None = None
+    cp = ce_path or ROOT / "canonical_events.json"
+    if cp.exists():
+        by_event_id = json.loads(cp.read_text(encoding="utf-8")).get("by_event_id")
+
+    doc = build(state, queue, brief, pm, graph, by_event_id)
     validate(doc)
     if persist:
         (out_path or OUTPUT_PATH).write_text(

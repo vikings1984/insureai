@@ -1,7 +1,7 @@
 # InsureAI · Event OS 主链收口改进方案
 
 > 综合来源：Grok 报告 `grok_report.pdf`（图像型，无法直接抽文本，主体以贴出的战略长文为准）+ 战略自评长文 + 仓库实测校准。
-> 日期：2026-09-01 起；最后更新 2026-09-02。状态：E1–E3 / S1–S6 已落地、X1 已收口；**X2 Event OS 产品化收敛（评审修订）已拍板 A，Sprint 1 ✅ + Sprint 2 ✅ 均已收口**（§9）。
+> 日期：2026-09-01 起；最后更新 2026-09-02。状态：E1–E3 / S1–S6 已落地、X1 已收口；**X2 Event OS 产品化收敛（评审修订）已拍板 A，Sprint 1 ✅ + Sprint 2 ✅ + Sprint 3 ✅ 均已收口**（§9）。
 
 ---
 
@@ -173,7 +173,7 @@ Event OS 核心主链 60 → **目标 80（三周后）**，不写 95；Second B
 | KG | 节点 ID 引用 canonical_event_id |
 | E1/E2/E3 | 保持（E2 扩 acted_at） |
 
-### 9.10 Sprint 1 & 2 进度（当前：✅ Sprint 1 / Sprint 2 均已收口）
+### 9.10 Sprint 1 & 2 & 3 进度（当前：✅ Sprint 1 / Sprint 2 / Sprint 3 均已收口）
 - ✅ `event_registry.py` er-v1.1：CANONICALIZE_POLICY / event_type_domain / may_auto_merge / should_merge / validate_against_annotations / split 人工门；build 记录 domain+key_entity（向后兼容 X1 的 by_event_id/count）。
 - ✅ `canonical_annotation_set.json`：30 条标注（必合/必拆/alias-only/跨类型/缺类型），质量门基线。
 - ✅ `tests/test_canonical_annotations.py`：12 项（策略 / should_merge / 30 标注门 / split 人工门 / build 向后兼容），全绿。
@@ -186,4 +186,12 @@ Event OS 核心主链 60 → **目标 80（三周后）**，不写 95；Second B
   - ✅ **S3 domain 插件（lc-v1.1）** `acquisition_lifecycle.py`：引入 `LIFECYCLE_DOMAINS` + `STAGE_DOMAINS`，`domain_of()` 优先 registry domain 再回退 claims；`derive_stage()` 派发——acquisition 走六阶段（rumor→negotiation→agreement→regulatory→closing→integration），regulatory 仅 `status`（issued/effective/revised/repealed/in_re_view）+ issued/effective 日期、stage 恒为 `n/a`，catastrophe/other stage=`n/a`；**硬约束**：regulatory/catastrophe/other 若携带 stage 直接 fail-closed（禁止默默通用化）。`build_report` 增 `domain_counts`；`validate` 增 `domain_counts` 必填 + 非 acquisition 域 stage 必须为 `n/a`。`tests/test_acquisition_lifecycle.py` 扩至 20 项（新增 `DomainPluginTests` 9 项）。`canonical_events.json`（141 CE 增补 lifecycle.domain/status/issued/effective）+ `lifecycle_report.json`（lc-v1.1，domain_counts {regulatory:28, acquisition:13, other:100, catastrophe:0}）重建。
   - ✅ **S4 两层准入（alert-v1.1）** `semantic_alert.py`：`ADMISSION_TIERS`（T1_system/T2_personal/T3_standard）+ `TIER_RANK` + `SUPPRESSED_BASIS={NEW_SOURCE,NEW_EVIDENCE}`；`aggregate_alerts()` 重写——delta 分支 status 变化升 T1_system 高严重度，新增 T1 standing 块（regulatory 状态 issued/effective 即使无 watch 也准入），最终 keep 循环丢弃 `basis∈SUPPRESSED_BASIS`；排序 `(TIER_RANK, SEV_RANK, _sort)` 降序，≤8 上限与封闭告警类型集保留。`build()` 增 `canonical/watch_ceids/suppress` 参数并输出 `meta.admission_counts`/`suppressed`；`validate` 强校验 `admission∈TIERS` 且 `basis∉SUPPRESSED_BASIS`。`tests/test_semantic_alert.py` 扩至 16 项（新增 `TestTwoTierAdmission` 5 项）。`p2_alerts.json` 重建（alert-v1.1，8 条全 T1_system，basis 全 delta，0 条内部信号上首页）。
   - ✅ **X1 Home 改三行固定出口** `executive_home.html`：单栏三卡片（需决策←S5 `decisions_pending.json` / 语义变化←S4 `p2_alerts.json` / 复核队列←`review_queue.json`）；89 pending 留在复核队列行、明确标注"留复核页（不计入主数字）"、不进入 今日情报 主数字；KPI 条 6 列；语义变化行按 `(severity, TIER_RANK, …)` 排序并渲染 `admTag()`（系统级 T1 / 个人级 T2）。彻底剔除可视化编辑器注入的 `data-page-node-id` 噪声。契约全绿：`tests/test_x1_convergence.py`（9 项）+ `tests/test_site_pages.py`（8 项，含 `href="./review-ui.html"`）。
-- 🟡 下一站 Sprint 3（§9.4/§9.5/§9.6/§9.7）：S5 Funnel 六条件 + 分角色计数；S6 页内 Replay 时间线；Second Brain FK=canonical_event_id（角色冻结）；X1 终审（89 进复核页）；E3 反馈挂接 CE。横切：E2 决策样本 12<30（需 pipeline 累积 ≥30 才解锁偏好结论）；T1 perf 债独立优化。
+- ✅ **Sprint 3（§9.4/§9.5/§9.6/§9.7）已收口**：
+  - ✅ **S5 Funnel 六条件硬化 + 分角色计数（funnel-v1.1）** `decision_funnel.py`：`ROLE_FROZEN=["ai","ma","regulatory","health"]` + `ROLE_LABEL` + `ROLE_KEYWORDS` + `ROLE_TOPICS`；`_role_of()` 四冻结角色分类（other=溢出）；`_eval_six()` 逐条评估 §9.4 六条件（含条件4单源+监管/评级不得判 Decision Required 的硬约束、条件6 fail-closed 缺数据不claim）；`build()` 11 参，附件 `pending_by_role`/`decision_ready`（六条件全中与子集，当前 0 为诚实结论）/`meets_six`/`failed_conditions`/`six_detail`/`role` 到 pending 与 top_pending；`validate` 增 `role∈ROLE_LABEL` + `sum(by_role)==pending` 强校验。`tests/test_decision_funnel.py` 扩至 29 项（新增 `TestSixConditions` 5 + `TestRoleClassification` 5 + decided_from_ledger 复原）。`decisions_pending.json` 重建（funnel-v1.1，`pending_by_role {ai:9,ma:6,regulatory:22,health:0,other:52}`；`decision_required 100 = decided 11 + pending 89`；`top_pending` 12；`decision_ready 0`）。**设计纪律**：`decision_required` 仍源 Human-Review 队列（稳定非空，保"89 留复核页"），六条件仅做显式标注，不伪造门。
+  - ✅ **S6 页内 Replay 时间线（in-page，只挂钩不新增）** `intelligence.html`：详情页新增 `#replay` 节点 + `.replay-*` CSS + `renderReplay(cev)`（定义在锁定的 detail-renderer 块之外，契约不受影响）；读取 `event_replays.json.replays`，渲染 `replay_chain`/`transitions`/`why_important_today`/`next_stage_projection`，单一事实源锚点 `canonical_event_id`；fail-safe 降级。`tests/test_site_pages.py` 新增 `S6ReplayWiringTests` 2 项（引用 `event_replays.json` + 定义 `renderReplay` + 产物 schema）。UI 契约 27 项全绿（event_detail_ui 7 + site_pages 10 + x1_convergence 9）。
+  - ✅ **Second Brain FK=canonical_event_id + 角色冻结（sb-v1.1）** `second_brain.py`：`ROLE_FROZEN=("strategy","operations","risk")` 显式冻结 + `validate` 强制（角色集/顺序漂移即 fail-closed）；`build_entity_threads()` 增 `by_event_id` 入参，`_resolve_ceid()` 经 S1 Registry 把图节点 `event_id`→`canonical_event_id`（缺 registry 退化 name，不丢数据）；输出增 `role_freeze` + `sources.canonical_events.json`。`tests/test_second_brain.py` 扩至 13 项（新增 FK 解析 / 角色冻结 / canonical 必填守卫）。`second_brain.json` 重建（sb-v1.1，20 条实体时间线、53 事件锚定 cev_，3 个未入册 evt_ 如实回退）。
+  - ✅ **X1 终审（89 进复核页）**：`decisions_pending.json` 三条固定出口卡契约稳定；`tests/test_x1_convergence.py`（9 项）全绿，X1 89→复核页不变、`canonical_event_id` 锚点一致。
+  - ✅ **E3 反馈挂接 canonical_event_id（import-v1.1）** `p2_import_feedback.py`：`_resolve_ceid()` 写入时把 `event_id`→`canonical_event_id`（经 S1 Registry by_event_id）；不可解析者 fail-closed 拒绝（不静默落原始 id）；`merge_state` 去重锚点改 canonical；新增 `validate_state()` schema 守卫（写盘前 fail-closed）；`run()` 增 `--ce` 参数。`tests/test_p2_import_feedback.py` 扩至 36 项（新增 `TestCanonicalEventId` 7 + `TestLoadByEventId`）。当前 `p2_state.json` 反馈/跟踪为空，已通过 `validate_state` 校验。
+  - ✅ **质量门 + 全量快测 + 产物重建**：30 条标注质量门（`tests/test_canonical_annotations.py` 12 项）全绿；Sprint 3 全量快测通过；`decisions_pending.json`/`second_brain.json` 重建、X1 契约不变。
+  - 🟡 **横切遗留（非 Sprint 3 阻塞项，独立跟踪）**：E2 决策样本 12<30（需 pipeline 累积 ≥30 才解锁偏好结论）；T1 perf 债独立优化。
+- 🟢 **X2 产品化收敛全部 Sprint 收口**（S1+S2+S3 ✅）。后续进入常态化运营：CI 每日重建、反馈/决策样本累积解锁 E2 偏好结论。

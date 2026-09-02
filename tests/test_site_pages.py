@@ -94,5 +94,31 @@ class FeedbackContractTests(unittest.TestCase):
                          "UI 标签集与导入器允许集应完全一致")
 
 
+class S6ReplayWiringTests(unittest.TestCase):
+    """S6 页内 Replay 时间线（Sprint 3）：intelligence.html 详情页挂钩 event_replays.json，
+    单一事实源锚点 = canonical_event_id。只验证"已接入"，不验证渲染正确性（由浏览器契约覆盖）。
+    """
+
+    def test_intelligence_detail_wires_s6_replay_timeline(self):
+        text = (ROOT / "intelligence.html").read_text(encoding="utf-8")
+        self.assertIn("event_replays.json", text,
+                      "intelligence.html 未接入 S6 回放产物 event_replays.json")
+        self.assertIn("renderReplay", text,
+                      "intelligence.html 未定义 S6 页内回放渲染器 renderReplay")
+
+    def test_replay_artifact_exists(self):
+        """回放产物必须存在且为 replay-v1.0 schema，否则详情页会静默降级。"""
+        import json
+        path = ROOT / "event_replays.json"
+        self.assertTrue(path.exists(), "event_replays.json 缺失（replay_projection.py 未运行）")
+        data = json.loads(path.read_text(encoding="utf-8"))
+        self.assertIn("replays", data, "event_replays.json 缺少 replays 字段")
+        self.assertTrue(data["replays"], "event_replays.json.replays 为空")
+        sample = data["replays"][0]
+        for field in ("canonical_event_id", "replay_chain", "why_important_today"):
+            self.assertIn(field, sample,
+                          f"replay 记录缺少字段 {field}（回放 schema 漂移）")
+
+
 if __name__ == "__main__":
     unittest.main()

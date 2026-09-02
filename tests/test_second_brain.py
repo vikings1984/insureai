@@ -79,9 +79,31 @@ class SecondBrainTests(unittest.TestCase):
         t = threads[0]
         self.assertEqual(t["entity"], "Foo")
         self.assertEqual(t["event_count"], 3)
-        self.assertEqual([e["event_id"] for e in t["events"]], ["ev3", "ev1", "ev2"])
+        # 事件引用已收敛为 canonical_event_id（无 registry 时回退到 name）
+        self.assertEqual([e["canonical_event_id"] for e in t["events"]], ["ev3", "ev1", "ev2"])
         self.assertEqual(t["first_seen"], "2025-12-01")
         self.assertEqual(t["last_seen"], "2026-03-01")
+
+    def test_entity_threads_resolves_canonical_event_id_via_fk(self):
+        """§9.5 FK：图节点只带原始 event_id / name 时，经 by_event_id 解析到 canonical_event_id。"""
+        graph = {
+            "nodes": [
+                {"id": "n1", "type": "Company", "name": "Foo"},
+                {"id": "e1", "type": "Event", "name": "ev1", "event_id": "evt_1",
+                 "title": "a", "topic": "x", "published_at": "2026-01-01"},
+                {"id": "e2", "type": "Event", "name": "ev2", "canonical_event_id": "cev_2",
+                 "event_id": "evt_2", "title": "b", "topic": "x", "published_at": "2026-02-01"},
+            ],
+            "edges": [
+                {"source": "n1", "target": "e1", "relationship": "PARTICIPATES_IN"},
+                {"source": "n1", "target": "e2", "relationship": "PARTICIPATES_IN"},
+            ],
+        }
+        by_event_id = {"ev1": "cev_1", "evt_1": "cev_1"}
+        threads = SB.build_entity_threads(graph, ["Foo"], by_event_id)
+        ceids = [e["canonical_event_id"] for e in threads[0]["events"]]
+        self.assertIn("cev_1", ceids)   # 经 by_event_id 解析
+        self.assertIn("cev_2", ceids)   # 节点自带 canonical_event_id 优先
 
     def test_entity_threads_capped_per_thread(self):
         events = [{"id": f"e{i}", "type": "Event", "name": f"ev{i}", "title": f"t{i}",
@@ -129,6 +151,41 @@ class SecondBrainTests(unittest.TestCase):
         b = SB.build({}, {"items": []}, {"brief": []}, pm)
         a.pop("generated_at"); b.pop("generated_at")
         self.assertEqual(a, b)
+
+    def test_build_emits_frozen_role_set(self):
+        pm = _pm([_wl("ma", 3), _wl("regulatory", 2), _wl("health", 1), _wl("ai", 5)])
+        doc = SB.build({}, {"items": []}, {"brief": []}, pm)
+        # 角色冻结（§9.5）：输出必须显式声明冻结集，且恰好三档
+        self.assertEqual(doc["role_freeze"], list(SB.ROLE_FROZEN))
+        self.assertEqual(set(doc["roles"]), set(SB.ROLE_FROZEN))
+
+    def test_role_freeze_enforced_by_validate(self):
+        """§9.5 角色冻结：role_freeze 或 roles 一旦漂移（多/少/换档）必须 fail-closed。"""
+        pm = _pm([_wl("ma", 3), _wl("regulatory", 2), _wl("health", 1), _wl("ai", 5)])
+        doc = SB.build({}, {"items": []}, {"brief": []}, pm)
+        SB.validate(doc)  # 冻结集自洽，应通过
+
+        # 角色集多出 ghost 档 → 拒绝
+        bad = json.loads(json.dumps(doc))
+        bad["roles"]["ghost"] = bad["roles"]["strategy"]
+        with self.assertRaises(AssertionError):
+            SB.validate(bad)
+
+        # role_freeze 顺序/集合被篡改 → 拒绝
+        bad2 = json.loads(json.dumps(doc))
+        bad2["role_freeze"] = ["risk", "operations", "strategy", "ghost"]
+        with self.assertRaises(AssertionError):
+            SB.validate(bad2)
+
+    def test_entity_threads_require_canonical_event_id(self):
+        """FK 升级：实体时间线事件缺 canonical_event_id 必须 fail-closed。"""
+        pm = _pm([_wl("ma", 3), _wl("regulatory", 2), _wl("health", 1), _wl("ai", 5)])
+        doc = SB.build({}, {"items": []}, {"brief": []}, pm)
+        bad = json.loads(json.dumps(doc))
+        bad["entity_threads"] = [{"entity": "X", "type": "Company",
+                                  "event_count": 1, "events": [{"title": "n", "topic": "x"}]}]
+        with self.assertRaises(AssertionError):
+            SB.validate(bad)
 
 
 class SecondBrainProductionTests(unittest.TestCase):
