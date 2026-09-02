@@ -39,7 +39,7 @@ jobs:
           print('Daily collect workflow contract valid')
           PY
       - name: Syntax check
-        run: python3 -m py_compile contract.py evaluation.py evaluation_metrics.py production_replay.py calibration.py counterfactual.py scenario.py scenario_evidence.py scenario_matrix.py action_triggers.py execution_readiness.py audit_ledger.py change_impact.py feedback_attribution.py module_health.py module_health_trend.py optimization_backlog.py optimization_fix_verification.py freshness.py evidence_availability.py review.py promote_reviews.py intelligence.py intelligence_signal.py radar.py personalization.py trust.py trust_build.py claims.py claims_build.py source_tiers.py temporal.py temporal_build.py trend_intelligence.py decision.py decision_build.py kg_query.py knowledge_graph.py release_manifest.py release_provenance.py production_quality_gate.py deployment_verification.py deployment_risk.py deployment_trend.py decision_stability.py decision_credibility.py daily_risk_radar.py owner_risk_view.py executive_terminal.py p2_intelligence.py scripts/verify_full_pipeline.py scripts/validate_data.py scripts/inject_ui_assets.py scripts/quality_score.py
+        run: python3 -m py_compile contract.py evaluation.py evaluation_metrics.py production_replay.py calibration.py counterfactual.py scenario.py scenario_evidence.py scenario_matrix.py action_triggers.py execution_readiness.py audit_ledger.py change_impact.py feedback_attribution.py module_health.py module_health_trend.py optimization_backlog.py optimization_fix_verification.py freshness.py evidence_availability.py review.py promote_reviews.py intelligence.py intelligence_signal.py radar.py personalization.py trust.py trust_build.py claims.py claims_build.py source_tiers.py temporal.py temporal_build.py trend_intelligence.py decision.py decision_build.py kg_query.py knowledge_graph.py release_manifest.py release_provenance.py production_quality_gate.py deployment_verification.py deployment_risk.py deployment_trend.py decision_stability.py decision_credibility.py daily_risk_radar.py owner_risk_view.py executive_terminal.py p2_intelligence.py p2_import_feedback.py scripts/verify_full_pipeline.py scripts/validate_data.py scripts/inject_ui_assets.py scripts/quality_score.py
       - name: JavaScript syntax check
         run: node --check behavior_learning.js && node --check intelligence-ui.js && node --check personalization-ui.js && node --check trust-ui.js && node --check claim-evidence-ui.js && node --check temporal-ui.js && node --check decision-ui.js && node --check review-ui.js && node --check action-triggers-ui.js && node --check execution-readiness-ui.js && node --check owner-risk-ui.js
       - name: Contract check
@@ -102,6 +102,26 @@ jobs:
         run: python3 -m unittest tests.test_freshness tests.test_evidence_availability -v
       - name: Human review queue test
         run: python3 -m unittest tests.test_review tests.test_promote_reviews -v
+      - name: E3 feedback import + site page contract test
+        run: python3 -m unittest tests.test_p2_import_feedback tests.test_site_pages -v
+      - name: Validate committed p2_state feedback schema
+        run: |
+          python3 - <<'PY'
+          import json
+          from p2_import_feedback import validate_feedback_row, validate_monitor_row
+          state = json.load(open('p2_state.json'))
+          ids = {w.get('id') for w in state.get('watchlists', []) if w.get('id')}
+          bad = []
+          for row in state.get('feedback', []):
+              if validate_feedback_row(row):
+                  bad.append(('feedback', row))
+          for row in state.get('monitoring', []):
+              if validate_monitor_row(row, ids):
+                  bad.append(('monitoring', row))
+          assert not bad, f'p2_state.json 存在非法反馈行：{bad}'
+          fb = len(state.get('feedback', [])); mon = len(state.get('monitoring', []))
+          print(f"p2_state feedback valid: {fb} feedback / {mon} monitoring")
+          PY
       - name: Deployment verification test
         run: python3 -m unittest tests.test_deployment_verification -v
       - name: Executive terminal test

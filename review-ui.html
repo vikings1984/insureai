@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>InsureAI · Human Review</title>
+<!-- 反馈 Issue 的提交目标仓库；review-limit 控制本页展示条数（默认 8） -->
+<meta name="github-repo" content="vikings1984/insureai">
+<meta name="review-limit" content="30">
+<style>
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:#f6f8fb;color:#172033;margin:0;line-height:1.6}
+*{box-sizing:border-box}
+.shell{max-width:1180px;margin:auto;padding:24px}
+.bar{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-bottom:16px}
+.bar h1{margin:0 0 4px;font-size:22px;letter-spacing:.2px}
+.muted{color:#667085;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.card{background:#fff;border:1px solid #e4e7ec;border-radius:14px;padding:16px 18px}
+.kpi{font-size:26px;font-weight:750;line-height:1.2}
+.kpi-l{font-size:12px;color:#667085;margin-top:2px}
+.navlinks{display:flex;gap:8px;flex-wrap:wrap}
+.navlinks a{color:#0f2c44;text-decoration:none;border:1px solid #d0d5dd;border-radius:8px;padding:6px 10px;font-size:13px;white-space:nowrap}
+.navlinks a:hover{border-color:#0f2c44;background:#f0f6fc}
+.empty{color:#94a3b8;font-size:13px}
+main{display:block}
+.steps{margin:0;padding-left:20px;font-size:13px;color:#475569}
+.steps li{margin:6px 0}
+.steps code,.rv-note code{font-size:12px;background:#eef2f7;padding:1px 5px;border-radius:4px}
+.rv-note{font-size:12px;color:#667085;margin-top:10px}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr)}.shell{padding:16px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="bar">
+    <div>
+      <h1>InsureAI · Human Review</h1>
+      <div class="muted">人工复核队列 — 逐条打标签 / 加跟踪。标签是个性化排序与「噪声识别」唯一的真人信号来源，不自动改写任何机器结论。</div>
+    </div>
+    <div class="navlinks">
+      <a href="./executive_home.html">Executive Home</a>
+      <a href="./intelligence.html">Intelligence</a>
+      <a href="./knowledge-graph.html">Knowledge Graph</a>
+      <a href="./">返回主站</a>
+    </div>
+  </div>
+
+  <div id="kpis" class="grid">
+    <div class="card"><div class="empty">加载中…</div></div>
+  </div>
+
+  <main id="rv-mount" style="margin-top:16px"><div class="empty">加载中…</div></main>
+
+  <div class="card" style="margin-top:16px">
+    <h2 style="margin:0 0 8px;font-size:16px">反馈如何进入流水线</h2>
+    <ol class="steps">
+      <li>在上方队列里点选标签（有用 / 重要 / 噪声 / 不相关 / 有误 / 已处理），或把事件加入某个 watchlist 跟踪。</li>
+      <li>操作先落本机浏览器（localStorage），<b>不会</b>自动写回仓库——静态站点没有后端，这一步必须诚实。</li>
+      <li>点「导出 JSON」下载 <code>p2_feedback_export.json</code>，或点「提交 GitHub Issue」把同一份负载贴进 Issue（自动加 <code>复核反馈</code> 标签）。</li>
+      <li>在本地或 CI 执行 <code>python3 p2_import_feedback.py p2_feedback_export.json</code>：脚本逐行校验标签 / 状态 / 评分 / 时间戳，非法行拒绝入库并给出原因，通过后合并写入 <code>p2_state.json</code>。</li>
+      <li>重跑 <code>p2_intelligence.py</code> 后，标为「已同步」的记录才会参与排序加成与噪声抑制。</li>
+    </ol>
+    <div class="rv-note">样本量门槛：反馈样本 &lt; 30 时，系统<b>不</b>得出任何偏好结论，只记录事实。这是刻意的保守设定。</div>
+  </div>
+</div>
+<script src="review-ui.js" defer></script>
+<script>
+// KPI 条：只统计真实存在的数据，缺失显示 —，不补零、不估算
+(function () {
+  var KEY = 'insureai_review_feedback_v1';
+  function localPending() {
+    try {
+      var s = JSON.parse(localStorage.getItem(KEY)) || {};
+      return [(s.feedback || []).length, (s.monitoring || []).length];
+    } catch (e) { return [0, 0]; }
+  }
+  function get(url) {
+    return fetch(url + '?t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; });
+  }
+  Promise.all([get('review_queue.json'), get('p2_state.json')]).then(function (res) {
+    var q = res[0], st = res[1] || {};
+    var lp = localPending();
+    var cells = [
+      [(q && Array.isArray(q.items)) ? q.items.length : '—', '复核队列条目'],
+      [Array.isArray(st.feedback) ? st.feedback.length : '—', '已入库标签'],
+      [Array.isArray(st.monitoring) ? st.monitoring.length : '—', '已入库跟踪'],
+      [lp[0] + ' / ' + lp[1], '本机待入库（标签 / 跟踪）']
+    ];
+    document.getElementById('kpis').innerHTML = cells.map(function (c) {
+      return '<div class="card"><div class="kpi">' + c[0] + '</div><div class="kpi-l">' + c[1] + '</div></div>';
+    }).join('');
+  });
+})();
+</script>
+</body>
+</html>
