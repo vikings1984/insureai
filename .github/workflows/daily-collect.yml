@@ -320,6 +320,23 @@ jobs:
           assert base.get('snapshots'), "基线快照缺失"
           print(f"S4 alerts valid: basis={doc['meta']['basis']} diffs={doc['meta']['internal_diff_count']} alerts={doc['meta']['alert_count']} types={doc['meta']['alert_type_counts']}")
           PY
+      # S5 Decision Funnel（Event OS 主脊柱 S5）：把 review_queue 待决策洪流收敛为漏斗。
+      # 承接 E2 决策账本（已决只来自真实决策记录）；待决分桶为可观测代理；样本<30 不结论；fail-closed。
+      - name: Build S5 decision funnel
+        run: python3 decision_funnel.py
+      - name: Validate S5 decision funnel
+        run: |
+          python3 - <<'PY'
+          import json
+          from decision_funnel import validate, VERSION, MIN_SAMPLE
+          doc=json.load(open('decisions_pending.json'))
+          validate(doc)  # fail-closed：计数不自洽 / 分桶非法 / 缺 canonical_event_id 即抛错
+          assert doc.get('version') == VERSION, doc.get('version')
+          m=doc['meta']
+          assert m['decision_required'] == m['decided'] + m['pending'], '漏斗计数不自洽'
+          assert sum(m['pending_by_tier'].values()) == m['pending'], '分桶计数不自洽'
+          print(f"S5 funnel valid: required={m['decision_required']} decided={m['decided']} pending={m['pending']} tiers={m['pending_by_tier']} sample={m['decided_sample_size']}/{MIN_SAMPLE} reached={m['reached_threshold']}")
+          PY
       - name: Build final analytical audit ledger
         run: python3 audit_ledger.py
       - name: Validate final analytical audit ledger
@@ -379,8 +396,8 @@ jobs:
       - name: Commit data + quality artifacts
         run: |
           git config user.name "insureai-bot"; git config user.email "bot@insureai.local"
-          if [ -n "$(git status --porcelain data.json intelligence.json claims.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json trend_attribution.json radar.json optimization_backlog.json optimization_backlog_history.json release_manifest.json release_provenance.json decision_stability.json decision_history.json decision_credibility.json daily_risk_radar.json owner_risk_view.json freshness.json evidence_availability.json executive_terminal.json knowledge_graph.json p2_daily_brief.json p2_state.json index.html sitemap.xml rss.xml research.json data/quality data/translation_cache.json p2_monitoring_store.json p2_monitoring.json p2_feedback_analytics.json p2_personal_memory.json decisions_ledger.json second_brain.json canonical_events.json event_id_aliases.json resolver_report.json resolver_fingerprint_map.json lifecycle_report.json p2_alerts.json p2_alert_baseline.json)" ]; then
-          git add data.json intelligence.json claims.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json trend_attribution.json radar.json optimization_backlog.json optimization_backlog_history.json release_manifest.json release_provenance.json decision_stability.json decision_history.json decision_credibility.json daily_risk_radar.json owner_risk_view.json freshness.json evidence_availability.json executive_terminal.json knowledge_graph.json p2_daily_brief.json p2_state.json index.html sitemap.xml rss.xml research.json data/quality data/translation_cache.json p2_monitoring_store.json p2_monitoring.json p2_feedback_analytics.json p2_personal_memory.json decisions_ledger.json second_brain.json canonical_events.json event_id_aliases.json resolver_report.json resolver_fingerprint_map.json lifecycle_report.json p2_alerts.json p2_alert_baseline.json
+          if [ -n "$(git status --porcelain data.json intelligence.json claims.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json trend_attribution.json radar.json optimization_backlog.json optimization_backlog_history.json release_manifest.json release_provenance.json decision_stability.json decision_history.json decision_credibility.json daily_risk_radar.json owner_risk_view.json freshness.json evidence_availability.json executive_terminal.json knowledge_graph.json p2_daily_brief.json p2_state.json index.html sitemap.xml rss.xml research.json data/quality data/translation_cache.json p2_monitoring_store.json p2_monitoring.json p2_feedback_analytics.json p2_personal_memory.json decisions_ledger.json second_brain.json canonical_events.json event_id_aliases.json resolver_report.json resolver_fingerprint_map.json lifecycle_report.json p2_alerts.json p2_alert_baseline.json decisions_pending.json)" ]; then
+          git add data.json intelligence.json claims.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json trend_attribution.json radar.json optimization_backlog.json optimization_backlog_history.json release_manifest.json release_provenance.json decision_stability.json decision_history.json decision_credibility.json daily_risk_radar.json owner_risk_view.json freshness.json evidence_availability.json executive_terminal.json knowledge_graph.json p2_daily_brief.json p2_state.json index.html sitemap.xml rss.xml research.json data/quality data/translation_cache.json p2_monitoring_store.json p2_monitoring.json p2_feedback_analytics.json p2_personal_memory.json decisions_ledger.json second_brain.json canonical_events.json event_id_aliases.json resolver_report.json resolver_fingerprint_map.json lifecycle_report.json p2_alerts.json p2_alert_baseline.json decisions_pending.json
             git commit -m "chore: auto-collect + intelligence + claims + graph + executive terminal + daily brief + personal memory $(date +%F)"
           else echo "no changes"; fi
       - name: Push (triggers GitHub Pages redeploy)
