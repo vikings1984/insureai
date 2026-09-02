@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="zh-CN" data-page-node-id="6ct2LxpohEaFfoGOS9exFW">
+<head data-page-node-id="NXdtJKD5s5utJ0CfvKg91P">
+<meta charset="utf-8" data-page-node-id="jL4itym1MZc5lriFFHRCR9">
+<meta name="viewport" content="width=device-width,initial-scale=1" data-page-node-id="D2Nq9LOrExPKJb476RE8hK">
 <title>InsureAI · Executive Home</title>
 <style>
 :root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;color:#172033;background:#f4f6f8;line-height:1.5}
@@ -36,6 +36,7 @@ body{margin:0}
 .low{color:#067647;background:#ecfdf3}
 .wl{color:#6941c6;background:#f4ebff}
 .chg{color:#175cd3;background:#eff8ff}
+.ce{color:#475467;background:#f8fafc;border:1px solid #e4e7ec;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 .empty{text-align:center;padding:28px;color:#667085;font-size:13px}
 .footer{margin-top:8px;color:#667085;font-size:12px;border-top:1px solid #eaecf0;padding-top:14px}
 .kg-card{margin-bottom:18px}
@@ -90,58 +91,58 @@ body{margin:0}
 @media(max-width:760px){.grid{grid-template-columns:1fr}.kpi-grid{grid-template-columns:repeat(2,1fr)}.top{flex-direction:column}}
 </style>
 </head>
-<body>
-<div class="shell">
-  <div class="top">
-    <div>
-      <div class="brand">Insure<span>AI</span> · Executive Home</div>
-      <div class="muted">管理层情报工作台 — 只聚合既有 artifact 中的事实，不补写未验证结论。数据随采集/复核重跑自动更新。</div>
+<body data-page-node-id="EncZF6SWl0SnIlLWa0iYY6">
+<div class="shell" data-page-node-id="K3lKjv74agBNcKLohxrRwY">
+  <div class="top" data-page-node-id="YgJYEFOQofesZbA9kDdXDF">
+    <div data-page-node-id="wH2D4mH9hBROnVunQqq6Np">
+      <div class="brand" data-page-node-id="FLy8eB5Xgf1xURpv1WvvlR">Insure<span data-page-node-id="hBoWLArVUZwFUdMX2Uy1mQ">AI</span> · Executive Home</div>
+      <div class="muted" data-page-node-id="RH1U5tpVZHpZqCvrn8JbMc">管理层情报工作台 — 只聚合既有 artifact 中的事实，不补写未验证结论。数据随采集/复核重跑自动更新。</div>
     </div>
-    <div>
-      <a class="btn" href="./intelligence.html">Intelligence</a>
-      <a class="btn" href="./review-ui.html">Human Review</a>
-      <a class="btn" href="./">主站</a>
-      <button class="btn" id="refresh" type="button">刷新</button>
+    <div data-page-node-id="An5ABE5bFdpgqArGQgWGJG">
+      <a class="btn" href="./intelligence.html" data-page-node-id="BBJzAHXjE7Xbcp9zG1QhnY">Intelligence</a>
+      <a class="btn" href="./review-ui.html" data-page-node-id="2tENx2W54AplSKcg7Vxfvb">Human Review</a>
+      <a class="btn" href="./" data-page-node-id="67HwQfr9llv24d5KDtEkJR">主站</a>
+      <button class="btn" id="refresh" type="button" data-page-node-id="hfif3EV4aDjjqBgdXH5Wvm">刷新</button>
     </div>
   </div>
 
-  <div id="kpis" class="kpi-grid"><div class="empty">加载中…</div></div>
+  <div id="kpis" class="kpi-grid" data-page-node-id="vvpzwS2HomDl8Eeqoy4BSC"><div class="empty" data-page-node-id="7vueLDRHIQZAVC2SrZE7Ii">加载中…</div></div>
 
-  <div class="grid">
-    <section class="card"><div class="title">Today's 5 <span id="c-today" class="badge"></span></div><div id="today" class="list"></div></section>
-    <section class="card"><div class="title">My Watchlist <span id="c-wl" class="badge"></span></div><div id="wl" class="list"></div></section>
+  <div class="grid" data-page-node-id="8pbeR5UtmUZFJqh9qalHZn">
+    <section class="card" data-page-node-id="9v10RxCJFLdXHA5DWjAN6w"><div class="title" data-page-node-id="8KCHvc1iFrVmmeTSW67FDs">Today's 5 <span id="c-today" class="badge" data-page-node-id="hSPBn7MJXxefKLLrCa41Zf"></span></div><div id="today" class="list" data-page-node-id="8rPwh3DrboAnjAtaU0dEUY"></div></section>
+    <section class="card" data-page-node-id="HP7NxAeXLQtLMpFc4B6vOi"><div class="title" data-page-node-id="5kWN43YX8TNizeFoorffVb">My Watchlist <span id="c-wl" class="badge" data-page-node-id="uCpD5NzlPTWZRaHOcl6VNK"></span></div><div id="wl" class="list" data-page-node-id="mqJF4RtB3tDYLezbeUcTSC"></div></section>
   </div>
-  <div class="grid">
-    <section class="card"><div class="title">Event Changes <span id="c-chg" class="badge"></span></div><div id="chg" class="list"></div></section>
-    <section class="card"><div class="title">Emerging Risks <span id="c-risk" class="badge"></span></div><div id="risk" class="list"></div></section>
+  <div class="grid" data-page-node-id="vwk9bFdxKXOm5djqbx7Q3m">
+    <section class="card" data-page-node-id="qjCaVdWPCeXHm6rLj5PJlR"><div class="title" data-page-node-id="F5WNPCnPqheYzyeiS97Ata">Event Changes <span id="c-chg" class="badge" data-page-node-id="F2Irizyn9zIzGsrgpYtjjw"></span></div><div id="chg" class="list" data-page-node-id="VSzr1RHGUDRxEAF903TWfJ"></div></section>
+    <section class="card" data-page-node-id="qzr8XAMAaAYWcfq1TLKwrE"><div class="title" data-page-node-id="HPJtyoaOx1uZD20n4JKIAj">Emerging Risks <span id="c-risk" class="badge" data-page-node-id="cANY8Fod3GlSUQR4eBHiNo"></span></div><div id="risk" class="list" data-page-node-id="GkoOBDOQpWqCopMEJkutNp"></div></section>
   </div>
-  <div class="grid">
-    <section class="card"><div class="title">Decisions Pending <span id="c-pend" class="badge"></span></div><div id="pend" class="list"></div></section>
-    <section class="card"><div class="title">Recently Acted <span id="c-acted" class="badge"></span></div><div id="acted" class="list"></div></section>
+  <div class="grid" data-page-node-id="UgY5DloMQtS2Ry3UrUw7OF">
+    <section class="card" data-page-node-id="aXHU0vLEmnKK6Pd5GWx8cw"><div class="title" data-page-node-id="3ZCAjYjT0uJKEsWf1CbFZ6">Decisions Pending <span id="c-pend" class="badge" data-page-node-id="WADKzfaaxptRuwkakBvnuM"></span></div><div id="pend" class="list" data-page-node-id="YbHBCwgDgTgdB6Q6FDVGIz"></div></section>
+    <section class="card" data-page-node-id="8EUDG1wcw9OBBx0RfQE8Jl"><div class="title" data-page-node-id="FoVOAwCQuDxqAUNVYpLrLu">Recently Acted <span id="c-acted" class="badge" data-page-node-id="ChaQACOpPvmAk5STF8nZrm"></span></div><div id="acted" class="list" data-page-node-id="sHnEIo3o8aCRRHfZFgCYig"></div></section>
   </div>
 
-  <div class="card kg-card">
-    <div class="title">Knowledge Graph 概览 <span id="c-kg" class="badge"></span>
-      <span class="kg-open"><a class="btn" href="./knowledge-graph.html">实体查询</a><a class="btn" href="./kg-visual.html">力导向图 →</a></span>
+  <div class="card kg-card" data-page-node-id="55oJsJSBm9JDyDxeRmFPTa">
+    <div class="title" data-page-node-id="6HfQI4K0o4goqSSfOys2kE">Knowledge Graph 概览 <span id="c-kg" class="badge" data-page-node-id="m1XHzOP5yCYCX3m0O88p61"></span>
+      <span class="kg-open" data-page-node-id="6yGjPZ64rSBVFKN2N7KMnr"><a class="btn" href="./knowledge-graph.html" data-page-node-id="UzAn4EG1mDhv3H2e5dQQiE">实体查询</a><a class="btn" href="./kg-visual.html" data-page-node-id="2DIKxAYPECSjJLMNyciFgQ">力导向图 →</a></span>
     </div>
-    <div id="kg" class="kg-wrap"><div class="empty">加载中…</div></div>
+    <div id="kg" class="kg-wrap" data-page-node-id="Knoxpn8bj5fbU1yvABUfDG"><div class="empty" data-page-node-id="HPmSOm3AFuq6QrrpjdlRkC">加载中…</div></div>
   </div>
 
-  <div class="card pm-card">
-    <div class="title">Personal Memory <span id="c-pm" class="badge"></span>
-      <span class="kg-open"><a class="btn" href="./review-ui.html">去复核</a></span>
+  <div class="card pm-card" data-page-node-id="mGSG1kYQAfykNEu5YwYzOT">
+    <div class="title" data-page-node-id="qSdA4xin3gUNfUjAtw8NYl">Personal Memory <span id="c-pm" class="badge" data-page-node-id="ccAaNcw4xc6dfPCvzqgw8h"></span>
+      <span class="kg-open" data-page-node-id="JgGlHfZA9e9ELqTp2FHcSL"><a class="btn" href="./review-ui.html" data-page-node-id="808PNlOOEWFIawgLFqyovy">去复核</a></span>
     </div>
-    <div id="pm" class="pm-wrap"><div class="empty">加载中…</div></div>
+    <div id="pm" class="pm-wrap" data-page-node-id="AqvnBsJEAGM1wmoVKmnEC9"><div class="empty" data-page-node-id="GDDHNlGbnAPKcXalFjshGY">加载中…</div></div>
   </div>
 
-  <div class="card sb-card">
-    <div class="title">Second Brain · 角色视图 <span id="c-sb" class="badge"></span>
-      <span class="kg-open"><a class="btn" href="./personal_memory.html">Personal Memory →</a></span>
+  <div class="card sb-card" data-page-node-id="T2tDK6qYvVP4uNL7em58yE">
+    <div class="title" data-page-node-id="I2PWK1Buo5TKBDrPGBcEDW">Second Brain · 角色视图 <span id="c-sb" class="badge" data-page-node-id="CuFBq3KXgD0HQTYGaD9VXs"></span>
+      <span class="kg-open" data-page-node-id="H9SEgQ2dOA8lqjADA05TQW"><a class="btn" href="./personal_memory.html" data-page-node-id="efi6MZDQlCr7DdigHfgoqj">Personal Memory →</a></span>
     </div>
-    <div id="sb" class="sb-wrap"><div class="empty">加载中…</div></div>
+    <div id="sb" class="sb-wrap" data-page-node-id="CgAxvqfIFPG3ahORRIiA0u"><div class="empty" data-page-node-id="z3n4OgI5mHl9pkEQSigjZ8">加载中…</div></div>
   </div>
 
-  <div class="footer" id="release"></div>
+  <div class="footer" id="release" data-page-node-id="jUMkjIAkJ2MInr0SM2BJbS"></div>
 </div>
 
 <script>
@@ -156,27 +157,40 @@ function render(){
     get('./p2_daily_brief.json'),
     get('./review_queue.json'),
     get('./p2_state.json'),
+    // S4 语义告警：Event Changes 卡换源
+    get('./p2_alerts.json').catch(()=>null),
+    // S5 决策漏斗：Decisions Pending 卡换源
+    get('./decisions_pending.json').catch(()=>null),
+    // 单一事实源：event_id → canonical_event_id 映射，事件卡统一锚定
+    get('./canonical_events.json').catch(()=>null),
     // KG 单独降级：图谱取不到时其余模块照常渲染（置 null，不抛错）
     get('./knowledge_graph.json').catch(()=>null),
     // Personal Memory 同理单独降级
     get('./p2_personal_memory.json').catch(()=>null),
     // Second Brain 角色视图同理单独降级
     get('./second_brain.json').catch(()=>null)
-  ]).then(([brief,queue,state,kg,mem,sb])=>{
+  ]).then(([brief,queue,state,alerts,pending,canon,kg,mem,sb])=>{
     const B=brief.brief||[], Q=queue.items||[], W=(state.watchlists||[]).filter(w=>w.enabled!==false);
+    // 单一事实源：所有事件卡以 canonical_event_id 为稳定锚点（S1 Registry 映射）
+    const CEMAP=(canon&&canon.by_event_id)||{};
+    const ceOf=e=>(e&&(e.canonical_event_id||CEMAP[e.event_id]))||null;
+    const ceTag=e=>{ const c=ceOf(e); return c?`<span class="tag ce" title="canonical_event_id">⌖ ${esc(c)}</span>`:''; };
 
     // ---- KPI strip ----
     const wlHits=brief.watchlist_hits ?? B.reduce((n,e)=>n+((e.watchlist_matches||[]).length),0);
-    const changes=Q.filter(i=>i.change_impact);
     const risks=Q.filter(i=>i.trust_level==='low');
-    const pend=Q.filter(i=>i.decision===null).sort((a,b)=>(b.priority||0)-(a.priority||0));
     const acted=Q.filter(i=>i.decision).sort((a,b)=>(b.priority||0)-(a.priority||0));
+    // X1 换源：事件变化 ← S4 语义告警；待决决策 ← S5 决策漏斗
+    const alertList=alerts&&Array.isArray(alerts.semantic_alerts)?alerts.semantic_alerts:[];
+    const changes=alertList;
+    const pendMeta=(pending&&pending.meta)||{};
+    const pendCount=pendMeta.pending ?? (pending&&Array.isArray(pending.top_pending)?pending.top_pending.length:0);
     const kpis=[
       ['今日情报', B.length, 'Daily Brief 事件'],
       ['Watchlist 命中', wlHits, '个性化关注触发'],
-      ['事件变化', changes.length, '下游判断已变'],
+      ['事件变化', changes.length, 'S4 语义告警'],
       ['新兴风险', risks.length, '低可信待证'],
-      ['待决决策', pend.length, '需人工拍板'],
+      ['待决决策', pendCount, 'S5 决策漏斗 · 待拍板'],
       ['近期已决', acted.length, '已落决策']
     ];
     document.getElementById('kpis').innerHTML=kpis.map(k=>
@@ -189,7 +203,7 @@ function render(){
       <div class="item">
         <div class="row"><strong>${esc(e.title)}</strong><span class="tag ${prClass(e.daily_priority)}">P${esc(e.daily_priority??'—')}</span></div>
         <div class="meta">${esc(e.topic_label||e.topic||'')} · ${fmt(e.published_at)} · 情报分 ${esc(e.scores?.intelligence_score??'—')}${e.evidence_status?(' · '+esc(e.evidence_status)):''}</div>
-        ${(e.watchlist_matches||[]).length?`<div class="tags">${e.watchlist_matches.map(m=>`<span class="tag wl">★ ${esc(m)}</span>`).join('')}</div>`:''}
+        ${(e.watchlist_matches||[]).length?`<div class="tags">${e.watchlist_matches.map(m=>`<span class="tag wl">★ ${esc(m)}</span>`).join('')}</div>`:''}${ceTag(e)?`<div class="tags">${ceTag(e)}</div>`:''}
       </div>`).join('')||'<div class="empty">暂无今日情报</div>';
 
     // ---- My Watchlist ----
@@ -200,18 +214,20 @@ function render(){
       <div class="item">
         <div class="row"><strong>${esc(w.name||w.id)}</strong><span class="tag wl">+${esc(w.priority_boost??0)} 权重</span></div>
         <div class="meta">主题 ${esc((w.topics||[]).join(', '))} · 关键词 ${esc((w.keywords||[]).join(', '))} · 命中 ${matched.length} 条</div>
-        <div class="tags">${matched.slice(0,5).map(e=>`<span class="tag">${esc(e.title.slice(0,40))}</span>`).join('')}</div>
+        <div class="tags">${matched.slice(0,5).map(e=>`<span class="tag">${esc(e.title.slice(0,40))}</span>${ceTag(e)}`).join('')}</div>
       </div>`;
     }).join('')||'<div class="empty">未配置 Watchlist</div>';
 
-    // ---- Event Changes ----
+    // ---- Event Changes（X1 换源：S4 语义告警，单一事实源锚定）----
     setBadge('c-chg', changes.length);
-    document.getElementById('chg').innerHTML=changes.sort((a,b)=>(b.priority||0)-(a.priority||0)).map(i=>`
+    document.getElementById('chg').innerHTML=changes.length?changes.slice().sort((a,b)=>
+        ((b.severity==='high')-(a.severity==='high'))||((b.priority||0)-(a.priority||0))
+      ).map(a=>`
       <div class="item">
-        <div class="row"><strong>${esc(i.title)}</strong><span class="tag ${prClass(i.priority)}">P${esc(i.priority??'—')}</span></div>
-        <div class="meta">${esc(i.event_type||'')} · 风险 ${(i.change_impact.risk||'—')}</div>
-        <div class="tags"><span class="tag chg">${(i.change_impact.impact||'changed')}</span>${i.trust_level?`<span class="tag ${i.trust_level==='low'?'hot':'low'}">trust ${esc(i.trust_level)}</span>`:''}</div>
-      </div>`).join('')||'<div class="empty">暂无事件变化</div>';
+        <div class="row"><strong>${esc(a.title)}</strong><span class="tag ${a.severity==='high'?'hot':prClass(a.priority)}">${esc(String(a.type||'alert').replace('EVENT_','').replace(/_/g,' ').toLowerCase())}</span></div>
+        <div class="meta">${esc(a.topic||'')} · 严重度 ${esc(a.severity||'—')} · 依据 ${esc(a.basis||'—')}</div>
+        <div class="tags"><span class="tag chg">${esc(a.type||'alert')}</span>${a.rationale?`<span class="tag low">${esc(String(a.rationale).slice(0,46))}</span>`:''}${ceTag(a)}</div>
+      </div>`).join(''):'<div class="empty">暂无事件变化（S4 语义告警为空）</div>';
 
     // ---- Emerging Risks ----
     setBadge('c-risk', risks.length);
@@ -225,20 +241,27 @@ function render(){
       </div>`;
     }).join('')||'<div class="empty">暂无新兴风险</div>';
 
-    // ---- Decisions Pending (cap display, show count) ----
-    setBadge('c-pend', pend.length);
-    const showPend=pend.slice(0,18);
-    document.getElementById('pend').innerHTML=showPend.map(i=>{
-      const rs=(i.reasons||[]).map(r=>r.type).filter(Boolean);
-      const arts=(i.article_ids||[]).slice(0,4).map(a=>`<span class="tag">文 ${esc(a)}</span>`).join('');
-      return `
+    // ---- Decisions Pending（X1 换源：S5 决策漏斗，单一事实源锚定）----
+    const pendItems=(pending&&Array.isArray(pending.top_pending))?pending.top_pending:[];
+    const decidedN=pendMeta.decided??0, pendingN=pendMeta.pending??pendItems.length;
+    const tiers=pendMeta.pending_by_tier||{};
+    const tierCls={now:'hot',soon:'mid',watch:'low'};
+    setBadge('c-pend', pendingN);
+    document.getElementById('pend').innerHTML=
+      `<div class="tags" style="margin:0 0 10px">`+
+        `<span class="tag">待决 ${esc(pendingN)}</span>`+
+        `<span class="tag hot">now ${esc(tiers.now??'?')}</span>`+
+        `<span class="tag mid">soon ${esc(tiers.soon??'?')}</span>`+
+        `<span class="tag low">watch ${esc(tiers.watch??'?')}</span>`+
+        `<span class="tag">已决 ${esc(decidedN)}</span>`+
+        (pendMeta.reached_threshold?`<span class="tag low">偏好已解锁</span>`:`<span class="tag">样本 ${esc(pendMeta.decided_sample_size??'?')}/30 未解锁</span>`)+
+      `</div>`+
+      (pendItems.length?pendItems.map(i=>`
       <div class="item">
-        <div class="row"><strong>${esc(i.title)}</strong><span class="tag ${prClass(i.priority)}">P${esc(i.priority??'—')}</span></div>
-        <div class="meta">${esc(i.event_type||'')} · ${(i.trust_level||'—')}</div>
-        <div class="tags">${rs.map(r=>`<span class="tag">${esc(r)}</span>`).join('')}${arts}</div>
-      </div>`;
-    }).join('')||'<div class="empty">无待决决策</div>';
-    if(pend.length>showPend.length){ const d=document.getElementById('pend'); const n=document.createElement('div'); n.className='empty'; n.textContent='显示前 '+showPend.length+' / 共 '+pend.length+' 条'; d.appendChild(n); }
+        <div class="row"><strong>${esc(i.title)}</strong><span class="tag ${tierCls[i.tier]||'low'}">${esc(i.tier||'watch')}</span></div>
+        <div class="meta">${esc(i.topic||'')} · P${esc(i.priority??'—')} · trust ${esc(i.trust_level||'—')}</div>
+        <div class="tags">${(i.reason_types||[]).map(r=>`<span class="tag">${esc(r)}</span>`).join('')}${ceTag(i)}</div>
+      </div>`).join(''):'<div class="empty">无待决决策（S5 漏斗为空）</div>');
 
     // ---- Recently Acted ----
     setBadge('c-acted', acted.length);
@@ -253,7 +276,9 @@ function render(){
     }).join('')||'<div class="empty">暂无近期已决事项</div>';
 
     document.getElementById('release').innerHTML=
-      `数据来源：p2_daily_brief.json（生成于 ${fmt(brief.generated_at)}）· review_queue.json（${esc(queue.generated_count??Q.length)} 条）· p2_state.json（${W.length} 个 Watchlist）· `+
+      `数据来源（X1 换源）：Event Changes ← p2_alerts.json（S4 ${esc(changes.length)} 条）· Decisions Pending ← decisions_pending.json（S5 待决 ${esc(pendCount)} / 已决 ${esc(pendMeta.decided??0)}）· `+
+      `统一事件身份 ← canonical_events.json（S1 ${esc((canon&&canon.count)||'?')} 个 canonical_event_id）· `+
+      `其余：p2_daily_brief.json（${fmt(brief.generated_at)}）· review_queue.json（${esc(queue.generated_count??Q.length)} 条）· p2_state.json（${W.length} 个 Watchlist）· `+
       (kg?`knowledge_graph.json（v${esc(kg.version)} · 更新至 ${fmt(kg.stats?.latest_event_at)}）`:'knowledge_graph.json（暂不可用）')+'。'+
       (sb?` second_brain.json（v${esc(sb.version)} · ${Object.keys(sb.roles||{}).length} 角色 / ${(sb.entity_threads||[]).length} 实体线 / ${(sb.open_questions||[]).length} 开放问题）已接入。`:'')+
       ` 事件总数 ${esc(brief.event_count??'—')}。本站仅聚合既有 artifact，不自动补写未验证结论。`;
