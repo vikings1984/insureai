@@ -153,5 +153,58 @@ class TestCapAndValidation(unittest.TestCase):
         })
 
 
+class TestTwoTierAdmission(unittest.TestCase):
+    """X2（评审修订）：系统级 T1 监管 + 个人级 T2 Watch 两层准入；NEW_SOURCE 留内部。"""
+
+    def _canon(self, domain):
+        return {"canonical_events": {"e1": {"domain": domain}}}
+
+    def test_t1_regulatory_status_delta_is_system_high(self):
+        base = {"e1": {"stage": "n/a", "status": "unknown", "trust_score": 60, "evidence_count": 1,
+                       "proposition_count": 0, "decision_urgency": None, "review_required": False,
+                       "daily_priority": 50, "event_id": "e1", "title": "t", "topic": "x"}}
+        life = [{"canonical_event_id": "e1", "identity_key": "e1", "title": "t", "stage": "n/a", "status": "issued"}]
+        doc = build([_ev("e1")], life, [], [], base, _ceid(["e1"]), canonical=self._canon("regulatory"))
+        a = next(x for x in doc["semantic_alerts"] if x["canonical_event_id"] == "e1")
+        self.assertEqual(a["type"], "EVENT_MATERIAL_CHANGED")
+        self.assertEqual(a["admission"], "T1_system")
+        self.assertEqual(a["severity"], "high")
+        self.assertEqual(a["basis"], "delta")
+        self.assertIn("issued", a["rationale"])
+
+    def test_t1_regulatory_standing_without_watch_admitted(self):
+        """监管效力状态（issued/effective）即使无 Watch 命中也必须进首页（系统级 T1）。"""
+        life = [{"canonical_event_id": "e1", "identity_key": "e1", "title": "t", "stage": "n/a", "status": "effective"}]
+        doc = build([_ev("e1")], life, [], [], None, _ceid(["e1"]), canonical=self._canon("regulatory"))
+        a = next((x for x in doc["semantic_alerts"] if x["canonical_event_id"] == "e1"), None)
+        self.assertIsNotNone(a, "监管 T1 无 watch 命中也应进首页")
+        self.assertEqual(a["admission"], "T1_system")
+        self.assertEqual(a["type"], "EVENT_MATERIAL_CHANGED")
+
+    def test_t2_personal_watch_admission(self):
+        events = [_ev("e1", review=True)]
+        doc_with = build(events, [], [], [_brief("e1", 90)], None, _ceid(["e1"]), watch_ceids={"e1"})
+        a = next(x for x in doc_with["semantic_alerts"] if x["canonical_event_id"] == "e1")
+        self.assertEqual(a["admission"], "T2_personal")
+        doc_without = build(events, [], [], [_brief("e1", 90)], None, _ceid(["e1"]), watch_ceids=set())
+        a0 = next(x for x in doc_without["semantic_alerts"] if x["canonical_event_id"] == "e1")
+        self.assertEqual(a0["admission"], "T3_standard")
+
+    def test_new_source_suppressed_not_on_home(self):
+        """NEW_SOURCE 类内部信号不得上首页（Home 产品告警不含 NEW_SOURCE）。"""
+        events = [_ev("e1", review=True)]
+        doc = build(events, [], [], [_brief("e1", 90)], None, _ceid(["e1"]), suppress={"e1"})
+        on_home = [a for a in doc["semantic_alerts"] if a["canonical_event_id"] == "e1"]
+        self.assertEqual(on_home, [], "被抑制的 CE 不应出现在 Home 产品告警")
+        self.assertGreaterEqual(doc["meta"]["suppressed"], 1)
+        validate(doc)  # 不抛即通过
+
+    def test_meta_carries_admission_and_suppressed(self):
+        doc = build([_ev("e1", review=True)], [], [], [_brief("e1", 90)], None, _ceid(["e1"]))
+        self.assertIn("admission_counts", doc["meta"])
+        self.assertIn("suppressed", doc["meta"])
+        self.assertIsInstance(doc["meta"]["admission_counts"], dict)
+
+
 if __name__ == "__main__":
     unittest.main()

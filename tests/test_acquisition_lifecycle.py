@@ -84,5 +84,71 @@ class AcquisitionLifecycleTests(unittest.TestCase):
             lc.validate(report)
 
 
+class DomainPluginTests(unittest.TestCase):
+    """lc-v1.1：生命周期按 domain 插件化，禁止把收购六段默默通用化。"""
+
+    def test_domain_of_prefers_registry_domain(self):
+        self.assertEqual(lc.domain_of({"domain": "regulatory"}, []), "regulatory")
+        self.assertEqual(lc.domain_of({"domain": "acquisition"}, []), "acquisition")
+
+    def test_domain_of_falls_back_to_claims_when_other(self):
+        # Registry domain=other 但 Claim 文本是收购 → 回退推断为 acquisition
+        self.assertEqual(lc.domain_of({"domain": "other"}, _claims("A 拟收购 B")), "acquisition")
+        # 既非注册 domain 也非收购 Claim → other
+        self.assertEqual(lc.domain_of({"domain": "other"}, [{"claim_type": "event_summary", "claim_text": "季报"}]), "other")
+
+    def test_derive_stage_regulatory_returns_status_not_stage(self):
+        res = lc.derive_stage(_claims("银保监会发布车险费率新规", claim_type="regulatory"), domain="regulatory")
+        self.assertEqual(res["stage"], "n/a")          # regulatory 无 stage 演进
+        self.assertEqual(res["status"], "issued")       # 命中「发布」
+        self.assertEqual(res["domain"], "regulatory")
+
+    def test_derive_stage_regulatory_effective_with_date(self):
+        res = lc.derive_stage(
+            _claims("新规自 2026-01-15 起生效", claim_type="regulatory"), domain="regulatory"
+        )
+        self.assertEqual(res["stage"], "n/a")
+        self.assertEqual(res["status"], "effective")
+        self.assertEqual(res["effective"], "2026-01-15")
+
+    def test_derive_stage_regulatory_unknown_without_signal(self):
+        res = lc.derive_stage(_claims("行业动态", claim_type="regulatory"), domain="regulatory")
+        self.assertEqual(res["stage"], "n/a")
+        self.assertEqual(res["status"], "unknown")
+        self.assertEqual(res["confidence"], 0.0)
+
+    def test_derive_stage_catastrophe_is_na(self):
+        res = lc.derive_stage(_claims("台风红色预警", claim_type="catastrophe"), domain="catastrophe")
+        self.assertEqual(res["stage"], "n/a")
+        self.assertEqual(res["domain"], "catastrophe")
+
+    def test_derive_stage_other_is_na(self):
+        res = lc.derive_stage([{"claim_type": "event_summary", "claim_text": "公司发布季报"}], domain="other")
+        self.assertEqual(res["stage"], "n/a")
+        self.assertIsNone(res["status"])
+
+    def test_build_report_regulatory_entry_carries_status_and_na_stage(self):
+        registry = er.build([({"event_id": "evt_r", "title": "R", "published_at": "2024-02-01", "event_type": "regulatory"}, "daily_brief")])
+        report = lc.build_report(registry, {"evt_r": _claims("协会发布行业自律指引", claim_type="regulatory")})
+        self.assertEqual(report["domain_counts"]["regulatory"], 1)
+        ent = report["entries"][0]
+        self.assertEqual(ent["domain"], "regulatory")
+        self.assertEqual(ent["stage"], "n/a")
+        self.assertEqual(ent["status"], "issued")
+
+    def test_validate_rejects_regulatory_with_stage(self):
+        """regulatory 域禁止误写 stage（X2 评审硬约束）。"""
+        report = {
+            "version": lc.VERSION, "generated_at": "2024", "total_canonical": 1,
+            "acquisition_events": 0,
+            "stage_counts": {"rumor": 0, "negotiation": 0, "agreement": 0, "regulatory": 0, "closing": 0, "integration": 0, "n/a": 1},
+            "domain_counts": {"acquisition": 0, "regulatory": 1, "catastrophe": 0, "other": 0},
+            "entries": [{"canonical_event_id": "cev_r", "domain": "regulatory", "stage": "rumor",
+                         "status": "issued", "confidence": 0.5, "evidence_refs": [], "reason": "x"}],
+        }
+        with self.assertRaises(AssertionError):
+            lc.validate(report)
+
+
 if __name__ == "__main__":
     unittest.main()
