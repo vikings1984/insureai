@@ -145,7 +145,9 @@ class IdentityResolverTests(unittest.TestCase):
         self.assertIn("generic_entities_only", gen[0]["reason"])
 
     def test_build_report_includes_partition_stats_and_generic_review(self):
-        report = ir.build_report(refs=["evt_a"], registry=self.reg)
+        # 显式传 entity_threads=[] 使 generic_review 仅取决于本测试输入（hermetic），
+        # 不依赖真实 second_brain.json 的 generic-only 实体数（Sprint 3 重建后为 20）。
+        report = ir.build_report(refs=["evt_a"], registry=self.reg, entity_threads=[])
         self.assertIn("partition_stats", report)
         self.assertIn("generic_review", report)
         self.assertIsInstance(report["partition_stats"], dict)
