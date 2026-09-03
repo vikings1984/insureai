@@ -64,15 +64,102 @@ ACTION_BY_TYPE = {
     "industry_update": "update",
 }
 
+# —— T1 性能债治理（X2 横切独立项）——
+# _cluster 是 O(n²) 全对比较：每一项对每个 representative 都会重算
+# _entities / _event_type / _tokens / _norm / _timestamp。cProfile（600 条真实数据，22.1s）实测：
+#   _event_type 被调用 694,896 次（cumtime 12.39s ≈ 56% 运行时间）
+#   _entities   被调用 982,210 次（cumtime 6.54s ≈ 30%）
+# 即 600 条数据里同一 item 的实体/类型被重复计算约 1,600 次。
+# 下列 memo 把重复计算降为「每 item 一次」，是**纯常量级**优化，不改变任何返回值
+# （故行为可字节校验：见 bench 的 groupings hash 必须前后一致）。
+#
+# 缓存键策略：
+#   · str 入参（_norm / _tokens）→ 按值缓存，str 不可变且可哈希，绝对安全。
+#   · dict 入参（_entities/_event_type/_timestamp）→ 按 id() 缓存，并在缓存条目中
+#     持有该 item 的**强引用**，使对象在缓存期间无法被 GC、id() 不可能被复用；
+#     读取时再用 `hit[0] is item` 做身份校验，双重保险。
+# 缓存由 clear_memo() 在 build() 入口清空，故不跨构建泄漏，也不会读到陈旧值。
+_ENTITIES_MEMO: dict[int, tuple[object, list[str]]] = {}
+_EVENT_TYPE_MEMO: dict[int, tuple[object, str]] = {}
+_TIMESTAMP_MEMO: dict[int, tuple[object, datetime]] = {}
+_NORM_MEMO: dict[str, str] = {}
+_TOKENS_MEMO: dict[str, set[str]] = {}
+
+
+def clear_memo() -> None:
+    """清空全部 memo 缓存。
+
+    在 build() 入口调用：保证每次构建都从干净缓存开始，既不跨构建泄漏内存，
+    也不会在下一次构建中读到上一次遗留、恰好 id 被复用的条目，
+    更不会跨构建读到被重新生成过的 canonical registry。
+    """
+    _ENTITIES_MEMO.clear()
+    _EVENT_TYPE_MEMO.clear()
+    _TIMESTAMP_MEMO.clear()
+    _NORM_MEMO.clear()
+    _TOKENS_MEMO.clear()
+    _reset_canonical_registry_cache()
+
+
+# —— T1 第二热点：canonical registry 单次构建内复用 ——
+# _resolve_canonical_event_id 对每个 event 都调用 event_registry.load_registry()，
+# 而后者每次都完整读取并解析 canonical_events.json（110KB+）。1554 个 event 即
+# 1554 次全量读盘 + JSON 解析，是 build() 的主要 I/O 瓶颈（实测占 ~80s / 5% CPU）。
+# 缓存后降为单次构建 1 次；同样由 clear_memo() 在 build() 入口重置，
+# 因此不会跨构建读到被重建过的 registry（语义与逐次 load_registry() 完全一致）。
+_CANON_REGISTRY: dict | None = None
+_CANON_REGISTRY_LOADED: bool = False
+
+
+def _reset_canonical_registry_cache() -> None:
+    global _CANON_REGISTRY, _CANON_REGISTRY_LOADED
+    _CANON_REGISTRY = None
+    _CANON_REGISTRY_LOADED = False
+
+
+def _canonical_registry() -> dict | None:
+    """单次构建内复用 canonical registry；读取失败回退 None（不伪造）。"""
+    global _CANON_REGISTRY, _CANON_REGISTRY_LOADED
+    if not _CANON_REGISTRY_LOADED:
+        try:
+            import event_registry as _er
+            _CANON_REGISTRY = _er.load_registry()
+        except Exception:
+            _CANON_REGISTRY = None
+        _CANON_REGISTRY_LOADED = True
+    return _CANON_REGISTRY
+
+
 def _norm(text: str) -> str:
-    text = (text or "").lower()
-    text = re.sub(r"https?://\S+", " ", text)
-    return re.sub(r"[^\w\u4e00-\u9fff]+", " ", text, flags=re.UNICODE).strip()
+    if not isinstance(text, str):
+        # 非 str（异常输入）不进缓存，走原逻辑，行为与优化前完全一致
+        text = (text or "").lower()
+        text = re.sub(r"https?://\S+", " ", text)
+        return re.sub(r"[^\w\u4e00-\u9fff]+", " ", text, flags=re.UNICODE).strip()
+    hit = _NORM_MEMO.get(text)
+    if hit is not None:
+        return hit
+    out = (text or "").lower()
+    out = re.sub(r"https?://\S+", " ", out)
+    out = re.sub(r"[^\w\u4e00-\u9fff]+", " ", out, flags=re.UNICODE).strip()
+    _NORM_MEMO[text] = out
+    return out
 
 def _tokens(text: str) -> set[str]:
-    return {x for x in _norm(text).split() if len(x) > 1 and x not in STOPWORDS}
+    if not isinstance(text, str):
+        return {x for x in _norm(text).split() if len(x) > 1 and x not in STOPWORDS}
+    hit = _TOKENS_MEMO.get(text)
+    if hit is not None:
+        return hit
+    out = {x for x in _norm(text).split() if len(x) > 1 and x not in STOPWORDS}
+    _TOKENS_MEMO[text] = out
+    return out
 
 def _entities(item: dict) -> list[str]:
+    key = id(item)
+    hit = _ENTITIES_MEMO.get(key)
+    if hit is not None and hit[0] is item:
+        return hit[1]
     values = []
     tags = item.get("tags") or ""
     if isinstance(tags, str):
@@ -86,26 +173,40 @@ def _entities(item: dict) -> list[str]:
         if len(value) >= 2 and value not in seen:
             seen.add(value)
             result.append(value)
-    return result[:12]
+    out = result[:12]
+    _ENTITIES_MEMO[key] = (item, out)
+    return out
 
 def _entity_anchor(item: dict) -> str:
     entities = _entities(item)
     return entities[0] if entities else ""
 
 def _timestamp(item: dict) -> datetime:
+    key = id(item)
+    hit = _TIMESTAMP_MEMO.get(key)
+    if hit is not None and hit[0] is item:
+        return hit[1]
     try:
-        return datetime.fromisoformat((item.get("published_at") or "").replace("Z", "+00:00")).astimezone(timezone.utc)
+        out = datetime.fromisoformat((item.get("published_at") or "").replace("Z", "+00:00")).astimezone(timezone.utc)
     except Exception:
-        return datetime.min.replace(tzinfo=timezone.utc)
+        out = datetime.min.replace(tzinfo=timezone.utc)
+    _TIMESTAMP_MEMO[key] = (item, out)
+    return out
 
 def _event_type(item: dict) -> str:
+    key = id(item)
+    hit = _EVENT_TYPE_MEMO.get(key)
+    if hit is not None and hit[0] is item:
+        return hit[1]
     text = _norm(" ".join([item.get("title", ""), item.get("summary", "")]))
     ranked = []
     for event_type, words in EVENT_TYPES.items():
         hits = sum(1 for word in words if word in text)
         if hits:
             ranked.append((hits, event_type))
-    return max(ranked, key=lambda x: (x[0], x[1]))[1] if ranked else "industry_update"
+    out = max(ranked, key=lambda x: (x[0], x[1]))[1] if ranked else "industry_update"
+    _EVENT_TYPE_MEMO[key] = (item, out)
+    return out
 
 def _signature(item: dict) -> str:
     title = item.get("title_zh") or item.get("title") or ""
@@ -218,7 +319,7 @@ def _resolve_canonical_event_id(event_id: str) -> str | None:
         return None
     try:
         import event_registry as _er
-        reg = _er.load_registry()
+        reg = _canonical_registry()  # T1：单次构建内复用，避免每 event 一次全量读盘
         if reg:
             return _er.resolve(event_id, reg)
     except Exception:
@@ -295,6 +396,7 @@ def _insight(items: list[dict], scores: dict, event_type: str, entities: list[st
     return {"what_happened": title, "why_it_matters": why, "who_is_affected": topic, "what_to_watch": watch, "evidence": evidence, "evidence_coverage": coverage, "evidence_status": evidence_status, "signals": signals, "confidence": scores["confidence"], "summary": summary[:360], "entity_count": len(entities), "human_review_required": review_required}
 
 def build(data: dict) -> dict:
+    clear_memo()  # T1：每次构建从干净 memo 开始，不跨构建残留、不泄漏内存
     news = data.get("news", []) if isinstance(data, dict) else []
     events = []
     for event_id, items in _cluster(news).items():

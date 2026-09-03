@@ -92,5 +92,94 @@ class TestIntelligence(unittest.TestCase):
         self.assertTrue(any(x["topic"] == "capital_reinsurance" for x in radar["topic_trends"]))
 
 
+class TestPerfMemoization(unittest.TestCase):
+    """T1 性能债治理回归守卫。
+
+    性能优化（_entities/_event_type/_tokens/_norm/_timestamp 记忆化 + canonical
+    registry 单次构建复用）必须满足三条不变式，任一被破坏即失败：
+      (a) 去重生效：二次调用命中缓存、返回同一对象（这是提速的来源）；
+      (b) 语义透明：缓存前后的返回值必须逐字节一致（memo 不得改变任何结果）；
+      (c) 可清空：clear_memo() 能彻底重置全部缓存，不跨构建泄漏状态。
+    """
+
+    ITEM = {
+        "id": 9001, "title": "Munich Re to acquire At-Bay",
+        "summary": "Munich Re announced acquisition of cyber insurance company At-Bay.",
+        "tags": "Munich Re,At-Bay", "published_at": "2026-08-21T08:00:00+00:00",
+        "source_name": "Reuters", "ai_score": 90, "research_topic": "capital_reinsurance",
+    }
+
+    def setUp(self):
+        I.clear_memo()
+
+    def tearDown(self):
+        I.clear_memo()
+
+    def test_clear_memo_empties_all_caches(self):
+        I._entities(self.ITEM)
+        I._event_type(self.ITEM)
+        I._timestamp(self.ITEM)
+        I._norm(self.ITEM["title"])
+        I._tokens(self.ITEM["title"])
+        I._canonical_registry()
+        # 先确认缓存确实被填充（否则"清空"断言毫无意义）
+        self.assertTrue(I._ENTITIES_MEMO)
+        self.assertTrue(I._EVENT_TYPE_MEMO)
+        self.assertTrue(I._TIMESTAMP_MEMO)
+        self.assertTrue(I._NORM_MEMO)
+        self.assertTrue(I._TOKENS_MEMO)
+        self.assertTrue(I._CANON_REGISTRY_LOADED)
+
+        I.clear_memo()
+        self.assertEqual(len(I._ENTITIES_MEMO), 0)
+        self.assertEqual(len(I._EVENT_TYPE_MEMO), 0)
+        self.assertEqual(len(I._TIMESTAMP_MEMO), 0)
+        self.assertEqual(len(I._NORM_MEMO), 0)
+        self.assertEqual(len(I._TOKENS_MEMO), 0)
+        self.assertFalse(I._CANON_REGISTRY_LOADED)
+
+    def test_memo_does_not_change_returned_values(self):
+        """不变式 (b)：memo 必须语义透明，缓存前后返回值完全一致。"""
+        item = dict(self.ITEM)
+        first = (I._entities(item), I._event_type(item), I._timestamp(item),
+                 I._norm(item["title"]), I._tokens(item["title"]))
+        I.clear_memo()
+        second = (I._entities(item), I._event_type(item), I._timestamp(item),
+                  I._norm(item["title"]), I._tokens(item["title"]))
+        self.assertEqual(first, second)
+
+    def test_cache_hit_returns_same_object(self):
+        """不变式 (a)：二次调用命中缓存返回同一对象，证明重复计算已被消除。"""
+        item = dict(self.ITEM)
+        self.assertIs(I._entities(item), I._entities(item))
+        self.assertIs(I._event_type(item), I._event_type(item))
+        self.assertIs(I._tokens(item["title"]), I._tokens(item["title"]))
+
+    def test_registry_loaded_once_per_build(self):
+        """不变式 (a)：canonical registry 在单次构建内只从磁盘加载一次。"""
+        self.assertFalse(I._CANON_REGISTRY_LOADED)
+        r1 = I._canonical_registry()
+        self.assertTrue(I._CANON_REGISTRY_LOADED)
+        r2 = I._canonical_registry()
+        self.assertIs(r1, r2)
+        I.clear_memo()
+        self.assertFalse(I._CANON_REGISTRY_LOADED)
+
+    def test_build_is_deterministic_with_memo(self):
+        """不变式 (c)：连续两次 build，事件与统计必须一致，memo 不得跨构建污染。
+
+        注意只比对 events/stats，不比对 radar——radar 由 datetime.now() 驱动的
+        时间衰减权重构成，本身即随时间漂移，与 memo 无关。
+        """
+        data = {"news": [
+            {"id": 1, "title": "Munich Re to acquire At-Bay", "summary": "Munich Re announced acquisition of At-Bay.", "source_name": "Reuters", "source_url": "https://reuters.example/a", "published_at": "2026-08-21T08:00:00+00:00", "ai_score": 90, "research_topic": "capital_reinsurance", "source_authority": 95, "date_verified": True},
+            {"id": 2, "title": "Munich Re agrees to buy At-Bay", "summary": "The reinsurer will acquire At-Bay.", "source_name": "Insurance Journal", "source_url": "https://insurance.example/b", "published_at": "2026-08-21T07:30:00+00:00", "ai_score": 86, "research_topic": "capital_reinsurance", "source_authority": 84, "date_verified": True},
+        ]}
+        first = I.build(data)
+        second = I.build(data)
+        self.assertEqual(first["events"], second["events"])
+        self.assertEqual(first["stats"], second["stats"])
+
+
 if __name__ == "__main__":
     unittest.main()

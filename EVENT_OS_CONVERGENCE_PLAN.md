@@ -118,8 +118,13 @@ E3(feedback) ───────┘                                  │      
 - **实测**：1634 条真实新闻上 `daily_brief` 耗时 ~72.7s 单测、~160s 全量；n 翻倍耗时 ×4（典型 O(n²)）。
 - **根因**：`intelligence.py:152 _cluster` 全对相似度；内部 `_event_type`/`_entities`/`_norm` 逐对重复计算（无记忆化）。cProfile：`_event_type` 310,998 次、`_entities` 441,252 次、`re.sub` 933,805 次（n=400）。
 - **影响面**：`p2_intelligence.py` 在 `daily-collect.yml` + `test.yml` 均被调用 → CI 该步随 data.json 增长二次变慢（data.json 当前 1634、非滚动窗口，长期累积）。
-- **状态**：与 E3 无关（E3 未触碰 intelligence 评分路径）。**待办**：先加 `_entities`/`_event_type` 记忆化（~常量级加速、行为可字节校验），再视需引入分桶/阻断策略消除 O(n²)。属独立优化，不在本 Sprint 强制出口。
-- **纪律约束**：行为须保持确定性——优化后 `intelligence.json` 关键字段需与现状对齐（回归测试 `test_intelligence*` 已覆盖），严禁为提速改变事件合并/评分结果。
+- **状态**：✅ **已优化并收口**（X2 全部 Sprint 收口后的横切独立项，2026-09-03）。
+  - **第二根因（本次新发现）**：`_resolve_canonical_event_id`（`intelligence.py:281`）对每个 event 都调用 `event_registry.load_registry()` → 后者每次完整读盘 + JSON 解析 `canonical_events.json`（110KB+），1554 events 即 1554 次全量 I/O。实测该步是 `build()` 的主要瓶颈（全量 ~152s 中约 80s，CPU 仅 5%，典型 I/O 绑定）。
+  - **修复**：① `_entities`/`_event_type`/`_timestamp`/`_norm`/`_tokens` 全部记忆化（str 入参按值缓存；dict 入参按 `id()` 缓存并**持有强引用**防 id 复用 + `hit[0] is item` 身份校验）；② 新增 `_canonical_registry()` 单次构建复用 registry；③ 全部缓存由新增 `clear_memo()` 在 `build()` 入口统一重置，杜绝跨构建状态污染与陈旧 registry。
+  - **实测提速**：`_cluster` 73.2s → **2.56s**；`build()` 全量 152s → **2.97s**（**≈51×**，且由 I/O 绑定（5% CPU）转为计算绑定（94% CPU））。
+  - **确定性证明（字节级）**：冻结 `datetime.now()` 后，优化前后两次 `build()` 输出 **sha1 完全相同**（`fd85a04f…`，`cmp` 字节一致）；未冻结时 1554 个 event 逐字段全等，唯一差异为 `radar.entity_radar["am best"].weighted_activity` 1113↔1114——经定位系 `radar.py:39` 用 `datetime.now()` 计算时间衰减 recency 的**既有设计**（两次构建相隔数分钟的自然漂移），与本次优化无关。
+- **纪律约束（已满足）**：行为保持确定性——优化后 `intelligence.json` 关键字段与现状完全对齐（回归测试 `test_intelligence*` 覆盖，并新增 `TestPerfMemoization` 5 项守卫三条不变式：去重生效 / 语义透明 / 可清空）。严禁为提速改变事件合并/评分结果——本次未改动任何评分或合并逻辑。
+- **遗留说明**：O(n²) 的**成对比较次数**本身未消除（仅消除了每对内部的重复计算）。记忆化后全量已降至 ~3s，二次增长的长期风险已大幅后移；若 data.json 再增长一个数量级，可再引入分桶/阻断（如按 entity anchor 或时间窗分桶）进一步降比较次数，届时需重跑本节的字节级确定性校验。
 
 ---
 
@@ -193,5 +198,6 @@ Event OS 核心主链 60 → **目标 80（三周后）**，不写 95；Second B
   - ✅ **X1 终审（89 进复核页）**：`decisions_pending.json` 三条固定出口卡契约稳定；`tests/test_x1_convergence.py`（9 项）全绿，X1 89→复核页不变、`canonical_event_id` 锚点一致。
   - ✅ **E3 反馈挂接 canonical_event_id（import-v1.1）** `p2_import_feedback.py`：`_resolve_ceid()` 写入时把 `event_id`→`canonical_event_id`（经 S1 Registry by_event_id）；不可解析者 fail-closed 拒绝（不静默落原始 id）；`merge_state` 去重锚点改 canonical；新增 `validate_state()` schema 守卫（写盘前 fail-closed）；`run()` 增 `--ce` 参数。`tests/test_p2_import_feedback.py` 扩至 36 项（新增 `TestCanonicalEventId` 7 + `TestLoadByEventId`）。当前 `p2_state.json` 反馈/跟踪为空，已通过 `validate_state` 校验。
   - ✅ **质量门 + 全量快测 + 产物重建**：30 条标注质量门（`tests/test_canonical_annotations.py` 12 项）全绿；Sprint 3 全量快测通过；`decisions_pending.json`/`second_brain.json` 重建、X1 契约不变。
-  - 🟡 **横切遗留（非 Sprint 3 阻塞项，独立跟踪）**：E2 决策样本 12<30（需 pipeline 累积 ≥30 才解锁偏好结论）；T1 perf 债独立优化。
+  - ✅ **T1 perf 债已优化收口**（横切独立项，§8 T1）：`_cluster` 73.2s→2.56s、`build()` 全量 152s→2.97s（≈51×）；冻结时钟后前后输出字节一致（sha1 `fd85a04f…`）；新增 `TestPerfMemoization` 5 项守卫。
+  - 🟡 **横切仍遗留**：E2 决策样本 12<30（需 pipeline 累积 ≥30 才解锁偏好结论，非阻塞、靠日常流水线自然累计）。
 - 🟢 **X2 产品化收敛全部 Sprint 收口**（S1+S2+S3 ✅）。后续进入常态化运营：CI 每日重建、反馈/决策样本累积解锁 E2 偏好结论。
