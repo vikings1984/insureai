@@ -1,24 +1,12 @@
 {
   "version": 4,
-  "generated_at": "2026-09-04T07:16:13.638964+00:00",
+  "generated_at": "2026-09-04T15:45:08.272009+00:00",
   "status": "review",
   "principle": "雷达只排序已有风险信号；部署风险与趋势归因只影响人工注意力与发布可信度，不重新评分、不修改原始决策、不自动执行行动。",
   "items": [
     {
       "event_id": "evt_ceb11946ab87",
       "title": "瑞士再保险：2026 年上半年全球受保巨灾损失达 420 亿美元，创 2020 年以来上半年最低水平",
-      "urgency": null,
-      "trust_level": "low",
-      "attention_score": 100,
-      "reasons": [
-        "human_review"
-      ],
-      "source": "review_queue.json",
-      "trend_attribution": null
-    },
-    {
-      "event_id": "evt_7635b5984895",
-      "title": "慕尼黑再保险 (Munich Re) 跻身劳合社全球 50 家最大再保险公司之列：AM Best",
       "urgency": null,
       "trust_level": "low",
       "attention_score": 100,
@@ -53,32 +41,8 @@
       "trend_attribution": null
     },
     {
-      "event_id": "evt_578b5faa780f",
-      "title": "Verisk 晋升 Harry White 为财产索赔服务主管",
-      "urgency": null,
-      "trust_level": "low",
-      "attention_score": 100,
-      "reasons": [
-        "human_review"
-      ],
-      "source": "review_queue.json",
-      "trend_attribution": null
-    },
-    {
       "event_id": "evt_4b12fa2f9f1b",
       "title": "我国保险资金运用余额首次突破40万亿元！红利低波ETF华泰柏瑞(512890)年内累计“吸金”近60亿元",
-      "urgency": null,
-      "trust_level": "low",
-      "attention_score": 100,
-      "reasons": [
-        "human_review"
-      ],
-      "source": "review_queue.json",
-      "trend_attribution": null
-    },
-    {
-      "event_id": "evt_40ac78061367",
-      "title": "红树林推出百慕大再保险Sidecar Grove Re",
       "urgency": null,
       "trust_level": "low",
       "attention_score": 100,
@@ -94,6 +58,74 @@
       "urgency": null,
       "trust_level": "low",
       "attention_score": 100,
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "trend_attribution": null
+    },
+    {
+      "event_id": "deployment:production",
+      "title": "生产部署状态：deployment_release_mismatch",
+      "urgency": "now",
+      "trust_level": null,
+      "attention_score": 98,
+      "reasons": [
+        "deployment_release_mismatch",
+        "published_marker_behind_expected"
+      ],
+      "source": "deployment_verification.json",
+      "deployment_risk": {
+        "version": 4,
+        "classification": "deployment_release_mismatch",
+        "priority": 98,
+        "attention": true,
+        "verified": false,
+        "status": "stale",
+        "error": "published_marker_behind_expected",
+        "checked_at": "2026-09-04T11:12:47.650274+00:00",
+        "trend": {
+          "version": 1,
+          "classification": "single_failure",
+          "failure_streak": 1,
+          "sample_count": 11,
+          "generated_at": "2026-09-04T15:45:08.271925+00:00"
+        },
+        "next_step": "核对线上 release marker 与当前 release manifest；确认是否仍运行旧版本，并检查最近一次发布状态。",
+        "generated_at": "2026-09-04T15:45:08.271946+00:00",
+        "principle": "部署风险只影响人工注意力与发布可信度，不修改 Decision/Trust/Urgency。"
+      }
+    },
+    {
+      "event_id": "evt_7635b5984895",
+      "title": "慕尼黑再保险 (Munich Re) 跻身劳合社全球 50 家最大再保险公司之列：AM Best",
+      "urgency": null,
+      "trust_level": "low",
+      "attention_score": 95,
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "trend_attribution": null
+    },
+    {
+      "event_id": "evt_578b5faa780f",
+      "title": "Verisk 晋升 Harry White 为财产索赔服务主管",
+      "urgency": null,
+      "trust_level": "low",
+      "attention_score": 95,
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "trend_attribution": null
+    },
+    {
+      "event_id": "evt_40ac78061367",
+      "title": "红树林推出百慕大再保险Sidecar Grove Re",
+      "urgency": null,
+      "trust_level": "low",
+      "attention_score": 95,
       "reasons": [
         "human_review"
       ],
@@ -293,8 +325,8 @@
       "trend_attribution": null
     },
     {
-      "event_id": "evt_f789cf552db5",
-      "title": "加拉格尔聘请高级商业人员扩大欧洲、中东和非洲私人资本和并购团队",
+      "event_id": "evt_fa3ada0305e3",
+      "title": "QBE 完成将全球贸易信贷和担保部门出售给 Swiss Re Corporate Solutions",
       "urgency": null,
       "trust_level": "medium",
       "attention_score": 60,
@@ -305,8 +337,8 @@
       "trend_attribution": null
     },
     {
-      "event_id": "evt_f5f2b9af635b",
-      "title": "下半年金融服务瞄准这些重点",
+      "event_id": "evt_e93071bbcce8",
+      "title": "《保险法》修订草案公开征求意见，拟定保险代理机构等连续六个月以上未开展保险业务的，监管有权予以撤销",
       "urgency": null,
       "trust_level": "medium",
       "attention_score": 60,
@@ -317,8 +349,8 @@
       "trend_attribution": null
     },
     {
-      "event_id": "evt_f5c2f390e3ef",
-      "title": "人民银行上海总部：加紧推进跨境再保险分入业务收入境外投资便利化试点工作",
+      "event_id": "evt_d684d53831fb",
+      "title": "保险法修订草案公开征求意见 这些要点值得关注",
       "urgency": null,
       "trust_level": "medium",
       "attention_score": 60,
@@ -329,8 +361,8 @@
       "trend_attribution": null
     },
     {
-      "event_id": "evt_f0386d5312d2",
-      "title": "觅蜂百万小时数据下线，物理AI数据电网立下了一根电线杆",
+      "event_id": "evt_c5fdcae78987",
+      "title": "怡安保险：创纪录的 8000 亿美元再保险资本为 1.1 时代的保险公司提供增长机会",
       "urgency": null,
       "trust_level": "medium",
       "attention_score": 60,
@@ -341,20 +373,8 @@
       "trend_attribution": null
     },
     {
-      "event_id": "evt_ee771611e448",
-      "title": "正在努力打捞在纽约运河沉没的缅因州和波士顿纵帆船",
-      "urgency": null,
-      "trust_level": "medium",
-      "attention_score": 60,
-      "reasons": [
-        "human_review"
-      ],
-      "source": "review_queue.json",
-      "trend_attribution": null
-    },
-    {
-      "event_id": "evt_e8dc109523ba",
-      "title": "事关智能锁和养老机器人 我国智能家居国际标准化建设提速",
+      "event_id": "evt_be30e9855f83",
+      "title": "新罕布什尔州批准 2027 年工人赔偿率削减 2.9%",
       "urgency": null,
       "trust_level": "medium",
       "attention_score": 60,
@@ -366,11 +386,11 @@
     }
   ],
   "summary": {
-    "items": 112,
+    "items": 113,
     "top_attention_score": 100,
     "credibility_status": "review",
-    "impacted_event_count": 1571,
-    "deployment_attention": false,
-    "deployment_classification": "deployment_verified"
+    "impacted_event_count": 35,
+    "deployment_attention": true,
+    "deployment_classification": "deployment_release_mismatch"
   }
 }

@@ -1,17 +1,17 @@
 {
   "version": 3,
-  "generated_at": "2026-09-04T07:17:06.253801+00:00",
-  "source_commit": "f4e0f596adbcc1319ba0c1a2ee58a3f59068c294",
+  "generated_at": "2026-09-04T15:45:59.116678+00:00",
+  "source_commit": "5fb23d818f35714e015506e123573180aecb2db4",
   "summary": {
-    "event_count": 1609,
+    "event_count": 1644,
     "rising_topics": 0,
     "review_queue": 100,
     "attention_signals": 30,
-    "avg_evidence_coverage": 26.6,
-    "cross_checked_claims": 31,
-    "single_source_claims": 2181,
+    "avg_evidence_coverage": 26.7,
+    "cross_checked_claims": 32,
+    "single_source_claims": 2227,
     "credibility_status": "review",
-    "deployment_status": "verified"
+    "deployment_status": "stale"
   },
   "what_changed": [
     {
@@ -688,18 +688,6 @@
       "trend_attribution": null
     },
     {
-      "event_id": "evt_7635b5984895",
-      "title": "慕尼黑再保险 (Munich Re) 跻身劳合社全球 50 家最大再保险公司之列：AM Best",
-      "urgency": null,
-      "trust_level": "low",
-      "attention_score": 100,
-      "reasons": [
-        "human_review"
-      ],
-      "source": "review_queue.json",
-      "trend_attribution": null
-    },
-    {
       "event_id": "evt_7099dec26227",
       "title": "PERILS 将风暴 Goretti 造成的行业损失预估下调至 4.68 亿欧元",
       "urgency": null,
@@ -724,32 +712,8 @@
       "trend_attribution": null
     },
     {
-      "event_id": "evt_578b5faa780f",
-      "title": "Verisk 晋升 Harry White 为财产索赔服务主管",
-      "urgency": null,
-      "trust_level": "low",
-      "attention_score": 100,
-      "reasons": [
-        "human_review"
-      ],
-      "source": "review_queue.json",
-      "trend_attribution": null
-    },
-    {
       "event_id": "evt_4b12fa2f9f1b",
       "title": "我国保险资金运用余额首次突破40万亿元！红利低波ETF华泰柏瑞(512890)年内累计“吸金”近60亿元",
-      "urgency": null,
-      "trust_level": "low",
-      "attention_score": 100,
-      "reasons": [
-        "human_review"
-      ],
-      "source": "review_queue.json",
-      "trend_attribution": null
-    },
-    {
-      "event_id": "evt_40ac78061367",
-      "title": "红树林推出百慕大再保险Sidecar Grove Re",
       "urgency": null,
       "trust_level": "low",
       "attention_score": 100,
@@ -765,6 +729,62 @@
       "urgency": null,
       "trust_level": "low",
       "attention_score": 100,
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "trend_attribution": null
+    },
+    {
+      "event_id": "deployment:production",
+      "title": "生产部署状态：deployment_release_mismatch",
+      "urgency": "now",
+      "trust_level": null,
+      "attention_score": 98,
+      "reasons": [
+        "deployment_release_mismatch",
+        "published_marker_behind_expected"
+      ],
+      "source": "deployment_verification.json",
+      "deployment_risk": {
+        "version": 4,
+        "classification": "deployment_release_mismatch",
+        "priority": 98,
+        "attention": true,
+        "verified": false,
+        "status": "stale",
+        "error": "published_marker_behind_expected",
+        "checked_at": "2026-09-04T11:12:47.650274+00:00",
+        "trend": {
+          "version": 1,
+          "classification": "single_failure",
+          "failure_streak": 1,
+          "sample_count": 11,
+          "generated_at": "2026-09-04T15:45:08.271925+00:00"
+        },
+        "next_step": "核对线上 release marker 与当前 release manifest；确认是否仍运行旧版本，并检查最近一次发布状态。",
+        "generated_at": "2026-09-04T15:45:08.271946+00:00",
+        "principle": "部署风险只影响人工注意力与发布可信度，不修改 Decision/Trust/Urgency。"
+      }
+    },
+    {
+      "event_id": "evt_7635b5984895",
+      "title": "慕尼黑再保险 (Munich Re) 跻身劳合社全球 50 家最大再保险公司之列：AM Best",
+      "urgency": null,
+      "trust_level": "low",
+      "attention_score": 95,
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "trend_attribution": null
+    },
+    {
+      "event_id": "evt_578b5faa780f",
+      "title": "Verisk 晋升 Harry White 为财产索赔服务主管",
+      "urgency": null,
+      "trust_level": "low",
+      "attention_score": 95,
       "reasons": [
         "human_review"
       ],
@@ -788,32 +808,17 @@
         {
           "type": "claim_conflict",
           "reason": "2 条命题存在支持/矛盾证据冲突，需人工裁决"
-        },
-        {
-          "type": "change_impact",
-          "reason": "downstream judgement changed; risk=medium"
         }
       ],
       "article_ids": [
-        693,
-        695
+        730,
+        732
       ],
       "source_count": 2,
       "trust_level": "low",
       "intelligence_score": 79,
       "decision": null,
-      "change_impact": {
-        "event_id": "evt_ceb11946ab87",
-        "impact": "judgement_changed",
-        "risk": "medium",
-        "changes": [
-          {
-            "field": "trust.level",
-            "from": "medium",
-            "to": "low"
-          }
-        ]
-      },
+      "change_impact": null,
       "evidence_availability": {
         "version": 1,
         "level": "high",
@@ -840,32 +845,17 @@
         {
           "type": "claim_conflict",
           "reason": "2 条命题存在支持/矛盾证据冲突，需人工裁决"
-        },
-        {
-          "type": "change_impact",
-          "reason": "downstream judgement changed; risk=medium"
         }
       ],
       "article_ids": [
-        1468,
-        1471
+        1505,
+        1508
       ],
       "source_count": 2,
       "trust_level": "low",
       "intelligence_score": 77,
       "decision": null,
-      "change_impact": {
-        "event_id": "evt_7099dec26227",
-        "impact": "judgement_changed",
-        "risk": "medium",
-        "changes": [
-          {
-            "field": "trust.level",
-            "from": "medium",
-            "to": "low"
-          }
-        ]
-      },
+      "change_impact": null,
       "evidence_availability": {
         "version": 1,
         "level": "high",
@@ -892,33 +882,18 @@
         {
           "type": "claim_conflict",
           "reason": "2 条命题存在支持/矛盾证据冲突，需人工裁决"
-        },
-        {
-          "type": "change_impact",
-          "reason": "downstream judgement changed; risk=medium"
         }
       ],
       "article_ids": [
-        464,
-        499,
-        651
+        501,
+        536,
+        688
       ],
       "source_count": 2,
       "trust_level": "low",
       "intelligence_score": 76,
       "decision": null,
-      "change_impact": {
-        "event_id": "evt_1806ade270bd",
-        "impact": "judgement_changed",
-        "risk": "medium",
-        "changes": [
-          {
-            "field": "trust.level",
-            "from": "medium",
-            "to": "low"
-          }
-        ]
-      },
+      "change_impact": null,
       "evidence_availability": {
         "version": 1,
         "level": "high",
@@ -945,32 +920,17 @@
         {
           "type": "claim_conflict",
           "reason": "1 条命题存在支持/矛盾证据冲突，需人工裁决"
-        },
-        {
-          "type": "change_impact",
-          "reason": "downstream judgement changed; risk=medium"
         }
       ],
       "article_ids": [
-        334,
-        530
+        371,
+        567
       ],
       "source_count": 2,
       "trust_level": "low",
       "intelligence_score": 75,
       "decision": null,
-      "change_impact": {
-        "event_id": "evt_4b12fa2f9f1b",
-        "impact": "judgement_changed",
-        "risk": "medium",
-        "changes": [
-          {
-            "field": "trust.level",
-            "from": "medium",
-            "to": "low"
-          }
-        ]
-      },
+      "change_impact": null,
       "evidence_availability": {
         "version": 1,
         "level": "high",
@@ -997,33 +957,18 @@
         {
           "type": "claim_conflict",
           "reason": "2 条命题存在支持/矛盾证据冲突，需人工裁决"
-        },
-        {
-          "type": "change_impact",
-          "reason": "downstream judgement changed; risk=medium"
         }
       ],
       "article_ids": [
-        563,
-        1146,
-        1175
+        600,
+        1183,
+        1212
       ],
       "source_count": 2,
       "trust_level": "low",
       "intelligence_score": 73,
       "decision": null,
-      "change_impact": {
-        "event_id": "evt_6ade4d3570b9",
-        "impact": "judgement_changed",
-        "risk": "medium",
-        "changes": [
-          {
-            "field": "trust.level",
-            "from": "medium",
-            "to": "low"
-          }
-        ]
-      },
+      "change_impact": null,
       "evidence_availability": {
         "version": 1,
         "level": "high",
@@ -1040,38 +985,23 @@
       "title": "Verisk 晋升 Harry White 为财产索赔服务主管",
       "event_type": "claims_loss",
       "topic": "ai_intelligent",
-      "priority": 85,
+      "priority": 75,
       "status": "pending",
       "reasons": [
         {
           "type": "conflict",
           "reason": "trust layer detected source conflict"
-        },
-        {
-          "type": "change_impact",
-          "reason": "downstream judgement changed; risk=medium"
         }
       ],
       "article_ids": [
-        93,
-        97
+        130,
+        134
       ],
       "source_count": 2,
       "trust_level": "low",
       "intelligence_score": 78,
       "decision": null,
-      "change_impact": {
-        "event_id": "evt_578b5faa780f",
-        "impact": "judgement_changed",
-        "risk": "medium",
-        "changes": [
-          {
-            "field": "trust.level",
-            "from": "medium",
-            "to": "low"
-          }
-        ]
-      },
+      "change_impact": null,
       "evidence_availability": {
         "version": 1,
         "level": "high",
@@ -1088,39 +1018,24 @@
       "title": "慕尼黑再保险 (Munich Re) 跻身劳合社全球 50 家最大再保险公司之列：AM Best",
       "event_type": "claims_loss",
       "topic": "capital_reinsurance",
-      "priority": 85,
+      "priority": 75,
       "status": "pending",
       "reasons": [
         {
           "type": "conflict",
           "reason": "trust layer detected source conflict"
-        },
-        {
-          "type": "change_impact",
-          "reason": "downstream judgement changed; risk=medium"
         }
       ],
       "article_ids": [
-        453,
-        500,
-        514
+        490,
+        537,
+        551
       ],
       "source_count": 3,
       "trust_level": "low",
       "intelligence_score": 77,
       "decision": null,
-      "change_impact": {
-        "event_id": "evt_7635b5984895",
-        "impact": "judgement_changed",
-        "risk": "medium",
-        "changes": [
-          {
-            "field": "trust.level",
-            "from": "medium",
-            "to": "low"
-          }
-        ]
-      },
+      "change_impact": null,
       "evidence_availability": {
         "version": 1,
         "level": "high",
@@ -1137,38 +1052,23 @@
       "title": "红树林推出百慕大再保险Sidecar Grove Re",
       "event_type": "product",
       "topic": "product_innovation",
-      "priority": 85,
+      "priority": 75,
       "status": "pending",
       "reasons": [
         {
           "type": "conflict",
           "reason": "trust layer detected source conflict"
-        },
-        {
-          "type": "change_impact",
-          "reason": "downstream judgement changed; risk=medium"
         }
       ],
       "article_ids": [
-        639,
-        652
+        676,
+        689
       ],
       "source_count": 2,
       "trust_level": "low",
       "intelligence_score": 77,
       "decision": null,
-      "change_impact": {
-        "event_id": "evt_40ac78061367",
-        "impact": "judgement_changed",
-        "risk": "medium",
-        "changes": [
-          {
-            "field": "trust.level",
-            "from": "medium",
-            "to": "low"
-          }
-        ]
-      },
+      "change_impact": null,
       "evidence_availability": {
         "version": 1,
         "level": "high",
@@ -1182,10 +1082,10 @@
     }
   ],
   "release": {
-    "deployment_status": "verified",
-    "deployment_verified": true,
+    "deployment_status": "stale",
+    "deployment_verified": false,
     "release_marker": "insureai-c97584b0551709df",
-    "release_match": true
+    "release_match": false
   },
   "artifact_sources": [
     "intelligence.json",
