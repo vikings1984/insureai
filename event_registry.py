@@ -234,13 +234,23 @@ def alias(registry: dict, event_id: str, canonical_event_id: str) -> dict:
 
 
 def merge(registry: dict, target: str, source: str) -> dict:
-    """把 source canonical 归并进 target：target 吸收 sources/aliases，source 标记 inactive。"""
+    """把 source canonical 归并进 target：target 吸收 sources/aliases，source 标记 inactive。
+
+    X2（评审修订）fail-closed：alias-only 类型（product/personnel/industry_update/
+    other 等）禁止归并——归并会写入 merged_from，而 validate() 要求 alias-only 的
+    merged_from 必须为空。在边界处直接拒绝，避免脏数据流入后再被 validate 揪出。
+    """
     ce = registry.get("canonical_events", {})
     if target not in ce or source not in ce:
         raise KeyError(f"merge 需要两个已存在 canonical: {target}/{source}")
     if target == source:
         return registry
     t, s = ce[target], ce[source]
+    if not may_auto_merge(t.get("event_type", "")):
+        raise ValueError(
+            f"alias-only 类型不可归并: {target}（event_type={t.get('event_type')!r}）；"
+            "仅 acquisition/regulatory 可自动归并"
+        )
     for src in s["sources"]:
         if not any(x["event_id"] == src["event_id"] and x["origin"] == src["origin"] for x in t["sources"]):
             t["sources"].append(src)

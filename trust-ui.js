@@ -5,8 +5,7 @@
   const tierLabels={1:'T1 一手',2:'T2 通讯社',3:'T3 行业',4:'T4 社交'};
   async function boot(){
     try{
-      const res=await fetch('intelligence.json?t='+Date.now());if(!res.ok)return;
-      const data=await res.json(), events=Array.isArray(data.events)?data.events:[];
+      const data=await window.InsureAIData.load(), events=Array.isArray(data.events)?data.events:[];
       const cards=[...document.querySelectorAll('#daily-intelligence .di-item')];
       const byTitle=new Map(events.map(e=>[String(e.title||''),e]));
       cards.forEach(card=>{

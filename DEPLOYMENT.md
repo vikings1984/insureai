@@ -16,7 +16,7 @@ Workers static-asset deployment ships in `.github/workflows/deploy-cloudflare.ym
 3. **Deploy.** The next push to `insureai` (or a manual `workflow_dispatch` run) uploads the static assets. `wrangler deploy` creates the `insureai` Worker and assigns a `*.workers.dev` domain.
 4. **Point `DEPLOYMENT_URL` at production.** Set it to the assigned domain (for example `https://insureai.<your-subdomain>.workers.dev`). Deployment Verification then probes it every 6 hours.
 
-The `.assetsignore` file keeps Python sources, docs, and internal audit/release artifacts out of Cloudflare, while `data.json`, `research.json`, `index.html`, `css/`, and `js/` are uploaded — the same front-end content GitHub Pages serves.
+The `.assetsignore` file keeps Python sources, tests, docs, and internal audit/release artifacts out of Cloudflare. The front-end data JSON that the pages actually fetch at runtime is uploaded: `data.json`, `research.json`, `rss.xml`, `intelligence.json` (command center / 情报中枢), `knowledge_graph.json` (Knowledge Graph), and `claims.json` — alongside `index.html`, `css/`, and `js/`. This is the same front-end content GitHub Pages serves. Generated analysis JSON is large; if a page does not need a given file on first paint, prefer loading it lazily (see `data-store.js`) rather than enlarging the first-byte payload.
 
 ## GitHub Actions variable
 

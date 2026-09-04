@@ -27,8 +27,7 @@
   }
   async function boot(){
     try{
-      const res=await fetch('intelligence.json?t='+Date.now()); if(!res.ok)return;
-      const data=await res.json();
+      const data=await window.InsureAIData.load();
       const host=document.querySelector('.app-layout')||document.querySelector('main'); if(!host||document.querySelector('#decision-intelligence'))return;
       const box=document.createElement('section'); box.id='decision-intelligence';
       render(box,data);

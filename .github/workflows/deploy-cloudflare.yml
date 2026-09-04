@@ -9,13 +9,53 @@ permissions:
   contents: write
   deployments: write
   issues: write
+  actions: read
 
 concurrency:
   group: cloudflare-workers-deploy
   cancel-in-progress: false
 
 jobs:
+  # 质量门禁（P0-2 修复）：deploy 与 test/benchmark 是三个独立 workflow，
+  # needs: 无法跨文件生效，因此用本 job 轮询同 SHA 的 InsureAI Tests /
+  # InsureAI Benchmark 运行状态，任一失败或超时未结束则阻断部署（fail-closed）。
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require Tests + Benchmark green for this SHA
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ github.sha }}
+          REPO: ${{ github.repository }}
+        run: |
+          python3 - <<'PY'
+          import os, sys, json, time, subprocess
+          sha = os.environ['SHA']; repo = os.environ['REPO']
+          needed = {'InsureAI Tests': None, 'InsureAI Benchmark': None}
+          deadline = time.time() + 12 * 60  # 最多等待 12 分钟
+          while time.time() < deadline:
+              out = subprocess.run(
+                  ['gh', 'api', f'repos/{repo}/actions/runs?head_sha={sha}&per_page=100'],
+                  capture_output=True, text=True)
+              if out.returncode != 0:
+                  print('gh api error:', out.stderr.strip()); sys.exit(1)
+              for r in json.loads(out.stdout).get('workflow_runs', []):
+                  name = r.get('name')
+                  if name in needed and r.get('status') == 'completed':
+                      needed[name] = (r.get('conclusion') == 'success')
+              if all(v is not None for v in needed.values()):
+                  break
+              time.sleep(20)
+          print('gate status:', needed)
+          if any(v is False for v in needed.values()):
+              print('QUALITY GATE FAILED — blocking deploy'); sys.exit(1)
+          if any(v is None for v in needed.values()):
+              print('QUALITY GATE TIMEOUT — not all required runs completed; blocking deploy (fail-closed)'); sys.exit(1)
+          print('QUALITY GATE PASSED')
+          PY
+
   deploy:
+    needs: [gate]
     runs-on: ubuntu-latest
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

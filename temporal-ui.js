@@ -4,8 +4,7 @@
   const phases={accelerating:'加速形成',forming:'形成中',cooling:'降温',isolated:'孤立信号'};
   async function boot(){
     try{
-      const res=await fetch('intelligence.json?t='+Date.now()); if(!res.ok)return;
-      const data=await res.json(), t=data.temporal||{}, topics=Array.isArray(t.topic_signals)?t.topic_signals.slice(0,6):[], entities=Array.isArray(t.entity_momentum)?t.entity_momentum.slice(0,6):[];
+      const data=await window.InsureAIData.load(), t=data.temporal||{}, topics=Array.isArray(t.topic_signals)?t.topic_signals.slice(0,6):[], entities=Array.isArray(t.entity_momentum)?t.entity_momentum.slice(0,6):[];
       const host=document.querySelector('.app-layout')||document.querySelector('main'); if(!host||document.querySelector('#temporal-intelligence'))return;
       const box=document.createElement('section'); box.id='temporal-intelligence';
       box.innerHTML='<div class="ti-head"><div><div class="di-kicker">TEMPORAL INTELLIGENCE</div><h2>趋势与动量</h2><p>基于时间上的重复、确认和加速度，不等同于预测。</p></div></div><div class="ti-grid"><div><b>主题趋势</b><div class="ti-list">'+(topics.length?topics.map(x=>'<div class="ti-row"><div><strong>'+esc(x.topic)+'</strong><small>'+esc(phases[x.phase]||x.phase)+' · '+esc(x.current_period_count)+' vs '+esc(x.previous_period_count)+' · '+esc(x.change_pct)+'%</small></div><span>'+esc(x.signal_strength)+'</span></div>').join(''):'<p class="ti-empty">暂无足够时间序列数据。</p>')+'</div></div><div><b>实体动量</b><div class="ti-list">'+(entities.length?entities.map(x=>'<div class="ti-row"><div><strong>'+esc(x.entity)+'</strong><small>'+esc(x.event_count)+' 事件 · '+esc(x.event_type_count)+' 类事件</small></div><span>'+esc(x.momentum)+'</span></div>').join(''):'<p class="ti-empty">暂无足够实体历史数据。</p>')+'</div></div></div>';

@@ -62,9 +62,24 @@ class EventRegistryTests(unittest.TestCase):
         self.assertIn("legacy_id_1", reg["canonical_events"][cev]["aliases"])
         validate(reg)
 
+    def test_merge_rejected_for_alias_only(self):
+        # X2 边界守卫：alias-only 类型（默认 other）调用 merge 必须被拒绝，
+        # 否则会在 source 上留下 merged_from，违反 validate() 的 alias-only 约束。
+        reg = build([(_ev("evt_a1", event_type="product"), "daily_brief"),
+                     (_ev("evt_a2", event_type="product"), "review_queue")])
+        tgt = reg["by_event_id"]["evt_a1"]
+        src = reg["by_event_id"]["evt_a2"]
+        with self.assertRaises(ValueError):
+            merge(reg, tgt, src)
+        # alias-only 记录保持干净（无 merged_from）
+        validate(reg)
+
     def test_merge_absorbs_sources_and_marks_inactive(self):
-        reg = build([(_ev("evt_m1", title="M1"), "daily_brief"),
-                     (_ev("evt_m2", title="M2"), "review_queue")])
+        # 合并原语只在可自动归并的类型（acquisition/regulatory）上合法；
+        # alias-only 类型（product/personnel/.../other）按 X2 策略禁止归并，
+        # 其 merged_from 必须为空（见 event_registry.validate）。
+        reg = build([(_ev("evt_m1", title="M1", event_type="acquisition"), "daily_brief"),
+                     (_ev("evt_m2", title="M2", event_type="acquisition"), "review_queue")])
         tgt = reg["by_event_id"]["evt_m1"]
         src = reg["by_event_id"]["evt_m2"]
         merge(reg, tgt, src)
@@ -76,9 +91,11 @@ class EventRegistryTests(unittest.TestCase):
         validate(reg)
 
     def test_split_moves_subset_sources_to_new_canonical(self):
-        reg = build([(_ev("evt_s1"), "daily_brief"),
-                     (_ev("evt_s2"), "daily_brief"),
-                     (_ev("evt_s3"), "daily_brief")])
+        # 父 canonical 必须为可自动归并类型（acquisition），否则 split 前其
+        # merged_from 会因 X2 策略在 validate 中被拒绝（alias-only 禁止归并）。
+        reg = build([(_ev("evt_s1", event_type="acquisition"), "daily_brief"),
+                     (_ev("evt_s2", event_type="acquisition"), "daily_brief"),
+                     (_ev("evt_s3", event_type="acquisition"), "daily_brief")])
         s1 = reg["by_event_id"]["evt_s1"]
         s2 = reg["by_event_id"]["evt_s2"]
         s3 = reg["by_event_id"]["evt_s3"]
