@@ -29,8 +29,17 @@ jobs:
       - name: Commit collected news core data
         run: |
           git config user.name "insureai-bot"; git config user.email "bot@insureai.local"
-          if [ -n "$(git status --porcelain data.json inbox.json data/translation_cache.json p2_monitoring_store.json p2_monitoring.json)" ]; then
-            git add data.json inbox.json data/translation_cache.json p2_monitoring_store.json p2_monitoring.json
+          # p2_monitoring_store.json 由 analyze job 的 p2_monitoring.py 生成、并在 analyze
+          # 末尾提交；本步（collect）引用它会因文件尚未产生而触发
+          # `fatal: pathspec ... did not match any files`（exit 128），导致 collect 失败、
+          # analyze（含 temporal/decision/contract 构建）被 needs 依赖整体跳过，
+          # intelligence.json 因此永远停在 v4、缺 temporal/decisions_by_role/claims。
+          # 故本步只提交 collect 阶段实际会产生的文件，并对缺失文件容错。
+          files="data.json inbox.json data/translation_cache.json p2_monitoring.json"
+          existing=""
+          for f in $files; do if [ -e "$f" ]; then existing="$existing $f"; fi; done
+          if [ -n "$existing" ] && [ -n "$(git status --porcelain $existing)" ]; then
+            git add $existing
             git commit -m "chore: auto-collect news core $(date +%F)"
             git fetch origin "${{ github.ref_name }}"
             if git rebase --autostash "origin/${{ github.ref_name }}"; then
@@ -419,8 +428,13 @@ jobs:
       - name: Commit data + quality artifacts
         run: |
           git config user.name "insureai-bot"; git config user.email "bot@insureai.local"
-          if [ -n "$(git status --porcelain data.json intelligence.json claims.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json trend_attribution.json radar.json optimization_backlog.json optimization_backlog_history.json release_manifest.json release_provenance.json decision_stability.json decision_history.json decision_credibility.json daily_risk_radar.json owner_risk_view.json freshness.json evidence_availability.json executive_terminal.json knowledge_graph.json p2_daily_brief.json p2_state.json index.html sitemap.xml rss.xml research.json data/quality data/translation_cache.json p2_monitoring_store.json p2_monitoring.json p2_feedback_analytics.json p2_personal_memory.json decisions_ledger.json second_brain.json canonical_events.json event_id_aliases.json resolver_report.json resolver_fingerprint_map.json lifecycle_report.json p2_alerts.json p2_alert_baseline.json decisions_pending.json p2_stage_history.json event_replays.json)" ]; then
-          git add data.json intelligence.json claims.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json trend_attribution.json radar.json optimization_backlog.json optimization_backlog_history.json release_manifest.json release_provenance.json decision_stability.json decision_history.json decision_credibility.json daily_risk_radar.json owner_risk_view.json freshness.json evidence_availability.json executive_terminal.json knowledge_graph.json p2_daily_brief.json p2_state.json index.html sitemap.xml rss.xml research.json data/quality data/translation_cache.json p2_monitoring_store.json p2_monitoring.json p2_feedback_analytics.json p2_personal_memory.json decisions_ledger.json second_brain.json canonical_events.json event_id_aliases.json resolver_report.json resolver_fingerprint_map.json lifecycle_report.json p2_alerts.json p2_alert_baseline.json decisions_pending.json p2_stage_history.json event_replays.json
+          # 对缺失文件容错：任一可选产物未生成时，不得让 git add 因 pathspec 不匹配
+          # 而失败（exit 128）并中断整条流水线。
+          files="data.json intelligence.json claims.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json trend_attribution.json radar.json optimization_backlog.json optimization_backlog_history.json release_manifest.json release_provenance.json decision_stability.json decision_history.json decision_credibility.json daily_risk_radar.json owner_risk_view.json freshness.json evidence_availability.json executive_terminal.json knowledge_graph.json p2_daily_brief.json p2_state.json index.html sitemap.xml rss.xml research.json data/quality data/translation_cache.json p2_monitoring_store.json p2_monitoring.json p2_feedback_analytics.json p2_personal_memory.json decisions_ledger.json second_brain.json canonical_events.json event_id_aliases.json resolver_report.json resolver_fingerprint_map.json lifecycle_report.json p2_alerts.json p2_alert_baseline.json decisions_pending.json p2_stage_history.json event_replays.json"
+          existing=""
+          for f in $files; do if [ -e "$f" ]; then existing="$existing $f"; fi; done
+          if [ -n "$existing" ] && [ -n "$(git status --porcelain $existing)" ]; then
+            git add $existing
             git commit -m "chore: auto-collect + intelligence + claims + graph + executive terminal + daily brief + personal memory $(date +%F)"
           else echo "no changes"; fi
       - name: Push (triggers GitHub Pages redeploy)
