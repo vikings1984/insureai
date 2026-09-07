@@ -1,17 +1,17 @@
 {
   "version": "ir-v1.1",
   "registry_version": "er-v1.1",
-  "generated_at": "2026-09-04T15:46:16Z",
+  "generated_at": "2026-09-07T11:31:04Z",
   "principle": "单一事实源：所有模块引用 canonical_event_id；resolver 只解析、不发明身份。合并与分裂由证据 + 人工 review 决定，resolver 仅产出候选。",
-  "total_references": 110,
-  "resolved": 110,
+  "total_references": 117,
+  "resolved": 117,
   "unresolved": 0,
   "unresolved_rate": 0.0,
   "unresolved_samples": [],
   "partition_stats": {
-    "other": 80,
-    "regulatory": 26,
-    "acquisition": 4
+    "regulatory": 25,
+    "other": 87,
+    "acquisition": 5
   },
   "candidate_merges": {
     "count": 0,
@@ -19,22 +19,28 @@
     "items": []
   },
   "generic_review": {
-    "count": 3,
+    "count": 4,
     "items": [
       {
-        "entity": "Co",
+        "entity": "Baker",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
-        "entity": "Post",
+        "entity": "Cube",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
-        "entity": "Rokstone",
+        "entity": "Cyber",
+        "type": "Company",
+        "into_ce": false,
+        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
+      },
+      {
+        "entity": "ILS",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"

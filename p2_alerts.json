@@ -1,17 +1,17 @@
 {
   "version": "alert-v1.1",
-  "generated_at": "2026-09-04T15:46:17Z",
+  "generated_at": "2026-09-07T11:31:04Z",
   "principle": "两层收敛：Internal Diff（事实）→ Semantic Alert（≤8 条聚合）；两层准入（T1 系统级监管 / T2 个人级 Watch / T3 标准）；NEW_SOURCE/NEW_EVIDENCE 留内部、delta 不伪造、首跑仅种子、告警不改写业务判断",
   "meta": {
-    "total_events": 1644,
+    "total_events": 1714,
     "baseline_present": true,
     "basis": "delta_vs_baseline",
-    "internal_diff_count": 2,
+    "internal_diff_count": 4,
     "alert_count": 8,
     "max_alerts": 8,
     "alert_type_counts": {
-      "EVENT_MATERIAL_CHANGED": 7,
-      "DECISION_REQUIRED": 1
+      "EVENT_MATERIAL_CHANGED": 6,
+      "DECISION_REQUIRED": 2
     },
     "admission_counts": {
       "T1_system": 8
@@ -20,28 +20,54 @@
   },
   "internal_diffs": [
     {
-      "canonical_event_id": "cev_cc60dc9ed4fb",
-      "event_id": "evt_7099dec26227",
-      "title": "PERILS 将风暴 Goretti 造成的行业损失预估下调至 4.68 亿欧元",
-      "topic": "capital_reinsurance",
+      "canonical_event_id": "evt_e833bbc251da",
+      "event_id": "evt_e833bbc251da",
+      "title": "Talcott 与高盛合作推出价值 10 亿美元的 West Grove Re sidecar",
+      "topic": "product_innovation",
       "changes": [
         {
-          "field": "trust_score",
-          "old": 52,
-          "new": 50
+          "field": "decision_urgency",
+          "old": "watch",
+          "new": null
         }
       ]
     },
     {
-      "canonical_event_id": "evt_d08b21069214",
-      "event_id": "evt_d08b21069214",
-      "title": "业务举措：ALKEME 在美国扩张，新增 8 家代理机构",
-      "topic": "ai_intelligent",
+      "canonical_event_id": "evt_9f63a70aea98",
+      "event_id": "evt_9f63a70aea98",
+      "title": "Adaptive Insurance通过注入新资金获得1000万$的资金",
+      "topic": "capital_reinsurance",
       "changes": [
         {
           "field": "proposition_count",
-          "old": 3,
-          "new": 5
+          "old": 2,
+          "new": 3
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "evt_3a1b61ef684e",
+      "event_id": "evt_3a1b61ef684e",
+      "title": "在2026年飓风季节之前，更有利的再保险条件加强了保险公司： KBRA",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "proposition_count",
+          "old": 1,
+          "new": 2
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "evt_111221ec4104",
+      "event_id": "evt_111221ec4104",
+      "title": "ANV完成对总部位于伦敦的Iris保险经纪人的收购",
+      "topic": "channel_transformation",
+      "changes": [
+        {
+          "field": "proposition_count",
+          "old": 2,
+          "new": 3
         }
       ]
     }
@@ -63,52 +89,10 @@
     },
     {
       "type": "EVENT_MATERIAL_CHANGED",
-      "canonical_event_id": "cev_42faebeeaddf",
-      "event_id": "evt_a75c8e446fcd",
-      "title": "平安养老贵州分公司被罚76万，涉多项违规",
-      "topic": "regulatory_change",
-      "severity": "high",
-      "rationale": "监管效力状态：issued（系统级 T1 准入）",
-      "basis": "standing",
-      "changed_fields": [
-        "status"
-      ],
-      "admission": "T1_system"
-    },
-    {
-      "type": "EVENT_MATERIAL_CHANGED",
-      "canonical_event_id": "cev_17b22870084c",
-      "event_id": "evt_62e3eeb3e9dc",
-      "title": "加快上海国际再保险中心建设！8大措施发布",
+      "canonical_event_id": "cev_2aab5b2d16f0",
+      "event_id": "evt_fd60218d12d1",
+      "title": "中国再保险拟向财政部定增募资不超30亿元 用于增加核心一级资本",
       "topic": "capital_reinsurance",
-      "severity": "high",
-      "rationale": "监管效力状态：issued（系统级 T1 准入）",
-      "basis": "standing",
-      "changed_fields": [
-        "status"
-      ],
-      "admission": "T1_system"
-    },
-    {
-      "type": "EVENT_MATERIAL_CHANGED",
-      "canonical_event_id": "cev_af412da2a1d6",
-      "event_id": "evt_c3420bbf2ee2",
-      "title": "中国平安贵州分公司因管理失责被罚款15万元 5名保险代理人一并受罚",
-      "topic": "regulatory_change",
-      "severity": "high",
-      "rationale": "监管效力状态：issued（系统级 T1 准入）",
-      "basis": "standing",
-      "changed_fields": [
-        "status"
-      ],
-      "admission": "T1_system"
-    },
-    {
-      "type": "EVENT_MATERIAL_CHANGED",
-      "canonical_event_id": "cev_5f5392f82411",
-      "event_id": "evt_65d96eadf80f",
-      "title": "长安保险风险处置新进展：中安财险获批承接其保险业务",
-      "topic": "regulatory_change",
       "severity": "high",
       "rationale": "监管效力状态：issued（系统级 T1 准入）",
       "basis": "standing",
@@ -146,6 +130,34 @@
       "admission": "T1_system"
     },
     {
+      "type": "EVENT_MATERIAL_CHANGED",
+      "canonical_event_id": "cev_a53e89eceb6d",
+      "event_id": "evt_06c387262a73",
+      "title": "加强股东穿透监管 保险法再迎修改",
+      "topic": "regulatory_change",
+      "severity": "high",
+      "rationale": "监管效力状态：effective（系统级 T1 准入）",
+      "basis": "standing",
+      "changed_fields": [
+        "status"
+      ],
+      "admission": "T1_system"
+    },
+    {
+      "type": "EVENT_MATERIAL_CHANGED",
+      "canonical_event_id": "cev_d392c8535d18",
+      "event_id": "evt_b49cf505581f",
+      "title": "明确养老机构重大事故隐患判定程序 两项养老机构强制性国家标准发布",
+      "topic": "pension_finance",
+      "severity": "high",
+      "rationale": "监管效力状态：issued（系统级 T1 准入）",
+      "basis": "standing",
+      "changed_fields": [
+        "status"
+      ],
+      "admission": "T1_system"
+    },
+    {
       "type": "DECISION_REQUIRED",
       "canonical_event_id": "cev_3b319a51fffd",
       "event_id": "evt_b15303e657b2",
@@ -153,6 +165,20 @@
       "topic": "capital_reinsurance",
       "severity": "high",
       "rationale": "待人工复核、暂无决策记录（日报优先级 91）",
+      "basis": "standing",
+      "changed_fields": [
+        "review_required"
+      ],
+      "admission": "T1_system"
+    },
+    {
+      "type": "DECISION_REQUIRED",
+      "canonical_event_id": "cev_2dad639a2a08",
+      "event_id": "evt_2eaf272711a7",
+      "title": "陕西金融监管局：推动建成全国首个省市联动多层次综合巨灾保险机制",
+      "topic": "capital_reinsurance",
+      "severity": "high",
+      "rationale": "待人工复核、暂无决策记录（日报优先级 90）",
       "basis": "standing",
       "changed_fields": [
         "review_required"

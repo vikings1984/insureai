@@ -1,6 +1,6 @@
 {
   "version": "p2.5-v1.0",
-  "generated_at": "2026-09-04T15:46:16Z",
+  "generated_at": "2026-09-07T11:31:03Z",
   "principle": "只聚合既有 artifact 中的事实；观察与结论分离，样本不足时不出结论，不伪造时间线",
   "sources": {
     "p2_state.json": {
@@ -17,10 +17,10 @@
       "brief": 20
     },
     "knowledge_graph.json": {
-      "events_indexed": 1644
+      "events_indexed": 1714
     },
     "decisions_ledger.json": {
-      "distinct_events": 12
+      "distinct_events": 13
     }
   },
   "watchlists": {
@@ -302,14 +302,14 @@
   },
   "decisions": {
     "observations": {
-      "sample_size": 12,
+      "sample_size": 13,
       "by_urgency": {
-        "watch": 12
+        "watch": 13
       },
       "by_action": {
         "评估战略与资本影响": 1,
         "检查监管暴露与经营影响": 1,
-        "复核资本配置与竞争格局": 6,
+        "复核资本配置与竞争格局": 7,
         "评估市场与竞争响应": 2,
         "保持跟踪，等待更多独立证据或业务信号": 2
       },
@@ -319,89 +319,98 @@
     },
     "timeline": [
       {
-        "event_id": "evt_92310abdea56",
+        "event_id": "evt_e833bbc251da",
         "decided_at": "2026-09-04T15:44:57Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_92310abdea56",
+        "decided_at": "2026-09-07T11:29:43Z",
         "urgency": "watch"
       },
       {
         "event_id": "evt_3429758517ea",
-        "decided_at": "2026-09-04T15:44:57Z",
+        "decided_at": "2026-09-07T11:29:43Z",
         "urgency": "watch"
       },
       {
         "event_id": "evt_083577177db6",
-        "decided_at": "2026-09-04T15:44:57Z",
+        "decided_at": "2026-09-07T11:29:43Z",
         "urgency": "watch"
       },
       {
         "event_id": "evt_0fe4820271f7",
-        "decided_at": "2026-09-04T15:44:57Z",
+        "decided_at": "2026-09-07T11:29:43Z",
         "urgency": "watch"
       },
       {
         "event_id": "evt_59a8566e7e13",
-        "decided_at": "2026-09-04T15:44:57Z",
+        "decided_at": "2026-09-07T11:29:43Z",
         "urgency": "watch"
       },
       {
         "event_id": "evt_03c95bd12e1d",
-        "decided_at": "2026-09-04T15:44:57Z",
+        "decided_at": "2026-09-07T11:29:43Z",
         "urgency": "watch"
       },
       {
         "event_id": "evt_db0a3669a076",
-        "decided_at": "2026-09-04T15:44:57Z",
+        "decided_at": "2026-09-07T11:29:43Z",
         "urgency": "watch"
       },
       {
         "event_id": "evt_083f21f9623f",
-        "decided_at": "2026-09-04T15:44:57Z",
+        "decided_at": "2026-09-07T11:29:43Z",
         "urgency": "watch"
       },
       {
         "event_id": "evt_08302d0d9012",
-        "decided_at": "2026-09-04T15:44:57Z",
+        "decided_at": "2026-09-07T11:29:43Z",
         "urgency": "watch"
       },
       {
         "event_id": "evt_1f7f48882aac",
-        "decided_at": "2026-09-04T15:44:57Z",
+        "decided_at": "2026-09-07T11:29:43Z",
         "urgency": "watch"
       },
       {
         "event_id": "evt_1796cf449991",
-        "decided_at": "2026-09-04T15:44:57Z",
+        "decided_at": "2026-09-07T11:29:43Z",
         "urgency": "watch"
       },
       {
-        "event_id": "evt_e833bbc251da",
-        "decided_at": "2026-09-04T15:44:57Z",
+        "event_id": "evt_a03127c90224",
+        "decided_at": "2026-09-07T11:29:43Z",
         "urgency": "watch"
       }
     ],
     "conclusions": [],
     "conclusion_blocked": {
-      "reason": "样本仅 12 条，低于 30 条阈值；且已落决策的 urgency 取值单一（['watch']），无区分度",
-      "need": "再累计 18 条真实决策（来自决策账本，不伪造）"
+      "reason": "样本仅 13 条，低于 30 条阈值；且已落决策的 urgency 取值单一（['watch']），无区分度",
+      "need": "再累计 17 条真实决策（来自决策账本，不伪造）"
     }
   },
   "entity_affinity": {
     "basis": "knowledge_graph.json 中 Event --PARTICIPATES_IN--> Company 的一跳邻居（不做多跳扩散）",
-    "acted_entities": [],
-    "watched_entities": [
+    "acted_entities": [
       {
-        "key": "Co",
+        "key": "Baker",
         "count": 1
       },
       {
-        "key": "Post",
+        "key": "Cube",
         "count": 1
       },
       {
-        "key": "Rokstone",
+        "key": "Cyber",
+        "count": 1
+      },
+      {
+        "key": "ILS",
         "count": 1
       }
     ],
+    "watched_entities": [],
     "overlap_entities": [],
     "acted_event_count": 11,
     "watched_event_count": 20,
@@ -414,24 +423,25 @@
   "backlog": {
     "sample_size": 89,
     "by_topic": {
-      "capital_reinsurance": 50,
-      "ai_intelligent": 12,
-      "channel_transformation": 4,
-      "product_innovation": 6,
-      "climate_catastrophe": 2,
+      "capital_reinsurance": 36,
+      "ai_intelligent": 18,
+      "channel_transformation": 5,
+      "product_innovation": 7,
+      "climate_catastrophe": 1,
+      "digital_transformation": 1,
       "regulatory_change": 8,
-      "pension_finance": 4
+      "pension_finance": 9
     },
     "by_event_type": {
       "claims_loss": 13,
-      "industry_update": 12,
-      "product": 14,
-      "regulatory": 19,
+      "industry_update": 25,
+      "product": 8,
+      "regulatory": 13,
       "capital": 16,
-      "rating": 6,
-      "acquisition": 1,
-      "personnel": 5,
-      "market_entry": 3
+      "acquisition": 2,
+      "rating": 5,
+      "market_entry": 5,
+      "personnel": 2
     },
     "by_trust_level": {
       "low": 8,
@@ -516,7 +526,7 @@
     {
       "dimension": "决策偏好结论",
       "status": "insufficient_sample",
-      "reason": "已决决策样本 12 条 < 阈值 30 条；结论需 ≥30 条真实决策方可输出（来自决策账本 decisions_ledger.json，不伪造）",
+      "reason": "已决决策样本 13 条 < 阈值 30 条；结论需 ≥30 条真实决策方可输出（来自决策账本 decisions_ledger.json，不伪造）",
       "unblock": "日常流水线持续运行使决策账本累计至 ≥30 条不同事件"
     },
     {
@@ -536,9 +546,9 @@
       "decision": {
         "urgency": "watch",
         "action": "检查监管暴露与经营影响",
-        "decided_at": "2026-09-04T15:44:57Z"
+        "decided_at": "2026-09-07T11:29:43Z"
       },
-      "decided_at": "2026-09-04T15:44:57Z",
+      "decided_at": "2026-09-07T11:29:43Z",
       "event_published_at": null,
       "entities": []
     },
@@ -551,9 +561,9 @@
       "decision": {
         "urgency": "watch",
         "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-09-04T15:44:57Z"
+        "decided_at": "2026-09-07T11:29:43Z"
       },
-      "decided_at": "2026-09-04T15:44:57Z",
+      "decided_at": "2026-09-07T11:29:43Z",
       "event_published_at": null,
       "entities": []
     },
@@ -566,9 +576,9 @@
       "decision": {
         "urgency": "watch",
         "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-09-04T15:44:57Z"
+        "decided_at": "2026-09-07T11:29:43Z"
       },
-      "decided_at": "2026-09-04T15:44:57Z",
+      "decided_at": "2026-09-07T11:29:43Z",
       "event_published_at": null,
       "entities": []
     },
@@ -581,9 +591,9 @@
       "decision": {
         "urgency": "watch",
         "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-09-04T15:44:57Z"
+        "decided_at": "2026-09-07T11:29:43Z"
       },
-      "decided_at": "2026-09-04T15:44:57Z",
+      "decided_at": "2026-09-07T11:29:43Z",
       "event_published_at": null,
       "entities": []
     },
@@ -596,9 +606,9 @@
       "decision": {
         "urgency": "watch",
         "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-09-04T15:44:57Z"
+        "decided_at": "2026-09-07T11:29:43Z"
       },
-      "decided_at": "2026-09-04T15:44:57Z",
+      "decided_at": "2026-09-07T11:29:43Z",
       "event_published_at": null,
       "entities": []
     },
@@ -611,9 +621,9 @@
       "decision": {
         "urgency": "watch",
         "action": "评估市场与竞争响应",
-        "decided_at": "2026-09-04T15:44:57Z"
+        "decided_at": "2026-09-07T11:29:43Z"
       },
-      "decided_at": "2026-09-04T15:44:57Z",
+      "decided_at": "2026-09-07T11:29:43Z",
       "event_published_at": null,
       "entities": []
     },
@@ -626,9 +636,9 @@
       "decision": {
         "urgency": "watch",
         "action": "评估战略与资本影响",
-        "decided_at": "2026-09-04T15:44:57Z"
+        "decided_at": "2026-09-07T11:29:43Z"
       },
-      "decided_at": "2026-09-04T15:44:57Z",
+      "decided_at": "2026-09-07T11:29:43Z",
       "event_published_at": null,
       "entities": []
     },
@@ -641,11 +651,31 @@
       "decision": {
         "urgency": "watch",
         "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-09-04T15:44:57Z"
+        "decided_at": "2026-09-07T11:29:43Z"
       },
-      "decided_at": "2026-09-04T15:44:57Z",
+      "decided_at": "2026-09-07T11:29:43Z",
       "event_published_at": null,
       "entities": []
+    },
+    {
+      "event_id": "evt_a03127c90224",
+      "title": "ILS 将及时返回网络对话。人工智能风险是未来因素：Baker、Cyber​​Cube",
+      "topic": "capital_reinsurance",
+      "event_type": "capital",
+      "priority": 40,
+      "decision": {
+        "urgency": "watch",
+        "action": "复核资本配置与竞争格局",
+        "decided_at": "2026-09-07T11:29:43Z"
+      },
+      "decided_at": "2026-09-07T11:29:43Z",
+      "event_published_at": "2026-09-07T09:00:24Z",
+      "entities": [
+        "Baker",
+        "Cube",
+        "Cyber",
+        "ILS"
+      ]
     },
     {
       "event_id": "evt_08302d0d9012",
@@ -656,24 +686,9 @@
       "decision": {
         "urgency": "watch",
         "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-09-04T15:44:57Z"
+        "decided_at": "2026-09-07T11:29:43Z"
       },
-      "decided_at": "2026-09-04T15:44:57Z",
-      "event_published_at": null,
-      "entities": []
-    },
-    {
-      "event_id": "evt_1796cf449991",
-      "title": "第三方资本有助于 Hiscox 的市场相关性，扩大承保能力：CUO Musselle",
-      "topic": "capital_reinsurance",
-      "event_type": "market_entry",
-      "priority": 30,
-      "decision": {
-        "urgency": "watch",
-        "action": "评估市场与竞争响应",
-        "decided_at": "2026-09-04T15:44:57Z"
-      },
-      "decided_at": "2026-09-04T15:44:57Z",
+      "decided_at": "2026-09-07T11:29:43Z",
       "event_published_at": null,
       "entities": []
     },
@@ -686,9 +701,9 @@
       "decision": {
         "urgency": "watch",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-09-04T15:44:57Z"
+        "decided_at": "2026-09-07T11:29:43Z"
       },
-      "decided_at": "2026-09-04T15:44:57Z",
+      "decided_at": "2026-09-07T11:29:43Z",
       "event_published_at": null,
       "entities": []
     }
