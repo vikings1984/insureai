@@ -1,7 +1,7 @@
 {
   "version": 1,
   "schema_version": "audit-ledger-v1",
-  "generated_at": "2026-09-07T11:31:06.054582+00:00",
+  "generated_at": "2026-09-07T17:13:53.695472+00:00",
   "privacy": "hashes_and_metadata_only",
   "coverage_principle": "ledger is generated after all analytical quality artifacts; release_manifest carries the production gate result",
   "production_quality_gate": {
@@ -14,19 +14,19 @@
       "stage": "collect",
       "producer": "collector",
       "artifact": "data.json",
-      "sha256": "ae2ecd17bf04ffaa9c86c14b8f8e4526f9f80b24b01b3a630b89b015603d4397",
+      "sha256": "c36ec7d902fb23fb861d0e1dd735217e7c05d38dcdb6d81f2316a8690c4c2e2a",
       "counts": {
-        "news": 1801,
-        "version": "2.2.136"
+        "news": 1815,
+        "version": "2.2.137"
       }
     },
     {
       "stage": "intelligence",
       "producer": "intelligence",
       "artifact": "intelligence.json",
-      "sha256": "14c8915f1faaaabb51cbe943b0cf0df05eb2d5839763fd88051ce69ed85bd15d",
+      "sha256": "c810a0e3e228209d5ac9aa0f766b4fa5237627726a1520095c21c31b22576116",
       "counts": {
-        "events": 1714,
+        "events": 1728,
         "version": 8
       }
     },
@@ -34,9 +34,9 @@
       "stage": "trust",
       "producer": "trust",
       "artifact": "intelligence.json",
-      "sha256": "14c8915f1faaaabb51cbe943b0cf0df05eb2d5839763fd88051ce69ed85bd15d",
+      "sha256": "c810a0e3e228209d5ac9aa0f766b4fa5237627726a1520095c21c31b22576116",
       "counts": {
-        "events": 1714,
+        "events": 1728,
         "version": 8
       }
     },
@@ -44,9 +44,9 @@
       "stage": "claims",
       "producer": "claims",
       "artifact": "claims.json",
-      "sha256": "5608358655b1e97d15981a52f8172a6e1f31627db9ca97ee60689123c2b82e3f",
+      "sha256": "c5626fdfb0d566923c35dcd48d404de3113b2b85c4437ed37ecc7f2388be5b50",
       "counts": {
-        "events": 1714,
+        "events": 1728,
         "version": 3
       }
     },
@@ -54,9 +54,9 @@
       "stage": "temporal",
       "producer": "temporal",
       "artifact": "intelligence.json",
-      "sha256": "14c8915f1faaaabb51cbe943b0cf0df05eb2d5839763fd88051ce69ed85bd15d",
+      "sha256": "c810a0e3e228209d5ac9aa0f766b4fa5237627726a1520095c21c31b22576116",
       "counts": {
-        "events": 1714,
+        "events": 1728,
         "version": 8
       }
     },
@@ -64,7 +64,7 @@
       "stage": "trend_intelligence",
       "producer": "trend_intelligence",
       "artifact": "radar.json",
-      "sha256": "bb9e913e5ff8558c96ca2bf22f8d7ee1754d386c337bea5eca04a428a42ed087",
+      "sha256": "6b2700f4eacf3fd09957def6866537d13defac6d46a9bdfbb0495177710e82f6",
       "counts": {
         "version": 2
       }
@@ -73,9 +73,9 @@
       "stage": "decision",
       "producer": "decision",
       "artifact": "intelligence.json",
-      "sha256": "14c8915f1faaaabb51cbe943b0cf0df05eb2d5839763fd88051ce69ed85bd15d",
+      "sha256": "c810a0e3e228209d5ac9aa0f766b4fa5237627726a1520095c21c31b22576116",
       "counts": {
-        "events": 1714,
+        "events": 1728,
         "version": 8
       }
     },
@@ -83,9 +83,9 @@
       "stage": "decision_stability",
       "producer": "decision_stability",
       "artifact": "decision_stability.json",
-      "sha256": "793d457327dc390d4ca186c3a0b688201da5032a339828db7ef9b8ca82354f7b",
+      "sha256": "ecd5aed21b4c6757dfcf2bf190b68e5d7a571b076ed1cc174c404ae38beccac3",
       "counts": {
-        "results": 14,
+        "results": 13,
         "version": 1
       }
     },
@@ -93,7 +93,7 @@
       "stage": "decision_credibility",
       "producer": "decision_credibility",
       "artifact": "decision_credibility.json",
-      "sha256": "690a75b5527dba403b9f0372928fda8d48b5b368bd9b876a52d3dff99c54e9a4",
+      "sha256": "102b0f5867f747fc5ae4f98ee8e1d7973423d0736c187d384b15e8fef8473b71",
       "counts": {
         "version": 3
       }
@@ -102,7 +102,7 @@
       "stage": "counterfactual",
       "producer": "counterfactual",
       "artifact": "counterfactual.json",
-      "sha256": "e57f6a0332108b9c3fe59771618f6ced998c01814bc7547d664e0bded6f2816b",
+      "sha256": "edb2e1f20d0994c3b29790db9f0bae1a5ff68a47377565628344956c70222847",
       "counts": {
         "version": 1
       }
@@ -111,7 +111,7 @@
       "stage": "scenario",
       "producer": "scenario",
       "artifact": "scenario.json",
-      "sha256": "bdb69304ec41f89968bd35067f56c3631f3eea691591d7fd79361b96f956832d",
+      "sha256": "ec90012ab70a58d0583526a3e2e0a708af7522de718099e405503ab200206cd7",
       "counts": {
         "scenarios": 500,
         "version": 1
@@ -121,7 +121,7 @@
       "stage": "scenario_matrix",
       "producer": "scenario_matrix",
       "artifact": "scenario_matrix.json",
-      "sha256": "e8072b1f8d3a29f296090720296506a4e0a983d8952badc63dfed0f019e68590",
+      "sha256": "2a79ddfbf11acde705ea06920740c92bf41989795bdfbfa43cddabb202aabe2d",
       "counts": {
         "results": 103,
         "version": 3
@@ -131,7 +131,7 @@
       "stage": "action_triggers",
       "producer": "action_triggers",
       "artifact": "action_triggers.json",
-      "sha256": "8729b675a3a9dc94485bd15b81159786f057dd9737f2245f4c5dd12b38d41e56",
+      "sha256": "3b9304048b330bb377da73ba9bb6a3a6e06a153c7de5eaac1a2b08c313a5d38e",
       "counts": {
         "results": 309,
         "version": 1
@@ -141,7 +141,7 @@
       "stage": "execution_readiness",
       "producer": "execution_readiness",
       "artifact": "execution_readiness.json",
-      "sha256": "1afec78db05ad52a3fd6af954d2b65ab9b9c8c43d6788ace08d2444e1179850a",
+      "sha256": "2363cdf0d77b94e729c4a2e3ffab0f814291342f5169cb26a94fa91f5ecc6387",
       "counts": {
         "results": 309,
         "version": 1
@@ -151,7 +151,7 @@
       "stage": "change_impact",
       "producer": "change_impact",
       "artifact": "change_impact.json",
-      "sha256": "692d9d8b6219ec5abf81d352599aa736d21d7aeeb695f03288c18554a8d7a80b",
+      "sha256": "235b0e4e3fc9ea52c7caf78aba260f36d10c7109810c56686e1b436c896becf5",
       "counts": {
         "version": 1
       }
@@ -160,7 +160,7 @@
       "stage": "freshness",
       "producer": "freshness",
       "artifact": "freshness.json",
-      "sha256": "a69a5a9580040db038513e4aa307f4e9a675b82482b4c8168aeb3c0623636896",
+      "sha256": "85ded5bcd827302c77941827a9427e907cccb224f1c4097485d4f78d98ef83de",
       "counts": {
         "version": 1
       }
@@ -178,7 +178,7 @@
       "stage": "review_queue",
       "producer": "human_review",
       "artifact": "review_queue.json",
-      "sha256": "c5cd5d10da641bb9552824f357a3473ddabb54f431ee635a8ceaf993a2a21642",
+      "sha256": "f68f7d1f9c2bb8430350acc799d11cdbfadcaa7abea54801876584216709b6c2",
       "counts": {
         "items": 100,
         "version": 3
@@ -198,7 +198,7 @@
       "stage": "module_health",
       "producer": "module_health",
       "artifact": "module_health.json",
-      "sha256": "c0afb07c138715b0364df1e03ca9ee96277c142e006f9adc683ab703f8b975ca",
+      "sha256": "2aff45526da7219eb7465e160dab16e8e8b69307a26270754a4f75af26de9dc2",
       "counts": {
         "modules": 9,
         "version": 1
@@ -208,9 +208,9 @@
       "stage": "module_health_history",
       "producer": "module_health",
       "artifact": "module_health_history.json",
-      "sha256": "1fe805a9d1f16a41c286a1fffbc132580cc95dc9cf20b005770ae805da841ed3",
+      "sha256": "711f7dd0d25091b8aca015f5670f33aedb003937d7c7aa01c4fd9ff5d9cf91dd",
       "counts": {
-        "snapshots": 9,
+        "snapshots": 10,
         "version": 1
       }
     },
@@ -228,7 +228,7 @@
       "stage": "trend_attribution",
       "producer": "trend_attribution",
       "artifact": "trend_attribution.json",
-      "sha256": "ebca3d8648423c52e63792a39bda8b15155462fafcc30515d451bd3d0aa359b4",
+      "sha256": "009388356b120605b5b0c06552cb0dc33e4474c5a54d10b29491589887ffaa18",
       "counts": {
         "modules_keys": 9,
         "version": 1
@@ -238,7 +238,7 @@
       "stage": "optimization_backlog",
       "producer": "optimization_backlog",
       "artifact": "optimization_backlog.json",
-      "sha256": "3b92e1f6b0f43f66048b6d5dc42c50941c15ab0aa542a2d9f07a0ec73596845d",
+      "sha256": "01f0bd1848ece2f0bc5c83ff80fe75d3ce9a5fb0c31362170167114beab404a9",
       "counts": {
         "items": 9,
         "version": 3
@@ -248,9 +248,9 @@
       "stage": "optimization_backlog_history",
       "producer": "optimization_backlog",
       "artifact": "optimization_backlog_history.json",
-      "sha256": "28cc771ce80541fb31a5f5a4d86ef5d8873822ec8be5992b44416138be29440d",
+      "sha256": "7a135afaa2f6b4eb932f354f85f329d2594f29ba5bdd3a6caa97e4cedd516e24",
       "counts": {
-        "snapshots": 9,
+        "snapshots": 10,
         "version": 2
       }
     },
@@ -258,7 +258,7 @@
       "stage": "daily_risk_radar",
       "producer": "daily_risk_radar",
       "artifact": "daily_risk_radar.json",
-      "sha256": "4273bad00c99ec1a1bbf0722ac18863ab4b782a6f0d5732f71036827d82c40ec",
+      "sha256": "964e055166d1f358943f4ef2960fff61c857e31c3994a54e984a89f05a5bbd80",
       "counts": {
         "items": 30,
         "version": 4
@@ -268,7 +268,7 @@
       "stage": "owner_risk_view",
       "producer": "owner_risk_view",
       "artifact": "owner_risk_view.json",
-      "sha256": "25ff8d083d6193425b14265eb6cc0944328da0d09a574cf7cafb6b8167831a67",
+      "sha256": "bab9623cea4bfdc7a5be1a753ecb242d3bff3baf33c061eaa52f7e470977e438",
       "counts": {
         "items": 30,
         "version": 2
@@ -278,7 +278,7 @@
       "stage": "executive_terminal",
       "producer": "executive_terminal",
       "artifact": "executive_terminal.json",
-      "sha256": "b8dfbe6c8c88ddf749e611b10d18f6e4d062e6bc7ff542ec68f2ddad89a6d27c",
+      "sha256": "7e1c845843765554099c279fb9555a2740f895d3638fbf4b0d842295a853a142",
       "counts": {
         "version": 3
       }
@@ -287,7 +287,7 @@
       "stage": "p2_daily_brief",
       "producer": "p2_intelligence",
       "artifact": "p2_daily_brief.json",
-      "sha256": "95beecb417af75af670e78e8667ecbb021853271f7955865a32d1417f18168b9",
+      "sha256": "327bab39086c9d8f5cfb9bbacb229f69d5d21b9ec1ddebb90f7a9d23d4bcdd64",
       "counts": {
         "version": "p2-v1.0"
       }
