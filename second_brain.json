@@ -1,6 +1,6 @@
 {
   "version": "sb-v1.1",
-  "generated_at": "2026-09-07T17:13:51Z",
+  "generated_at": "2026-09-09T15:55:30Z",
   "principle": "角色视图只读既有记忆的过滤结果；不新增事实、不伪造偏好；推不出的维度写入 open_questions",
   "role_freeze": [
     "strategy",
@@ -23,10 +23,10 @@
       "version": "p2.5-v1.0"
     },
     "canonical_events.json": {
-      "by_event_id": 117
+      "by_event_id": 109
     },
     "knowledge_graph.json": {
-      "threads_built": 2
+      "threads_built": 6
     }
   },
   "roles": {
@@ -59,12 +59,16 @@
           ],
           "priority_boost": 7,
           "updated_at": "2026-09-01T04:57:57.408748+00:00",
-          "hit_count": 7,
+          "hit_count": 9,
           "hit_topics": {
-            "capital_reinsurance": 5,
+            "capital_reinsurance": 7,
             "ai_intelligent": 2
           },
           "hit_terms": [
+            {
+              "key": "ample capacity",
+              "count": 1
+            },
             {
               "key": "beazley",
               "count": 1
@@ -92,10 +96,6 @@
             {
               "key": "expansion with buy",
               "count": 1
-            },
-            {
-              "key": "first half",
-              "count": 1
             }
           ]
         },
@@ -115,11 +115,11 @@
           ],
           "priority_boost": 7,
           "updated_at": "2026-09-01T04:57:57.427395+00:00",
-          "hit_count": 9,
+          "hit_count": 8,
           "hit_topics": {
             "ai_intelligent": 1,
             "capital_reinsurance": 2,
-            "regulatory_change": 6
+            "regulatory_change": 5
           },
           "hit_terms": [
             {
@@ -160,15 +160,15 @@
       "top_topics": [
         {
           "key": "capital_reinsurance",
-          "count": 7
-        },
-        {
-          "key": "regulatory_change",
-          "count": 7
+          "count": 9
         },
         {
           "key": "ai_intelligent",
           "count": 6
+        },
+        {
+          "key": "regulatory_change",
+          "count": 5
         }
       ],
       "top_entities": [
@@ -178,6 +178,10 @@
         },
         {
           "key": "ai-native",
+          "count": 1
+        },
+        {
+          "key": "ample capacity",
           "count": 1
         },
         {
@@ -199,13 +203,26 @@
         {
           "key": "canada",
           "count": 1
-        },
-        {
-          "key": "co",
-          "count": 1
         }
       ],
       "memory_entries": [
+        {
+          "event_id": "evt_e7f5525b0fd2",
+          "title": "科技保险护航新质生产力",
+          "topic": "ai_intelligent",
+          "event_type": "product",
+          "priority": 100,
+          "decision": {
+            "urgency": "now",
+            "action": "保持跟踪，等待更多独立证据或业务信号",
+            "decided_at": "2026-09-09T15:54:08Z"
+          },
+          "decided_at": "2026-09-09T15:54:08Z",
+          "event_published_at": "2026-09-09T00:00:00+08:00",
+          "entities": [
+            "科技保险"
+          ]
+        },
         {
           "event_id": "evt_3429758517ea",
           "title": "国家金融监督管理总局：全面推进保险行业AI大模型合规应用指引",
@@ -215,11 +232,78 @@
           "decision": {
             "urgency": "watch",
             "action": "检查监管暴露与经营影响",
-            "decided_at": "2026-09-07T17:12:39Z"
+            "decided_at": "2026-09-09T15:54:08Z"
           },
-          "decided_at": "2026-09-07T17:12:39Z",
+          "decided_at": "2026-09-09T15:54:08Z",
           "event_published_at": null,
           "entities": []
+        },
+        {
+          "event_id": "evt_a1835c912a7b",
+          "title": "众安保险亮相2026外滩大会：以科技连接多元场景 守护每一种生活",
+          "topic": "ai_intelligent",
+          "event_type": "industry_update",
+          "priority": 70,
+          "decision": {
+            "urgency": "now",
+            "action": "保持跟踪，等待更多独立证据或业务信号",
+            "decided_at": "2026-09-09T15:54:08Z"
+          },
+          "decided_at": "2026-09-09T15:54:08Z",
+          "event_published_at": "2026-09-09T00:00:00+08:00",
+          "entities": [
+            "众安保险"
+          ]
+        },
+        {
+          "event_id": "evt_f525d8414893",
+          "title": "科技保险“定价盲区”调查：怎么给未来定价",
+          "topic": "ai_intelligent",
+          "event_type": "product",
+          "priority": 70,
+          "decision": {
+            "urgency": "now",
+            "action": "保持跟踪，等待更多独立证据或业务信号",
+            "decided_at": "2026-09-09T15:54:08Z"
+          },
+          "decided_at": "2026-09-09T15:54:08Z",
+          "event_published_at": "2026-07-22T00:00:00+08:00",
+          "entities": [
+            "科技保险"
+          ]
+        },
+        {
+          "event_id": "evt_6622539bc4f2",
+          "title": "观点：再保险市场进一步疲软，并购扩容",
+          "topic": "capital_reinsurance",
+          "event_type": "capital",
+          "priority": 60,
+          "decision": {
+            "urgency": "watch",
+            "action": "复核资本配置与竞争格局",
+            "decided_at": "2026-09-09T15:54:08Z"
+          },
+          "decided_at": "2026-09-09T15:54:08Z",
+          "event_published_at": "2026-09-08T06:26:38Z",
+          "entities": []
+        },
+        {
+          "event_id": "evt_845ca4e8e5b6",
+          "title": "汉诺威再保险在这个市场上的增长很顺利，预计房地产巨灾费率的降低将放缓：Althoff",
+          "topic": "ai_intelligent",
+          "event_type": "industry_update",
+          "priority": 60,
+          "decision": {
+            "urgency": "now",
+            "action": "保持跟踪，等待更多独立证据或业务信号",
+            "decided_at": "2026-09-09T15:54:08Z"
+          },
+          "decided_at": "2026-09-09T15:54:08Z",
+          "event_published_at": "2026-08-12T11:00:51Z",
+          "entities": [
+            "Althoff",
+            "汉诺威再保险"
+          ]
         },
         {
           "event_id": "evt_03c95bd12e1d",
@@ -230,9 +314,9 @@
           "decision": {
             "urgency": "watch",
             "action": "复核资本配置与竞争格局",
-            "decided_at": "2026-09-07T17:12:39Z"
+            "decided_at": "2026-09-09T15:54:08Z"
           },
-          "decided_at": "2026-09-07T17:12:39Z",
+          "decided_at": "2026-09-09T15:54:08Z",
           "event_published_at": null,
           "entities": []
         },
@@ -245,24 +329,9 @@
           "decision": {
             "urgency": "watch",
             "action": "复核资本配置与竞争格局",
-            "decided_at": "2026-09-07T17:12:39Z"
+            "decided_at": "2026-09-09T15:54:08Z"
           },
-          "decided_at": "2026-09-07T17:12:39Z",
-          "event_published_at": null,
-          "entities": []
-        },
-        {
-          "event_id": "evt_083f21f9623f",
-          "title": "加拿大皇家银行分析师预计，定价压力和较高的CAT损失将在26年第二季度对美国保险公司造成压力",
-          "topic": "capital_reinsurance",
-          "event_type": "capital",
-          "priority": 50,
-          "decision": {
-            "urgency": "watch",
-            "action": "复核资本配置与竞争格局",
-            "decided_at": "2026-09-07T17:12:39Z"
-          },
-          "decided_at": "2026-09-07T17:12:39Z",
+          "decided_at": "2026-09-09T15:54:08Z",
           "event_published_at": null,
           "entities": []
         },
@@ -275,9 +344,9 @@
           "decision": {
             "urgency": "watch",
             "action": "复核资本配置与竞争格局",
-            "decided_at": "2026-09-07T17:12:39Z"
+            "decided_at": "2026-09-09T15:54:08Z"
           },
-          "decided_at": "2026-09-07T17:12:39Z",
+          "decided_at": "2026-09-09T15:54:08Z",
           "event_published_at": null,
           "entities": []
         },
@@ -290,9 +359,9 @@
           "decision": {
             "urgency": "watch",
             "action": "评估市场与竞争响应",
-            "decided_at": "2026-09-07T17:12:39Z"
+            "decided_at": "2026-09-09T15:54:08Z"
           },
-          "decided_at": "2026-09-07T17:12:39Z",
+          "decided_at": "2026-09-09T15:54:08Z",
           "event_published_at": null,
           "entities": []
         },
@@ -305,9 +374,9 @@
           "decision": {
             "urgency": "watch",
             "action": "评估战略与资本影响",
-            "decided_at": "2026-09-07T17:12:39Z"
+            "decided_at": "2026-09-09T15:54:08Z"
           },
-          "decided_at": "2026-09-07T17:12:39Z",
+          "decided_at": "2026-09-09T15:54:08Z",
           "event_published_at": null,
           "entities": []
         },
@@ -320,72 +389,9 @@
           "decision": {
             "urgency": "watch",
             "action": "复核资本配置与竞争格局",
-            "decided_at": "2026-09-07T17:12:39Z"
+            "decided_at": "2026-09-09T15:54:08Z"
           },
-          "decided_at": "2026-09-07T17:12:39Z",
-          "event_published_at": null,
-          "entities": []
-        },
-        {
-          "event_id": "evt_08302d0d9012",
-          "title": "费马在新加坡聘请了尼古拉斯·谭 (Nicholas Tan)。亚太地区扩张继续进行，包括设立日本办事处",
-          "topic": "capital_reinsurance",
-          "event_type": "capital",
-          "priority": 30,
-          "decision": {
-            "urgency": "watch",
-            "action": "复核资本配置与竞争格局",
-            "decided_at": "2026-09-07T17:12:39Z"
-          },
-          "decided_at": "2026-09-07T17:12:39Z",
-          "event_published_at": null,
-          "entities": []
-        },
-        {
-          "event_id": "evt_1796cf449991",
-          "title": "第三方资本有助于 Hiscox 的市场相关性，扩大承保能力：CUO Musselle",
-          "topic": "capital_reinsurance",
-          "event_type": "market_entry",
-          "priority": 30,
-          "decision": {
-            "urgency": "watch",
-            "action": "评估市场与竞争响应",
-            "decided_at": "2026-09-07T17:12:39Z"
-          },
-          "decided_at": "2026-09-07T17:12:39Z",
-          "event_published_at": "2026-08-05T13:00:23Z",
-          "entities": [
-            "CUO Musselle",
-            "Hiscox"
-          ]
-        },
-        {
-          "event_id": "evt_1f7f48882aac",
-          "title": "尽管热情不断高涨，人工智能在再保险领域的采用可能仍将是渐进的：AM Best",
-          "topic": "capital_reinsurance",
-          "event_type": "claims_loss",
-          "priority": 30,
-          "decision": {
-            "urgency": "watch",
-            "action": "保持跟踪，等待更多独立证据或业务信号",
-            "decided_at": "2026-09-07T17:12:39Z"
-          },
-          "decided_at": "2026-09-07T17:12:39Z",
-          "event_published_at": null,
-          "entities": []
-        },
-        {
-          "event_id": "evt_a03127c90224",
-          "title": "ILS 将及时返回网络对话。人工智能风险是未来因素：Baker、Cyber​​Cube",
-          "topic": "capital_reinsurance",
-          "event_type": "capital",
-          "priority": 30,
-          "decision": {
-            "urgency": "watch",
-            "action": "复核资本配置与竞争格局",
-            "decided_at": "2026-09-07T17:12:39Z"
-          },
-          "decided_at": "2026-09-07T17:12:39Z",
+          "decided_at": "2026-09-09T15:54:08Z",
           "event_published_at": null,
           "entities": []
         }
@@ -422,10 +428,9 @@
           ],
           "priority_boost": 7,
           "updated_at": "2026-09-01T04:57:57.428388+00:00",
-          "hit_count": 2,
+          "hit_count": 1,
           "hit_topics": {
-            "ai_intelligent": 1,
-            "regulatory_change": 1
+            "ai_intelligent": 1
           },
           "hit_terms": [
             {
@@ -490,10 +495,6 @@
         {
           "key": "ai_intelligent",
           "count": 5
-        },
-        {
-          "key": "regulatory_change",
-          "count": 1
         }
       ],
       "top_entities": [
@@ -559,11 +560,11 @@
           ],
           "priority_boost": 7,
           "updated_at": "2026-09-01T04:57:57.427395+00:00",
-          "hit_count": 9,
+          "hit_count": 8,
           "hit_topics": {
             "ai_intelligent": 1,
             "capital_reinsurance": 2,
-            "regulatory_change": 6
+            "regulatory_change": 5
           },
           "hit_terms": [
             {
@@ -604,7 +605,7 @@
       "top_topics": [
         {
           "key": "regulatory_change",
-          "count": 7
+          "count": 5
         },
         {
           "key": "capital_reinsurance",
@@ -654,38 +655,158 @@
   },
   "entity_threads": [
     {
-      "entity": "CUO Musselle",
+      "entity": "Althoff",
       "type": "Company",
       "event_count": 1,
-      "first_seen": "2026-08-05T13:00:23Z",
-      "last_seen": "2026-08-05T13:00:23Z",
+      "first_seen": "2026-08-12T11:00:51Z",
+      "last_seen": "2026-08-12T11:00:51Z",
       "events": [
         {
-          "canonical_event_id": "evt_1796cf449991",
-          "title": "第三方资本有助于 Hiscox 的市场相关性，扩大承保能力：CUO Musselle",
-          "topic": "capital_reinsurance",
-          "published_at": "2026-08-05T13:00:23Z"
+          "canonical_event_id": "evt_845ca4e8e5b6",
+          "title": "汉诺威再保险在这个市场上的增长很顺利，预计房地产巨灾费率的降低将放缓：Althoff",
+          "topic": "ai_intelligent",
+          "published_at": "2026-08-12T11:00:51Z"
         }
       ]
     },
     {
-      "entity": "Hiscox",
+      "entity": "MGA Arrow",
       "type": "Company",
-      "event_count": 2,
-      "first_seen": "2026-08-05T13:00:23Z",
-      "last_seen": "2026-08-14T14:30:34Z",
+      "event_count": 1,
+      "first_seen": "2026-09-09T05:00:00Z",
+      "last_seen": "2026-09-09T05:00:00Z",
       "events": [
         {
-          "canonical_event_id": "evt_1796cf449991",
-          "title": "第三方资本有助于 Hiscox 的市场相关性，扩大承保能力：CUO Musselle",
+          "canonical_event_id": "evt_d767f7de441a",
+          "title": "SafePoint 完成对英国专业 MGA Arrow 的少数股权投资",
           "topic": "capital_reinsurance",
-          "published_at": "2026-08-05T13:00:23Z"
+          "published_at": "2026-09-09T05:00:00Z"
+        }
+      ]
+    },
+    {
+      "entity": "SafePoint",
+      "type": "Company",
+      "event_count": 1,
+      "first_seen": "2026-09-09T05:00:00Z",
+      "last_seen": "2026-09-09T05:00:00Z",
+      "events": [
+        {
+          "canonical_event_id": "evt_d767f7de441a",
+          "title": "SafePoint 完成对英国专业 MGA Arrow 的少数股权投资",
+          "topic": "capital_reinsurance",
+          "published_at": "2026-09-09T05:00:00Z"
+        }
+      ]
+    },
+    {
+      "entity": "众安保险",
+      "type": "Company",
+      "event_count": 4,
+      "first_seen": "2026-08-23T00:00:00+08:00",
+      "last_seen": "2026-09-09T00:00:00+08:00",
+      "events": [
+        {
+          "canonical_event_id": "evt_e761f25a07c3",
+          "title": "众安保险获批增资至16.848亿元",
+          "topic": "regulatory_change",
+          "published_at": "2026-08-23T00:00:00+08:00"
         },
         {
-          "canonical_event_id": "evt_c5472f50fe4d",
-          "title": "Hiscox 宣布 Syndicates 33 和 6104 当前的回报预估",
+          "canonical_event_id": "evt_3ad436dcbed7",
+          "title": "众安保险：上半年保险服务收入169.89亿元，同比增长12.9%",
+          "topic": null,
+          "published_at": "2026-08-25T00:00:00+08:00"
+        },
+        {
+          "canonical_event_id": "evt_e884d4161a25",
+          "title": "众安保险加码布局健康生态：上半年服务被保用户超千万，借AI东风如何触达更多人",
           "topic": "ai_intelligent",
-          "published_at": "2026-08-14T14:30:34Z"
+          "published_at": "2026-08-25T00:00:00+08:00"
+        },
+        {
+          "canonical_event_id": "evt_a1835c912a7b",
+          "title": "众安保险亮相2026外滩大会：以科技连接多元场景 守护每一种生活",
+          "topic": "ai_intelligent",
+          "published_at": "2026-09-09T00:00:00+08:00"
+        }
+      ]
+    },
+    {
+      "entity": "汉诺威再保险",
+      "type": "Company",
+      "event_count": 4,
+      "first_seen": "2026-08-12T07:00:19Z",
+      "last_seen": "2026-09-08T06:00:27Z",
+      "events": [
+        {
+          "canonical_event_id": "evt_9ae35fc71f22",
+          "title": "随着财产与意外险综合成本率的增强，汉诺威再保险净利润增长 7%，达到 14 亿欧元",
+          "topic": null,
+          "published_at": "2026-08-12T07:00:19Z"
+        },
+        {
+          "canonical_event_id": "evt_845ca4e8e5b6",
+          "title": "汉诺威再保险在这个市场上的增长很顺利，预计房地产巨灾费率的降低将放缓：Althoff",
+          "topic": "ai_intelligent",
+          "published_at": "2026-08-12T11:00:51Z"
+        },
+        {
+          "canonical_event_id": "evt_a85099987e5d",
+          "title": "汉诺威再保险资本合作伙伴继续扩建，寻求扩大投资者基础",
+          "topic": "capital_reinsurance",
+          "published_at": "2026-08-20T13:00:40Z"
+        },
+        {
+          "canonical_event_id": "evt_0c356e993745",
+          "title": "汉诺威再保险认为 nat cat “技术上风险充足”，可以部署更多容量",
+          "topic": "capital_reinsurance",
+          "published_at": "2026-09-08T06:00:27Z"
+        }
+      ]
+    },
+    {
+      "entity": "科技保险",
+      "type": "Company",
+      "event_count": 6,
+      "first_seen": "2026-07-10T00:00:00+08:00",
+      "last_seen": "2026-09-09T00:00:00+08:00",
+      "events": [
+        {
+          "canonical_event_id": "evt_bec9afdd3beb",
+          "title": "从“单点创新”迈向“系统支撑”科技保险加速嵌入产业创新链",
+          "topic": "ai_intelligent",
+          "published_at": "2026-07-10T00:00:00+08:00"
+        },
+        {
+          "canonical_event_id": "evt_5eb59ea97445",
+          "title": "河南下达4000万专项经费预算！支持科技贷贴息、科技保险补贴",
+          "topic": "ai_intelligent",
+          "published_at": "2026-07-15T00:00:00+08:00"
+        },
+        {
+          "canonical_event_id": "evt_f525d8414893",
+          "title": "科技保险“定价盲区”调查：怎么给未来定价",
+          "topic": "ai_intelligent",
+          "published_at": "2026-07-22T00:00:00+08:00"
+        },
+        {
+          "canonical_event_id": "evt_c3f4d02fe8f8",
+          "title": "从“企业找保险”到“险企进园区” 科技保险让企业敢入驻、敢创新",
+          "topic": "product_innovation",
+          "published_at": "2026-07-27T00:00:00+08:00"
+        },
+        {
+          "canonical_event_id": "evt_d1758b5d796b",
+          "title": "广东保险业半年资产总额2.93万亿元，科技保险保障增速超五成",
+          "topic": "ai_intelligent",
+          "published_at": "2026-07-30T00:00:00+08:00"
+        },
+        {
+          "canonical_event_id": "evt_e7f5525b0fd2",
+          "title": "科技保险护航新质生产力",
+          "topic": "ai_intelligent",
+          "published_at": "2026-09-09T00:00:00+08:00"
         }
       ]
     }
@@ -718,7 +839,7 @@
     {
       "dimension": "决策偏好结论",
       "status": "insufficient_sample",
-      "reason": "已决决策样本 13 条 < 阈值 30 条；结论需 ≥30 条真实决策方可输出（来自决策账本 decisions_ledger.json，不伪造）",
+      "reason": "已决决策样本 18 条 < 阈值 30 条；结论需 ≥30 条真实决策方可输出（来自决策账本 decisions_ledger.json，不伪造）",
       "unblock": "日常流水线持续运行使决策账本累计至 ≥30 条不同事件"
     },
     {

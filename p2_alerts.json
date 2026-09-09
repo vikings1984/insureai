@@ -1,23 +1,74 @@
 {
   "version": "alert-v1.1",
-  "generated_at": "2026-09-07T17:13:52Z",
+  "generated_at": "2026-09-09T15:55:31Z",
   "principle": "两层收敛：Internal Diff（事实）→ Semantic Alert（≤8 条聚合）；两层准入（T1 系统级监管 / T2 个人级 Watch / T3 标准）；NEW_SOURCE/NEW_EVIDENCE 留内部、delta 不伪造、首跑仅种子、告警不改写业务判断",
   "meta": {
-    "total_events": 1728,
+    "total_events": 1803,
     "baseline_present": true,
     "basis": "delta_vs_baseline",
-    "internal_diff_count": 0,
+    "internal_diff_count": 3,
     "alert_count": 8,
     "max_alerts": 8,
     "alert_type_counts": {
-      "EVENT_MATERIAL_CHANGED": 8
+      "EVENT_MATERIAL_CHANGED": 4,
+      "DECISION_REQUIRED": 4
     },
     "admission_counts": {
       "T1_system": 8
     },
     "suppressed": 0
   },
-  "internal_diffs": [],
+  "internal_diffs": [
+    {
+      "canonical_event_id": "cev_7380d6ed039b",
+      "event_id": "evt_083f21f9623f",
+      "title": "加拿大皇家银行分析师预计，定价压力和较高的CAT损失将在26年第二季度对美国保险公司造成压力",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": "watch",
+          "new": null
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "evt_56b1f7755626",
+      "event_id": "evt_56b1f7755626",
+      "title": "传统再保险资本积累比 ILS 对软化的影响更大：AM Best",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "trust_score",
+          "old": 76,
+          "new": 67
+        },
+        {
+          "field": "evidence_count",
+          "old": 2,
+          "new": 1
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "evt_07621f086729",
+      "event_id": "evt_07621f086729",
+      "title": "随着CAT风险预算下降， 2025年再保险资本达到创纪录的6,630亿美元： AM Best和Guy Carpenter",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "trust_score",
+          "old": 71,
+          "new": 67
+        },
+        {
+          "field": "evidence_count",
+          "old": 2,
+          "new": 1
+        }
+      ]
+    }
+  ],
   "semantic_alerts": [
     {
       "type": "EVENT_MATERIAL_CHANGED",
@@ -35,65 +86,9 @@
     },
     {
       "type": "EVENT_MATERIAL_CHANGED",
-      "canonical_event_id": "cev_2aab5b2d16f0",
-      "event_id": "evt_fd60218d12d1",
-      "title": "中国再保险拟向财政部定增募资不超30亿元 用于增加核心一级资本",
-      "topic": "capital_reinsurance",
-      "severity": "high",
-      "rationale": "监管效力状态：issued（系统级 T1 准入）",
-      "basis": "standing",
-      "changed_fields": [
-        "status"
-      ],
-      "admission": "T1_system"
-    },
-    {
-      "type": "EVENT_MATERIAL_CHANGED",
-      "canonical_event_id": "cev_42faebeeaddf",
-      "event_id": "evt_a75c8e446fcd",
-      "title": "平安养老贵州分公司被罚76万，涉多项违规",
-      "topic": "regulatory_change",
-      "severity": "high",
-      "rationale": "监管效力状态：issued（系统级 T1 准入）",
-      "basis": "standing",
-      "changed_fields": [
-        "status"
-      ],
-      "admission": "T1_system"
-    },
-    {
-      "type": "EVENT_MATERIAL_CHANGED",
-      "canonical_event_id": "cev_17b22870084c",
-      "event_id": "evt_62e3eeb3e9dc",
-      "title": "加快上海国际再保险中心建设！8大措施发布",
-      "topic": "capital_reinsurance",
-      "severity": "high",
-      "rationale": "监管效力状态：issued（系统级 T1 准入）",
-      "basis": "standing",
-      "changed_fields": [
-        "status"
-      ],
-      "admission": "T1_system"
-    },
-    {
-      "type": "EVENT_MATERIAL_CHANGED",
-      "canonical_event_id": "cev_af412da2a1d6",
-      "event_id": "evt_c3420bbf2ee2",
-      "title": "中国平安贵州分公司因管理失责被罚款15万元 5名保险代理人一并受罚",
-      "topic": "regulatory_change",
-      "severity": "high",
-      "rationale": "监管效力状态：issued（系统级 T1 准入）",
-      "basis": "standing",
-      "changed_fields": [
-        "status"
-      ],
-      "admission": "T1_system"
-    },
-    {
-      "type": "EVENT_MATERIAL_CHANGED",
-      "canonical_event_id": "cev_5f5392f82411",
-      "event_id": "evt_65d96eadf80f",
-      "title": "长安保险风险处置新进展：中安财险获批承接其保险业务",
+      "canonical_event_id": "cev_04e7794e1656",
+      "event_id": "evt_1d8e38d7c067",
+      "title": "心安康保险代理被罚25万，涉编制虚假材料",
       "topic": "regulatory_change",
       "severity": "high",
       "rationale": "监管效力状态：issued（系统级 T1 准入）",
@@ -119,15 +114,71 @@
     },
     {
       "type": "EVENT_MATERIAL_CHANGED",
-      "canonical_event_id": "cev_e734fdc0eb3f",
-      "event_id": "evt_2e6c86e17aaa",
-      "title": "政策释放新赔付空间 商业健康险新增康复辅助器具保障责任",
-      "topic": "regulatory_change",
+      "canonical_event_id": "cev_5ae0f78e72f6",
+      "event_id": "evt_7c63d55ce80c",
+      "title": "保险业迎来管理新规—— 防范资产负债错配风险",
+      "topic": null,
       "severity": "high",
-      "rationale": "监管效力状态：issued（系统级 T1 准入）",
+      "rationale": "监管效力状态：effective（系统级 T1 准入）",
       "basis": "standing",
       "changed_fields": [
         "status"
+      ],
+      "admission": "T1_system"
+    },
+    {
+      "type": "DECISION_REQUIRED",
+      "canonical_event_id": "cev_3b319a51fffd",
+      "event_id": "evt_b15303e657b2",
+      "title": "加拿大监管机构增加巨灾债券作为资本信贷再保险的一种形式",
+      "topic": "capital_reinsurance",
+      "severity": "high",
+      "rationale": "待人工复核、暂无决策记录（日报优先级 91）",
+      "basis": "standing",
+      "changed_fields": [
+        "review_required"
+      ],
+      "admission": "T1_system"
+    },
+    {
+      "type": "DECISION_REQUIRED",
+      "canonical_event_id": "cev_2dad639a2a08",
+      "event_id": "evt_2eaf272711a7",
+      "title": "陕西金融监管局：推动建成全国首个省市联动多层次综合巨灾保险机制",
+      "topic": "capital_reinsurance",
+      "severity": "high",
+      "rationale": "待人工复核、暂无决策记录（日报优先级 90）",
+      "basis": "standing",
+      "changed_fields": [
+        "review_required"
+      ],
+      "admission": "T1_system"
+    },
+    {
+      "type": "DECISION_REQUIRED",
+      "canonical_event_id": "cev_f75127f8ccbc",
+      "event_id": "evt_cd1750e23fee",
+      "title": "国家金融监督管理总局等两部门：支持再保险机构增资扩股和发行资本补充工具",
+      "topic": "capital_reinsurance",
+      "severity": "high",
+      "rationale": "待人工复核、暂无决策记录（日报优先级 90）",
+      "basis": "standing",
+      "changed_fields": [
+        "review_required"
+      ],
+      "admission": "T1_system"
+    },
+    {
+      "type": "DECISION_REQUIRED",
+      "canonical_event_id": "cev_43731806412d",
+      "event_id": "evt_7f010a567259",
+      "title": "金融监管总局：2026年二季度保险业偿付能力充足率保持行业高位",
+      "topic": "regulatory_change",
+      "severity": "high",
+      "rationale": "待人工复核、暂无决策记录（日报优先级 90）",
+      "basis": "standing",
+      "changed_fields": [
+        "review_required"
       ],
       "admission": "T1_system"
     }
