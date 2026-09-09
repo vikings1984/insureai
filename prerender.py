@@ -160,7 +160,11 @@ def inject(tag_start, tag_end, content):
     pat = re.compile(re.escape(tag_start) + ".*?" + re.escape(tag_end), re.S)
     if not pat.search(txt):
         raise SystemExit(f"未找到占位标记: {tag_start} ... {tag_end}")
-    new = pat.sub(tag_start + content + tag_end, txt)
+    # content 来自采集数据，可能带反斜杠（部分信源把换行二次编码成字面量 \x0a，
+    # 或把 & 二次编码成 \x26#39;）。若把它直接当作 re.sub 的替换模板，
+    # \x0a 会被当成正则转义解析并抛 `re.error: bad escape \x`，整条流水线随之中断。
+    # 改用 callable 替换：内容按字面写入，不做任何转义解释。
+    new = pat.sub(lambda _m: tag_start + content + tag_end, txt)
     with open(INDEX, "w", encoding="utf-8") as f:
         f.write(new)
 
