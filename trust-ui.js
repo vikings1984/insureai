@@ -5,9 +5,12 @@
   const tierLabels={1:'T1 一手',2:'T2 通讯社',3:'T3 行业',4:'T4 社交'};
   async function boot(){
     try{
-      const data=await window.InsureAIData.load(), events=Array.isArray(data.events)?data.events:[];
+      // 首屏只渲染 daily_brief 前 5 条，因此直接按 title 从 daily_brief 建索引即可，
+      // 不必为了给这 5 张卡片补可信度徽标而下载全部事件。
+      const data=await window.InsureAIData.loadSummary();
+      const items=Array.isArray(data.daily_brief)?data.daily_brief:[];
       const cards=[...document.querySelectorAll('#daily-intelligence .di-item')];
-      const byTitle=new Map(events.map(e=>[String(e.title||''),e]));
+      const byTitle=new Map(items.map(e=>[String(e.title||''),e]));
       cards.forEach(card=>{
         const title=card.querySelector('h3')?.textContent||'';const event=byTitle.get(title);if(!event||card.querySelector('.trust-badge'))return;
         const t=event.trust||{};const badge=document.createElement('div');badge.className='trust-badge trust-'+(t.level||'low');

@@ -27,7 +27,7 @@
   }
   async function boot(){
     try{
-      const data=await window.InsureAIData.load();
+      const data=await window.InsureAIData.loadSummary();
       const host=document.querySelector('.app-layout')||document.querySelector('main'); if(!host||document.querySelector('#decision-intelligence'))return;
       const box=document.createElement('section'); box.id='decision-intelligence';
       render(box,data);

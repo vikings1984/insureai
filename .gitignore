@@ -38,3 +38,12 @@ real_benchmark_v2_test.json
 
 # Promote tool real-set runner output
 real_benchmark_v2_real_results.json
+
+# Intelligence shards (P0-1)
+# 由 intelligence_shards.py 从 intelligence.json 重新生成：
+#   * 部署时（deploy-cloudflare.yml）生成后交给 wrangler，不入库；
+#   * 本地/CI 生成后仅用于校验。
+# 提交它们只会让仓库每天再膨胀约 7.5 MB，与清理生成物的方向相反。
+intelligence.summary.json
+intelligence.events.json
+intelligence.detail.*.json

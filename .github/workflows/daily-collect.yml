@@ -98,6 +98,11 @@ jobs:
         run: python3 change_impact.py
       - name: Validate and stamp data contract
         run: python3 contract.py
+      # P0-1：分片只是 intelligence.json 的投影。这里用真实产物跑一遍一致性门禁
+      # （--check 只校验不写盘），字段裁剪或顺序一旦与源脱节就在这里被拦下，
+      # 而不是等到部署时才发现。分片本体不入库，由 deploy-cloudflare.yml 部署时生成。
+      - name: Validate intelligence shards consistency
+        run: python3 intelligence_shards.py --check
       - name: Evaluate intelligence quality
         run: python3 evaluation.py
       - name: Quantitative quality metrics gate

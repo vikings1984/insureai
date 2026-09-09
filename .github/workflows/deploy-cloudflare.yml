@@ -70,6 +70,13 @@ jobs:
       - name: Inject deployment identity marker
         run: python3 scripts/inject_ui_assets.py
 
+      # P0-1：intelligence.json 已涨到 13 MB 量级，而 index.html 首屏只用到约 118 KB。
+      # 分片在**部署时**由 intelligence.json 重新生成后交给 wrangler：
+      # 不进仓库（见 .gitignore），因此不增加仓库体积；脚本自带一致性门禁，
+      # 分片与源不一致即 fail-closed 中断部署。前端在分片缺失时自动回退全量。
+      - name: Build intelligence shards
+        run: python3 intelligence_shards.py
+
       - name: Deploy static assets to Workers
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         uses: cloudflare/wrangler-action@v3

@@ -5,7 +5,12 @@
   const typeLabels={acquisition_intent:'收购意图',transaction_amount:'交易金额',transaction_scope:'交易标的',strategic_context:'战略意图',regulatory_action:'监管行动',fine_amount:'处罚金额',effective_date:'生效时间',product_launch:'产品发布',capital_raise:'融资',capital_amount:'融资金额',rating_change:'评级变动',executive_change:'人事变动',market_entry:'市场进入',loss_event:'损失事件',loss_amount:'损失金额',event_summary:'事件概要',reported_amount:'涉及金额',product_amount:'产品金额',rating_amount:'评级金额',market_amount:'涉及金额'};
   async function boot(){
     try{
-      const data=await window.InsureAIData.load(); const events=Array.isArray(data.events)?data.events:[];
+      // 首屏只渲染 daily_brief 前 5 条，按 title 直接从 daily_brief 建索引即可。
+      // 分片里的 daily_brief 已内联 claims；回退到全量文件时 daily_brief 不带 claims，
+      // 此时按 event_id 回到 events 取值 —— 两种模式下命题都能渲染。
+      const data=await window.InsureAIData.loadSummary();
+      const byId=new Map((data.events||[]).map(e=>[String(e.event_id),e]));
+      const events=(Array.isArray(data.daily_brief)?data.daily_brief:[]).map(x=>((x.claims&&x.claims.claims)?x:Object.assign({},x,{claims:((byId.get(String(x.event_id))||{}).claims)||{}})));
       const cards=[...document.querySelectorAll('#daily-intelligence .di-item')];
       const byTitle=new Map(events.map(e=>[String(e.title||''),e]));
       cards.forEach(card=>{

@@ -12,8 +12,8 @@
   function feedback(action,event){behavior().record(action,event);}
   async function boot(){
     try{
-      const res=await fetch('intelligence.json?t='+Date.now());if(!res.ok)return;
-      const data=await res.json(), profile=load(), daily=Array.isArray(data.daily_brief)?data.daily_brief:[];
+      // 只用 daily_brief，走首屏分片即可（此前这里会额外拉一份 13 MB 的全量文件）
+      const data=await window.InsureAIData.loadSummary(), profile=load(), daily=Array.isArray(data.daily_brief)?data.daily_brief:[];
       const wrapper=document.createElement('div');
       function render(p){
         const roleOptions=ROLES.map(([v,l])=>`<option value="${v}" ${p.role===v?'selected':''}>${esc(l)}</option>`).join('');
