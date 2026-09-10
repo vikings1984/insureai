@@ -1,0 +1,71 @@
+name: Deploy to GitHub Pages
+
+# F-01：让 GitHub Pages 也产出 intelligence.json 分片。
+#
+# 背景：分片（P0-1）此前只在 deploy-cloudflare.yml 部署时生成并交给 wrangler 上传到
+# Workers（assets.directory="."），但被 .gitignore 排除、不入库；GitHub Pages 走
+# "从分支部署"（legacy）模式，只能用到已提交文件，永远拿不到分片 → 命中完整文件回退，
+# 用户从 Pages URL 访问时首屏优化不可见。
+#
+# 本工作流把 Pages 改为 "GitHub Actions" 部署模式：在部署时生成分片、作为产物发布，
+# 不把分片 commit 进仓库（与 F-03 去生成物膨胀的方向一致）。前端已具备"分片优先、
+# 缺失回退"逻辑（data-store.js），无需改动即可在 Pages 上吃到分片。
+#
+# 注意：upload-pages-artifact 遵循 .gitignore，分片被忽略会导致它们不上传，从而 F-01
+# 失效。因此用 `git add -f` 仅在工作区把分片暂存（不提交、不改仓库体积），使产物包含分片。
+on:
+  push:
+    branches: [insureai]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      # 与 deploy-cloudflare.yml 一致：部署时由 intelligence.json 重新生成分片。
+      - name: Build intelligence shards (P0-1)
+        run: python3 intelligence_shards.py
+
+      # 与 Workers 部署保持标记一致（insureai-release-marker 等）。
+      - name: Inject feature UI assets + release marker
+        run: python3 scripts/inject_ui_assets.py
+
+      # 关键：分片被 .gitignore 忽略，upload-pages-artifact 会将其排除。
+      # 仅在工作区暂存（不提交），让分片进入 Pages 产物，同时仓库体积不变。
+      - name: Force-include shards in Pages artifact (runner-local, not committed)
+        run: |
+          git add -f intelligence.summary.json intelligence.events.json 'intelligence.detail.*.json'
+          echo "staged shard files:"
+          git ls-files --cached --error-unmatch \
+            intelligence.summary.json intelligence.events.json 2>/dev/null || true
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
