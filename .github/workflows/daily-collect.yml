@@ -9,6 +9,7 @@ concurrency:
 permissions:
   contents: write
   issues: write
+  actions: write
 env:
   SITE_URL: "https://vikings1984.github.io/insureai"
 jobs:
@@ -459,6 +460,17 @@ jobs:
             git rebase --abort || true
             git reset --merge || true
           fi
+      # F-01 把 Pages 切到 Actions 部署模式后，本 job 用 GITHUB_TOKEN 推送的工件提交
+      # 不再触发任何 push 事件（GitHub 防循环），部署通道因此断链（2026-09-10 起
+      # Pages/Workers 只吃手工推送）。workflow_dispatch 不在防循环限制内，显式下发：
+      # 先跑 Tests/Benchmark（deploy-cloudflare 的质量门禁按同 SHA 轮询它们），再部署。
+      - name: Dispatch downstream tests + deploys after data publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for wf in test.yml benchmark.yml deploy-pages.yml deploy-cloudflare.yml; do
+            gh workflow run "$wf" --ref "${{ github.ref_name }}" && echo "dispatched $wf"
+          done
       - name: Notify on failure
         if: failure()
         uses: actions/github-script@v7
