@@ -1,38 +1,23 @@
 {
   "version": "alert-v1.1",
-  "generated_at": "2026-09-11T07:29:07Z",
+  "generated_at": "2026-09-11T10:37:10Z",
   "principle": "两层收敛：Internal Diff（事实）→ Semantic Alert（≤8 条聚合）；两层准入（T1 系统级监管 / T2 个人级 Watch / T3 标准）；NEW_SOURCE/NEW_EVIDENCE 留内部、delta 不伪造、首跑仅种子、告警不改写业务判断",
   "meta": {
-    "total_events": 1862,
+    "total_events": 1871,
     "baseline_present": true,
     "basis": "delta_vs_baseline",
-    "internal_diff_count": 1,
+    "internal_diff_count": 0,
     "alert_count": 8,
     "max_alerts": 8,
     "alert_type_counts": {
-      "EVENT_MATERIAL_CHANGED": 7,
-      "DECISION_REQUIRED": 1
+      "EVENT_MATERIAL_CHANGED": 8
     },
     "admission_counts": {
       "T1_system": 8
     },
     "suppressed": 0
   },
-  "internal_diffs": [
-    {
-      "canonical_event_id": "cev_1f9acba707af",
-      "event_id": "evt_fb73abc82b8f",
-      "title": "太平再保险拟增资10亿元",
-      "topic": "capital_reinsurance",
-      "changes": [
-        {
-          "field": "decision_urgency",
-          "old": "now",
-          "new": null
-        }
-      ]
-    }
-  ],
+  "internal_diffs": [],
   "semantic_alerts": [
     {
       "type": "EVENT_MATERIAL_CHANGED",
@@ -133,16 +118,16 @@
       "admission": "T1_system"
     },
     {
-      "type": "DECISION_REQUIRED",
-      "canonical_event_id": "cev_cf9e0f4d40fc",
-      "event_id": "evt_3429758517ea",
-      "title": "国家金融监督管理总局：全面推进保险行业AI大模型合规应用指引",
-      "topic": "ai_intelligent",
+      "type": "EVENT_MATERIAL_CHANGED",
+      "canonical_event_id": "cev_5eb71890c399",
+      "event_id": "evt_9c7f1d0bbb13",
+      "title": "四部门：加强主粮、棉花、油料、糖料、橡胶等大宗农产品风险保障 提高区域间农业保险发展均衡性",
+      "topic": "product_innovation",
       "severity": "high",
-      "rationale": "待人工复核、暂无决策记录（日报优先级 96）",
+      "rationale": "监管效力状态：effective（系统级 T1 准入）",
       "basis": "standing",
       "changed_fields": [
-        "review_required"
+        "status"
       ],
       "admission": "T1_system"
     }
