@@ -1,6 +1,6 @@
 {
   "version": "p2.5-v1.0",
-  "generated_at": "2026-09-09T15:55:30Z",
+  "generated_at": "2026-09-11T02:32:45Z",
   "principle": "只聚合既有 artifact 中的事实；观察与结论分离，样本不足时不出结论，不伪造时间线",
   "sources": {
     "p2_state.json": {
@@ -17,10 +17,10 @@
       "brief": 20
     },
     "knowledge_graph.json": {
-      "events_indexed": 1803
+      "events_indexed": 1853
     },
     "decisions_ledger.json": {
-      "distinct_events": 18
+      "distinct_events": 26
     }
   },
   "watchlists": {
@@ -151,8 +151,8 @@
         "hit_count": 8,
         "hit_topics": {
           "ai_intelligent": 1,
-          "capital_reinsurance": 2,
-          "regulatory_change": 5
+          "regulatory_change": 5,
+          "capital_reinsurance": 2
         },
         "hit_terms": [
           {
@@ -278,7 +278,6 @@
     ],
     "hit_event_ids": [
       "evt_0fe4820271f7",
-      "evt_14ed8cd4baf3",
       "evt_2a40eace85a9",
       "evt_2eaf272711a7",
       "evt_3259f7221480",
@@ -296,22 +295,23 @@
       "evt_bc369073060b",
       "evt_c4c99c6077e2",
       "evt_cd1750e23fee",
-      "evt_d767f7de441a"
+      "evt_d767f7de441a",
+      "evt_dfac7e70021a"
     ]
   },
   "decisions": {
     "observations": {
-      "sample_size": 18,
+      "sample_size": 26,
       "by_urgency": {
         "watch": 14,
-        "now": 4
+        "now": 12
       },
       "by_action": {
         "评估战略与资本影响": 1,
         "检查监管暴露与经营影响": 1,
-        "复核资本配置与竞争格局": 8,
+        "复核资本配置与竞争格局": 11,
         "评估市场与竞争响应": 2,
-        "保持跟踪，等待更多独立证据或业务信号": 6
+        "保持跟踪，等待更多独立证据或业务信号": 11
       },
       "by_topic": {},
       "by_event_type": {},
@@ -384,64 +384,120 @@
         "urgency": "watch"
       },
       {
-        "event_id": "evt_845ca4e8e5b6",
+        "event_id": "evt_6622539bc4f2",
         "decided_at": "2026-09-09T15:54:08Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_845ca4e8e5b6",
+        "decided_at": "2026-09-11T02:31:22Z",
         "urgency": "now"
       },
       {
         "event_id": "evt_e7f5525b0fd2",
-        "decided_at": "2026-09-09T15:54:08Z",
+        "decided_at": "2026-09-11T02:31:22Z",
         "urgency": "now"
       },
       {
         "event_id": "evt_a1835c912a7b",
-        "decided_at": "2026-09-09T15:54:08Z",
+        "decided_at": "2026-09-11T02:31:22Z",
         "urgency": "now"
       },
       {
         "event_id": "evt_f525d8414893",
-        "decided_at": "2026-09-09T15:54:08Z",
+        "decided_at": "2026-09-11T02:31:22Z",
         "urgency": "now"
       },
       {
-        "event_id": "evt_6622539bc4f2",
-        "decided_at": "2026-09-09T15:54:08Z",
-        "urgency": "watch"
+        "event_id": "evt_bdcee533e09d",
+        "decided_at": "2026-09-11T02:31:22Z",
+        "urgency": "now"
+      },
+      {
+        "event_id": "evt_63164bd5c318",
+        "decided_at": "2026-09-11T02:31:22Z",
+        "urgency": "now"
+      },
+      {
+        "event_id": "evt_c16162e2cd11",
+        "decided_at": "2026-09-11T02:31:22Z",
+        "urgency": "now"
+      },
+      {
+        "event_id": "evt_96c336ca5844",
+        "decided_at": "2026-09-11T02:31:22Z",
+        "urgency": "now"
+      },
+      {
+        "event_id": "evt_c2087cb84c7f",
+        "decided_at": "2026-09-11T02:31:22Z",
+        "urgency": "now"
+      },
+      {
+        "event_id": "evt_c51bc4db164b",
+        "decided_at": "2026-09-11T02:31:22Z",
+        "urgency": "now"
+      },
+      {
+        "event_id": "evt_fb73abc82b8f",
+        "decided_at": "2026-09-11T02:31:22Z",
+        "urgency": "now"
+      },
+      {
+        "event_id": "evt_f7ca8c219612",
+        "decided_at": "2026-09-11T02:31:22Z",
+        "urgency": "now"
       }
     ],
     "conclusions": [],
     "conclusion_blocked": {
-      "reason": "样本仅 18 条，低于 30 条阈值；且已落决策的 urgency 取值单一（['now', 'watch']），无区分度",
-      "need": "再累计 12 条真实决策（来自决策账本，不伪造）"
+      "reason": "样本仅 26 条，低于 30 条阈值；且已落决策的 urgency 取值单一（['now', 'watch']），无区分度",
+      "need": "再累计 4 条真实决策（来自决策账本，不伪造）"
     }
   },
   "entity_affinity": {
     "basis": "knowledge_graph.json 中 Event --PARTICIPATES_IN--> Company 的一跳邻居（不做多跳扩散）",
     "acted_entities": [
       {
-        "key": "科技保险",
+        "key": "新华保险",
         "count": 2
       },
       {
-        "key": "Althoff",
+        "key": "AM Best",
         "count": 1
       },
       {
-        "key": "众安保险",
+        "key": "Howden Re",
         "count": 1
       },
       {
-        "key": "汉诺威再保险",
+        "key": "Mangrove",
+        "count": 1
+      },
+      {
+        "key": "Novark",
+        "count": 1
+      },
+      {
+        "key": "个人养老金基金",
+        "count": 1
+      },
+      {
+        "key": "以扩大机构获取保险",
+        "count": 1
+      },
+      {
+        "key": "发挥保险",
+        "count": 1
+      },
+      {
+        "key": "风季节提供创纪录的巨灾再保险",
         "count": 1
       }
     ],
     "watched_entities": [
       {
-        "key": "MGA Arrow",
-        "count": 1
-      },
-      {
-        "key": "SafePoint",
+        "key": "完善保险",
         "count": 1
       }
     ],
@@ -457,22 +513,24 @@
   "backlog": {
     "sample_size": 88,
     "by_topic": {
-      "capital_reinsurance": 38,
-      "ai_intelligent": 21,
+      "capital_reinsurance": 41,
+      "ai_intelligent": 14,
       "channel_transformation": 1,
-      "product_innovation": 5,
-      "climate_catastrophe": 4,
-      "regulatory_change": 6,
-      "pension_finance": 12
+      "product_innovation": 7,
+      "climate_catastrophe": 2,
+      "regulatory_change": 5,
+      "pension_finance": 11
     },
     "by_event_type": {
-      "claims_loss": 10,
-      "industry_update": 33,
-      "rating": 5,
-      "product": 13,
-      "capital": 15,
-      "regulatory": 9,
-      "market_entry": 3
+      "claims_loss": 11,
+      "industry_update": 23,
+      "rating": 9,
+      "product": 9,
+      "regulatory": 12,
+      "acquisition": 3,
+      "capital": 13,
+      "market_entry": 5,
+      "personnel": 3
     },
     "by_trust_level": {
       "low": 9,
@@ -510,12 +568,6 @@
         "topic": "capital_reinsurance"
       },
       {
-        "event_id": "evt_dfa0925bbb81",
-        "title": "AM Best 维持全球人寿再保险市场稳定前景",
-        "priority": 85,
-        "topic": "capital_reinsurance"
-      },
-      {
         "event_id": "evt_40ac78061367",
         "title": "红树林推出百慕大再保险Sidecar Grove Re",
         "priority": 75,
@@ -534,8 +586,14 @@
         "topic": "capital_reinsurance"
       },
       {
-        "event_id": "evt_6a74b93afea4",
-        "title": "Hannover Re vehicle Kaith Re issues $14.94m Seaside Re private cat bond",
+        "event_id": "evt_dfa0925bbb81",
+        "title": "AM Best 维持全球人寿再保险市场稳定前景",
+        "priority": 75,
+        "topic": "capital_reinsurance"
+      },
+      {
+        "event_id": "evt_3429758517ea",
+        "title": "国家金融监督管理总局：全面推进保险行业AI大模型合规应用指引",
         "priority": 70,
         "topic": "ai_intelligent"
       }
@@ -557,7 +615,7 @@
     {
       "dimension": "决策偏好结论",
       "status": "insufficient_sample",
-      "reason": "已决决策样本 18 条 < 阈值 30 条；结论需 ≥30 条真实决策方可输出（来自决策账本 decisions_ledger.json，不伪造）",
+      "reason": "已决决策样本 26 条 < 阈值 30 条；结论需 ≥30 条真实决策方可输出（来自决策账本 decisions_ledger.json，不伪造）",
       "unblock": "日常流水线持续运行使决策账本累计至 ≥30 条不同事件"
     },
     {
@@ -569,6 +627,21 @@
   ],
   "memory_entries": [
     {
+      "event_id": "evt_96c336ca5844",
+      "title": "美洲开发银行通过瑞士再保险为伯利兹安排巨灾互换",
+      "topic": "capital_reinsurance",
+      "event_type": "industry_update",
+      "priority": 100,
+      "decision": {
+        "urgency": "now",
+        "action": "保持跟踪，等待更多独立证据或业务信号",
+        "decided_at": "2026-09-11T02:31:22Z"
+      },
+      "decided_at": "2026-09-11T02:31:22Z",
+      "event_published_at": null,
+      "entities": []
+    },
+    {
       "event_id": "evt_e7f5525b0fd2",
       "title": "科技保险护航新质生产力",
       "topic": "ai_intelligent",
@@ -577,77 +650,62 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-09-09T15:54:08Z"
+        "decided_at": "2026-09-11T02:31:22Z"
       },
-      "decided_at": "2026-09-09T15:54:08Z",
-      "event_published_at": "2026-09-09T00:00:00+08:00",
-      "entities": [
-        "科技保险"
-      ]
-    },
-    {
-      "event_id": "evt_3429758517ea",
-      "title": "国家金融监督管理总局：全面推进保险行业AI大模型合规应用指引",
-      "topic": "ai_intelligent",
-      "event_type": "regulatory",
-      "priority": 70,
-      "decision": {
-        "urgency": "watch",
-        "action": "检查监管暴露与经营影响",
-        "decided_at": "2026-09-09T15:54:08Z"
-      },
-      "decided_at": "2026-09-09T15:54:08Z",
+      "decided_at": "2026-09-11T02:31:22Z",
       "event_published_at": null,
       "entities": []
     },
     {
-      "event_id": "evt_a1835c912a7b",
-      "title": "众安保险亮相2026外滩大会：以科技连接多元场景 守护每一种生活",
-      "topic": "ai_intelligent",
-      "event_type": "industry_update",
-      "priority": 70,
-      "decision": {
-        "urgency": "now",
-        "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-09-09T15:54:08Z"
-      },
-      "decided_at": "2026-09-09T15:54:08Z",
-      "event_published_at": "2026-09-09T00:00:00+08:00",
-      "entities": [
-        "众安保险"
-      ]
-    },
-    {
-      "event_id": "evt_f525d8414893",
-      "title": "科技保险“定价盲区”调查：怎么给未来定价",
-      "topic": "ai_intelligent",
+      "event_id": "evt_fb73abc82b8f",
+      "title": "太平再保险拟增资10亿元",
+      "topic": "capital_reinsurance",
       "event_type": "product",
-      "priority": 70,
+      "priority": 100,
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-09-09T15:54:08Z"
+        "decided_at": "2026-09-11T02:31:22Z"
       },
-      "decided_at": "2026-09-09T15:54:08Z",
-      "event_published_at": "2026-07-22T00:00:00+08:00",
-      "entities": [
-        "科技保险"
-      ]
+      "decided_at": "2026-09-11T02:31:22Z",
+      "event_published_at": null,
+      "entities": []
     },
     {
-      "event_id": "evt_6622539bc4f2",
-      "title": "观点：再保险市场进一步疲软，并购扩容",
+      "event_id": "evt_63164bd5c318",
+      "title": "再保险正处于“关键拐点”，创纪录的资本考验承保纪律：AM Best",
       "topic": "capital_reinsurance",
       "event_type": "capital",
-      "priority": 60,
+      "priority": 75,
       "decision": {
-        "urgency": "watch",
+        "urgency": "now",
         "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-09-09T15:54:08Z"
+        "decided_at": "2026-09-11T02:31:22Z"
       },
-      "decided_at": "2026-09-09T15:54:08Z",
-      "event_published_at": "2026-09-08T06:26:38Z",
-      "entities": []
+      "decided_at": "2026-09-11T02:31:22Z",
+      "event_published_at": "2026-08-10T09:00:48Z",
+      "entities": [
+        "AM Best"
+      ]
+    },
+    {
+      "event_id": "evt_bdcee533e09d",
+      "title": "Howden Re 引入 Novark 以扩大机构获取保险风险的机会",
+      "topic": "capital_reinsurance",
+      "event_type": "capital",
+      "priority": 75,
+      "decision": {
+        "urgency": "now",
+        "action": "复核资本配置与竞争格局",
+        "decided_at": "2026-09-11T02:31:22Z"
+      },
+      "decided_at": "2026-09-11T02:31:22Z",
+      "event_published_at": "2026-09-07T05:00:27Z",
+      "entities": [
+        "Howden Re",
+        "Novark",
+        "以扩大机构获取保险"
+      ]
     },
     {
       "event_id": "evt_845ca4e8e5b6",
@@ -658,104 +716,111 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-09-09T15:54:08Z"
+        "decided_at": "2026-09-11T02:31:22Z"
       },
-      "decided_at": "2026-09-09T15:54:08Z",
-      "event_published_at": "2026-08-12T11:00:51Z",
+      "decided_at": "2026-09-11T02:31:22Z",
+      "event_published_at": null,
+      "entities": []
+    },
+    {
+      "event_id": "evt_a1835c912a7b",
+      "title": "众安保险亮相2026外滩大会：以科技连接多元场景 守护每一种生活",
+      "topic": "ai_intelligent",
+      "event_type": "industry_update",
+      "priority": 60,
+      "decision": {
+        "urgency": "now",
+        "action": "保持跟踪，等待更多独立证据或业务信号",
+        "decided_at": "2026-09-11T02:31:22Z"
+      },
+      "decided_at": "2026-09-11T02:31:22Z",
+      "event_published_at": null,
+      "entities": []
+    },
+    {
+      "event_id": "evt_c16162e2cd11",
+      "title": "Mangrove 为 2026 年飓风季节提供创纪录的巨灾再保险",
+      "topic": "capital_reinsurance",
+      "event_type": "industry_update",
+      "priority": 60,
+      "decision": {
+        "urgency": "now",
+        "action": "保持跟踪，等待更多独立证据或业务信号",
+        "decided_at": "2026-09-11T02:31:22Z"
+      },
+      "decided_at": "2026-09-11T02:31:22Z",
+      "event_published_at": "2026-08-17T09:45:18Z",
       "entities": [
-        "Althoff",
-        "汉诺威再保险"
+        "Mangrove",
+        "风季节提供创纪录的巨灾再保险"
       ]
     },
     {
-      "event_id": "evt_03c95bd12e1d",
-      "title": "AM Best & Guy Carpenter 预计 2026 年专用再保险资本将达到创纪录的 7050 亿美元",
+      "event_id": "evt_c2087cb84c7f",
+      "title": "新华保险：在上半年市场调整中积极加仓权益资产",
       "topic": "capital_reinsurance",
-      "event_type": "capital",
-      "priority": 50,
+      "event_type": "product",
+      "priority": 60,
       "decision": {
-        "urgency": "watch",
-        "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-09-09T15:54:08Z"
+        "urgency": "now",
+        "action": "保持跟踪，等待更多独立证据或业务信号",
+        "decided_at": "2026-09-11T02:31:22Z"
       },
-      "decided_at": "2026-09-09T15:54:08Z",
-      "event_published_at": null,
-      "entities": []
+      "decided_at": "2026-09-11T02:31:22Z",
+      "event_published_at": "2026-08-27T00:00:00+08:00",
+      "entities": [
+        "新华保险"
+      ]
     },
     {
-      "event_id": "evt_083577177db6",
-      "title": "摩根大通表示再保险定价在 2027 年之前不太可能稳定",
+      "event_id": "evt_c51bc4db164b",
+      "title": "新华保险：发挥保险资金优势，支持资本市场发展",
       "topic": "capital_reinsurance",
       "event_type": "capital",
-      "priority": 50,
+      "priority": 60,
       "decision": {
-        "urgency": "watch",
+        "urgency": "now",
         "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-09-09T15:54:08Z"
+        "decided_at": "2026-09-11T02:31:22Z"
       },
-      "decided_at": "2026-09-09T15:54:08Z",
-      "event_published_at": null,
-      "entities": []
+      "decided_at": "2026-09-11T02:31:22Z",
+      "event_published_at": "2026-07-20T00:00:00+08:00",
+      "entities": [
+        "发挥保险",
+        "新华保险"
+      ]
     },
     {
-      "event_id": "evt_0fe4820271f7",
-      "title": "KCC 报告称，随着再保险公司/保险公司寻求更多当前风险洞察力，人工智能正在重塑猫模型",
+      "event_id": "evt_f525d8414893",
+      "title": "科技保险“定价盲区”调查：怎么给未来定价",
       "topic": "ai_intelligent",
-      "event_type": "capital",
-      "priority": 50,
+      "event_type": "product",
+      "priority": 60,
       "decision": {
-        "urgency": "watch",
-        "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-09-09T15:54:08Z"
+        "urgency": "now",
+        "action": "保持跟踪，等待更多独立证据或业务信号",
+        "decided_at": "2026-09-11T02:31:22Z"
       },
-      "decided_at": "2026-09-09T15:54:08Z",
+      "decided_at": "2026-09-11T02:31:22Z",
       "event_published_at": null,
       "entities": []
     },
     {
-      "event_id": "evt_59a8566e7e13",
-      "title": "另类资本的崛起将为金融投资者创造更大的空间：盖伊·卡彭特的卢梭",
-      "topic": "capital_reinsurance",
-      "event_type": "market_entry",
-      "priority": 50,
+      "event_id": "evt_f7ca8c219612",
+      "title": "个人养老金基金“货架”扩容 品类多元与动态优化并进",
+      "topic": "pension_finance",
+      "event_type": "product",
+      "priority": 60,
       "decision": {
-        "urgency": "watch",
-        "action": "评估市场与竞争响应",
-        "decided_at": "2026-09-09T15:54:08Z"
+        "urgency": "now",
+        "action": "保持跟踪，等待更多独立证据或业务信号",
+        "decided_at": "2026-09-11T02:31:22Z"
       },
-      "decided_at": "2026-09-09T15:54:08Z",
-      "event_published_at": null,
-      "entities": []
-    },
-    {
-      "event_id": "evt_92310abdea56",
-      "title": "传统整合公司 Marco Capital 将收购保险服务公司 Pro Global",
-      "topic": "capital_reinsurance",
-      "event_type": "acquisition",
-      "priority": 50,
-      "decision": {
-        "urgency": "watch",
-        "action": "评估战略与资本影响",
-        "decided_at": "2026-09-09T15:54:08Z"
-      },
-      "decided_at": "2026-09-09T15:54:08Z",
-      "event_published_at": null,
-      "entities": []
-    },
-    {
-      "event_id": "evt_db0a3669a076",
-      "title": "GC Securities 在 2026 年上半年发行了 20 只巨灾债券，总额达到创纪录的 50 亿美元：Guy Carpenter 首席执行官 Klisura",
-      "topic": "capital_reinsurance",
-      "event_type": "capital",
-      "priority": 50,
-      "decision": {
-        "urgency": "watch",
-        "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-09-09T15:54:08Z"
-      },
-      "decided_at": "2026-09-09T15:54:08Z",
-      "event_published_at": null,
-      "entities": []
+      "decided_at": "2026-09-11T02:31:22Z",
+      "event_published_at": "2026-07-13T00:00:00+08:00",
+      "entities": [
+        "个人养老金基金"
+      ]
     }
   ]
 }

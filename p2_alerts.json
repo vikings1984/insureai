@@ -1,17 +1,17 @@
 {
   "version": "alert-v1.1",
-  "generated_at": "2026-09-09T15:55:31Z",
+  "generated_at": "2026-09-11T02:32:46Z",
   "principle": "两层收敛：Internal Diff（事实）→ Semantic Alert（≤8 条聚合）；两层准入（T1 系统级监管 / T2 个人级 Watch / T3 标准）；NEW_SOURCE/NEW_EVIDENCE 留内部、delta 不伪造、首跑仅种子、告警不改写业务判断",
   "meta": {
-    "total_events": 1803,
+    "total_events": 1853,
     "baseline_present": true,
     "basis": "delta_vs_baseline",
-    "internal_diff_count": 3,
+    "internal_diff_count": 10,
     "alert_count": 8,
     "max_alerts": 8,
     "alert_type_counts": {
-      "EVENT_MATERIAL_CHANGED": 4,
-      "DECISION_REQUIRED": 4
+      "EVENT_MATERIAL_CHANGED": 5,
+      "DECISION_REQUIRED": 3
     },
     "admission_counts": {
       "T1_system": 8
@@ -20,9 +20,9 @@
   },
   "internal_diffs": [
     {
-      "canonical_event_id": "cev_7380d6ed039b",
-      "event_id": "evt_083f21f9623f",
-      "title": "加拿大皇家银行分析师预计，定价压力和较高的CAT损失将在26年第二季度对美国保险公司造成压力",
+      "canonical_event_id": "cev_452fc8c90797",
+      "event_id": "evt_92310abdea56",
+      "title": "传统整合公司 Marco Capital 将收购保险服务公司 Pro Global",
       "topic": "capital_reinsurance",
       "changes": [
         {
@@ -33,38 +33,119 @@
       ]
     },
     {
-      "canonical_event_id": "evt_56b1f7755626",
-      "event_id": "evt_56b1f7755626",
-      "title": "传统再保险资本积累比 ILS 对软化的影响更大：AM Best",
-      "topic": "capital_reinsurance",
+      "canonical_event_id": "cev_cf9e0f4d40fc",
+      "event_id": "evt_3429758517ea",
+      "title": "国家金融监督管理总局：全面推进保险行业AI大模型合规应用指引",
+      "topic": "ai_intelligent",
       "changes": [
         {
-          "field": "trust_score",
-          "old": 76,
-          "new": 67
-        },
-        {
-          "field": "evidence_count",
-          "old": 2,
-          "new": 1
+          "field": "decision_urgency",
+          "old": "watch",
+          "new": null
         }
       ]
     },
     {
-      "canonical_event_id": "evt_07621f086729",
-      "event_id": "evt_07621f086729",
-      "title": "随着CAT风险预算下降， 2025年再保险资本达到创纪录的6,630亿美元： AM Best和Guy Carpenter",
+      "canonical_event_id": "cev_3f40e8c6724b",
+      "event_id": "evt_083577177db6",
+      "title": "摩根大通表示再保险定价在 2027 年之前不太可能稳定",
       "topic": "capital_reinsurance",
       "changes": [
         {
-          "field": "trust_score",
-          "old": 71,
-          "new": 67
-        },
+          "field": "decision_urgency",
+          "old": "watch",
+          "new": null
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "cev_77e311577839",
+      "event_id": "evt_6622539bc4f2",
+      "title": "观点：再保险市场进一步疲软，并购扩容",
+      "topic": "capital_reinsurance",
+      "changes": [
         {
-          "field": "evidence_count",
-          "old": 2,
-          "new": 1
+          "field": "decision_urgency",
+          "old": "watch",
+          "new": null
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "cev_d3d1eb4b6057",
+      "event_id": "evt_0fe4820271f7",
+      "title": "KCC 报告称，随着再保险公司/保险公司寻求更多当前风险洞察力，人工智能正在重塑猫模型",
+      "topic": "ai_intelligent",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": "watch",
+          "new": null
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "cev_2b696c0d8f69",
+      "event_id": "evt_59a8566e7e13",
+      "title": "另类资本的崛起将为金融投资者创造更大的空间：盖伊·卡彭特的卢梭",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": "watch",
+          "new": null
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "cev_75ffa0799040",
+      "event_id": "evt_03c95bd12e1d",
+      "title": "AM Best & Guy Carpenter 预计 2026 年专用再保险资本将达到创纪录的 7050 亿美元",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": "watch",
+          "new": null
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "cev_e3509308cfc6",
+      "event_id": "evt_db0a3669a076",
+      "title": "GC Securities 在 2026 年上半年发行了 20 只巨灾债券，总额达到创纪录的 50 亿美元：Guy Carpenter 首席执行官 Klisura",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": "watch",
+          "new": null
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "cev_9670c8e761a8",
+      "event_id": "evt_96c336ca5844",
+      "title": "美洲开发银行通过瑞士再保险为伯利兹安排巨灾互换",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": null,
+          "new": "now"
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "cev_1f9acba707af",
+      "event_id": "evt_fb73abc82b8f",
+      "title": "太平再保险拟增资10亿元",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": null,
+          "new": "now"
         }
       ]
     }
@@ -86,9 +167,9 @@
     },
     {
       "type": "EVENT_MATERIAL_CHANGED",
-      "canonical_event_id": "cev_04e7794e1656",
-      "event_id": "evt_1d8e38d7c067",
-      "title": "心安康保险代理被罚25万，涉编制虚假材料",
+      "canonical_event_id": "cev_034ad0db6222",
+      "event_id": "evt_dfac7e70021a",
+      "title": "金融监管总局丛林：完善保险资金等投早、投小、投长期、投硬科技各项政策",
       "topic": "regulatory_change",
       "severity": "high",
       "rationale": "监管效力状态：issued（系统级 T1 准入）",
@@ -100,9 +181,23 @@
     },
     {
       "type": "EVENT_MATERIAL_CHANGED",
-      "canonical_event_id": "cev_26cbca5e5dc3",
-      "event_id": "evt_14ed8cd4baf3",
-      "title": "事关非车险，金融监管总局发布新规",
+      "canonical_event_id": "cev_2aab5b2d16f0",
+      "event_id": "evt_fd60218d12d1",
+      "title": "中国再保险拟向财政部定增募资不超30亿元 用于增加核心一级资本",
+      "topic": "capital_reinsurance",
+      "severity": "high",
+      "rationale": "监管效力状态：issued（系统级 T1 准入）",
+      "basis": "standing",
+      "changed_fields": [
+        "status"
+      ],
+      "admission": "T1_system"
+    },
+    {
+      "type": "EVENT_MATERIAL_CHANGED",
+      "canonical_event_id": "cev_42faebeeaddf",
+      "event_id": "evt_a75c8e446fcd",
+      "title": "平安养老贵州分公司被罚76万，涉多项违规",
       "topic": "regulatory_change",
       "severity": "high",
       "rationale": "监管效力状态：issued（系统级 T1 准入）",
@@ -114,15 +209,43 @@
     },
     {
       "type": "EVENT_MATERIAL_CHANGED",
-      "canonical_event_id": "cev_5ae0f78e72f6",
-      "event_id": "evt_7c63d55ce80c",
-      "title": "保险业迎来管理新规—— 防范资产负债错配风险",
-      "topic": null,
+      "canonical_event_id": "cev_3d9e6ad2806b",
+      "event_id": "evt_69aba00bb488",
+      "title": "金融监管总局：全面推行保险业“报行合一”和非车险综合治理",
+      "topic": "regulatory_change",
       "severity": "high",
-      "rationale": "监管效力状态：effective（系统级 T1 准入）",
+      "rationale": "监管效力状态：issued（系统级 T1 准入）",
       "basis": "standing",
       "changed_fields": [
         "status"
+      ],
+      "admission": "T1_system"
+    },
+    {
+      "type": "DECISION_REQUIRED",
+      "canonical_event_id": "cev_cf9e0f4d40fc",
+      "event_id": "evt_3429758517ea",
+      "title": "国家金融监督管理总局：全面推进保险行业AI大模型合规应用指引",
+      "topic": "ai_intelligent",
+      "severity": "high",
+      "rationale": "待人工复核、暂无决策记录（日报优先级 96）",
+      "basis": "standing",
+      "changed_fields": [
+        "review_required"
+      ],
+      "admission": "T1_system"
+    },
+    {
+      "type": "DECISION_REQUIRED",
+      "canonical_event_id": "cev_034ad0db6222",
+      "event_id": "evt_dfac7e70021a",
+      "title": "金融监管总局丛林：完善保险资金等投早、投小、投长期、投硬科技各项政策",
+      "topic": "regulatory_change",
+      "severity": "high",
+      "rationale": "待人工复核、暂无决策记录（日报优先级 91）",
+      "basis": "standing",
+      "changed_fields": [
+        "review_required"
       ],
       "admission": "T1_system"
     },
@@ -134,48 +257,6 @@
       "topic": "capital_reinsurance",
       "severity": "high",
       "rationale": "待人工复核、暂无决策记录（日报优先级 91）",
-      "basis": "standing",
-      "changed_fields": [
-        "review_required"
-      ],
-      "admission": "T1_system"
-    },
-    {
-      "type": "DECISION_REQUIRED",
-      "canonical_event_id": "cev_2dad639a2a08",
-      "event_id": "evt_2eaf272711a7",
-      "title": "陕西金融监管局：推动建成全国首个省市联动多层次综合巨灾保险机制",
-      "topic": "capital_reinsurance",
-      "severity": "high",
-      "rationale": "待人工复核、暂无决策记录（日报优先级 90）",
-      "basis": "standing",
-      "changed_fields": [
-        "review_required"
-      ],
-      "admission": "T1_system"
-    },
-    {
-      "type": "DECISION_REQUIRED",
-      "canonical_event_id": "cev_f75127f8ccbc",
-      "event_id": "evt_cd1750e23fee",
-      "title": "国家金融监督管理总局等两部门：支持再保险机构增资扩股和发行资本补充工具",
-      "topic": "capital_reinsurance",
-      "severity": "high",
-      "rationale": "待人工复核、暂无决策记录（日报优先级 90）",
-      "basis": "standing",
-      "changed_fields": [
-        "review_required"
-      ],
-      "admission": "T1_system"
-    },
-    {
-      "type": "DECISION_REQUIRED",
-      "canonical_event_id": "cev_43731806412d",
-      "event_id": "evt_7f010a567259",
-      "title": "金融监管总局：2026年二季度保险业偿付能力充足率保持行业高位",
-      "topic": "regulatory_change",
-      "severity": "high",
-      "rationale": "待人工复核、暂无决策记录（日报优先级 90）",
       "basis": "standing",
       "changed_fields": [
         "review_required"
