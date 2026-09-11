@@ -10,7 +10,9 @@ class TestCloudflareWorkersConfig(unittest.TestCase):
         config = json.loads((root / "wrangler.jsonc").read_text(encoding="utf-8"))
         self.assertEqual(config["name"], "insureai")
         self.assertEqual(config["compatibility_date"], "2026-08-22")
-        self.assertEqual(config["assets"]["directory"], ".")
+        # F-03：Workers 只上传精简后的 dist/（前端 + 首屏分片），
+        # 体积最大的分析产物已外置到 Pages CDN，不再进 Workers。
+        self.assertEqual(config["assets"]["directory"], "./dist")
         self.assertEqual(config["assets"]["not_found_handling"], "single-page-application")
 
     def test_assets_ignore_excludes_internal_and_python_files(self):
