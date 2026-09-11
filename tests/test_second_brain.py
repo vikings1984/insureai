@@ -187,6 +187,31 @@ class SecondBrainTests(unittest.TestCase):
         with self.assertRaises(AssertionError):
             SB.validate(bad)
 
+    def test_empty_threads_recorded_and_explained(self):
+        """回归：时间线合法空（决策历史滑出 KG 滚动窗口）必须记录 no_derivable_threads，validate 放行。"""
+        affinity = {"acted_entities": [{"key": "众安保险", "count": 3}]}
+        pm = _pm([_wl("ma", 3), _wl("regulatory", 2), _wl("health", 1), _wl("ai", 5)], affinity=affinity)
+        # 图谱只有实体节点、无关联事件 → threads 合法为空
+        graph = {"nodes": [{"id": "e1", "type": "Company", "name": "众安保险"},
+                           {"id": "ev1", "type": "Event", "title": "x", "topic": "t"}],
+                 "edges": []}
+        doc = SB.build({}, {"items": []}, {"brief": []}, pm, graph=graph)
+        self.assertEqual(doc["entity_threads"], [])
+        explained = [q for q in doc["open_questions"] if q.get("status") == "no_derivable_threads"]
+        self.assertEqual(len(explained), 1)
+        SB.validate(doc)  # 带解释的空：放行
+
+    def test_unexplained_empty_threads_fails_closed(self):
+        """无解释的空时间线 = 构建断裂，validate 必须 fail-closed。"""
+        pm = _pm([_wl("ma", 3), _wl("regulatory", 2), _wl("health", 1), _wl("ai", 5)])
+        doc = SB.build({}, {"items": []}, {"brief": []}, pm)
+        # build 会补解释；模拟解释被剥掉的断裂态
+        bad = json.loads(json.dumps(doc))
+        bad["entity_threads"] = []
+        bad["open_questions"] = [q for q in bad["open_questions"] if q.get("status") != "no_derivable_threads"]
+        with self.assertRaises(AssertionError):
+            SB.validate(bad)
+
 
 class SecondBrainProductionTests(unittest.TestCase):
     """端到端守护：必须能吃真实提交的 artifact 跑通（合成 fixture 从没暴露过生产形状）。"""

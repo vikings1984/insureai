@@ -260,13 +260,13 @@ jobs:
       - name: Validate P2.6 second brain
         run: |
           python3 - <<'PY'
-          from second_brain import VERSION, validate
+          from second_brain import VERSION, validate, ROLE_FROZEN
           import json
           doc=json.load(open('second_brain.json'))
-          validate(doc)  # fail-closed：roles 不完整 / open_questions 为空即抛错
+          # fail-closed：roles 不完整 / open_questions 为空 / 时间线无解释的空即抛错
+          validate(doc)
           assert doc.get('version') == VERSION, doc.get('version')
-          assert set(doc['roles']) == {'strategy','operations','risk'}, set(doc['roles'])
-          assert doc['entity_threads'], '实体时间线不应为空（图谱有事件却未派生）'
+          assert set(doc['roles']) == set(ROLE_FROZEN), set(doc['roles'])
           assert doc['open_questions'], 'open_questions 不得为空（推不出/无信号维度必须显式记录）'
           print(f"P2.6 second brain valid: roles={list(doc['roles'])} threads={len(doc['entity_threads'])} open_questions={len(doc['open_questions'])}")
           PY

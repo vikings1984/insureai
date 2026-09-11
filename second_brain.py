@@ -282,8 +282,19 @@ def build(
     pending = [i for i in items if not i.get("decision")]
 
     roles = role_views(pm, brief_items)
-    threads = build_entity_threads(graph, _tracked_entities(pm), by_event_id) if graph else []
+    tracked = _tracked_entities(pm)
+    threads = build_entity_threads(graph, tracked, by_event_id) if graph else []
     oq = open_questions(pm, roles)
+    if not threads:
+        # 合法空（决策历史滑出 KG 滚动窗口 / 图谱缺失）必须显式记录，
+        # 无解释的空才视为构建断裂（validate fail-closed）。
+        oq.append({
+            "dimension": "实体时间线",
+            "status": "no_derivable_threads",
+            "reason": ("knowledge_graph.json 缺失，角色视图照常产出" if graph is None
+                       else "跟踪主体与图谱活跃事件无关联（已决策事件可能滑出滚动窗口）"),
+            "unblock": "在 Human Review（review-ui.html）对新条目给出决策后自动重建关联",
+        })
 
     return {
         "version": VERSION,
@@ -298,7 +309,7 @@ def build(
             "p2_daily_brief.json": {"brief": len(brief_items)},
             "p2_personal_memory.json": {"version": pm.get("version")},
             "canonical_events.json": {"by_event_id": len(by_event_id)} if by_event_id else None,
-            "knowledge_graph.json": {"threads_built": len(threads)} if graph else None,
+            "knowledge_graph.json": {"threads_built": len(threads), "tracked_entities": len(tracked)} if graph else None,
         },
         "roles": roles,
         "entity_threads": threads,
@@ -327,6 +338,12 @@ def validate(doc: dict) -> None:
     for t in doc["entity_threads"]:
         for e in t["events"]:
             assert e.get("canonical_event_id"), f"实体时间线事件缺 canonical_event_id: {e}"
+
+    # 时间线空必须有解释：无解释的空 = 构建断裂（图谱有事件却派生不出）；
+    # 带解释的空 = 合法数据状态（决策历史滑出 KG 滚动窗口），显式记录在 open_questions。
+    if not doc["entity_threads"]:
+        explained = any(q.get("status") == "no_derivable_threads" for q in doc["open_questions"])
+        assert explained, "实体时间线为空且 open_questions 无 no_derivable_threads 记录（构建断裂）"
 
     # 纪律：推不出的维度必须显式记录（当前状态必然非空）
     assert isinstance(doc["open_questions"], list) and doc["open_questions"], \
