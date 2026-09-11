@@ -98,12 +98,24 @@ def _business_impact(event_type: str, signals: dict, score: int) -> dict:
     return facets
 
 
-def _affected_functions(impact: dict) -> list[dict]:
+def _primary_facet(event_type: str) -> str:
+    """event_type 反查主影响分面；未映射类型（行业/人事动向）以战略分面作行业参照。"""
+    for facet, spec in IMPACT_FACETS.items():
+        if event_type in spec["types"]:
+            return facet
+    return "strategic"
+
+
+def _affected_functions(impact: dict, event_type: str = "") -> list[dict]:
     present = [(f, v) for f, v in impact.items() if v >= FACET_PRESENT_THRESHOLD]
     if not present:
         # 类型未命中且信号偏弱时，取最高分面作为唯一参照，不凭空补职能。
         top = max(impact.items(), key=lambda kv: kv[1]) if any(impact.values()) else None
-        present = [top] if top and top[1] > 0 else []
+        if top is None:
+            # 零信号兜底（2026-09-10 管道中断根因）：契约要求六要素非空，
+            # 按 event_type 反查主分面作参照；影响强度保持 0，不伪造信号。
+            top = (_primary_facet(event_type), 0)
+        present = [top]
     return [{"function": f, "label": IMPACT_FACETS[f]["label"], "impact": v} for f, v in sorted(present, key=lambda kv: -kv[1])]
 
 
@@ -171,7 +183,7 @@ def build_decisions(events: list[dict], temporal: dict | None = None, role: str 
         step = action if action.startswith(prefix) else prefix + "：" + action
         context = {
             "business_impact": impact,
-            "affected_functions": _affected_functions(impact),
+            "affected_functions": _affected_functions(impact, event_type),
             "potential_opportunity": [OPPORTUNITY_BY_TYPE.get(event_type, "行业信号中的业务参照机会")],
             "potential_risk": _potential_risk(event_type, evidence_status, conflict, trust),
             "what_to_monitor": insight.get("what_to_watch") or "",

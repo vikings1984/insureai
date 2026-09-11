@@ -92,6 +92,31 @@ class DecisionContextTests(unittest.TestCase):
         rows = build_decisions([event(event_type="market_entry")], TEMPORAL, "executive")
         self.assertEqual(rows[0]["context"]["potential_opportunity"], ["新市场/新渠道的先发布局机会"])
 
+    def test_zero_signal_event_keeps_reference_function(self):
+        """回归：零信号 + 类型未命中分面不得产生空 affected_functions（2026-09-10 管道中断根因）。"""
+        zero = event(event_id="evt_zero", event_type="industry_update", topic=None,
+                     insight={"what_to_watch": "关注行业动向", "signals": {"scores": {}}})
+        rows = build_decisions([zero], TEMPORAL, "executive")
+        self.assertEqual(rows[0]["context"]["affected_functions"],
+                         [{"function": "strategic", "label": "战略", "impact": 0}])
+        for field in CONTEXT_FIELDS:
+            self.assertTrue(rows[0]["context"][field], f"context.{field} 不应为空")
+
+    def test_zero_signal_personnel_defaults_to_strategic(self):
+        zero = event(event_id="evt_personnel", event_type="personnel", topic=None,
+                     insight={"what_to_watch": "关注高管变动后续影响", "signals": {"scores": {}}})
+        rows = build_decisions([zero], TEMPORAL, "executive")
+        self.assertEqual([f["function"] for f in rows[0]["context"]["affected_functions"]], ["strategic"])
+
+    def test_zero_signal_mapped_type_uses_type_facet(self):
+        # 零信号且情报分为 0：类型命中的分面同样为 0，按 event_type 反查主分面兜底。
+        zero = event(event_id="evt_reg0", event_type="regulatory", topic=None,
+                     scores={"intelligence_score": 0},
+                     insight={"what_to_watch": "跟踪监管动向", "signals": {"scores": {}}})
+        rows = build_decisions([zero], TEMPORAL, "executive")
+        self.assertEqual(rows[0]["context"]["affected_functions"],
+                         [{"function": "compliance", "label": "合规", "impact": 0}])
+
 
 class RoleDistributionTests(unittest.TestCase):
     def test_all_eight_roles_distributed(self):
