@@ -448,7 +448,11 @@ jobs:
           if [ "$(git rev-parse HEAD)" = "$(git rev-parse "origin/${{ github.ref_name }}")" ]; then
             echo 'nothing to push'; exit 0
           fi
-          if git rebase --autostash "origin/${{ github.ref_name }}"; then
+          # -X theirs：rebase 冲突取被重放的本侧提交（analyze 全量重建的工件）。
+          # 已知唯一冲突面 = release_provenance.json（deploy-cloudflare / deployment-verification
+          # 同轮并发挂载验证附件）；附件由验证周期（每 6 小时 :15）重新挂载，不丢事实。
+          # 远端新增文件（deployment_verification* 等）无冲突，照常并入。
+          if git rebase --autostash -X theirs "origin/${{ github.ref_name }}"; then
             git push origin HEAD:${{ github.ref_name }}
           else
             echo 'Remote advanced concurrently; dropping this analyze push (next scheduled run re-publishes)'
