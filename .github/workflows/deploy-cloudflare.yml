@@ -67,15 +67,17 @@ jobs:
         with:
           persist-credentials: true
 
-      - name: Inject deployment identity marker
-        run: python3 scripts/inject_ui_assets.py
-
       # P0-1：intelligence.json 已涨到 13 MB 量级，而 index.html 首屏只用到约 118 KB。
-      # 分片在**部署时**由 intelligence.json 重新生成后交给 wrangler：
+      # 分片在**部署时**由 intelligence.json 重新生成（写入仓库根，随后由构建脚本移入 dist）。
       # 不进仓库（见 .gitignore），因此不增加仓库体积；脚本自带一致性门禁，
       # 分片与源不一致即 fail-closed 中断部署。前端在分片缺失时自动回退全量。
       - name: Build intelligence shards
         run: python3 intelligence_shards.py
+
+      # F-03：把前端 + 首屏分片打包进 dist/，剔除 30 MB+ 的大分析产物
+      # （改由 GitHub Pages CDN 提供，运行时由 data-cdn.js 路由）。
+      - name: Build slim Workers dist (F-03)
+        run: python3 scripts/build_worker_dist.py
 
       - name: Deploy static assets to Workers
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
@@ -90,7 +92,7 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          text = Path('index.html').read_text(encoding='utf-8')
+          text = Path('dist/index.html').read_text(encoding='utf-8')
           assert 'insureai-release-marker' in text, 'deployment marker was not injected'
           assert 'InsureAI' in text, 'InsureAI site identity missing from deployment artifact'
           print('Cloudflare deployment artifact identity verified')
