@@ -16,6 +16,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 ANALYTICAL_STEPS = [
     [sys.executable, "intelligence.py"],
+    # P0-1 修复：冒烟测试此前遗漏 claims_build.py，导致 contract 门禁在全新产物上
+    # 必然失败（intelligence.json 缺 per-event claims）。补上与真实 daily-collect
+    # 管线一致的步骤，使门禁可被冒烟测试复现并通过。
+    [sys.executable, "claims_build.py"],
     [sys.executable, "trust_build.py"],
     [sys.executable, "temporal_build.py"],
     [sys.executable, "calibration.py"],

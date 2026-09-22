@@ -56,6 +56,21 @@ def main() -> None:
         total_unverified += sum(1 for x in result.get("claims", []) if x.get("verification_status") == "unverified")
         total_conflicted += conflicted
 
+    # P0-1 修复：合同门禁（contract.py）要求 intelligence.json 每个 event 携带 claims；
+    # 但本脚本原先只产出独立的 claims.json，从不回写 intelligence.json，导致每次全新
+    # 流水线必在 contract 门禁失败（event[N] missing: ['claims']）。此处把逐事件 claims
+    # 作为第一等公民写回 intelligence.json.events[].claims，使生成链满足契约
+    # （下游 decision_build.py 只追加 decisions 并改写 version，会保留该字段）。
+    by_event = {e["event_id"]: e for e in events}
+    stamped = 0
+    for event in intelligence.get("events", []):
+        ev_id = event.get("event_id")
+        if ev_id in by_event:
+            event["claims"] = by_event[ev_id]
+            stamped += 1
+    INTEL.write_text(json.dumps(intelligence, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(f"Stamped claims into intelligence.json: {stamped}/{len(intelligence.get('events', []))} events")
+
     proposition_coverage = round(100 * events_with_proposition / len(events), 1) if events else 0
     claim_evidence_match_rate = round((total_claims - total_unverified) / total_claims, 4) if total_claims else 0.0
     payload = {
