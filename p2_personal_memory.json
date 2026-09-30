@@ -1,6 +1,6 @@
 {
   "version": "p2.5-v1.0",
-  "generated_at": "2026-09-11T10:37:09Z",
+  "generated_at": "2026-09-30T15:29:30Z",
   "principle": "只聚合既有 artifact 中的事实；观察与结论分离，样本不足时不出结论，不伪造时间线",
   "sources": {
     "p2_state.json": {
@@ -17,7 +17,7 @@
       "brief": 20
     },
     "knowledge_graph.json": {
-      "events_indexed": 1871
+      "events_indexed": 1981
     },
     "decisions_ledger.json": {
       "distinct_events": 28
@@ -467,9 +467,96 @@
   },
   "entity_affinity": {
     "basis": "knowledge_graph.json 中 Event --PARTICIPATES_IN--> Company 的一跳邻居（不做多跳扩散）",
-    "acted_entities": [],
-    "watched_entities": [],
-    "overlap_entities": [],
+    "acted_entities": [
+      {
+        "key": "新华保险",
+        "count": 2
+      },
+      {
+        "key": "AI",
+        "count": 1
+      },
+      {
+        "key": "AIG",
+        "count": 1
+      },
+      {
+        "key": "AM Best",
+        "count": 1
+      },
+      {
+        "key": "Althoff",
+        "count": 1
+      },
+      {
+        "key": "Howden Re",
+        "count": 1
+      },
+      {
+        "key": "Mangrove",
+        "count": 1
+      },
+      {
+        "key": "Novark",
+        "count": 1
+      },
+      {
+        "key": "Parametrix",
+        "count": 1
+      },
+      {
+        "key": "Talcott",
+        "count": 1
+      }
+    ],
+    "watched_entities": [
+      {
+        "key": "AI",
+        "count": 1
+      },
+      {
+        "key": "BMS Re",
+        "count": 1
+      },
+      {
+        "key": "Beazley",
+        "count": 1
+      },
+      {
+        "key": "Co",
+        "count": 1
+      },
+      {
+        "key": "Cowbell",
+        "count": 1
+      },
+      {
+        "key": "KCC",
+        "count": 1
+      },
+      {
+        "key": "MGA Arrow",
+        "count": 1
+      },
+      {
+        "key": "Marco Capital",
+        "count": 1
+      },
+      {
+        "key": "OMNI",
+        "count": 1
+      },
+      {
+        "key": "OPTIS",
+        "count": 1
+      }
+    ],
+    "overlap_entities": [
+      {
+        "key": "AI",
+        "count": 1
+      }
+    ],
     "acted_event_count": 12,
     "watched_event_count": 20,
     "quality": {
@@ -605,8 +692,10 @@
         "decided_at": "2026-09-11T10:35:44Z"
       },
       "decided_at": "2026-09-11T10:35:44Z",
-      "event_published_at": null,
-      "entities": []
+      "event_published_at": "2026-08-18T05:00:49Z",
+      "entities": [
+        "美洲开发银行通过瑞士再保险"
+      ]
     },
     {
       "event_id": "evt_e7f5525b0fd2",
@@ -620,8 +709,10 @@
         "decided_at": "2026-09-11T10:35:44Z"
       },
       "decided_at": "2026-09-11T10:35:44Z",
-      "event_published_at": null,
-      "entities": []
+      "event_published_at": "2026-09-09T00:00:00+08:00",
+      "entities": [
+        "科技保险"
+      ]
     },
     {
       "event_id": "evt_63164bd5c318",
@@ -635,8 +726,10 @@
         "decided_at": "2026-09-11T10:35:44Z"
       },
       "decided_at": "2026-09-11T10:35:44Z",
-      "event_published_at": null,
-      "entities": []
+      "event_published_at": "2026-08-10T09:00:48Z",
+      "entities": [
+        "AM Best"
+      ]
     },
     {
       "event_id": "evt_bdcee533e09d",
@@ -650,8 +743,12 @@
         "decided_at": "2026-09-11T10:35:44Z"
       },
       "decided_at": "2026-09-11T10:35:44Z",
-      "event_published_at": null,
-      "entities": []
+      "event_published_at": "2026-09-07T05:00:27Z",
+      "entities": [
+        "Howden Re",
+        "Novark",
+        "以扩大机构获取保险"
+      ]
     },
     {
       "event_id": "evt_e833bbc251da",
@@ -665,8 +762,11 @@
         "decided_at": "2026-09-11T10:35:44Z"
       },
       "decided_at": "2026-09-11T10:35:44Z",
-      "event_published_at": null,
-      "entities": []
+      "event_published_at": "2026-08-04T14:30:58Z",
+      "entities": [
+        "Talcott",
+        "West Grove Re"
+      ]
     },
     {
       "event_id": "evt_4cd0316ba817",
@@ -680,8 +780,11 @@
         "decided_at": "2026-09-11T10:35:44Z"
       },
       "decided_at": "2026-09-11T10:35:44Z",
-      "event_published_at": null,
-      "entities": []
+      "event_published_at": "2026-08-14T09:30:32Z",
+      "entities": [
+        "AIG",
+        "Parametrix"
+      ]
     },
     {
       "event_id": "evt_845ca4e8e5b6",
@@ -695,8 +798,11 @@
         "decided_at": "2026-09-11T10:35:44Z"
       },
       "decided_at": "2026-09-11T10:35:44Z",
-      "event_published_at": null,
-      "entities": []
+      "event_published_at": "2026-08-12T11:00:51Z",
+      "entities": [
+        "Althoff",
+        "汉诺威再保险"
+      ]
     },
     {
       "event_id": "evt_a1835c912a7b",
@@ -710,8 +816,10 @@
         "decided_at": "2026-09-11T10:35:44Z"
       },
       "decided_at": "2026-09-11T10:35:44Z",
-      "event_published_at": null,
-      "entities": []
+      "event_published_at": "2026-09-09T00:00:00+08:00",
+      "entities": [
+        "众安保险"
+      ]
     },
     {
       "event_id": "evt_c16162e2cd11",
@@ -725,8 +833,11 @@
         "decided_at": "2026-09-11T10:35:44Z"
       },
       "decided_at": "2026-09-11T10:35:44Z",
-      "event_published_at": null,
-      "entities": []
+      "event_published_at": "2026-08-17T09:45:18Z",
+      "entities": [
+        "Mangrove",
+        "风季节提供创纪录的巨灾再保险"
+      ]
     },
     {
       "event_id": "evt_c2087cb84c7f",
@@ -740,8 +851,10 @@
         "decided_at": "2026-09-11T10:35:44Z"
       },
       "decided_at": "2026-09-11T10:35:44Z",
-      "event_published_at": null,
-      "entities": []
+      "event_published_at": "2026-08-27T00:00:00+08:00",
+      "entities": [
+        "新华保险"
+      ]
     },
     {
       "event_id": "evt_c51bc4db164b",
@@ -755,8 +868,11 @@
         "decided_at": "2026-09-11T10:35:44Z"
       },
       "decided_at": "2026-09-11T10:35:44Z",
-      "event_published_at": null,
-      "entities": []
+      "event_published_at": "2026-07-20T00:00:00+08:00",
+      "entities": [
+        "发挥保险",
+        "新华保险"
+      ]
     },
     {
       "event_id": "evt_ef42853e4111",
@@ -770,8 +886,10 @@
         "decided_at": "2026-09-11T10:35:44Z"
       },
       "decided_at": "2026-09-11T10:35:44Z",
-      "event_published_at": null,
-      "entities": []
+      "event_published_at": "2026-08-21T00:00:00+08:00",
+      "entities": [
+        "AI"
+      ]
     }
   ]
 }

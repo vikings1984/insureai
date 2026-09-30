@@ -82,7 +82,12 @@ def _dist(items: list[dict], field: str) -> dict[str, int]:
 # 图谱索引：event_id → 事件的实体邻居与发布时间
 # --------------------------------------------------------------------------
 def build_event_index(graph: dict) -> dict[str, dict]:
-    """Event 节点的 name 就是 review_queue / daily_brief 里的 event_id（已核验 100/100）。
+    """按事件 ID 建索引：name/canonical_event_id(cev_*) 与 event_id(evt_*) 双 ID 空间都命中。
+
+    §9.5 FK 升级后，Event 节点同时携带 canonical_event_id(cev_*) 与原始 event_id(evt_*)：
+    图谱侧以 cev_* 为主键，而 review_queue / watchlist 等下游仍以 evt_* 引用事件。
+    因此两个形态都必须能查到，否则下游查询静默落空（历史上曾表现为 entity_affinity
+    三桶恒空、second_brain 的 entity_threads 恒为 0）。
 
     只取一跳、且只取 ENTITY_RELATIONS 指定的关系——不做多跳扩散，
     避免把「同 Event 同 Claim」这类弱关联也算成用户关注过某主体。
@@ -110,12 +115,19 @@ def build_event_index(graph: dict) -> dict[str, dict]:
             target = by_id.get(tid)
             if target and target.get("name"):
                 entities.append(target["name"])
-        index[event_id] = {
+        entry = {
             "topic": n.get("topic"),
             # published_at 是**事件发布时间**，不是用户看到或决策的时间，勿混用
             "published_at": n.get("published_at"),
             "entities": sorted(set(entities)),
         }
+        index[event_id] = entry
+        # ID 空间别名：cev_*(canonical) 与 evt_*(raw) 指向同一条记录。
+        # 缺了 evt_* 别名，review_queue / watchlist 的命中会全部落空（fail-silent），
+        # 下游只能看到「空桶」而看不出是 ID 对不上。此处共享同一 dict，不复制数据。
+        for alias in (n.get("canonical_event_id"), n.get("event_id")):
+            if alias and alias != event_id:
+                index[alias] = entry
     return index
 
 
