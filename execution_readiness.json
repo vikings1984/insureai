@@ -1,7 +1,7 @@
 {
   "version": 1,
   "principle": "把情报动作变成可审查的决策包，而不是自动执行命令。",
-  "pack_count": 360,
+  "pack_count": 327,
   "results": [
     {
       "event_id": "evt_92310abdea56",
@@ -352,6 +352,122 @@
       "readiness_gate": "human_confirmation_required"
     },
     {
+      "event_id": "evt_45affa7dff0d",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "independent_sources",
+        "primary_regulatory_or_company_sources",
+        "latest_event_timeline"
+      ],
+      "deliverables": [
+        "source_digest",
+        "claim_delta",
+        "confidence_change"
+      ],
+      "deadline": "next_review_cycle",
+      "cost_class": "low",
+      "approval_boundary": "no_business_execution; human review only",
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_45affa7dff0d",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "affected_products",
+        "customer_segments",
+        "channels",
+        "capital_or_operational_exposure"
+      ],
+      "deliverables": [
+        "impact_map",
+        "affected_owner_list",
+        "open_questions"
+      ],
+      "deadline": "within_5_business_days",
+      "cost_class": "low",
+      "approval_boundary": "analysis only; human review; no policy or portfolio change",
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_45affa7dff0d",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "metric_definition",
+        "baseline",
+        "escalation_threshold",
+        "deescalation_threshold"
+      ],
+      "deliverables": [
+        "threshold_register",
+        "owner_assignment",
+        "review_cadence"
+      ],
+      "deadline": "next_governance_cycle",
+      "cost_class": "low",
+      "approval_boundary": "threshold proposal only; human approval required before operational use",
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
       "event_id": "evt_88a7555a3759",
       "action_id": "evidence_refresh",
       "action_label": "持续刷新证据",
@@ -1126,6 +1242,354 @@
     },
     {
       "event_id": "evt_083f21f9623f",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "metric_definition",
+        "baseline",
+        "escalation_threshold",
+        "deescalation_threshold"
+      ],
+      "deliverables": [
+        "threshold_register",
+        "owner_assignment",
+        "review_cadence"
+      ],
+      "deadline": "next_governance_cycle",
+      "cost_class": "low",
+      "approval_boundary": "threshold proposal only; human approval required before operational use",
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_f546e75a4e89",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "independent_sources",
+        "primary_regulatory_or_company_sources",
+        "latest_event_timeline"
+      ],
+      "deliverables": [
+        "source_digest",
+        "claim_delta",
+        "confidence_change"
+      ],
+      "deadline": "next_review_cycle",
+      "cost_class": "low",
+      "approval_boundary": "no_business_execution; human review only",
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_f546e75a4e89",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "affected_products",
+        "customer_segments",
+        "channels",
+        "capital_or_operational_exposure"
+      ],
+      "deliverables": [
+        "impact_map",
+        "affected_owner_list",
+        "open_questions"
+      ],
+      "deadline": "within_5_business_days",
+      "cost_class": "low",
+      "approval_boundary": "analysis only; human review; no policy or portfolio change",
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_f546e75a4e89",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "metric_definition",
+        "baseline",
+        "escalation_threshold",
+        "deescalation_threshold"
+      ],
+      "deliverables": [
+        "threshold_register",
+        "owner_assignment",
+        "review_cadence"
+      ],
+      "deadline": "next_governance_cycle",
+      "cost_class": "low",
+      "approval_boundary": "threshold proposal only; human approval required before operational use",
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_4e8a1cbc4bba",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "independent_sources",
+        "primary_regulatory_or_company_sources",
+        "latest_event_timeline"
+      ],
+      "deliverables": [
+        "source_digest",
+        "claim_delta",
+        "confidence_change"
+      ],
+      "deadline": "next_review_cycle",
+      "cost_class": "low",
+      "approval_boundary": "no_business_execution; human review only",
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_4e8a1cbc4bba",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "affected_products",
+        "customer_segments",
+        "channels",
+        "capital_or_operational_exposure"
+      ],
+      "deliverables": [
+        "impact_map",
+        "affected_owner_list",
+        "open_questions"
+      ],
+      "deadline": "within_5_business_days",
+      "cost_class": "low",
+      "approval_boundary": "analysis only; human review; no policy or portfolio change",
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_4e8a1cbc4bba",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "metric_definition",
+        "baseline",
+        "escalation_threshold",
+        "deescalation_threshold"
+      ],
+      "deliverables": [
+        "threshold_register",
+        "owner_assignment",
+        "review_cadence"
+      ],
+      "deadline": "next_governance_cycle",
+      "cost_class": "low",
+      "approval_boundary": "threshold proposal only; human approval required before operational use",
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_d79fecf40872",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "independent_sources",
+        "primary_regulatory_or_company_sources",
+        "latest_event_timeline"
+      ],
+      "deliverables": [
+        "source_digest",
+        "claim_delta",
+        "confidence_change"
+      ],
+      "deadline": "next_review_cycle",
+      "cost_class": "low",
+      "approval_boundary": "no_business_execution; human review only",
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_d79fecf40872",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "affected_products",
+        "customer_segments",
+        "channels",
+        "capital_or_operational_exposure"
+      ],
+      "deliverables": [
+        "impact_map",
+        "affected_owner_list",
+        "open_questions"
+      ],
+      "deadline": "within_5_business_days",
+      "cost_class": "low",
+      "approval_boundary": "analysis only; human review; no policy or portfolio change",
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_d79fecf40872",
       "action_id": "trigger_thresholds",
       "action_label": "建立触发阈值",
       "status": "ready_for_human_review",
@@ -2170,6 +2634,470 @@
     },
     {
       "event_id": "evt_40a505012bd4",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "metric_definition",
+        "baseline",
+        "escalation_threshold",
+        "deescalation_threshold"
+      ],
+      "deliverables": [
+        "threshold_register",
+        "owner_assignment",
+        "review_cadence"
+      ],
+      "deadline": "next_governance_cycle",
+      "cost_class": "low",
+      "approval_boundary": "threshold proposal only; human approval required before operational use",
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_56516f97a9dd",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "independent_sources",
+        "primary_regulatory_or_company_sources",
+        "latest_event_timeline"
+      ],
+      "deliverables": [
+        "source_digest",
+        "claim_delta",
+        "confidence_change"
+      ],
+      "deadline": "next_review_cycle",
+      "cost_class": "low",
+      "approval_boundary": "no_business_execution; human review only",
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_56516f97a9dd",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "affected_products",
+        "customer_segments",
+        "channels",
+        "capital_or_operational_exposure"
+      ],
+      "deliverables": [
+        "impact_map",
+        "affected_owner_list",
+        "open_questions"
+      ],
+      "deadline": "within_5_business_days",
+      "cost_class": "low",
+      "approval_boundary": "analysis only; human review; no policy or portfolio change",
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_56516f97a9dd",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "metric_definition",
+        "baseline",
+        "escalation_threshold",
+        "deescalation_threshold"
+      ],
+      "deliverables": [
+        "threshold_register",
+        "owner_assignment",
+        "review_cadence"
+      ],
+      "deadline": "next_governance_cycle",
+      "cost_class": "low",
+      "approval_boundary": "threshold proposal only; human approval required before operational use",
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_4aeff130f05b",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "independent_sources",
+        "primary_regulatory_or_company_sources",
+        "latest_event_timeline"
+      ],
+      "deliverables": [
+        "source_digest",
+        "claim_delta",
+        "confidence_change"
+      ],
+      "deadline": "next_review_cycle",
+      "cost_class": "low",
+      "approval_boundary": "no_business_execution; human review only",
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_4aeff130f05b",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "affected_products",
+        "customer_segments",
+        "channels",
+        "capital_or_operational_exposure"
+      ],
+      "deliverables": [
+        "impact_map",
+        "affected_owner_list",
+        "open_questions"
+      ],
+      "deadline": "within_5_business_days",
+      "cost_class": "low",
+      "approval_boundary": "analysis only; human review; no policy or portfolio change",
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_4aeff130f05b",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "metric_definition",
+        "baseline",
+        "escalation_threshold",
+        "deescalation_threshold"
+      ],
+      "deliverables": [
+        "threshold_register",
+        "owner_assignment",
+        "review_cadence"
+      ],
+      "deadline": "next_governance_cycle",
+      "cost_class": "low",
+      "approval_boundary": "threshold proposal only; human approval required before operational use",
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_0b5e94689d7d",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "independent_sources",
+        "primary_regulatory_or_company_sources",
+        "latest_event_timeline"
+      ],
+      "deliverables": [
+        "source_digest",
+        "claim_delta",
+        "confidence_change"
+      ],
+      "deadline": "next_review_cycle",
+      "cost_class": "low",
+      "approval_boundary": "no_business_execution; human review only",
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_0b5e94689d7d",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "affected_products",
+        "customer_segments",
+        "channels",
+        "capital_or_operational_exposure"
+      ],
+      "deliverables": [
+        "impact_map",
+        "affected_owner_list",
+        "open_questions"
+      ],
+      "deadline": "within_5_business_days",
+      "cost_class": "low",
+      "approval_boundary": "analysis only; human review; no policy or portfolio change",
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_0b5e94689d7d",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "metric_definition",
+        "baseline",
+        "escalation_threshold",
+        "deescalation_threshold"
+      ],
+      "deliverables": [
+        "threshold_register",
+        "owner_assignment",
+        "review_cadence"
+      ],
+      "deadline": "next_governance_cycle",
+      "cost_class": "low",
+      "approval_boundary": "threshold proposal only; human approval required before operational use",
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_fefe51bb00c2",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "independent_sources",
+        "primary_regulatory_or_company_sources",
+        "latest_event_timeline"
+      ],
+      "deliverables": [
+        "source_digest",
+        "claim_delta",
+        "confidence_change"
+      ],
+      "deadline": "next_review_cycle",
+      "cost_class": "low",
+      "approval_boundary": "no_business_execution; human review only",
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_fefe51bb00c2",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "affected_products",
+        "customer_segments",
+        "channels",
+        "capital_or_operational_exposure"
+      ],
+      "deliverables": [
+        "impact_map",
+        "affected_owner_list",
+        "open_questions"
+      ],
+      "deadline": "within_5_business_days",
+      "cost_class": "low",
+      "approval_boundary": "analysis only; human review; no policy or portfolio change",
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_fefe51bb00c2",
       "action_id": "trigger_thresholds",
       "action_label": "建立触发阈值",
       "status": "ready_for_human_review",
@@ -4760,6 +5688,586 @@
       "readiness_gate": "human_confirmation_required"
     },
     {
+      "event_id": "evt_ce5d3e5734d9",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "independent_sources",
+        "primary_regulatory_or_company_sources",
+        "latest_event_timeline"
+      ],
+      "deliverables": [
+        "source_digest",
+        "claim_delta",
+        "confidence_change"
+      ],
+      "deadline": "next_review_cycle",
+      "cost_class": "low",
+      "approval_boundary": "no_business_execution; human review only",
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_ce5d3e5734d9",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "affected_products",
+        "customer_segments",
+        "channels",
+        "capital_or_operational_exposure"
+      ],
+      "deliverables": [
+        "impact_map",
+        "affected_owner_list",
+        "open_questions"
+      ],
+      "deadline": "within_5_business_days",
+      "cost_class": "low",
+      "approval_boundary": "analysis only; human review; no policy or portfolio change",
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_ce5d3e5734d9",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "metric_definition",
+        "baseline",
+        "escalation_threshold",
+        "deescalation_threshold"
+      ],
+      "deliverables": [
+        "threshold_register",
+        "owner_assignment",
+        "review_cadence"
+      ],
+      "deadline": "next_governance_cycle",
+      "cost_class": "low",
+      "approval_boundary": "threshold proposal only; human approval required before operational use",
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_443a2f6013d0",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "independent_sources",
+        "primary_regulatory_or_company_sources",
+        "latest_event_timeline"
+      ],
+      "deliverables": [
+        "source_digest",
+        "claim_delta",
+        "confidence_change"
+      ],
+      "deadline": "next_review_cycle",
+      "cost_class": "low",
+      "approval_boundary": "no_business_execution; human review only",
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_443a2f6013d0",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "affected_products",
+        "customer_segments",
+        "channels",
+        "capital_or_operational_exposure"
+      ],
+      "deliverables": [
+        "impact_map",
+        "affected_owner_list",
+        "open_questions"
+      ],
+      "deadline": "within_5_business_days",
+      "cost_class": "low",
+      "approval_boundary": "analysis only; human review; no policy or portfolio change",
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_443a2f6013d0",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "metric_definition",
+        "baseline",
+        "escalation_threshold",
+        "deescalation_threshold"
+      ],
+      "deliverables": [
+        "threshold_register",
+        "owner_assignment",
+        "review_cadence"
+      ],
+      "deadline": "next_governance_cycle",
+      "cost_class": "low",
+      "approval_boundary": "threshold proposal only; human approval required before operational use",
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_28b32c444a39",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "independent_sources",
+        "primary_regulatory_or_company_sources",
+        "latest_event_timeline"
+      ],
+      "deliverables": [
+        "source_digest",
+        "claim_delta",
+        "confidence_change"
+      ],
+      "deadline": "next_review_cycle",
+      "cost_class": "low",
+      "approval_boundary": "no_business_execution; human review only",
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_28b32c444a39",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "affected_products",
+        "customer_segments",
+        "channels",
+        "capital_or_operational_exposure"
+      ],
+      "deliverables": [
+        "impact_map",
+        "affected_owner_list",
+        "open_questions"
+      ],
+      "deadline": "within_5_business_days",
+      "cost_class": "low",
+      "approval_boundary": "analysis only; human review; no policy or portfolio change",
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_28b32c444a39",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "metric_definition",
+        "baseline",
+        "escalation_threshold",
+        "deescalation_threshold"
+      ],
+      "deliverables": [
+        "threshold_register",
+        "owner_assignment",
+        "review_cadence"
+      ],
+      "deadline": "next_governance_cycle",
+      "cost_class": "low",
+      "approval_boundary": "threshold proposal only; human approval required before operational use",
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_1f48f344df0c",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "independent_sources",
+        "primary_regulatory_or_company_sources",
+        "latest_event_timeline"
+      ],
+      "deliverables": [
+        "source_digest",
+        "claim_delta",
+        "confidence_change"
+      ],
+      "deadline": "next_review_cycle",
+      "cost_class": "low",
+      "approval_boundary": "no_business_execution; human review only",
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_1f48f344df0c",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "affected_products",
+        "customer_segments",
+        "channels",
+        "capital_or_operational_exposure"
+      ],
+      "deliverables": [
+        "impact_map",
+        "affected_owner_list",
+        "open_questions"
+      ],
+      "deadline": "within_5_business_days",
+      "cost_class": "low",
+      "approval_boundary": "analysis only; human review; no policy or portfolio change",
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_1f48f344df0c",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "metric_definition",
+        "baseline",
+        "escalation_threshold",
+        "deescalation_threshold"
+      ],
+      "deliverables": [
+        "threshold_register",
+        "owner_assignment",
+        "review_cadence"
+      ],
+      "deadline": "next_governance_cycle",
+      "cost_class": "low",
+      "approval_boundary": "threshold proposal only; human approval required before operational use",
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_7d937aa96ccd",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "independent_sources",
+        "primary_regulatory_or_company_sources",
+        "latest_event_timeline"
+      ],
+      "deliverables": [
+        "source_digest",
+        "claim_delta",
+        "confidence_change"
+      ],
+      "deadline": "next_review_cycle",
+      "cost_class": "low",
+      "approval_boundary": "no_business_execution; human review only",
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_7d937aa96ccd",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "affected_products",
+        "customer_segments",
+        "channels",
+        "capital_or_operational_exposure"
+      ],
+      "deliverables": [
+        "impact_map",
+        "affected_owner_list",
+        "open_questions"
+      ],
+      "deadline": "within_5_business_days",
+      "cost_class": "low",
+      "approval_boundary": "analysis only; human review; no policy or portfolio change",
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_7d937aa96ccd",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "metric_definition",
+        "baseline",
+        "escalation_threshold",
+        "deescalation_threshold"
+      ],
+      "deliverables": [
+        "threshold_register",
+        "owner_assignment",
+        "review_cadence"
+      ],
+      "deadline": "next_governance_cycle",
+      "cost_class": "low",
+      "approval_boundary": "threshold proposal only; human approval required before operational use",
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
       "event_id": "evt_fb5f7bbabd72",
       "action_id": "evidence_refresh",
       "action_label": "持续刷新证据",
@@ -5302,122 +6810,6 @@
     },
     {
       "event_id": "evt_40627a84b205",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_50c78bfb8e81",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_50c78bfb8e81",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_50c78bfb8e81",
       "action_id": "trigger_thresholds",
       "action_label": "建立触发阈值",
       "status": "ready_for_human_review",
@@ -6964,818 +8356,6 @@
       "readiness_gate": "human_confirmation_required"
     },
     {
-      "event_id": "evt_c7b446a384d5",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_c7b446a384d5",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_c7b446a384d5",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_bd0b6a1d6307",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_bd0b6a1d6307",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_bd0b6a1d6307",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_3a50c2e412bf",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_3a50c2e412bf",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_3a50c2e412bf",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_bd0531bbff1b",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_bd0531bbff1b",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_bd0531bbff1b",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_08990ff04e85",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_08990ff04e85",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_08990ff04e85",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_9c3a168bcc68",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_9c3a168bcc68",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_9c3a168bcc68",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_56285b09be8a",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_56285b09be8a",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_56285b09be8a",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
       "event_id": "evt_d4c6b2150c69",
       "action_id": "evidence_refresh",
       "action_label": "持续刷新证据",
@@ -8086,6 +8666,818 @@
     },
     {
       "event_id": "evt_8466f5ee932f",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "metric_definition",
+        "baseline",
+        "escalation_threshold",
+        "deescalation_threshold"
+      ],
+      "deliverables": [
+        "threshold_register",
+        "owner_assignment",
+        "review_cadence"
+      ],
+      "deadline": "next_governance_cycle",
+      "cost_class": "low",
+      "approval_boundary": "threshold proposal only; human approval required before operational use",
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_14b382f0b853",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "independent_sources",
+        "primary_regulatory_or_company_sources",
+        "latest_event_timeline"
+      ],
+      "deliverables": [
+        "source_digest",
+        "claim_delta",
+        "confidence_change"
+      ],
+      "deadline": "next_review_cycle",
+      "cost_class": "low",
+      "approval_boundary": "no_business_execution; human review only",
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_14b382f0b853",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "affected_products",
+        "customer_segments",
+        "channels",
+        "capital_or_operational_exposure"
+      ],
+      "deliverables": [
+        "impact_map",
+        "affected_owner_list",
+        "open_questions"
+      ],
+      "deadline": "within_5_business_days",
+      "cost_class": "low",
+      "approval_boundary": "analysis only; human review; no policy or portfolio change",
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_14b382f0b853",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "metric_definition",
+        "baseline",
+        "escalation_threshold",
+        "deescalation_threshold"
+      ],
+      "deliverables": [
+        "threshold_register",
+        "owner_assignment",
+        "review_cadence"
+      ],
+      "deadline": "next_governance_cycle",
+      "cost_class": "low",
+      "approval_boundary": "threshold proposal only; human approval required before operational use",
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_4d25a49a76b1",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "independent_sources",
+        "primary_regulatory_or_company_sources",
+        "latest_event_timeline"
+      ],
+      "deliverables": [
+        "source_digest",
+        "claim_delta",
+        "confidence_change"
+      ],
+      "deadline": "next_review_cycle",
+      "cost_class": "low",
+      "approval_boundary": "no_business_execution; human review only",
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_4d25a49a76b1",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "affected_products",
+        "customer_segments",
+        "channels",
+        "capital_or_operational_exposure"
+      ],
+      "deliverables": [
+        "impact_map",
+        "affected_owner_list",
+        "open_questions"
+      ],
+      "deadline": "within_5_business_days",
+      "cost_class": "low",
+      "approval_boundary": "analysis only; human review; no policy or portfolio change",
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_4d25a49a76b1",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "metric_definition",
+        "baseline",
+        "escalation_threshold",
+        "deescalation_threshold"
+      ],
+      "deliverables": [
+        "threshold_register",
+        "owner_assignment",
+        "review_cadence"
+      ],
+      "deadline": "next_governance_cycle",
+      "cost_class": "low",
+      "approval_boundary": "threshold proposal only; human approval required before operational use",
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_44e73e279dc7",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "independent_sources",
+        "primary_regulatory_or_company_sources",
+        "latest_event_timeline"
+      ],
+      "deliverables": [
+        "source_digest",
+        "claim_delta",
+        "confidence_change"
+      ],
+      "deadline": "next_review_cycle",
+      "cost_class": "low",
+      "approval_boundary": "no_business_execution; human review only",
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_44e73e279dc7",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "affected_products",
+        "customer_segments",
+        "channels",
+        "capital_or_operational_exposure"
+      ],
+      "deliverables": [
+        "impact_map",
+        "affected_owner_list",
+        "open_questions"
+      ],
+      "deadline": "within_5_business_days",
+      "cost_class": "low",
+      "approval_boundary": "analysis only; human review; no policy or portfolio change",
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_44e73e279dc7",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "metric_definition",
+        "baseline",
+        "escalation_threshold",
+        "deescalation_threshold"
+      ],
+      "deliverables": [
+        "threshold_register",
+        "owner_assignment",
+        "review_cadence"
+      ],
+      "deadline": "next_governance_cycle",
+      "cost_class": "low",
+      "approval_boundary": "threshold proposal only; human approval required before operational use",
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_20b798c039fa",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "independent_sources",
+        "primary_regulatory_or_company_sources",
+        "latest_event_timeline"
+      ],
+      "deliverables": [
+        "source_digest",
+        "claim_delta",
+        "confidence_change"
+      ],
+      "deadline": "next_review_cycle",
+      "cost_class": "low",
+      "approval_boundary": "no_business_execution; human review only",
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_20b798c039fa",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "affected_products",
+        "customer_segments",
+        "channels",
+        "capital_or_operational_exposure"
+      ],
+      "deliverables": [
+        "impact_map",
+        "affected_owner_list",
+        "open_questions"
+      ],
+      "deadline": "within_5_business_days",
+      "cost_class": "low",
+      "approval_boundary": "analysis only; human review; no policy or portfolio change",
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_20b798c039fa",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "metric_definition",
+        "baseline",
+        "escalation_threshold",
+        "deescalation_threshold"
+      ],
+      "deliverables": [
+        "threshold_register",
+        "owner_assignment",
+        "review_cadence"
+      ],
+      "deadline": "next_governance_cycle",
+      "cost_class": "low",
+      "approval_boundary": "threshold proposal only; human approval required before operational use",
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_fcd339d27902",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "independent_sources",
+        "primary_regulatory_or_company_sources",
+        "latest_event_timeline"
+      ],
+      "deliverables": [
+        "source_digest",
+        "claim_delta",
+        "confidence_change"
+      ],
+      "deadline": "next_review_cycle",
+      "cost_class": "low",
+      "approval_boundary": "no_business_execution; human review only",
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_fcd339d27902",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "affected_products",
+        "customer_segments",
+        "channels",
+        "capital_or_operational_exposure"
+      ],
+      "deliverables": [
+        "impact_map",
+        "affected_owner_list",
+        "open_questions"
+      ],
+      "deadline": "within_5_business_days",
+      "cost_class": "low",
+      "approval_boundary": "analysis only; human review; no policy or portfolio change",
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_fcd339d27902",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "metric_definition",
+        "baseline",
+        "escalation_threshold",
+        "deescalation_threshold"
+      ],
+      "deliverables": [
+        "threshold_register",
+        "owner_assignment",
+        "review_cadence"
+      ],
+      "deadline": "next_governance_cycle",
+      "cost_class": "low",
+      "approval_boundary": "threshold proposal only; human approval required before operational use",
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_1e941ac81a01",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "independent_sources",
+        "primary_regulatory_or_company_sources",
+        "latest_event_timeline"
+      ],
+      "deliverables": [
+        "source_digest",
+        "claim_delta",
+        "confidence_change"
+      ],
+      "deadline": "next_review_cycle",
+      "cost_class": "low",
+      "approval_boundary": "no_business_execution; human review only",
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_1e941ac81a01",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "affected_products",
+        "customer_segments",
+        "channels",
+        "capital_or_operational_exposure"
+      ],
+      "deliverables": [
+        "impact_map",
+        "affected_owner_list",
+        "open_questions"
+      ],
+      "deadline": "within_5_business_days",
+      "cost_class": "low",
+      "approval_boundary": "analysis only; human review; no policy or portfolio change",
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_1e941ac81a01",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "metric_definition",
+        "baseline",
+        "escalation_threshold",
+        "deescalation_threshold"
+      ],
+      "deliverables": [
+        "threshold_register",
+        "owner_assignment",
+        "review_cadence"
+      ],
+      "deadline": "next_governance_cycle",
+      "cost_class": "low",
+      "approval_boundary": "threshold proposal only; human approval required before operational use",
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_74bce32b9948",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "independent_sources",
+        "primary_regulatory_or_company_sources",
+        "latest_event_timeline"
+      ],
+      "deliverables": [
+        "source_digest",
+        "claim_delta",
+        "confidence_change"
+      ],
+      "deadline": "next_review_cycle",
+      "cost_class": "low",
+      "approval_boundary": "no_business_execution; human review only",
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_74bce32b9948",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "status": "ready_for_human_review",
+      "scenario_count": 2,
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "required_inputs": [
+        "affected_products",
+        "customer_segments",
+        "channels",
+        "capital_or_operational_exposure"
+      ],
+      "deliverables": [
+        "impact_map",
+        "affected_owner_list",
+        "open_questions"
+      ],
+      "deadline": "within_5_business_days",
+      "cost_class": "low",
+      "approval_boundary": "analysis only; human review; no policy or portfolio change",
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "automation": "advisory_only",
+      "readiness_gate": "human_confirmation_required"
+    },
+    {
+      "event_id": "evt_74bce32b9948",
       "action_id": "trigger_thresholds",
       "action_label": "建立触发阈值",
       "status": "ready_for_human_review",
@@ -10676,122 +12068,6 @@
       "readiness_gate": "human_confirmation_required"
     },
     {
-      "event_id": "evt_712e8f745e7f",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_712e8f745e7f",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_712e8f745e7f",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
       "event_id": "evt_d6f008aa0fcd",
       "action_id": "evidence_refresh",
       "action_label": "持续刷新证据",
@@ -11140,122 +12416,6 @@
       "readiness_gate": "human_confirmation_required"
     },
     {
-      "event_id": "evt_60e6394841bd",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_60e6394841bd",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_60e6394841bd",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
       "event_id": "evt_4a2e7ef528a0",
       "action_id": "evidence_refresh",
       "action_label": "持续刷新证据",
@@ -11450,2442 +12610,6 @@
     },
     {
       "event_id": "evt_406df403d259",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_5b4d1491191c",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_5b4d1491191c",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_5b4d1491191c",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_d7b18b38b124",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_d7b18b38b124",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_d7b18b38b124",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_0086e0acbae3",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_0086e0acbae3",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_0086e0acbae3",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_96308337995b",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_96308337995b",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_96308337995b",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_9b890d7d9c84",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_9b890d7d9c84",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_9b890d7d9c84",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_19a1a6784124",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_19a1a6784124",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_19a1a6784124",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_efffc5e09b1d",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_efffc5e09b1d",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_efffc5e09b1d",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_993e5ac87b5a",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_993e5ac87b5a",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_993e5ac87b5a",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_fb2e2e2eacfa",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_fb2e2e2eacfa",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_fb2e2e2eacfa",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_19565d004f94",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_19565d004f94",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_19565d004f94",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_81e0a4bddc4d",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_81e0a4bddc4d",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_81e0a4bddc4d",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_d5b63f194a62",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_d5b63f194a62",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_d5b63f194a62",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_f4ed20467568",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_f4ed20467568",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_f4ed20467568",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_c16a4553c12c",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_c16a4553c12c",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_c16a4553c12c",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_3e5b1b2aa99e",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_3e5b1b2aa99e",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_3e5b1b2aa99e",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_456dc824afbb",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_456dc824afbb",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_456dc824afbb",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_5288038fcf1b",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_5288038fcf1b",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_5288038fcf1b",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_188fdda7e44f",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_188fdda7e44f",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_188fdda7e44f",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_f6ced99b0dc8",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_f6ced99b0dc8",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_f6ced99b0dc8",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_9b34dfce1e32",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_9b34dfce1e32",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_9b34dfce1e32",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "metric_definition",
-        "baseline",
-        "escalation_threshold",
-        "deescalation_threshold"
-      ],
-      "deliverables": [
-        "threshold_register",
-        "owner_assignment",
-        "review_cadence"
-      ],
-      "deadline": "next_governance_cycle",
-      "cost_class": "low",
-      "approval_boundary": "threshold proposal only; human approval required before operational use",
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_dd28e884cf01",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "independent_sources",
-        "primary_regulatory_or_company_sources",
-        "latest_event_timeline"
-      ],
-      "deliverables": [
-        "source_digest",
-        "claim_delta",
-        "confidence_change"
-      ],
-      "deadline": "next_review_cycle",
-      "cost_class": "low",
-      "approval_boundary": "no_business_execution; human review only",
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_dd28e884cf01",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "status": "ready_for_human_review",
-      "scenario_count": 2,
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "required_inputs": [
-        "affected_products",
-        "customer_segments",
-        "channels",
-        "capital_or_operational_exposure"
-      ],
-      "deliverables": [
-        "impact_map",
-        "affected_owner_list",
-        "open_questions"
-      ],
-      "deadline": "within_5_business_days",
-      "cost_class": "low",
-      "approval_boundary": "analysis only; human review; no policy or portfolio change",
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "automation": "advisory_only",
-      "readiness_gate": "human_confirmation_required"
-    },
-    {
-      "event_id": "evt_dd28e884cf01",
       "action_id": "trigger_thresholds",
       "action_label": "建立触发阈值",
       "status": "ready_for_human_review",
