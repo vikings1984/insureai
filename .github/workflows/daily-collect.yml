@@ -27,30 +27,19 @@ jobs:
           python-version: '3.11'
       - name: Run collector
         run: python3 collect.py
-      - name: Commit collected news core data
-        run: |
-          git config user.name "insureai-bot"; git config user.email "bot@insureai.local"
-          # p2_monitoring_store.json 由 analyze job 的 p2_monitoring.py 生成、并在 analyze
-          # 末尾提交；本步（collect）引用它会因文件尚未产生而触发
-          # `fatal: pathspec ... did not match any files`（exit 128），导致 collect 失败、
-          # analyze（含 temporal/decision/contract 构建）被 needs 依赖整体跳过，
-          # intelligence.json 因此永远停在 v4、缺 temporal/decisions_by_role/claims。
-          # 故本步只提交 collect 阶段实际会产生的文件，并对缺失文件容错。
-          files="data.json inbox.json data/translation_cache.json p2_monitoring.json"
-          existing=""
-          for f in $files; do if [ -e "$f" ]; then existing="$existing $f"; fi; done
-          if [ -n "$existing" ] && [ -n "$(git status --porcelain $existing)" ]; then
-            git add $existing
-            git commit -m "chore: auto-collect news core $(date +%F)"
-            git fetch origin "${{ github.ref_name }}"
-            if git rebase --autostash "origin/${{ github.ref_name }}"; then
-              git push origin HEAD:${{ github.ref_name }}
-            else
-              echo 'Remote advanced concurrently; dropping this collect push (next scheduled run re-publishes)'
-              git rebase --abort || true
-              git reset --merge || true
-            fi
-          else echo "no new data"; fi
+      # P0-3 Atomic Publish：collect 阶段严禁把 data.json 单独提交到生产分支。
+      # 否则 analyze 一旦在测试/质量门失败，生产会出现「新 data.json + 旧 intelligence.json」
+      # 的跨版本混版。原始数据改为上传为 artifact，由 analyze 下载后随整包原子发布。
+      - name: Upload collected news core as release input artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: collect-input
+          path: |
+            data.json
+            inbox.json
+            data/translation_cache.json
+            p2_monitoring.json
+          if-no-files-found: ignore
 
   analyze:
     needs: collect
@@ -65,6 +54,11 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: '3.11'
+      - name: Download collected news core (release input)
+        uses: actions/download-artifact@v4
+        with:
+          name: collect-input
+          path: .
       - name: Build event-based intelligence
         run: python3 intelligence.py
       - name: Build claim/evidence intelligence
@@ -431,17 +425,22 @@ jobs:
           for key in ('release_manifest_sha256','audit_ledger_sha256'): assert len(p['artifacts'][key]) == 64
           print(f'Final release provenance valid: deployment={deployment.get("status")} release_match={deployment.get("release_match")}')
           PY
-      - name: Commit data + quality artifacts
+      # P0-3 Atomic Publish：先 build→质量门→Hash Check→原子交换（仅当整包通过最终质量门），
+      # 再一次性提交整包（含 data.json + 全部派生产物 + manifest.json + run.json），
+      # 保证原始数据与派生情报永远一致发布，杜绝跨版本混版。
+      - name: Atomic publish release bundle
+        run: python3 atomic_publish.py release
+      - name: Commit atomic release bundle
         run: |
           git config user.name "insureai-bot"; git config user.email "bot@insureai.local"
           # 对缺失文件容错：任一可选产物未生成时，不得让 git add 因 pathspec 不匹配
           # 而失败（exit 128）并中断整条流水线。
-          files="data.json intelligence.json claims.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json trend_attribution.json radar.json optimization_backlog.json optimization_backlog_history.json release_manifest.json release_provenance.json decision_stability.json decision_history.json decision_credibility.json daily_risk_radar.json owner_risk_view.json freshness.json evidence_availability.json executive_terminal.json knowledge_graph.json p2_daily_brief.json p2_state.json index.html sitemap.xml rss.xml research.json data/quality data/translation_cache.json p2_monitoring_store.json p2_monitoring.json p2_feedback_analytics.json p2_personal_memory.json decisions_ledger.json second_brain.json canonical_events.json event_id_aliases.json resolver_report.json resolver_fingerprint_map.json lifecycle_report.json p2_alerts.json p2_alert_baseline.json decisions_pending.json p2_stage_history.json event_replays.json"
+          files="data.json intelligence.json claims.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json trend_attribution.json radar.json optimization_backlog.json optimization_backlog_history.json release_manifest.json release_provenance.json decision_stability.json decision_history.json decision_credibility.json daily_risk_radar.json owner_risk_view.json freshness.json evidence_availability.json executive_terminal.json knowledge_graph.json p2_daily_brief.json p2_state.json index.html sitemap.xml rss.xml research.json data/quality data/translation_cache.json p2_monitoring_store.json p2_monitoring.json p2_feedback_analytics.json p2_personal_memory.json decisions_ledger.json second_brain.json canonical_events.json event_id_aliases.json resolver_report.json resolver_fingerprint_map.json lifecycle_report.json p2_alerts.json p2_alert_baseline.json decisions_pending.json p2_stage_history.json event_replays.json manifest.json run.json"
           existing=""
           for f in $files; do if [ -e "$f" ]; then existing="$existing $f"; fi; done
           if [ -n "$existing" ] && [ -n "$(git status --porcelain $existing)" ]; then
             git add $existing
-            git commit -m "chore: auto-collect + intelligence + claims + graph + executive terminal + daily brief + personal memory $(date +%F)"
+            git commit -m "chore: atomic release bundle $(date +%F)"
           else echo "no changes"; fi
       - name: Push (triggers GitHub Pages redeploy)
         run: |

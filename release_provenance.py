@@ -90,6 +90,7 @@ def build_provenance(*, source_commit: str, site_url: str, root: Path = ROOT) ->
     return {
         "version": SCHEMA_VERSIONS["release_provenance"],
         "schema_version": SCHEMA_VERSIONS["release_provenance_schema"],
+        "run_id": release.get("run_id"),
         "source_commit": source_commit or release.get("source_commit") or "unknown",
         "release_channel": release.get("release_channel", RELEASE_CHANNEL),
         "site_url": site_url or release.get("site_url", ""),

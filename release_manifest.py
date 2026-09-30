@@ -31,10 +31,11 @@ def build_release_marker(*, source_commit: str, audit_path: Path = ROOT / "audit
     return f"insureai-{hashlib.sha256(payload).hexdigest()[:16]}"
 
 
-def build_manifest(*, source_commit: str, site_url: str, quality_passed: bool = True, release_channel: str = RELEASE_CHANNEL, release_marker: str | None = None, production_quality_gate: dict | None = None) -> dict:
+def build_manifest(*, source_commit: str, site_url: str, quality_passed: bool = True, release_channel: str = RELEASE_CHANNEL, release_marker: str | None = None, production_quality_gate: dict | None = None, run_id: str | None = None) -> dict:
     marker = release_marker or build_release_marker(source_commit=source_commit)
     return {
         "version": SCHEMA_VERSIONS["release_manifest"],
+        "run_id": run_id,
         "source_commit": source_commit or "unknown",
         "release_channel": release_channel,
         "site_url": site_url,
@@ -66,6 +67,16 @@ def inject_release_marker(marker: str) -> None:
     INDEX.write_text(text, encoding="utf-8")
 
 
+def _read_run_id(root: Path = ROOT) -> str | None:
+    run_path = root / "run.json"
+    if not run_path.exists():
+        return None
+    try:
+        return json.loads(run_path.read_text(encoding="utf-8")).get("run_id")
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
 def main() -> None:
     source_commit = os.environ.get("GITHUB_SHA", "unknown")
     gate = run_gate(ROOT)
@@ -80,6 +91,7 @@ def main() -> None:
         release_channel=os.environ.get("RELEASE_CHANNEL", RELEASE_CHANNEL),
         release_marker=marker,
         production_quality_gate=gate,
+        run_id=_read_run_id(ROOT),
     )
     OUTPUT.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     inject_release_marker(marker)
