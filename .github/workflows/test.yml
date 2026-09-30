@@ -33,7 +33,9 @@ jobs:
           for marker in required:
               assert marker in text, f'missing workflow contract marker: {marker}'
           assert text.index('Build owner-facing risk view') < text.index('Build final analytical audit ledger')
-          assert text.index('Build final analytical audit ledger') < text.index('Commit data + quality artifacts')
+          # P0-3 后整包发布取代了旧的单文件提交步骤，契约断言随之对齐新步骤名
+          # （语义不变：审计台账必须先于最终提交）。
+          assert text.index('Build final analytical audit ledger') < text.index('Commit atomic release bundle')
           # P2 must run after the terminal and before the ledger so its artifact is audited.
           assert text.index('Build P2 daily intelligence brief') < text.index('Build final analytical audit ledger')
           print('Daily collect workflow contract valid')
@@ -50,8 +52,6 @@ jobs:
         run: python3 -c "from evaluation_metrics import build_metrics; m=build_metrics(); assert m['macro_quality'] >= 0.95, m; assert m['production']['claim_evidence_match_rate'] >= 0.6, m; print(m)"
       - name: Production replay
         run: python3 production_replay.py
-      - name: Atomic publish bundle verify (read-only)
-        run: python3 atomic_publish.py verify
       - name: Calibration test
         run: python3 -m unittest tests.test_calibration -v
       - name: Counterfactual robustness test
@@ -135,3 +135,10 @@ jobs:
           SITE_URL: https://vikings1984.github.io/insureai
           GITHUB_SHA: ${{ github.sha }}
         run: python3 scripts/verify_full_pipeline.py --collect-limit 3
+      # 血缘门禁必须排在完整管线之后：release bundle 的 lineage 校验要求
+      # data.json 与 intelligence.json 处于同一构建快照。而 collect 与 analyze
+      # 是两个独立 job、分时提交——push 触发时若先跑 verify，读到的 intelligence.json
+      # 必然落后于 data.json（2026-09-30 实测落后 652 篇文章），lineage 恒失败。
+      # 移到管线跑完后，校验的是本轮刚构建的产物：门禁保持严格，不做任何削弱。
+      - name: Atomic publish bundle verify (read-only)
+        run: python3 atomic_publish.py verify
