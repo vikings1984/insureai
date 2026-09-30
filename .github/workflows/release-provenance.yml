@@ -48,7 +48,12 @@ jobs:
           assert p.get('release_channel') == RELEASE_CHANNEL
           assert p.get('quality', {}).get('status') in {'passed', 'failed', 'unknown'}
           assert p.get('quality', {}).get('audit_privacy') == 'hashes_and_metadata_only'
-          assert p.get('deployment', {}).get('status') in {'pending', 'verified', 'failed', 'unknown'}
+          # 状态集须与 release_provenance.py 实际产出对齐：模块会显式产出
+          # `stale`（已发布标记落后于预期，带解释性 error，按设计**不是**失败，
+          # 见 tests.test_release_provenance.test_lagging_site_is_stale_not_failed）
+          # 与 `configuration_debt`；push 后站点尚未重部署时 `stale` 属正常瞬态。
+          # 此前集合漏了这两项，导致校验与实现相互矛盾。
+          assert p.get('deployment', {}).get('status') in {'pending', 'verified', 'failed', 'unknown', 'stale', 'configuration_debt'}
           assert isinstance(p.get('deployment', {}).get('verified'), bool)
           assert p.get('quality', {}).get('audit_stage_count', 0) > 0
           for key in ('release_manifest_sha256', 'audit_ledger_sha256'):
