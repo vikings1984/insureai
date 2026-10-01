@@ -1,6 +1,6 @@
 {
   "version": "funnel-v1.1",
-  "generated_at": "2026-10-01T12:23:52Z",
+  "generated_at": "2026-10-01T15:35:59Z",
   "principle": "待决策洪流 → 漏斗（now/soon/watch）+ 排名靠前的待决；已决只来自真实决策记录；六条件硬化为每条待决的注解 + decision_ready 子集；分角色计数；样本<30 不结论；分桶为可观测代理",
   "meta": {
     "total_review_queue": 100,
@@ -10,22 +10,24 @@
     "pending": 81,
     "pending_by_tier": {
       "now": 16,
-      "soon": 13,
-      "watch": 52
+      "soon": 12,
+      "watch": 53
     },
     "pending_by_role": {
-      "ai": 8,
-      "ma": 3,
+      "ai": 9,
+      "ma": 4,
       "regulatory": 19,
       "health": 0,
-      "other": 51
+      "other": 49
     },
-    "decision_ready": 0,
-    "decision_ready_ceids": [],
+    "decision_ready": 1,
+    "decision_ready_ceids": [
+      "cev_f7c4de3feb70"
+    ],
     "six_failed_counter": {
-      "1": 60,
-      "2": 92,
-      "3": 92,
+      "1": 58,
+      "2": 91,
+      "3": 91,
       "4": 36,
       "5": 19,
       "6": 0
@@ -664,34 +666,33 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_472f7e24cd1c",
-        "canonical_event_id": "cev_1721f8e7ae60",
-        "title": "WTW 获得监管部门批准完全控制阿联酋合资企业 AFW",
-        "topic": "regulatory_change",
+        "event_id": "evt_adf3da8cecd4",
+        "canonical_event_id": "cev_f1f9da768010",
+        "title": "百慕大在 2,295 亿欧元的欧洲经济区再保险市场中迎来偿付能力 II 同等标准 10 周年",
+        "topic": "capital_reinsurance",
         "priority": 40,
         "trust_level": "medium",
         "reason_types": [
-          "change_impact",
-          "event_cluster"
+          "change_impact"
         ],
-        "role": "regulatory",
+        "role": "other",
         "meets_six": false,
         "failed_conditions": [
+          1,
           2,
-          3,
-          4
+          3
         ],
         "six_detail": {
-          "monitored": true,
+          "monitored": false,
           "acted": false,
           "t1_reg": false,
           "has_semantic_change": false,
           "stage": "n/a",
-          "status": "unknown",
+          "status": "active",
           "evidence_count": 1,
           "trust_level": "medium",
           "source_count": 1,
-          "single_src_regulatory": true,
+          "single_src_regulatory": false,
           "decided": false,
           "feedback_status": null
         },
@@ -699,9 +700,77 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_9d16809652ed",
-        "canonical_event_id": "cev_788256631742",
-        "title": "数据中心、人工智能和 PFAS：MS Re 的 Butera 对我们尚未看到的风险进行定价",
+        "event_id": "evt_b50792f6c9a9",
+        "canonical_event_id": "cev_92780c6bd438",
+        "title": "随着再保险硬市场接近全面定价逆转，2027 年利率将下降 10-15%",
+        "topic": "capital_reinsurance",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_b531ef7863e8",
+        "canonical_event_id": "cev_7899733f9cec",
+        "title": "读者问答：个人养老金账户里的钱，能买商业养老保险吗？",
+        "topic": "pension_finance",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_cd13b1be5c42",
+        "canonical_event_id": "cev_d336731ead48",
+        "title": "AI助推保险科技从“工具辅助”走向“经营重塑”",
         "topic": "ai_intelligent",
         "priority": 40,
         "trust_level": "medium",
@@ -732,77 +801,9 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_0c748edcb8f1",
-        "canonical_event_id": "cev_57053a402af8",
-        "title": "RVS 圆桌会议：随着再保险竞争的加剧，创造力和响应能力至关重要",
-        "topic": "capital_reinsurance",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_bfaf5586cc06",
-        "canonical_event_id": "cev_1484aac05d72",
-        "title": "报告称，灾难债券市场在第三季度高于平均水平后保持创纪录的增长速度",
-        "topic": "capital_reinsurance",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_2db8a08d984d",
-        "canonical_event_id": "cev_59e8d7ee0cda",
-        "title": "什么小程序能查到个人养老保险",
+        "event_id": "evt_c8e363fc6294",
+        "canonical_event_id": "cev_84f5d2e0c33e",
+        "title": "汇丰下调今明两年金价预估 称加息和高油价或继续施压黄金",
         "topic": "pension_finance",
         "priority": 40,
         "trust_level": "medium",
@@ -834,24 +835,23 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_a1080e8d311d",
-        "canonical_event_id": "cev_023fd467556b",
-        "title": "云南省城镇职工基本养老保险个人参保证明",
-        "topic": "pension_finance",
+        "event_id": "evt_09ee1a51353d",
+        "canonical_event_id": "cev_9ae8a328d149",
+        "title": "人员流动：普利茅斯摇滚之家任命斯塔基为客户服务副总裁",
+        "topic": "ai_intelligent",
         "priority": 40,
         "trust_level": "medium",
         "reason_types": [
           "change_impact"
         ],
-        "role": "other",
+        "role": "ai",
         "meets_six": false,
         "failed_conditions": [
-          1,
           2,
           3
         ],
         "six_detail": {
-          "monitored": false,
+          "monitored": true,
           "acted": false,
           "t1_reg": false,
           "has_semantic_change": false,
@@ -868,62 +868,24 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_206804a9fbf3",
-        "canonical_event_id": "cev_73e8e712c090",
-        "title": "山西农村养老保险查询个人账户查询",
-        "topic": "pension_finance",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_70e036ee4282",
-        "canonical_event_id": "cev_cceade01f0ee",
-        "title": "将 MGA 增长转化为持久动力",
+        "event_id": "evt_683a21f015be",
+        "canonical_event_id": "cev_f7c4de3feb70",
+        "title": "苏黎世保险完成对 Beazley 的收购",
         "topic": "",
         "priority": 40,
         "trust_level": "medium",
         "reason_types": [
           "change_impact"
         ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
+        "role": "ma",
+        "meets_six": true,
+        "failed_conditions": [],
         "six_detail": {
-          "monitored": false,
+          "monitored": true,
           "acted": false,
           "t1_reg": false,
           "has_semantic_change": false,
-          "stage": "n/a",
+          "stage": "closing",
           "status": "active",
           "evidence_count": 1,
           "trust_level": "medium",
@@ -936,9 +898,9 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_b39fc1bc0ed1",
-        "canonical_event_id": "cev_6dccdbf0f244",
-        "title": "加拉格尔 (Gallagher) 重新任命 Vuurman 为生命、意外与健康部执行总监",
+        "event_id": "evt_3be56bcd7d88",
+        "canonical_event_id": "cev_e6282e783f9b",
+        "title": "Howden Re 任命 Hayley Schell 为南非董事总经理",
         "topic": "channel_transformation",
         "priority": 40,
         "trust_level": "medium",
@@ -970,10 +932,10 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_40dc96f12359",
-        "canonical_event_id": "cev_a6935c947836",
-        "title": "Consilium 任命 Henry Menage 为 PI、英国和爱尔兰新业务主管",
-        "topic": "channel_transformation",
+        "event_id": "evt_8a9c20885d0a",
+        "canonical_event_id": "cev_293cae6f87c9",
+        "title": "Parametrix 聘请安联保险 (Allianz) 的 Tresa Stephens 担任美国承保主管",
+        "topic": "product_innovation",
         "priority": 40,
         "trust_level": "medium",
         "reason_types": [
@@ -1004,10 +966,10 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_1f0256351ec9",
-        "canonical_event_id": "cev_d57582bee73f",
-        "title": "Sompo 任命 Scott Toland 为欧洲大陆保险商业业务主管",
-        "topic": "",
+        "event_id": "evt_fcdbb775806b",
+        "canonical_event_id": "cev_9a8b289ad639",
+        "title": "Augment Risk hires Brittany Haynes as Partner, MGA",
+        "topic": "capital_reinsurance",
         "priority": 40,
         "trust_level": "medium",
         "reason_types": [
@@ -2257,6 +2219,40 @@
         "tier": "watch"
       },
       {
+        "event_id": "evt_472f7e24cd1c",
+        "canonical_event_id": "cev_1721f8e7ae60",
+        "title": "WTW 获得监管部门批准完全控制阿联酋合资企业 AFW",
+        "topic": "regulatory_change",
+        "priority": 30,
+        "trust_level": "medium",
+        "reason_types": [
+          "event_cluster"
+        ],
+        "role": "regulatory",
+        "meets_six": false,
+        "failed_conditions": [
+          2,
+          3,
+          4
+        ],
+        "six_detail": {
+          "monitored": true,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "unknown",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": true,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "watch"
+      },
+      {
         "event_id": "evt_b0ef954f28d2",
         "canonical_event_id": "cev_b1ceff904e34",
         "title": "Stone Ridge 猫债券基金资产管理规模达到 50 亿美元里程碑，ILS 共同资产总额目前约为 76 亿美元",
@@ -2806,6 +2802,36 @@
   },
   "top_pending": [
     {
+      "event_id": "evt_683a21f015be",
+      "canonical_event_id": "cev_f7c4de3feb70",
+      "title": "苏黎世保险完成对 Beazley 的收购",
+      "topic": "",
+      "priority": 40,
+      "trust_level": "medium",
+      "reason_types": [
+        "change_impact"
+      ],
+      "role": "ma",
+      "meets_six": true,
+      "failed_conditions": [],
+      "six_detail": {
+        "monitored": true,
+        "acted": false,
+        "t1_reg": false,
+        "has_semantic_change": false,
+        "stage": "closing",
+        "status": "active",
+        "evidence_count": 1,
+        "trust_level": "medium",
+        "source_count": 1,
+        "single_src_regulatory": false,
+        "decided": false,
+        "feedback_status": null
+      },
+      "urgency": null,
+      "tier": "soon"
+    },
+    {
       "event_id": "evt_d9458fbfc744",
       "canonical_event_id": "cev_da92198ca93f",
       "title": "房地产总量 XoL 反弹，交易限额增加 50%：Marsh Re",
@@ -3192,40 +3218,6 @@
       },
       "urgency": null,
       "tier": "now"
-    },
-    {
-      "event_id": "evt_e2024a6ee946",
-      "canonical_event_id": "cev_c3772bb4f667",
-      "title": "CatIQ 结束了 2024 年卡尔加里冰雹创纪录的记录，预计行业损失达 33.5 亿加元",
-      "topic": "capital_reinsurance",
-      "priority": 70,
-      "trust_level": "medium",
-      "reason_types": [
-        "claim_conflict"
-      ],
-      "role": "other",
-      "meets_six": false,
-      "failed_conditions": [
-        1,
-        2,
-        3
-      ],
-      "six_detail": {
-        "monitored": false,
-        "acted": false,
-        "t1_reg": false,
-        "has_semantic_change": false,
-        "stage": "n/a",
-        "status": "active",
-        "evidence_count": 2,
-        "trust_level": "medium",
-        "source_count": 2,
-        "single_src_regulatory": false,
-        "decided": false,
-        "feedback_status": null
-      },
-      "urgency": null,
-      "tier": "now"
     }
   ],
   "decided_list": [
@@ -3261,7 +3253,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T12:22:28Z"
+      "decided_at": "2026-10-01T15:33:45Z"
     },
     {
       "event_id": "evt_96c336ca5844",
@@ -3395,7 +3387,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T12:22:28Z"
+      "decided_at": "2026-10-01T15:33:45Z"
     },
     {
       "event_id": "evt_083577177db6",
@@ -3429,7 +3421,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T12:22:28Z"
+      "decided_at": "2026-10-01T15:33:45Z"
     },
     {
       "event_id": "evt_45affa7dff0d",
@@ -3463,7 +3455,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T12:22:28Z"
+      "decided_at": "2026-10-01T15:33:45Z"
     },
     {
       "event_id": "evt_88a7555a3759",
@@ -3498,7 +3490,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T12:22:28Z"
+      "decided_at": "2026-10-01T15:33:45Z"
     },
     {
       "event_id": "evt_6622539bc4f2",
@@ -3532,7 +3524,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T12:22:28Z"
+      "decided_at": "2026-10-01T15:33:45Z"
     },
     {
       "event_id": "evt_0fe4820271f7",
@@ -3566,7 +3558,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T12:22:28Z"
+      "decided_at": "2026-10-01T15:33:45Z"
     },
     {
       "event_id": "evt_59a8566e7e13",
@@ -3600,7 +3592,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T12:22:28Z"
+      "decided_at": "2026-10-01T15:33:45Z"
     },
     {
       "event_id": "evt_03c95bd12e1d",
@@ -3634,7 +3626,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T12:22:28Z"
+      "decided_at": "2026-10-01T15:33:45Z"
     },
     {
       "event_id": "evt_db0a3669a076",
@@ -3668,7 +3660,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T12:22:28Z"
+      "decided_at": "2026-10-01T15:33:45Z"
     },
     {
       "event_id": "evt_083f21f9623f",
@@ -3702,7 +3694,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T12:22:28Z"
+      "decided_at": "2026-10-01T15:33:45Z"
     },
     {
       "event_id": "evt_f546e75a4e89",
@@ -3737,7 +3729,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T12:22:28Z"
+      "decided_at": "2026-10-01T15:33:45Z"
     },
     {
       "event_id": "evt_a03127c90224",
@@ -3880,7 +3872,7 @@
     {
       "dimension": "六条件硬化（决策门）",
       "status": "evaluated",
-      "reason": "待决 81 条中真正达到六条件决策门 0 条；各条件未达计数 {'1': 60, '2': 92, '3': 92, '4': 36, '5': 19, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
+      "reason": "待决 81 条中真正达到六条件决策门 1 条；各条件未达计数 {'1': 58, '2': 91, '3': 91, '4': 36, '5': 19, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
       "unblock": "六条件为可观测评估注解；decision_ready 子集供优先拍板，其余仍留 Human Review"
     },
     {
