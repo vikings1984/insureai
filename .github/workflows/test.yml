@@ -4,6 +4,13 @@ on:
     branches: [insureai]
   push:
     branches: [insureai]
+  # 必须显式声明：daily-collect 用 `gh workflow run test.yml` 派发本工作流（见
+  # daily-collect.yml 的 "Dispatch downstream tests + deploys after data publish"）。
+  # 缺此项时 gh 派发会失败、且因 `&& echo` 写法被静默吞掉，表现为：
+  # 整包发布提交（只含 *.json/index.html，不含源码）不触发 push 上的 Tests 运行
+  # -> deploy-cloudflare 的同 SHA 门禁永远等不到 Tests 结论 -> 轮询 12 分钟后
+  # QUALITY GATE TIMEOUT，Workers 部署被 fail-closed 拦红（2026-10-01 实测 2938fa1）。
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:

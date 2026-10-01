@@ -467,8 +467,16 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # 失败必须显式告警：`gh workflow run` 对缺少 workflow_dispatch 触发器的
+          # 工作流会失败，而 `&& echo` 写法会把失败静默吞掉——曾经因此没派发出
+          # InsureAI Tests，导致 deploy-cloudflare 的同 SHA 门禁等 12 分钟超时、
+          # Workers 部署被 fail-closed 拦红（2026-10-01 2938fa1 实测）。
           for wf in test.yml benchmark.yml deploy-pages.yml deploy-cloudflare.yml; do
-            gh workflow run "$wf" --ref "${{ github.ref_name }}" && echo "dispatched $wf"
+            if gh workflow run "$wf" --ref "${{ github.ref_name }}"; then
+              echo "dispatched $wf"
+            else
+              echo "WARN: failed to dispatch $wf (check its workflow_dispatch trigger)" >&2
+            fi
           done
       - name: Notify on failure
         if: failure()
