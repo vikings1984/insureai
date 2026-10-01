@@ -1,16 +1,17 @@
 {
   "version": "alert-v1.1",
-  "generated_at": "2026-10-01T03:51:56Z",
+  "generated_at": "2026-10-01T08:22:54Z",
   "principle": "两层收敛：Internal Diff（事实）→ Semantic Alert（≤8 条聚合）；两层准入（T1 系统级监管 / T2 个人级 Watch / T3 标准）；NEW_SOURCE/NEW_EVIDENCE 留内部、delta 不伪造、首跑仅种子、告警不改写业务判断",
   "meta": {
-    "total_events": 2475,
+    "total_events": 2486,
     "baseline_present": true,
     "basis": "delta_vs_baseline",
     "internal_diff_count": 0,
     "alert_count": 8,
     "max_alerts": 8,
     "alert_type_counts": {
-      "EVENT_MATERIAL_CHANGED": 8
+      "EVENT_MATERIAL_CHANGED": 7,
+      "DECISION_REQUIRED": 1
     },
     "admission_counts": {
       "T1_system": 8
@@ -118,16 +119,16 @@
       "admission": "T1_system"
     },
     {
-      "type": "EVENT_MATERIAL_CHANGED",
-      "canonical_event_id": "cev_5f5392f82411",
-      "event_id": "evt_65d96eadf80f",
-      "title": "长安保险风险处置新进展：中安财险获批承接其保险业务",
+      "type": "DECISION_REQUIRED",
+      "canonical_event_id": "cev_034ad0db6222",
+      "event_id": "evt_dfac7e70021a",
+      "title": "金融监管总局丛林：完善保险资金等投早、投小、投长期、投硬科技各项政策",
       "topic": "regulatory_change",
       "severity": "high",
-      "rationale": "监管效力状态：issued（系统级 T1 准入）",
+      "rationale": "待人工复核、暂无决策记录（日报优先级 91）",
       "basis": "standing",
       "changed_fields": [
-        "status"
+        "review_required"
       ],
       "admission": "T1_system"
     }
