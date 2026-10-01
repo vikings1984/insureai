@@ -1,7 +1,7 @@
 {
   "version": 1,
   "principle": "把稳健行动转化为可观察、可升级、可降级、可停止的触发规则。",
-  "trigger_count": 282,
+  "trigger_count": 342,
   "results": [
     {
       "event_id": "evt_92310abdea56",
@@ -1228,6 +1228,93 @@
       "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
     },
     {
+      "event_id": "evt_dfac7e70021a",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_dfac7e70021a",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_dfac7e70021a",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
       "event_id": "evt_a03127c90224",
       "action_id": "evidence_refresh",
       "action_label": "持续刷新证据",
@@ -2424,6 +2511,93 @@
       "scenarios": [
         "competition_follows",
         "trend_cools"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_a75c8e446fcd",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_a75c8e446fcd",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_a75c8e446fcd",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
       ],
       "owner_roles": [
         "executive",
@@ -3925,6 +4099,354 @@
       "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
     },
     {
+      "event_id": "evt_7f010a567259",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_7f010a567259",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_7f010a567259",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_c3420bbf2ee2",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_c3420bbf2ee2",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_c3420bbf2ee2",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_472f7e24cd1c",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_472f7e24cd1c",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_472f7e24cd1c",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_ce5d3e5734d9",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_ce5d3e5734d9",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_ce5d3e5734d9",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
       "event_id": "evt_443a2f6013d0",
       "action_id": "evidence_refresh",
       "action_label": "持续刷新证据",
@@ -4077,6 +4599,93 @@
       "scenarios": [
         "competition_follows",
         "trend_cools"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_1f48f344df0c",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_1f48f344df0c",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_1f48f344df0c",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
       ],
       "owner_roles": [
         "executive",
@@ -4686,6 +5295,93 @@
       "scenarios": [
         "regulation_leads",
         "trend_cools"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_65d96eadf80f",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_65d96eadf80f",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_65d96eadf80f",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
       ],
       "owner_roles": [
         "executive",
@@ -6013,267 +6709,6 @@
       "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
     },
     {
-      "event_id": "evt_08990ff04e85",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "scenario_count": 2,
-      "scenarios": [
-        "competition_follows",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_08990ff04e85",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "scenario_count": 2,
-      "scenarios": [
-        "competition_follows",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_08990ff04e85",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "scenario_count": 2,
-      "scenarios": [
-        "competition_follows",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_9c3a168bcc68",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "scenario_count": 2,
-      "scenarios": [
-        "competition_follows",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_9c3a168bcc68",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "scenario_count": 2,
-      "scenarios": [
-        "competition_follows",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_9c3a168bcc68",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "scenario_count": 2,
-      "scenarios": [
-        "competition_follows",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_56285b09be8a",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "scenario_count": 2,
-      "scenarios": [
-        "competition_follows",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_56285b09be8a",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "scenario_count": 2,
-      "scenarios": [
-        "competition_follows",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_56285b09be8a",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "scenario_count": 2,
-      "scenarios": [
-        "competition_follows",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
       "event_id": "evt_d4c6b2150c69",
       "action_id": "evidence_refresh",
       "action_label": "持续刷新证据",
@@ -6339,6 +6774,441 @@
       "scenarios": [
         "regulation_leads",
         "trend_cools"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_c4c99c6077e2",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_c4c99c6077e2",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_c4c99c6077e2",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_8466f5ee932f",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_8466f5ee932f",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_8466f5ee932f",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_14b382f0b853",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_14b382f0b853",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_14b382f0b853",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_4d25a49a76b1",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_4d25a49a76b1",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_4d25a49a76b1",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_44e73e279dc7",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_44e73e279dc7",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_44e73e279dc7",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
       ],
       "owner_roles": [
         "executive",
@@ -6541,7 +7411,7 @@
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_cools"
+        "trend_accelerates"
       ],
       "owner_roles": [
         "executive",
@@ -6570,7 +7440,7 @@
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_cools"
+        "trend_accelerates"
       ],
       "owner_roles": [
         "executive",
@@ -6599,7 +7469,181 @@
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_cools"
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_74bce32b9948",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_74bce32b9948",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_74bce32b9948",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_0b4f3b0090e6",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_0b4f3b0090e6",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_0b4f3b0090e6",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
       ],
       "owner_roles": [
         "executive",
@@ -6687,6 +7731,963 @@
       "scenarios": [
         "regulation_leads",
         "trend_cools"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_8f195ec0a9d8",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_8f195ec0a9d8",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_8f195ec0a9d8",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_1d8e38d7c067",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_1d8e38d7c067",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_1d8e38d7c067",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_3259f7221480",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_3259f7221480",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_3259f7221480",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_c08f10f46d1b",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_c08f10f46d1b",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_c08f10f46d1b",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_14ed8cd4baf3",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_14ed8cd4baf3",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_14ed8cd4baf3",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_bdd980f43622",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_bdd980f43622",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_bdd980f43622",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_4814a1772437",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_4814a1772437",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_4814a1772437",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_c3ebc60cc833",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_c3ebc60cc833",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_c3ebc60cc833",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_bac6b1449dbc",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_bac6b1449dbc",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_bac6b1449dbc",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_d5a703563d3f",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_d5a703563d3f",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_d5a703563d3f",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_d323b69bc8ab",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_d323b69bc8ab",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_d323b69bc8ab",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
       ],
       "owner_roles": [
         "executive",
@@ -6883,6 +8884,180 @@
       "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
     },
     {
+      "event_id": "evt_2c2e583c690f",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_2c2e583c690f",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_2c2e583c690f",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_ffc77103dbea",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_ffc77103dbea",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_ffc77103dbea",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
       "event_id": "evt_2f30bc19817b",
       "action_id": "evidence_refresh",
       "action_label": "持续刷新证据",
@@ -6948,6 +9123,93 @@
       "scenarios": [
         "regulation_leads",
         "trend_cools"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_2e6c86e17aaa",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_2e6c86e17aaa",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_2e6c86e17aaa",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
       ],
       "owner_roles": [
         "executive",
@@ -7144,6 +9406,93 @@
       "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
     },
     {
+      "event_id": "evt_8de3f64eb0f3",
+      "action_id": "evidence_refresh",
+      "action_label": "持续刷新证据",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前即开始持续监测，不等待单一预测成立。",
+        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
+        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
+        "stop": "事件被证实为错误、撤回或与业务范围无关。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_8de3f64eb0f3",
+      "action_id": "exposure_mapping",
+      "action_label": "做影响暴露映射",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "当前证据已足以识别可能受影响的业务环节。",
+        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
+        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
+        "stop": "证据链显示实际影响不成立。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
+      "event_id": "evt_8de3f64eb0f3",
+      "action_id": "trigger_thresholds",
+      "action_label": "建立触发阈值",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_accelerates"
+      ],
+      "owner_roles": [
+        "executive",
+        "product",
+        "underwriting",
+        "actuarial",
+        "investment",
+        "technology",
+        "claims",
+        "distribution"
+      ],
+      "trigger": {
+        "start": "建立升级/降级阈值并记录负责人。",
+        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
+        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
+        "stop": "阈值不再适用于当前事件范围。"
+      },
+      "status": "monitor",
+      "automation": "advisory_only",
+      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
+    },
+    {
       "event_id": "evt_d6f008aa0fcd",
       "action_id": "evidence_refresh",
       "action_label": "持续刷新证据",
@@ -7231,13 +9580,13 @@
       "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
     },
     {
-      "event_id": "evt_2c9c7c91aab7",
+      "event_id": "evt_514d5dc978d5",
       "action_id": "evidence_refresh",
       "action_label": "持续刷新证据",
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_cools"
+        "trend_accelerates"
       ],
       "owner_roles": [
         "executive",
@@ -7260,13 +9609,13 @@
       "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
     },
     {
-      "event_id": "evt_2c9c7c91aab7",
+      "event_id": "evt_514d5dc978d5",
       "action_id": "exposure_mapping",
       "action_label": "做影响暴露映射",
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_cools"
+        "trend_accelerates"
       ],
       "owner_roles": [
         "executive",
@@ -7289,13 +9638,13 @@
       "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
     },
     {
-      "event_id": "evt_2c9c7c91aab7",
+      "event_id": "evt_514d5dc978d5",
       "action_id": "trigger_thresholds",
       "action_label": "建立触发阈值",
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_cools"
+        "trend_accelerates"
       ],
       "owner_roles": [
         "executive",
@@ -7318,13 +9667,13 @@
       "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
     },
     {
-      "event_id": "evt_a7e2da294e54",
+      "event_id": "evt_9a557709b1bd",
       "action_id": "evidence_refresh",
       "action_label": "持续刷新证据",
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_cools"
+        "trend_accelerates"
       ],
       "owner_roles": [
         "executive",
@@ -7347,13 +9696,13 @@
       "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
     },
     {
-      "event_id": "evt_a7e2da294e54",
+      "event_id": "evt_9a557709b1bd",
       "action_id": "exposure_mapping",
       "action_label": "做影响暴露映射",
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_cools"
+        "trend_accelerates"
       ],
       "owner_roles": [
         "executive",
@@ -7376,13 +9725,13 @@
       "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
     },
     {
-      "event_id": "evt_a7e2da294e54",
+      "event_id": "evt_9a557709b1bd",
       "action_id": "trigger_thresholds",
       "action_label": "建立触发阈值",
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_cools"
+        "trend_accelerates"
       ],
       "owner_roles": [
         "executive",
@@ -7405,13 +9754,13 @@
       "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
     },
     {
-      "event_id": "evt_0086e0acbae3",
+      "event_id": "evt_4a2e7ef528a0",
       "action_id": "evidence_refresh",
       "action_label": "持续刷新证据",
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_cools"
+        "trend_accelerates"
       ],
       "owner_roles": [
         "executive",
@@ -7434,13 +9783,13 @@
       "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
     },
     {
-      "event_id": "evt_0086e0acbae3",
+      "event_id": "evt_4a2e7ef528a0",
       "action_id": "exposure_mapping",
       "action_label": "做影响暴露映射",
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_cools"
+        "trend_accelerates"
       ],
       "owner_roles": [
         "executive",
@@ -7463,13 +9812,13 @@
       "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
     },
     {
-      "event_id": "evt_0086e0acbae3",
+      "event_id": "evt_4a2e7ef528a0",
       "action_id": "trigger_thresholds",
       "action_label": "建立触发阈值",
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_cools"
+        "trend_accelerates"
       ],
       "owner_roles": [
         "executive",
@@ -7492,13 +9841,13 @@
       "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
     },
     {
-      "event_id": "evt_96308337995b",
+      "event_id": "evt_406df403d259",
       "action_id": "evidence_refresh",
       "action_label": "持续刷新证据",
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_cools"
+        "trend_accelerates"
       ],
       "owner_roles": [
         "executive",
@@ -7521,13 +9870,13 @@
       "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
     },
     {
-      "event_id": "evt_96308337995b",
+      "event_id": "evt_406df403d259",
       "action_id": "exposure_mapping",
       "action_label": "做影响暴露映射",
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_cools"
+        "trend_accelerates"
       ],
       "owner_roles": [
         "executive",
@@ -7550,622 +9899,13 @@
       "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
     },
     {
-      "event_id": "evt_96308337995b",
+      "event_id": "evt_406df403d259",
       "action_id": "trigger_thresholds",
       "action_label": "建立触发阈值",
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_19a1a6784124",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_19a1a6784124",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_19a1a6784124",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_efffc5e09b1d",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_efffc5e09b1d",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_efffc5e09b1d",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_19565d004f94",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_19565d004f94",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_19565d004f94",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_c16a4553c12c",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_c16a4553c12c",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_c16a4553c12c",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_5288038fcf1b",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_5288038fcf1b",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_5288038fcf1b",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_f6ced99b0dc8",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_f6ced99b0dc8",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_f6ced99b0dc8",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "建立升级/降级阈值并记录负责人。",
-        "escalate": "核心指标同时满足：高可信 + accelerating/forming + 至少 3 个当前周期事件。",
-        "deescalate": "核心指标转为 cooling，或证据可信度下降到 low。",
-        "stop": "阈值不再适用于当前事件范围。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_9b34dfce1e32",
-      "action_id": "evidence_refresh",
-      "action_label": "持续刷新证据",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "当前即开始持续监测，不等待单一预测成立。",
-        "escalate": "新增至少 2 个独立来源，且至少 1 个高可信来源确认同一方向。",
-        "deescalate": "连续两个周期没有新增独立证据，且主题信号转为 cooling/isolated。",
-        "stop": "事件被证实为错误、撤回或与业务范围无关。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_9b34dfce1e32",
-      "action_id": "exposure_mapping",
-      "action_label": "做影响暴露映射",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_cools"
-      ],
-      "owner_roles": [
-        "executive",
-        "product",
-        "underwriting",
-        "actuarial",
-        "investment",
-        "technology",
-        "claims",
-        "distribution"
-      ],
-      "trigger": {
-        "start": "当前证据已足以识别可能受影响的业务环节。",
-        "escalate": "出现明确的监管、资本、产品、理赔或竞争影响证据。",
-        "deescalate": "新增证据连续两个周期不再扩大影响范围。",
-        "stop": "证据链显示实际影响不成立。"
-      },
-      "status": "monitor",
-      "automation": "advisory_only",
-      "guardrail": "触发器只生成观察/复核提示，不自动执行承保、投资、合规或经营动作。"
-    },
-    {
-      "event_id": "evt_9b34dfce1e32",
-      "action_id": "trigger_thresholds",
-      "action_label": "建立触发阈值",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_cools"
+        "trend_accelerates"
       ],
       "owner_roles": [
         "executive",
@@ -8189,10 +9929,10 @@
     }
   ],
   "_provenance": {
-    "run_id": "run_20261001_082256_5ea0eb",
-    "build_sha": "eb74739b1da053b32414b9b7f9a62325f12b466a",
+    "run_id": "run_20261001_122353_f4e1e4",
+    "build_sha": "350bc1290a32c192d32b758003c9560838bf487c",
     "engine_version": "4.2",
     "schema_version": "release-provenance-v1",
-    "generated_at": "2026-10-01T08:22:56.946695+00:00"
+    "generated_at": "2026-10-01T12:23:54.655477+00:00"
   }
 }
