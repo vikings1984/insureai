@@ -67,14 +67,56 @@ def inject_release_marker(marker: str) -> None:
     INDEX.write_text(text, encoding="utf-8")
 
 
+# atomic_publish.publish() 对 staging 里每个 dict 产物盖 _provenance 章，最后才 run.save(root)。
+# 因此产物上的 _provenance.run_id 是比 run.json 更早可得、且同样准确的溯源来源。
+_PROVENANCE_ARTIFACTS = (
+    "intelligence.json",
+    "data.json",
+    "claims.json",
+    "audit_ledger.json",
+    "decisions_ledger.json",
+    "executive_terminal.json",
+)
+
+
+def _run_id_from_artifacts(root: Path) -> str | None:
+    """从已盖章的产物里取 run_id；取不到返回 None（绝不编造）。"""
+    for name in _PROVENANCE_ARTIFACTS:
+        path = root / name
+        if not path.exists():
+            continue
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if isinstance(data, dict):
+            run_id = data.get("_provenance", {}).get("run_id")
+            if run_id:
+                return run_id
+    return None
+
+
 def _read_run_id(root: Path = ROOT) -> str | None:
+    """取当前构建快照的 run_id；确实拿不到时返回 None，而不是猜一个。
+
+    两级来源，优先级 run.json > 产物 _provenance：
+    - run.json 由 atomic_publish.publish() 在**末尾**写入（run.save(root)），
+      而 daily-collect 的 "Restamp final release manifest" 排在该步骤之前，
+      此刻 run.json 尚不存在；
+    - 但 publish 早已把 _provenance 盖到每个产物上，其 run_id 与 run.json 同源同值。
+      2026-10-01 生产实跑即因此出现 release_manifest.run_id 恒为 null
+      （manifest generated_at 00:07:29.633 < run.json started_at 00:07:29.851）。
+      加此回退层后，取值不再依赖步骤顺序，门禁语义不变。
+    """
     run_path = root / "run.json"
-    if not run_path.exists():
-        return None
-    try:
-        return json.loads(run_path.read_text(encoding="utf-8")).get("run_id")
-    except (OSError, json.JSONDecodeError):
-        return None
+    if run_path.exists():
+        try:
+            run_id = json.loads(run_path.read_text(encoding="utf-8")).get("run_id")
+            if run_id:
+                return run_id
+        except (OSError, json.JSONDecodeError):
+            pass
+    return _run_id_from_artifacts(root)
 
 
 def main() -> None:
