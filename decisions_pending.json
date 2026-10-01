@@ -1,24 +1,24 @@
 {
   "version": "funnel-v1.1",
-  "generated_at": "2026-10-01T16:11:58Z",
+  "generated_at": "2026-10-01T22:22:04Z",
   "principle": "待决策洪流 → 漏斗（now/soon/watch）+ 排名靠前的待决；已决只来自真实决策记录；六条件硬化为每条待决的注解 + decision_ready 子集；分角色计数；样本<30 不结论；分桶为可观测代理",
   "meta": {
     "total_review_queue": 100,
     "non_pending": 0,
     "decision_required": 100,
-    "decided": 19,
-    "pending": 81,
+    "decided": 21,
+    "pending": 79,
     "pending_by_tier": {
       "now": 16,
-      "soon": 5,
+      "soon": 3,
       "watch": 60
     },
     "pending_by_role": {
-      "ai": 9,
+      "ai": 7,
       "ma": 3,
-      "regulatory": 21,
+      "regulatory": 22,
       "health": 0,
-      "other": 48
+      "other": 47
     },
     "decision_ready": 0,
     "decision_ready_ceids": [],
@@ -26,11 +26,11 @@
       "1": 58,
       "2": 91,
       "3": 91,
-      "4": 39,
-      "5": 19,
+      "4": 40,
+      "5": 21,
       "6": 0
     },
-    "decided_sample_size": 31,
+    "decided_sample_size": 34,
     "reached_threshold": true,
     "min_sample": 30,
     "consistency": "decision_required == decided + pending"
@@ -630,48 +630,15 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_29cef2847b94",
-        "canonical_event_id": "cev_7b059f9e39d6",
-        "title": "百慕大再保险公司和边车推动美国人寿保险业扩张： ALIRT",
-        "topic": "product_innovation",
-        "priority": 50,
-        "trust_level": "medium",
-        "reason_types": [
-          "evidence"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 2,
-          "trust_level": "medium",
-          "source_count": 2,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_50aed8c070f8",
-        "canonical_event_id": "cev_a9a813991149",
-        "title": "对于 ILS 来说，吸引资本不是挑战，而是创造新的部署机会：LGT 的 Paul",
+        "event_id": "evt_6e5614ca2179",
+        "canonical_event_id": "cev_bafd134ac154",
+        "title": "保险资管“长钱长投”壮大新动能",
         "topic": "capital_reinsurance",
         "priority": 40,
         "trust_level": "medium",
         "reason_types": [
-          "change_impact"
+          "change_impact",
+          "event_cluster"
         ],
         "role": "other",
         "meets_six": false,
@@ -698,65 +665,34 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_decea3801683",
-        "canonical_event_id": "cev_8222d489f357",
-        "title": "随着加拿大零售保险部门的出售完成，珠穆朗玛峰“进一步强化”其投资组合",
-        "topic": "ai_intelligent",
+        "event_id": "evt_2ea292698ccb",
+        "canonical_event_id": "cev_c3dc11775dff",
+        "title": "佛罗里达州专员因盈余问题暂停 A-Cap 的大西洋海岸生活",
+        "topic": "product_innovation",
         "priority": 40,
         "trust_level": "medium",
         "reason_types": [
           "change_impact"
         ],
-        "role": "ai",
+        "role": "regulatory",
         "meets_six": false,
         "failed_conditions": [
+          1,
           2,
-          3
+          3,
+          4
         ],
         "six_detail": {
-          "monitored": true,
+          "monitored": false,
           "acted": false,
           "t1_reg": false,
           "has_semantic_change": false,
           "stage": "n/a",
-          "status": "active",
+          "status": "unknown",
           "evidence_count": 1,
           "trust_level": "medium",
           "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_eff9b8cc5095",
-        "canonical_event_id": "cev_48df7a153a91",
-        "title": "随着公司进入下一个增长阶段，VIPR 任命 Tom Boucher 为非执行主席",
-        "topic": "ai_intelligent",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "ai",
-        "meets_six": false,
-        "failed_conditions": [
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": true,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
+          "single_src_regulatory": true,
           "decided": false,
           "feedback_status": null
         },
@@ -3259,7 +3195,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T16:10:19Z"
+      "decided_at": "2026-10-01T22:20:18Z"
     },
     {
       "event_id": "evt_96c336ca5844",
@@ -3393,7 +3329,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T16:10:19Z"
+      "decided_at": "2026-10-01T22:20:18Z"
     },
     {
       "event_id": "evt_083577177db6",
@@ -3427,7 +3363,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T16:10:19Z"
+      "decided_at": "2026-10-01T22:20:18Z"
     },
     {
       "event_id": "evt_45affa7dff0d",
@@ -3461,7 +3397,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T16:10:19Z"
+      "decided_at": "2026-10-01T22:20:18Z"
     },
     {
       "event_id": "evt_88a7555a3759",
@@ -3496,7 +3432,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T16:10:19Z"
+      "decided_at": "2026-10-01T22:20:18Z"
     },
     {
       "event_id": "evt_6622539bc4f2",
@@ -3530,7 +3466,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T16:10:19Z"
+      "decided_at": "2026-10-01T22:20:18Z"
     },
     {
       "event_id": "evt_0fe4820271f7",
@@ -3701,6 +3637,74 @@
       },
       "urgency": "watch",
       "decided_at": "2026-10-01T16:10:19Z"
+    },
+    {
+      "event_id": "evt_29cef2847b94",
+      "canonical_event_id": "cev_7b059f9e39d6",
+      "title": "百慕大再保险公司和边车推动美国人寿保险业扩张： ALIRT",
+      "topic": "product_innovation",
+      "priority": 50,
+      "trust_level": "medium",
+      "reason_types": [
+        "evidence"
+      ],
+      "role": "other",
+      "meets_six": false,
+      "failed_conditions": [
+        2,
+        3,
+        5
+      ],
+      "six_detail": {
+        "monitored": false,
+        "acted": true,
+        "t1_reg": false,
+        "has_semantic_change": false,
+        "stage": "n/a",
+        "status": "active",
+        "evidence_count": 2,
+        "trust_level": "medium",
+        "source_count": 2,
+        "single_src_regulatory": false,
+        "decided": true,
+        "feedback_status": null
+      },
+      "urgency": "soon",
+      "decided_at": "2026-10-01T22:20:18Z"
+    },
+    {
+      "event_id": "evt_e833bbc251da",
+      "canonical_event_id": "cev_f14b0669672a",
+      "title": "Talcott 与高盛合作推出价值 10 亿美元的 West Grove Re sidecar",
+      "topic": "product_innovation",
+      "priority": 45,
+      "trust_level": "medium",
+      "reason_types": [
+        "counterfactual"
+      ],
+      "role": "other",
+      "meets_six": false,
+      "failed_conditions": [
+        2,
+        3,
+        5
+      ],
+      "six_detail": {
+        "monitored": false,
+        "acted": true,
+        "t1_reg": false,
+        "has_semantic_change": false,
+        "stage": "n/a",
+        "status": "active",
+        "evidence_count": 2,
+        "trust_level": "medium",
+        "source_count": 2,
+        "single_src_regulatory": false,
+        "decided": true,
+        "feedback_status": null
+      },
+      "urgency": "soon",
+      "decided_at": "2026-10-01T22:20:18Z"
     },
     {
       "event_id": "evt_f546e75a4e89",
@@ -3878,7 +3882,7 @@
     {
       "dimension": "六条件硬化（决策门）",
       "status": "evaluated",
-      "reason": "待决 81 条中真正达到六条件决策门 0 条；各条件未达计数 {'1': 58, '2': 91, '3': 91, '4': 39, '5': 19, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
+      "reason": "待决 79 条中真正达到六条件决策门 0 条；各条件未达计数 {'1': 58, '2': 91, '3': 91, '4': 40, '5': 21, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
       "unblock": "六条件为可观测评估注解；decision_ready 子集供优先拍板，其余仍留 Human Review"
     },
     {

@@ -1,6 +1,6 @@
 {
   "version": "p2.5-v1.0",
-  "generated_at": "2026-10-01T16:11:57Z",
+  "generated_at": "2026-10-01T22:22:03Z",
   "principle": "只聚合既有 artifact 中的事实；观察与结论分离，样本不足时不出结论，不伪造时间线",
   "sources": {
     "p2_state.json": {
@@ -10,17 +10,17 @@
     },
     "review_queue.json": {
       "items": 100,
-      "decided": 12,
-      "pending": 88
+      "decided": 8,
+      "pending": 92
     },
     "p2_daily_brief.json": {
       "brief": 20
     },
     "knowledge_graph.json": {
-      "events_indexed": 2618
+      "events_indexed": 2620
     },
     "decisions_ledger.json": {
-      "distinct_events": 31
+      "distinct_events": 34
     }
   },
   "watchlists": {
@@ -301,17 +301,18 @@
   },
   "decisions": {
     "observations": {
-      "sample_size": 31,
+      "sample_size": 34,
       "by_urgency": {
         "watch": 16,
-        "now": 15
+        "soon": 6,
+        "now": 12
       },
       "by_action": {
         "评估战略与资本影响": 1,
         "检查监管暴露与经营影响": 3,
         "复核资本配置与竞争格局": 11,
         "评估市场与竞争响应": 3,
-        "保持跟踪，等待更多独立证据或业务信号": 13
+        "保持跟踪，等待更多独立证据或业务信号": 16
       },
       "by_topic": {},
       "by_event_type": {},
@@ -351,11 +352,6 @@
       {
         "event_id": "evt_f7ca8c219612",
         "decided_at": "2026-09-11T02:31:22Z",
-        "urgency": "now"
-      },
-      {
-        "event_id": "evt_e833bbc251da",
-        "decided_at": "2026-09-11T10:35:44Z",
         "urgency": "now"
       },
       {
@@ -404,31 +400,6 @@
         "urgency": "now"
       },
       {
-        "event_id": "evt_ef42853e4111",
-        "decided_at": "2026-09-11T10:35:44Z",
-        "urgency": "now"
-      },
-      {
-        "event_id": "evt_4cd0316ba817",
-        "decided_at": "2026-09-11T10:35:44Z",
-        "urgency": "now"
-      },
-      {
-        "event_id": "evt_92310abdea56",
-        "decided_at": "2026-10-01T16:10:19Z",
-        "urgency": "watch"
-      },
-      {
-        "event_id": "evt_3429758517ea",
-        "decided_at": "2026-10-01T16:10:19Z",
-        "urgency": "watch"
-      },
-      {
-        "event_id": "evt_083577177db6",
-        "decided_at": "2026-10-01T16:10:19Z",
-        "urgency": "watch"
-      },
-      {
         "event_id": "evt_0fe4820271f7",
         "decided_at": "2026-10-01T16:10:19Z",
         "urgency": "watch"
@@ -454,30 +425,75 @@
         "urgency": "watch"
       },
       {
-        "event_id": "evt_6622539bc4f2",
+        "event_id": "evt_f546e75a4e89",
         "decided_at": "2026-10-01T16:10:19Z",
         "urgency": "watch"
       },
       {
+        "event_id": "evt_92310abdea56",
+        "decided_at": "2026-10-01T22:20:18Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_3429758517ea",
+        "decided_at": "2026-10-01T22:20:18Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_083577177db6",
+        "decided_at": "2026-10-01T22:20:18Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_e833bbc251da",
+        "decided_at": "2026-10-01T22:20:18Z",
+        "urgency": "soon"
+      },
+      {
+        "event_id": "evt_6622539bc4f2",
+        "decided_at": "2026-10-01T22:20:18Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_ef42853e4111",
+        "decided_at": "2026-10-01T22:20:18Z",
+        "urgency": "soon"
+      },
+      {
+        "event_id": "evt_4cd0316ba817",
+        "decided_at": "2026-10-01T22:20:18Z",
+        "urgency": "soon"
+      },
+      {
         "event_id": "evt_45affa7dff0d",
-        "decided_at": "2026-10-01T16:10:19Z",
+        "decided_at": "2026-10-01T22:20:18Z",
         "urgency": "watch"
       },
       {
         "event_id": "evt_88a7555a3759",
-        "decided_at": "2026-10-01T16:10:19Z",
+        "decided_at": "2026-10-01T22:20:18Z",
         "urgency": "watch"
       },
       {
-        "event_id": "evt_f546e75a4e89",
-        "decided_at": "2026-10-01T16:10:19Z",
-        "urgency": "watch"
+        "event_id": "evt_2561fbf5f774",
+        "decided_at": "2026-10-01T22:20:18Z",
+        "urgency": "soon"
+      },
+      {
+        "event_id": "evt_faa2d810e982",
+        "decided_at": "2026-10-01T22:20:18Z",
+        "urgency": "soon"
+      },
+      {
+        "event_id": "evt_29cef2847b94",
+        "decided_at": "2026-10-01T22:20:18Z",
+        "urgency": "soon"
       }
     ],
     "conclusions": [
       {
         "type": "urgency_preference",
-        "statement": "最常采用的处置节奏是 watch（16/31）",
+        "statement": "最常采用的处置节奏是 watch（16/34）",
         "basis": "决策账本/复核队列的 decision.urgency 分布（真实累计，不伪造）"
       }
     ],
@@ -487,23 +503,7 @@
     "basis": "knowledge_graph.json 中 Event --PARTICIPATES_IN--> Company 的一跳邻居（不做多跳扩散）",
     "acted_entities": [
       {
-        "key": "Guy Carpenter",
-        "count": 2
-      },
-      {
-        "key": "AM Best",
-        "count": 1
-      },
-      {
-        "key": "GC Securities",
-        "count": 1
-      },
-      {
-        "key": "KCC",
-        "count": 1
-      },
-      {
-        "key": "Klisura",
+        "key": "ALIRT",
         "count": 1
       },
       {
@@ -515,7 +515,15 @@
         "count": 1
       },
       {
+        "key": "Talcott",
+        "count": 1
+      },
+      {
         "key": "Tower",
+        "count": 1
+      },
+      {
+        "key": "West Grove Re",
         "count": 1
       },
       {
@@ -524,6 +532,14 @@
       },
       {
         "key": "传统整合公司",
+        "count": 1
+      },
+      {
+        "key": "保险服务公司",
+        "count": 1
+      },
+      {
+        "key": "全面推进保险",
         "count": 1
       }
     ],
@@ -571,14 +587,6 @@
     ],
     "overlap_entities": [
       {
-        "key": "保险公司",
-        "count": 2
-      },
-      {
-        "key": "KCC",
-        "count": 1
-      },
-      {
         "key": "Marco Capital",
         "count": 1
       },
@@ -601,13 +609,9 @@
       {
         "key": "再保险",
         "count": 1
-      },
-      {
-        "key": "再保险公司",
-        "count": 1
       }
     ],
-    "acted_event_count": 12,
+    "acted_event_count": 8,
     "watched_event_count": 20,
     "quality": {
       "cleaning": "none",
@@ -616,11 +620,11 @@
     }
   },
   "backlog": {
-    "sample_size": 88,
+    "sample_size": 92,
     "by_topic": {
       "channel_transformation": 3,
-      "capital_reinsurance": 59,
-      "ai_intelligent": 11,
+      "capital_reinsurance": 64,
+      "ai_intelligent": 10,
       "product_innovation": 2,
       "pension_finance": 1,
       "climate_catastrophe": 3,
@@ -629,18 +633,17 @@
     },
     "by_event_type": {
       "claims_loss": 15,
-      "industry_update": 11,
+      "industry_update": 9,
       "product": 7,
       "acquisition": 3,
-      "capital": 21,
-      "personnel": 1,
-      "market_entry": 5,
-      "regulatory": 21,
+      "capital": 25,
+      "market_entry": 6,
+      "regulatory": 23,
       "rating": 4
     },
     "by_trust_level": {
       "low": 11,
-      "medium": 77
+      "medium": 81
     },
     "top_by_priority": [
       {
@@ -735,31 +738,12 @@
       "decision": {
         "urgency": "watch",
         "action": "检查监管暴露与经营影响",
-        "decided_at": "2026-10-01T16:10:19Z"
+        "decided_at": "2026-10-01T22:20:18Z"
       },
-      "decided_at": "2026-10-01T16:10:19Z",
+      "decided_at": "2026-10-01T22:20:18Z",
       "event_published_at": "2026-06-12T09:00:00Z",
       "entities": [
         "全面推进保险"
-      ]
-    },
-    {
-      "event_id": "evt_03c95bd12e1d",
-      "title": "AM Best & Guy Carpenter 预计 2026 年专用再保险资本将达到创纪录的 7050 亿美元",
-      "topic": "capital_reinsurance",
-      "event_type": "capital",
-      "priority": 50,
-      "decision": {
-        "urgency": "watch",
-        "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-10-01T16:10:19Z"
-      },
-      "decided_at": "2026-10-01T16:10:19Z",
-      "event_published_at": "2026-08-10T13:00:31Z",
-      "entities": [
-        "AM Best",
-        "Guy Carpenter",
-        "年专用再保险"
       ]
     },
     {
@@ -771,49 +755,31 @@
       "decision": {
         "urgency": "watch",
         "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-10-01T16:10:19Z"
+        "decided_at": "2026-10-01T22:20:18Z"
       },
-      "decided_at": "2026-10-01T16:10:19Z",
+      "decided_at": "2026-10-01T22:20:18Z",
       "event_published_at": "2026-08-03T12:00:25Z",
       "entities": [
         "再保险"
       ]
     },
     {
-      "event_id": "evt_083f21f9623f",
-      "title": "加拿大皇家银行分析师预计，定价压力和较高的CAT损失将在26年第二季度对美国保险公司造成压力",
-      "topic": "capital_reinsurance",
-      "event_type": "capital",
+      "event_id": "evt_29cef2847b94",
+      "title": "百慕大再保险公司和边车推动美国人寿保险业扩张： ALIRT",
+      "topic": "product_innovation",
+      "event_type": "industry_update",
       "priority": 50,
       "decision": {
-        "urgency": "watch",
-        "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-10-01T16:10:19Z"
+        "urgency": "soon",
+        "action": "保持跟踪，等待更多独立证据或业务信号",
+        "decided_at": "2026-10-01T22:20:18Z"
       },
-      "decided_at": "2026-10-01T16:10:19Z",
-      "event_published_at": "2026-07-13T15:00:27Z",
+      "decided_at": "2026-10-01T22:20:18Z",
+      "event_published_at": "2026-08-21T07:02:39Z",
       "entities": [
-        "加拿大皇家银行",
-        "年第二季度对美国保险公司"
-      ]
-    },
-    {
-      "event_id": "evt_0fe4820271f7",
-      "title": "KCC 报告称，随着再保险公司/保险公司寻求更多当前风险洞察力，人工智能正在重塑猫模型",
-      "topic": "ai_intelligent",
-      "event_type": "capital",
-      "priority": 50,
-      "decision": {
-        "urgency": "watch",
-        "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-10-01T16:10:19Z"
-      },
-      "decided_at": "2026-10-01T16:10:19Z",
-      "event_published_at": "2026-08-19T15:00:02Z",
-      "entities": [
-        "KCC",
-        "保险公司",
-        "再保险公司"
+        "ALIRT",
+        "百慕大再保险公司",
+        "美国人寿保险"
       ]
     },
     {
@@ -825,29 +791,14 @@
       "decision": {
         "urgency": "watch",
         "action": "评估市场与竞争响应",
-        "decided_at": "2026-10-01T16:10:19Z"
+        "decided_at": "2026-10-01T22:20:18Z"
       },
-      "decided_at": "2026-10-01T16:10:19Z",
+      "decided_at": "2026-10-01T22:20:18Z",
       "event_published_at": "2026-09-21T07:00:48Z",
       "entities": [
         "Tower",
         "以降低的成本将首次巨灾再保险"
       ]
-    },
-    {
-      "event_id": "evt_59a8566e7e13",
-      "title": "另类资本的崛起将为金融投资者创造更大的空间：盖伊·卡彭特的卢梭",
-      "topic": "capital_reinsurance",
-      "event_type": "market_entry",
-      "priority": 50,
-      "decision": {
-        "urgency": "watch",
-        "action": "评估市场与竞争响应",
-        "decided_at": "2026-10-01T16:10:19Z"
-      },
-      "decided_at": "2026-10-01T16:10:19Z",
-      "event_published_at": "2026-08-13T13:00:30Z",
-      "entities": []
     },
     {
       "event_id": "evt_6622539bc4f2",
@@ -858,9 +809,9 @@
       "decision": {
         "urgency": "watch",
         "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-10-01T16:10:19Z"
+        "decided_at": "2026-10-01T22:20:18Z"
       },
-      "decided_at": "2026-10-01T16:10:19Z",
+      "decided_at": "2026-10-01T22:20:18Z",
       "event_published_at": "2026-09-08T06:26:38Z",
       "entities": []
     },
@@ -873,9 +824,9 @@
       "decision": {
         "urgency": "watch",
         "action": "检查监管暴露与经营影响",
-        "decided_at": "2026-10-01T16:10:19Z"
+        "decided_at": "2026-10-01T22:20:18Z"
       },
-      "decided_at": "2026-10-01T16:10:19Z",
+      "decided_at": "2026-10-01T22:20:18Z",
       "event_published_at": "2026-09-10T00:00:00+08:00",
       "entities": [
         "朱俊生谈保险"
@@ -890,9 +841,9 @@
       "decision": {
         "urgency": "watch",
         "action": "评估战略与资本影响",
-        "decided_at": "2026-10-01T16:10:19Z"
+        "decided_at": "2026-10-01T22:20:18Z"
       },
-      "decided_at": "2026-10-01T16:10:19Z",
+      "decided_at": "2026-10-01T22:20:18Z",
       "event_published_at": "2026-08-20T15:58:14Z",
       "entities": [
         "Marco Capital",
@@ -902,39 +853,21 @@
       ]
     },
     {
-      "event_id": "evt_db0a3669a076",
-      "title": "GC Securities 在 2026 年上半年发行了 20 只巨灾债券，总额达到创纪录的 50 亿美元：Guy Carpenter 首席执行官 Klisura",
-      "topic": "capital_reinsurance",
-      "event_type": "capital",
-      "priority": 50,
+      "event_id": "evt_e833bbc251da",
+      "title": "Talcott 与高盛合作推出价值 10 亿美元的 West Grove Re sidecar",
+      "topic": "product_innovation",
+      "event_type": "product",
+      "priority": 45,
       "decision": {
-        "urgency": "watch",
-        "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-10-01T16:10:19Z"
+        "urgency": "soon",
+        "action": "保持跟踪，等待更多独立证据或业务信号",
+        "decided_at": "2026-10-01T22:20:18Z"
       },
-      "decided_at": "2026-10-01T16:10:19Z",
-      "event_published_at": "2026-07-21T14:41:14Z",
+      "decided_at": "2026-10-01T22:20:18Z",
+      "event_published_at": "2026-08-04T14:30:58Z",
       "entities": [
-        "GC Securities",
-        "Guy Carpenter",
-        "Klisura"
-      ]
-    },
-    {
-      "event_id": "evt_f546e75a4e89",
-      "title": "战略适应性、更快的决策是未来再保险领导者的关键：安永",
-      "topic": "capital_reinsurance",
-      "event_type": "regulatory",
-      "priority": 30,
-      "decision": {
-        "urgency": "watch",
-        "action": "检查监管暴露与经营影响",
-        "decided_at": "2026-10-01T16:10:19Z"
-      },
-      "decided_at": "2026-10-01T16:10:19Z",
-      "event_published_at": "2026-09-28T13:00:52Z",
-      "entities": [
-        "更快的决策是未来再保险"
+        "Talcott",
+        "West Grove Re"
       ]
     }
   ]
