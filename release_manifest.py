@@ -107,6 +107,11 @@ def _read_run_id(root: Path = ROOT) -> str | None:
       2026-10-01 生产实跑即因此出现 release_manifest.run_id 恒为 null
       （manifest generated_at 00:07:29.633 < run.json started_at 00:07:29.851）。
       加此回退层后，取值不再依赖步骤顺序，门禁语义不变。
+
+    注意：本函数跑在 publish 之前，取到的必然是**上一轮**的 run_id（2026-10-01 实测
+    082256 vs 本轮 122353）。最终正确的 run_id 由 atomic_publish.build_staging() 在
+    build 阶段补盖（_restamp_release_manifest），并同步重算 release_provenance 里记录的
+    release_manifest_sha256——所以这里只负责"不留空值"，不负责"一定是本轮"。
     """
     run_path = root / "run.json"
     if run_path.exists():

@@ -92,6 +92,47 @@ def _sha256_file(path: Path) -> str:
     return h.hexdigest()
 
 
+def _restamp_release_manifest(staging: Path, run: Run) -> None:
+    """把**本轮** run_id 盖到站点发布清单上，并同步 release_provenance 里记录的清单哈希。
+
+    为什么必须在这里补一刀
+    ----------------------
+    daily-collect 的 ``Restamp final release manifest`` 步骤跑在 ``atomic_publish.py
+    release`` **之前**；那一刻 ``run.json`` 还没被 ``publish()`` 写出，工作区里的产物
+    还是上一次 checkout 的旧版，所以 ``release_manifest.py`` 只能取到**上一轮**的
+    run_id（2026-10-01 生产实跑：release_manifest.run_id = run_20261001_082256_5ea0eb，
+    而同轮 run.json / claims.json / manifest._provenance 全是 run_20261001_122353_f4e1e4）。
+
+    这里在 build 阶段（stamp 之后、build_manifest 算包内哈希之前）把顶层 ``run_id``
+    换成当前 run，并把 ``release_provenance.json`` 里记录的
+    ``artifacts.release_manifest_sha256`` 同步为新清单的哈希——否则包内两份文件会
+    自相矛盾，部署验证比对比对会失败。
+    """
+    manifest_path = staging / "release_manifest.json"
+    if not manifest_path.exists():
+        return
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return
+    if not isinstance(manifest, dict) or manifest.get("run_id") == run.run_id:
+        return
+    manifest["run_id"] = run.run_id
+    manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    prov_path = staging / "release_provenance.json"
+    if not prov_path.exists():
+        return
+    try:
+        prov = json.loads(prov_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return
+    artifacts = prov.get("artifacts") if isinstance(prov, dict) else None
+    if isinstance(artifacts, dict) and "release_manifest_sha256" in artifacts:
+        artifacts["release_manifest_sha256"] = _sha256_file(manifest_path)
+        prov_path.write_text(json.dumps(prov, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
 def build_staging(*, root: Path = ROOT, staging: Path = STAGING, run: Run | None = None) -> Run:
     """Copy the production artifact set into ``staging/``, stamping provenance.
 
@@ -113,6 +154,9 @@ def build_staging(*, root: Path = ROOT, staging: Path = STAGING, run: Run | None
         if isinstance(data, dict):
             stamp_provenance(data, run)
         (staging / name).write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    # 清单在 daily-collect 里生成时拿不到本轮 run_id（见 _restamp_release_manifest 的说明），
+    # 这里补盖，且必须在 run.save(staging) 与 build_manifest() 之前，保证包内自洽。
+    _restamp_release_manifest(staging, run)
     run.save(staging)
     return run
 

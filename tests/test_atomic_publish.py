@@ -124,6 +124,38 @@ class AtomicPublishTest(unittest.TestCase):
         # staging left intact for the next retry
         self.assertEqual(json.loads((self.staging / "data.json").read_text(encoding="utf-8")), {"news": [{"id": "STAGE_B"}]})
 
+    def test_release_manifest_run_id_follows_current_run_not_previous(self) -> None:
+        """站点清单在 daily-collect 里生成时只能取到上一轮 run_id，build 阶段必须补盖本轮。"""
+        stale_run_id = "run_20261001_082256_5ea0eb"
+        _write(self.root / "release_manifest.json", {
+            "version": 1,
+            "run_id": stale_run_id,
+            "release_marker": "insureai-abcdef0123456789",
+            "quality_status": "passed",
+        })
+        _write(self.root / "release_provenance.json", {
+            "version": 1,
+            "artifacts": {"release_manifest_sha256": atomic_publish._sha256_file(self.root / "release_manifest.json")},
+        })
+        with mock.patch.object(atomic_publish, "run_gate", return_value=FAKE_GATE_PASSED):
+            run = atomic_publish.build_staging(root=self.root, staging=self.staging)
+        published = json.loads((self.staging / "release_manifest.json").read_text(encoding="utf-8"))
+        self.assertNotEqual(published["run_id"], stale_run_id)
+        self.assertEqual(published["run_id"], run.run_id)
+        # release_manifest.json 的 _provenance 章由 build 阶段盖，本就该是本轮
+        self.assertEqual(published["_provenance"]["run_id"], run.run_id)
+        # 包内哈希必须同步重算，否则 release_provenance 与清单自相矛盾
+        prov = json.loads((self.staging / "release_provenance.json").read_text(encoding="utf-8"))
+        self.assertEqual(prov["artifacts"]["release_manifest_sha256"], atomic_publish._sha256_file(self.staging / "release_manifest.json"))
+
+    def test_restamped_bundle_still_passes_hash_validation(self) -> None:
+        _write(self.root / "release_manifest.json", {"version": 1, "run_id": "run_previous", "quality_status": "passed"})
+        _write(self.root / "release_provenance.json", {"version": 1, "artifacts": {"release_manifest_sha256": "0" * 64}})
+        with mock.patch.object(atomic_publish, "run_gate", return_value=FAKE_GATE_PASSED):
+            atomic_publish.build_staging(root=self.root, staging=self.staging)
+            atomic_publish.build_manifest(staging=self.staging)
+            atomic_publish.validate_bundle(staging=self.staging)
+
     def test_release_end_to_end_publishes_when_gate_passes(self) -> None:
         with mock.patch.object(atomic_publish, "run_gate", return_value=FAKE_GATE_PASSED):
             out = atomic_publish.release(root=self.root, staging=self.staging)
