@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 from urllib.parse import urlparse
 
 from source_tiers import tier_for_item
+from source_registry import independent_source_groups, source_group, source_group_ids
 
 CLAIM_SCHEMA_VERSION = 3
 
@@ -366,6 +367,8 @@ def _evidence_row(item: dict, relation: str, matched_span: str = "") -> dict:
         "source_name": item.get("source_name"),
         "source_url": item.get("source_url"),
         "domain": _domain(item),
+        # V2 §7.1：证据归属到"独立信源组"，而不是原始 hostname
+        "source_group": source_group(item),
         "source_tier": tier_for_item(item),
         "published_at": item.get("published_at"),
         "date_verified": bool(item.get("date_verified")),
@@ -413,15 +416,17 @@ def _confidence(supporting: list[dict], contradicting: list[dict]) -> int:
     if not supporting:
         return 20
     domains = {x["domain"] for x in supporting if x.get("domain")}
+    # 独立性加分按**信源组**算：同集团多频道不该叠加"多源"加成
+    groups = {x.get("source_group") for x in supporting if x.get("source_group")}
     best_tier = min(x.get("source_tier") or 3 for x in supporting)
     tier_score = {1: 40, 2: 34, 3: 26, 4: 18}.get(best_tier, 26)
-    score = 30 + tier_score + 15 * min(max(len(domains) - 1, 0), 3)
-    if len(domains) >= 2:
+    score = 30 + tier_score + 15 * min(max(len(groups) - 1, 0), 3)
+    if len(groups) >= 2:
         score += 10
     if contradicting:
         score -= 25
     score = max(0, min(100, round(score)))
-    if len(domains) <= 1:
+    if len(groups) <= 1:
         score = min(score, 65)
     return score
 
@@ -461,13 +466,20 @@ def attach_evidence(propositions: list[dict], items: list[dict]) -> list[dict]:
             "evidence": supporting,
             "evidence_refs": [x["evidence_id"] for x in supporting],
             "evidence_count": len(supporting),
+            # 保留原始域名计数仅供展示/回溯（UI 仍在用），判定一律以信源组为准
             "independent_domains": len({x["domain"] for x in supporting if x.get("domain")}),
+            "independent_source_groups": independent_source_groups(supporting),
+            "source_groups": source_group_ids(supporting),
         }
         if contradicting and supporting:
             claim["verification_status"] = "conflicted"
         elif not supporting:
             claim["verification_status"] = "unverified"
-        elif claim["independent_domains"] >= 2:
+        # V2 §7.1：cross_checked 必须基于 >= 2 个**独立信源组**。
+        # 改造前此处用 independent_domains >= 2，会把同一门户的不同频道
+        # （news.sina.com.cn + finance.sina.com.cn）或 www / 裸域当成两个独立信源，
+        # 从而把单一信源的结论误标为"已交叉验证"——对保险情报是最危险的误判类型。
+        elif claim["independent_source_groups"] >= 2:
             claim["verification_status"] = "cross_checked"
         else:
             claim["verification_status"] = "single_source"
