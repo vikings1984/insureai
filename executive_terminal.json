@@ -1,17 +1,17 @@
 {
   "version": 3,
-  "generated_at": "2026-10-01T00:06:50.482165+00:00",
-  "source_commit": "25a6ee42bb983212885a59a79ab3d180dbf85482",
+  "generated_at": "2026-10-01T03:51:19.184445+00:00",
+  "source_commit": "6913910a9e37496cd2048487e9188b4d597356a0",
   "summary": {
-    "event_count": 2472,
+    "event_count": 2475,
     "rising_topics": 1,
     "review_queue": 100,
     "attention_signals": 30,
     "avg_evidence_coverage": 26.6,
     "cross_checked_claims": 41,
-    "single_source_claims": 3235,
+    "single_source_claims": 3238,
     "credibility_status": "review",
-    "deployment_status": "stale"
+    "deployment_status": "verified"
   },
   "what_changed": [
     {
@@ -781,40 +781,20 @@
       "trend_attribution": null
     },
     {
-      "event_id": "deployment:production",
-      "title": "生产部署状态：deployment_release_mismatch",
-      "urgency": "now",
-      "trust_level": null,
-      "attention_score": 98,
-      "reasons": [
-        "deployment_release_mismatch",
-        "published_marker_behind_expected"
-      ],
-      "source": "deployment_verification.json",
-      "deployment_risk": {
-        "version": 4,
-        "classification": "deployment_release_mismatch",
-        "priority": 98,
-        "attention": true,
-        "verified": false,
-        "status": "stale",
-        "error": "published_marker_behind_expected",
-        "checked_at": "2026-09-30T22:11:31.180332+00:00",
-        "trend": {
-          "version": 1,
-          "classification": "single_failure",
-          "failure_streak": 1,
-          "sample_count": 22,
-          "generated_at": "2026-10-01T00:05:47.767223+00:00"
-        },
-        "next_step": "核对线上 release marker 与当前 release manifest；确认是否仍运行旧版本，并检查最近一次发布状态。",
-        "generated_at": "2026-10-01T00:05:47.767248+00:00",
-        "principle": "部署风险只影响人工注意力与发布可信度，不修改 Decision/Trust/Urgency。"
-      }
-    },
-    {
       "event_id": "evt_7635b5984895",
       "title": "慕尼黑再保险 (Munich Re) 跻身劳合社全球 50 家最大再保险公司之列：AM Best",
+      "urgency": null,
+      "trust_level": "low",
+      "attention_score": 95,
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "trend_attribution": null
+    },
+    {
+      "event_id": "evt_578b5faa780f",
+      "title": "Verisk 晋升 Harry White 为财产索赔服务主管",
       "urgency": null,
       "trust_level": "low",
       "attention_score": 95,
@@ -844,8 +824,8 @@
         }
       ],
       "article_ids": [
-        327,
-        634
+        329,
+        636
       ],
       "source_count": 2,
       "trust_level": "low",
@@ -859,7 +839,14 @@
         "freshness_status": "ok",
         "date_coverage": 1.0,
         "stale": false,
-        "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency"
+        "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency",
+        "_provenance": {
+          "run_id": "run_20261001_000729_70d044",
+          "build_sha": "25a6ee42bb983212885a59a79ab3d180dbf85482",
+          "engine_version": "4.2",
+          "schema_version": "release-provenance-v1",
+          "generated_at": "2026-10-01T00:07:31.023390+00:00"
+        }
       },
       "trend_attribution": null
     },
@@ -881,8 +868,8 @@
         }
       ],
       "article_ids": [
-        1634,
-        1636
+        1636,
+        1638
       ],
       "source_count": 2,
       "trust_level": "low",
@@ -896,7 +883,14 @@
         "freshness_status": "ok",
         "date_coverage": 1.0,
         "stale": false,
-        "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency"
+        "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency",
+        "_provenance": {
+          "run_id": "run_20261001_000729_70d044",
+          "build_sha": "25a6ee42bb983212885a59a79ab3d180dbf85482",
+          "engine_version": "4.2",
+          "schema_version": "release-provenance-v1",
+          "generated_at": "2026-10-01T00:07:31.023390+00:00"
+        }
       },
       "trend_attribution": null
     },
@@ -918,8 +912,8 @@
         }
       ],
       "article_ids": [
-        2410,
-        2413
+        2412,
+        2415
       ],
       "source_count": 2,
       "trust_level": "low",
@@ -933,7 +927,14 @@
         "freshness_status": "ok",
         "date_coverage": 1.0,
         "stale": false,
-        "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency"
+        "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency",
+        "_provenance": {
+          "run_id": "run_20261001_000729_70d044",
+          "build_sha": "25a6ee42bb983212885a59a79ab3d180dbf85482",
+          "engine_version": "4.2",
+          "schema_version": "release-provenance-v1",
+          "generated_at": "2026-10-01T00:07:31.023390+00:00"
+        }
       },
       "trend_attribution": null
     },
@@ -955,9 +956,9 @@
         }
       ],
       "article_ids": [
-        1405,
-        1440,
-        1592
+        1407,
+        1442,
+        1594
       ],
       "source_count": 2,
       "trust_level": "low",
@@ -971,7 +972,14 @@
         "freshness_status": "ok",
         "date_coverage": 1.0,
         "stale": false,
-        "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency"
+        "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency",
+        "_provenance": {
+          "run_id": "run_20261001_000729_70d044",
+          "build_sha": "25a6ee42bb983212885a59a79ab3d180dbf85482",
+          "engine_version": "4.2",
+          "schema_version": "release-provenance-v1",
+          "generated_at": "2026-10-01T00:07:31.023390+00:00"
+        }
       },
       "trend_attribution": null
     },
@@ -993,8 +1001,8 @@
         }
       ],
       "article_ids": [
-        1275,
-        1471
+        1277,
+        1473
       ],
       "source_count": 2,
       "trust_level": "low",
@@ -1008,7 +1016,14 @@
         "freshness_status": "ok",
         "date_coverage": 1.0,
         "stale": false,
-        "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency"
+        "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency",
+        "_provenance": {
+          "run_id": "run_20261001_000729_70d044",
+          "build_sha": "25a6ee42bb983212885a59a79ab3d180dbf85482",
+          "engine_version": "4.2",
+          "schema_version": "release-provenance-v1",
+          "generated_at": "2026-10-01T00:07:31.023390+00:00"
+        }
       },
       "trend_attribution": null
     },
@@ -1030,9 +1045,9 @@
         }
       ],
       "article_ids": [
-        1504,
-        2087,
-        2116
+        1506,
+        2089,
+        2118
       ],
       "source_count": 2,
       "trust_level": "low",
@@ -1046,7 +1061,14 @@
         "freshness_status": "ok",
         "date_coverage": 1.0,
         "stale": false,
-        "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency"
+        "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency",
+        "_provenance": {
+          "run_id": "run_20261001_000729_70d044",
+          "build_sha": "25a6ee42bb983212885a59a79ab3d180dbf85482",
+          "engine_version": "4.2",
+          "schema_version": "release-provenance-v1",
+          "generated_at": "2026-10-01T00:07:31.023390+00:00"
+        }
       },
       "trend_attribution": null
     },
@@ -1064,8 +1086,8 @@
         }
       ],
       "article_ids": [
-        1034,
-        1038
+        1036,
+        1040
       ],
       "source_count": 2,
       "trust_level": "low",
@@ -1079,7 +1101,14 @@
         "freshness_status": "ok",
         "date_coverage": 1.0,
         "stale": false,
-        "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency"
+        "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency",
+        "_provenance": {
+          "run_id": "run_20261001_000729_70d044",
+          "build_sha": "25a6ee42bb983212885a59a79ab3d180dbf85482",
+          "engine_version": "4.2",
+          "schema_version": "release-provenance-v1",
+          "generated_at": "2026-10-01T00:07:31.023390+00:00"
+        }
       },
       "trend_attribution": null
     },
@@ -1097,8 +1126,8 @@
         }
       ],
       "article_ids": [
-        200,
-        233
+        202,
+        235
       ],
       "source_count": 2,
       "trust_level": "low",
@@ -1112,16 +1141,23 @@
         "freshness_status": "ok",
         "date_coverage": 1.0,
         "stale": false,
-        "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency"
+        "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency",
+        "_provenance": {
+          "run_id": "run_20261001_000729_70d044",
+          "build_sha": "25a6ee42bb983212885a59a79ab3d180dbf85482",
+          "engine_version": "4.2",
+          "schema_version": "release-provenance-v1",
+          "generated_at": "2026-10-01T00:07:31.023390+00:00"
+        }
       },
       "trend_attribution": null
     }
   ],
   "release": {
-    "deployment_status": "stale",
-    "deployment_verified": false,
-    "release_marker": "insureai-41ecb4c1ae5f8b8a",
-    "release_match": false
+    "deployment_status": "verified",
+    "deployment_verified": true,
+    "release_marker": "insureai-91ead80f80b78eef",
+    "release_match": true
   },
   "artifact_sources": [
     "intelligence.json",
@@ -1132,10 +1168,10 @@
     "deployment_verification.json"
   ],
   "_provenance": {
-    "run_id": "run_20261001_000729_70d044",
-    "build_sha": "25a6ee42bb983212885a59a79ab3d180dbf85482",
+    "run_id": "run_20261001_035159_170322",
+    "build_sha": "6913910a9e37496cd2048487e9188b4d597356a0",
     "engine_version": "4.2",
     "schema_version": "release-provenance-v1",
-    "generated_at": "2026-10-01T00:07:31.023833+00:00"
+    "generated_at": "2026-10-01T03:52:00.620407+00:00"
   }
 }
