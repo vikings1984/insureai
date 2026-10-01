@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "generated_at": "2026-09-30T21:52:55.386735+00:00",
+  "generated_at": "2026-10-01T00:05:47.767314+00:00",
   "status": "review",
   "principle": "雷达只排序已有风险信号；部署风险与趋势归因只影响人工注意力与发布可信度，不重新评分、不修改原始决策、不自动执行行动。",
   "items": [
@@ -75,6 +75,38 @@
       ],
       "source": "review_queue.json",
       "trend_attribution": null
+    },
+    {
+      "event_id": "deployment:production",
+      "title": "生产部署状态：deployment_release_mismatch",
+      "urgency": "now",
+      "trust_level": null,
+      "attention_score": 98,
+      "reasons": [
+        "deployment_release_mismatch",
+        "published_marker_behind_expected"
+      ],
+      "source": "deployment_verification.json",
+      "deployment_risk": {
+        "version": 4,
+        "classification": "deployment_release_mismatch",
+        "priority": 98,
+        "attention": true,
+        "verified": false,
+        "status": "stale",
+        "error": "published_marker_behind_expected",
+        "checked_at": "2026-09-30T22:11:31.180332+00:00",
+        "trend": {
+          "version": 1,
+          "classification": "single_failure",
+          "failure_streak": 1,
+          "sample_count": 22,
+          "generated_at": "2026-10-01T00:05:47.767223+00:00"
+        },
+        "next_step": "核对线上 release marker 与当前 release manifest；确认是否仍运行旧版本，并检查最近一次发布状态。",
+        "generated_at": "2026-10-01T00:05:47.767248+00:00",
+        "principle": "部署风险只影响人工注意力与发布可信度，不修改 Decision/Trust/Urgency。"
+      }
     },
     {
       "event_id": "evt_7635b5984895",
@@ -351,26 +383,21 @@
       ],
       "source": "review_queue.json",
       "trend_attribution": null
-    },
-    {
-      "event_id": "evt_083f21f9623f",
-      "title": "加拿大皇家银行分析师预计，定价压力和较高的CAT损失将在26年第二季度对美国保险公司造成压力",
-      "urgency": null,
-      "trust_level": "medium",
-      "attention_score": 70,
-      "reasons": [
-        "human_review"
-      ],
-      "source": "review_queue.json",
-      "trend_attribution": null
     }
   ],
   "summary": {
-    "items": 112,
+    "items": 113,
     "top_attention_score": 100,
     "credibility_status": "review",
     "impacted_event_count": 0,
-    "deployment_attention": false,
-    "deployment_classification": "deployment_verified"
+    "deployment_attention": true,
+    "deployment_classification": "deployment_release_mismatch"
+  },
+  "_provenance": {
+    "run_id": "run_20261001_000729_70d044",
+    "build_sha": "25a6ee42bb983212885a59a79ab3d180dbf85482",
+    "engine_version": "4.2",
+    "schema_version": "release-provenance-v1",
+    "generated_at": "2026-10-01T00:07:31.022041+00:00"
   }
 }

@@ -1,7 +1,7 @@
 {
   "version": 3,
-  "generated_at": "2026-09-30T21:54:03.233838+00:00",
-  "source_commit": "ce75a42b84cb4cbbda60a84f8b02e3fb78b57168",
+  "generated_at": "2026-10-01T00:06:50.482165+00:00",
+  "source_commit": "25a6ee42bb983212885a59a79ab3d180dbf85482",
   "summary": {
     "event_count": 2472,
     "rising_topics": 1,
@@ -11,7 +11,7 @@
     "cross_checked_claims": 41,
     "single_source_claims": 3235,
     "credibility_status": "review",
-    "deployment_status": "verified"
+    "deployment_status": "stale"
   },
   "what_changed": [
     {
@@ -781,20 +781,40 @@
       "trend_attribution": null
     },
     {
-      "event_id": "evt_7635b5984895",
-      "title": "慕尼黑再保险 (Munich Re) 跻身劳合社全球 50 家最大再保险公司之列：AM Best",
-      "urgency": null,
-      "trust_level": "low",
-      "attention_score": 95,
+      "event_id": "deployment:production",
+      "title": "生产部署状态：deployment_release_mismatch",
+      "urgency": "now",
+      "trust_level": null,
+      "attention_score": 98,
       "reasons": [
-        "human_review"
+        "deployment_release_mismatch",
+        "published_marker_behind_expected"
       ],
-      "source": "review_queue.json",
-      "trend_attribution": null
+      "source": "deployment_verification.json",
+      "deployment_risk": {
+        "version": 4,
+        "classification": "deployment_release_mismatch",
+        "priority": 98,
+        "attention": true,
+        "verified": false,
+        "status": "stale",
+        "error": "published_marker_behind_expected",
+        "checked_at": "2026-09-30T22:11:31.180332+00:00",
+        "trend": {
+          "version": 1,
+          "classification": "single_failure",
+          "failure_streak": 1,
+          "sample_count": 22,
+          "generated_at": "2026-10-01T00:05:47.767223+00:00"
+        },
+        "next_step": "核对线上 release marker 与当前 release manifest；确认是否仍运行旧版本，并检查最近一次发布状态。",
+        "generated_at": "2026-10-01T00:05:47.767248+00:00",
+        "principle": "部署风险只影响人工注意力与发布可信度，不修改 Decision/Trust/Urgency。"
+      }
     },
     {
-      "event_id": "evt_578b5faa780f",
-      "title": "Verisk 晋升 Harry White 为财产索赔服务主管",
+      "event_id": "evt_7635b5984895",
+      "title": "慕尼黑再保险 (Munich Re) 跻身劳合社全球 50 家最大再保险公司之列：AM Best",
       "urgency": null,
       "trust_level": "low",
       "attention_score": 95,
@@ -1098,10 +1118,10 @@
     }
   ],
   "release": {
-    "deployment_status": "verified",
-    "deployment_verified": true,
+    "deployment_status": "stale",
+    "deployment_verified": false,
     "release_marker": "insureai-41ecb4c1ae5f8b8a",
-    "release_match": true
+    "release_match": false
   },
   "artifact_sources": [
     "intelligence.json",
@@ -1110,5 +1130,12 @@
     "daily_risk_radar.json",
     "decision_credibility.json",
     "deployment_verification.json"
-  ]
+  ],
+  "_provenance": {
+    "run_id": "run_20261001_000729_70d044",
+    "build_sha": "25a6ee42bb983212885a59a79ab3d180dbf85482",
+    "engine_version": "4.2",
+    "schema_version": "release-provenance-v1",
+    "generated_at": "2026-10-01T00:07:31.023833+00:00"
+  }
 }
