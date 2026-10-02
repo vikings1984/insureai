@@ -1,12 +1,12 @@
 {
   "version": "alert-v1.1",
-  "generated_at": "2026-10-02T11:53:26Z",
+  "generated_at": "2026-10-02T17:26:33Z",
   "principle": "两层收敛：Internal Diff（事实）→ Semantic Alert（≤8 条聚合）；两层准入（T1 系统级监管 / T2 个人级 Watch / T3 标准）；NEW_SOURCE/NEW_EVIDENCE 留内部、delta 不伪造、首跑仅种子、告警不改写业务判断",
   "meta": {
-    "total_events": 2534,
+    "total_events": 2544,
     "baseline_present": true,
     "basis": "delta_vs_baseline",
-    "internal_diff_count": 2,
+    "internal_diff_count": 10,
     "alert_count": 8,
     "max_alerts": 8,
     "alert_type_counts": {
@@ -20,28 +20,132 @@
   },
   "internal_diffs": [
     {
-      "canonical_event_id": "cev_f14b0669672a",
-      "event_id": "evt_e833bbc251da",
-      "title": "Talcott 与高盛合作推出价值 10 亿美元的 West Grove Re sidecar",
-      "topic": "product_innovation",
+      "canonical_event_id": "cev_452fc8c90797",
+      "event_id": "evt_92310abdea56",
+      "title": "传统整合公司 Marco Capital 将收购保险服务公司 Pro Global",
+      "topic": "capital_reinsurance",
       "changes": [
         {
           "field": "decision_urgency",
-          "old": "soon",
-          "new": "now"
+          "old": "watch",
+          "new": null
         }
       ]
     },
     {
-      "canonical_event_id": "cev_7b059f9e39d6",
-      "event_id": "evt_29cef2847b94",
-      "title": "百慕大再保险公司和边车推动美国人寿保险业扩张： ALIRT",
-      "topic": "product_innovation",
+      "canonical_event_id": "cev_cf9e0f4d40fc",
+      "event_id": "evt_3429758517ea",
+      "title": "国家金融监督管理总局：全面推进保险行业AI大模型合规应用指引",
+      "topic": "ai_intelligent",
       "changes": [
         {
           "field": "decision_urgency",
-          "old": "soon",
-          "new": "now"
+          "old": "watch",
+          "new": null
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "cev_3f40e8c6724b",
+      "event_id": "evt_083577177db6",
+      "title": "摩根大通表示再保险定价在 2027 年之前不太可能稳定",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": "watch",
+          "new": null
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "cev_9d8ff9c8de58",
+      "event_id": "evt_45affa7dff0d",
+      "title": "Tower 以降低的成本将首次巨灾再保险限额提高至 9.7 亿新西兰元",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": "watch",
+          "new": null
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "cev_58cf201e073f",
+      "event_id": "evt_88a7555a3759",
+      "title": "朱俊生谈保险法大修：从行业发展法到风险治理法",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": "watch",
+          "new": null
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "cev_77e311577839",
+      "event_id": "evt_6622539bc4f2",
+      "title": "观点：再保险市场进一步疲软，并购扩容",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": "watch",
+          "new": null
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "evt_c16162e2cd11",
+      "event_id": "evt_c16162e2cd11",
+      "title": "Mangrove 为 2026 年飓风季节提供创纪录的巨灾再保险",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": null,
+          "new": "soon"
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "cev_9670c8e761a8",
+      "event_id": "evt_96c336ca5844",
+      "title": "美洲开发银行通过瑞士再保险为伯利兹安排巨灾互换",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": null,
+          "new": "soon"
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "evt_c2087cb84c7f",
+      "event_id": "evt_c2087cb84c7f",
+      "title": "新华保险：在上半年市场调整中积极加仓权益资产",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": null,
+          "new": "soon"
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "evt_c51bc4db164b",
+      "event_id": "evt_c51bc4db164b",
+      "title": "新华保险：发挥保险资金优势，支持资本市场发展",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": null,
+          "new": "soon"
         }
       ]
     }
@@ -147,12 +251,12 @@
     },
     {
       "type": "DECISION_REQUIRED",
-      "canonical_event_id": "cev_034ad0db6222",
-      "event_id": "evt_dfac7e70021a",
-      "title": "金融监管总局丛林：完善保险资金等投早、投小、投长期、投硬科技各项政策",
-      "topic": "regulatory_change",
+      "canonical_event_id": "cev_cf9e0f4d40fc",
+      "event_id": "evt_3429758517ea",
+      "title": "国家金融监督管理总局：全面推进保险行业AI大模型合规应用指引",
+      "topic": "ai_intelligent",
       "severity": "high",
-      "rationale": "待人工复核、暂无决策记录（日报优先级 91）",
+      "rationale": "待人工复核、暂无决策记录（日报优先级 96）",
       "basis": "standing",
       "changed_fields": [
         "review_required"

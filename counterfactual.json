@@ -1,9 +1,9 @@
 {
   "version": 1,
   "principle": "高价值结论必须在去除单一关键输入后保持合理稳健，否则进入人工复核。",
-  "total_cases": 4782,
-  "fragile_cases": 6,
-  "fragility_rate": 0.0013,
+  "total_cases": 4801,
+  "fragile_cases": 16,
+  "fragility_rate": 0.0033,
   "cases": [
     {
       "event_id": "evt_92310abdea56",
@@ -1976,17 +1976,17 @@
     {
       "event_id": "evt_bdcee533e09d",
       "scenario": "remove_conflict_flag",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
+      "baseline_urgency": "soon",
+      "counterfactual_urgency": "soon",
       "changed": false,
       "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
     },
     {
       "event_id": "evt_bdcee533e09d",
       "scenario": "remove_topic_trend_signal",
-      "baseline_urgency": "watch",
+      "baseline_urgency": "soon",
       "counterfactual_urgency": "watch",
-      "changed": false,
+      "changed": true,
       "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
     },
     {
@@ -2168,17 +2168,17 @@
     {
       "event_id": "evt_63164bd5c318",
       "scenario": "remove_conflict_flag",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
+      "baseline_urgency": "soon",
+      "counterfactual_urgency": "soon",
       "changed": false,
       "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
     },
     {
       "event_id": "evt_63164bd5c318",
       "scenario": "remove_topic_trend_signal",
-      "baseline_urgency": "watch",
+      "baseline_urgency": "soon",
       "counterfactual_urgency": "watch",
-      "changed": false,
+      "changed": true,
       "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
     },
     {
@@ -4007,10 +4007,10 @@
     }
   ],
   "_provenance": {
-    "run_id": "run_20261002_115327_7ba7ab",
-    "build_sha": "c1938e7cacd0b2d45ff368bf7aaf784c875a401e",
+    "run_id": "run_20261002_172635_889535",
+    "build_sha": "7006aa3abbab18b73662eda17d9046ad362ca009",
     "engine_version": "4.2",
     "schema_version": "release-provenance-v1",
-    "generated_at": "2026-10-02T11:53:28.481608+00:00"
+    "generated_at": "2026-10-02T17:26:36.492231+00:00"
   }
 }

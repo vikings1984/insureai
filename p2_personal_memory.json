@@ -1,6 +1,6 @@
 {
   "version": "p2.5-v1.0",
-  "generated_at": "2026-10-02T11:53:25Z",
+  "generated_at": "2026-10-02T17:26:31Z",
   "principle": "只聚合既有 artifact 中的事实；观察与结论分离，样本不足时不出结论，不伪造时间线",
   "sources": {
     "p2_state.json": {
@@ -10,14 +10,14 @@
     },
     "review_queue.json": {
       "items": 100,
-      "decided": 12,
-      "pending": 88
+      "decided": 9,
+      "pending": 91
     },
     "p2_daily_brief.json": {
       "brief": 20
     },
     "knowledge_graph.json": {
-      "events_indexed": 2642
+      "events_indexed": 2653
     },
     "decisions_ledger.json": {
       "distinct_events": 34
@@ -304,7 +304,8 @@
       "sample_size": 34,
       "by_urgency": {
         "watch": 16,
-        "now": 18
+        "now": 12,
+        "soon": 6
       },
       "by_action": {
         "评估战略与资本影响": 1,
@@ -369,36 +370,6 @@
         "urgency": "now"
       },
       {
-        "event_id": "evt_bdcee533e09d",
-        "decided_at": "2026-09-11T10:35:44Z",
-        "urgency": "now"
-      },
-      {
-        "event_id": "evt_63164bd5c318",
-        "decided_at": "2026-09-11T10:35:44Z",
-        "urgency": "now"
-      },
-      {
-        "event_id": "evt_c16162e2cd11",
-        "decided_at": "2026-09-11T10:35:44Z",
-        "urgency": "now"
-      },
-      {
-        "event_id": "evt_96c336ca5844",
-        "decided_at": "2026-09-11T10:35:44Z",
-        "urgency": "now"
-      },
-      {
-        "event_id": "evt_c2087cb84c7f",
-        "decided_at": "2026-09-11T10:35:44Z",
-        "urgency": "now"
-      },
-      {
-        "event_id": "evt_c51bc4db164b",
-        "decided_at": "2026-09-11T10:35:44Z",
-        "urgency": "now"
-      },
-      {
         "event_id": "evt_0fe4820271f7",
         "decided_at": "2026-10-01T16:10:19Z",
         "urgency": "watch"
@@ -444,24 +415,9 @@
         "urgency": "watch"
       },
       {
-        "event_id": "evt_e833bbc251da",
-        "decided_at": "2026-10-02T11:51:59Z",
-        "urgency": "now"
-      },
-      {
         "event_id": "evt_6622539bc4f2",
         "decided_at": "2026-10-02T11:51:59Z",
         "urgency": "watch"
-      },
-      {
-        "event_id": "evt_ef42853e4111",
-        "decided_at": "2026-10-02T11:51:59Z",
-        "urgency": "now"
-      },
-      {
-        "event_id": "evt_4cd0316ba817",
-        "decided_at": "2026-10-02T11:51:59Z",
-        "urgency": "now"
       },
       {
         "event_id": "evt_45affa7dff0d",
@@ -474,25 +430,70 @@
         "urgency": "watch"
       },
       {
+        "event_id": "evt_e833bbc251da",
+        "decided_at": "2026-10-02T17:24:43Z",
+        "urgency": "now"
+      },
+      {
+        "event_id": "evt_bdcee533e09d",
+        "decided_at": "2026-10-02T17:24:43Z",
+        "urgency": "soon"
+      },
+      {
+        "event_id": "evt_63164bd5c318",
+        "decided_at": "2026-10-02T17:24:43Z",
+        "urgency": "soon"
+      },
+      {
+        "event_id": "evt_c16162e2cd11",
+        "decided_at": "2026-10-02T17:24:43Z",
+        "urgency": "soon"
+      },
+      {
+        "event_id": "evt_96c336ca5844",
+        "decided_at": "2026-10-02T17:24:43Z",
+        "urgency": "soon"
+      },
+      {
+        "event_id": "evt_c2087cb84c7f",
+        "decided_at": "2026-10-02T17:24:43Z",
+        "urgency": "soon"
+      },
+      {
+        "event_id": "evt_c51bc4db164b",
+        "decided_at": "2026-10-02T17:24:43Z",
+        "urgency": "soon"
+      },
+      {
+        "event_id": "evt_ef42853e4111",
+        "decided_at": "2026-10-02T17:24:43Z",
+        "urgency": "now"
+      },
+      {
+        "event_id": "evt_4cd0316ba817",
+        "decided_at": "2026-10-02T17:24:43Z",
+        "urgency": "now"
+      },
+      {
         "event_id": "evt_2561fbf5f774",
-        "decided_at": "2026-10-02T11:51:59Z",
+        "decided_at": "2026-10-02T17:24:43Z",
         "urgency": "now"
       },
       {
         "event_id": "evt_faa2d810e982",
-        "decided_at": "2026-10-02T11:51:59Z",
+        "decided_at": "2026-10-02T17:24:43Z",
         "urgency": "now"
       },
       {
         "event_id": "evt_29cef2847b94",
-        "decided_at": "2026-10-02T11:51:59Z",
+        "decided_at": "2026-10-02T17:24:43Z",
         "urgency": "now"
       }
     ],
     "conclusions": [
       {
         "type": "urgency_preference",
-        "statement": "最常采用的处置节奏是 now（18/34）",
+        "statement": "最常采用的处置节奏是 watch（16/34）",
         "basis": "决策账本/复核队列的 decision.urgency 分布（真实累计，不伪造）"
       }
     ],
@@ -514,7 +515,15 @@
         "count": 1
       },
       {
-        "key": "Marco Capital",
+        "key": "AM Best",
+        "count": 1
+      },
+      {
+        "key": "Howden Re",
+        "count": 1
+      },
+      {
+        "key": "Novark",
         "count": 1
       },
       {
@@ -522,15 +531,7 @@
         "count": 1
       },
       {
-        "key": "Pro Global",
-        "count": 1
-      },
-      {
         "key": "Talcott",
-        "count": 1
-      },
-      {
-        "key": "Tower",
         "count": 1
       },
       {
@@ -538,7 +539,7 @@
         "count": 1
       },
       {
-        "key": "以降低的成本将首次巨灾再保险",
+        "key": "以扩大机构获取保险",
         "count": 1
       }
     ],
@@ -588,33 +589,9 @@
       {
         "key": "AI",
         "count": 1
-      },
-      {
-        "key": "Marco Capital",
-        "count": 1
-      },
-      {
-        "key": "Pro Global",
-        "count": 1
-      },
-      {
-        "key": "传统整合公司",
-        "count": 1
-      },
-      {
-        "key": "保险服务公司",
-        "count": 1
-      },
-      {
-        "key": "全面推进保险",
-        "count": 1
-      },
-      {
-        "key": "再保险",
-        "count": 1
       }
     ],
-    "acted_event_count": 12,
+    "acted_event_count": 9,
     "watched_event_count": 20,
     "quality": {
       "cleaning": "none",
@@ -623,30 +600,31 @@
     }
   },
   "backlog": {
-    "sample_size": 88,
+    "sample_size": 91,
     "by_topic": {
-      "channel_transformation": 5,
-      "capital_reinsurance": 53,
-      "ai_intelligent": 13,
+      "channel_transformation": 4,
+      "capital_reinsurance": 58,
+      "ai_intelligent": 15,
       "product_innovation": 2,
-      "pension_finance": 2,
+      "pension_finance": 1,
       "climate_catastrophe": 2,
-      "regulatory_change": 7
+      "regulatory_change": 7,
+      "digital_transformation": 1
     },
     "by_event_type": {
-      "claims_loss": 12,
-      "industry_update": 15,
-      "product": 9,
-      "acquisition": 1,
-      "capital": 19,
+      "claims_loss": 15,
+      "industry_update": 8,
+      "product": 8,
+      "regulatory": 22,
+      "acquisition": 4,
+      "capital": 20,
       "market_entry": 8,
-      "rating": 2,
-      "personnel": 5,
-      "regulatory": 17
+      "rating": 4,
+      "personnel": 2
     },
     "by_trust_level": {
       "low": 11,
-      "medium": 77
+      "medium": 80
     },
     "top_by_priority": [
       {
@@ -741,9 +719,9 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-02T11:51:59Z"
+        "decided_at": "2026-10-02T17:24:43Z"
       },
-      "decided_at": "2026-10-02T11:51:59Z",
+      "decided_at": "2026-10-02T17:24:43Z",
       "event_published_at": "2026-08-21T07:02:39Z",
       "entities": [
         "ALIRT",
@@ -760,9 +738,9 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-02T11:51:59Z"
+        "decided_at": "2026-10-02T17:24:43Z"
       },
-      "decided_at": "2026-10-02T11:51:59Z",
+      "decided_at": "2026-10-02T17:24:43Z",
       "event_published_at": "2026-08-04T14:30:58Z",
       "entities": [
         "Talcott",
@@ -770,20 +748,20 @@
       ]
     },
     {
-      "event_id": "evt_3429758517ea",
-      "title": "国家金融监督管理总局：全面推进保险行业AI大模型合规应用指引",
-      "topic": "ai_intelligent",
-      "event_type": "regulatory",
+      "event_id": "evt_96c336ca5844",
+      "title": "美洲开发银行通过瑞士再保险为伯利兹安排巨灾互换",
+      "topic": "capital_reinsurance",
+      "event_type": "industry_update",
       "priority": 70,
       "decision": {
-        "urgency": "watch",
-        "action": "检查监管暴露与经营影响",
-        "decided_at": "2026-10-02T11:51:59Z"
+        "urgency": "soon",
+        "action": "保持跟踪，等待更多独立证据或业务信号",
+        "decided_at": "2026-10-02T17:24:43Z"
       },
-      "decided_at": "2026-10-02T11:51:59Z",
-      "event_published_at": "2026-06-12T09:00:00Z",
+      "decided_at": "2026-10-02T17:24:43Z",
+      "event_published_at": "2026-08-18T05:00:49Z",
       "entities": [
-        "全面推进保险"
+        "美洲开发银行通过瑞士再保险"
       ]
     },
     {
@@ -795,9 +773,9 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-02T11:51:59Z"
+        "decided_at": "2026-10-02T17:24:43Z"
       },
-      "decided_at": "2026-10-02T11:51:59Z",
+      "decided_at": "2026-10-02T17:24:43Z",
       "event_published_at": "2026-08-11T00:00:00+08:00",
       "entities": [
         "收入保险"
@@ -812,9 +790,9 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-02T11:51:59Z"
+        "decided_at": "2026-10-02T17:24:43Z"
       },
-      "decided_at": "2026-10-02T11:51:59Z",
+      "decided_at": "2026-10-02T17:24:43Z",
       "event_published_at": "2026-08-14T09:30:32Z",
       "entities": [
         "AIG",
@@ -830,9 +808,9 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-02T11:51:59Z"
+        "decided_at": "2026-10-02T17:24:43Z"
       },
-      "decided_at": "2026-10-02T11:51:59Z",
+      "decided_at": "2026-10-02T17:24:43Z",
       "event_published_at": "2026-08-21T00:00:00+08:00",
       "entities": [
         "AI"
@@ -847,99 +825,48 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-02T11:51:59Z"
+        "decided_at": "2026-10-02T17:24:43Z"
       },
-      "decided_at": "2026-10-02T11:51:59Z",
+      "decided_at": "2026-10-02T17:24:43Z",
       "event_published_at": "2026-08-26T00:00:00+08:00",
       "entities": [
         "手回集团"
       ]
     },
     {
-      "event_id": "evt_083577177db6",
-      "title": "摩根大通表示再保险定价在 2027 年之前不太可能稳定",
+      "event_id": "evt_63164bd5c318",
+      "title": "再保险正处于“关键拐点”，创纪录的资本考验承保纪律：AM Best",
       "topic": "capital_reinsurance",
       "event_type": "capital",
-      "priority": 50,
+      "priority": 45,
       "decision": {
-        "urgency": "watch",
+        "urgency": "soon",
         "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-10-02T11:51:59Z"
+        "decided_at": "2026-10-02T17:24:43Z"
       },
-      "decided_at": "2026-10-02T11:51:59Z",
-      "event_published_at": "2026-08-03T12:00:25Z",
+      "decided_at": "2026-10-02T17:24:43Z",
+      "event_published_at": "2026-08-10T09:00:48Z",
       "entities": [
-        "再保险"
+        "AM Best"
       ]
     },
     {
-      "event_id": "evt_45affa7dff0d",
-      "title": "Tower 以降低的成本将首次巨灾再保险限额提高至 9.7 亿新西兰元",
-      "topic": "capital_reinsurance",
-      "event_type": "market_entry",
-      "priority": 50,
-      "decision": {
-        "urgency": "watch",
-        "action": "评估市场与竞争响应",
-        "decided_at": "2026-10-02T11:51:59Z"
-      },
-      "decided_at": "2026-10-02T11:51:59Z",
-      "event_published_at": "2026-09-21T07:00:48Z",
-      "entities": [
-        "Tower",
-        "以降低的成本将首次巨灾再保险"
-      ]
-    },
-    {
-      "event_id": "evt_6622539bc4f2",
-      "title": "观点：再保险市场进一步疲软，并购扩容",
+      "event_id": "evt_bdcee533e09d",
+      "title": "Howden Re 引入 Novark 以扩大机构获取保险风险的机会",
       "topic": "capital_reinsurance",
       "event_type": "capital",
-      "priority": 50,
+      "priority": 45,
       "decision": {
-        "urgency": "watch",
+        "urgency": "soon",
         "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-10-02T11:51:59Z"
+        "decided_at": "2026-10-02T17:24:43Z"
       },
-      "decided_at": "2026-10-02T11:51:59Z",
-      "event_published_at": "2026-09-08T06:26:38Z",
-      "entities": []
-    },
-    {
-      "event_id": "evt_88a7555a3759",
-      "title": "朱俊生谈保险法大修：从行业发展法到风险治理法",
-      "topic": "capital_reinsurance",
-      "event_type": "regulatory",
-      "priority": 50,
-      "decision": {
-        "urgency": "watch",
-        "action": "检查监管暴露与经营影响",
-        "decided_at": "2026-10-02T11:51:59Z"
-      },
-      "decided_at": "2026-10-02T11:51:59Z",
-      "event_published_at": "2026-09-10T00:00:00+08:00",
+      "decided_at": "2026-10-02T17:24:43Z",
+      "event_published_at": "2026-09-07T05:00:27Z",
       "entities": [
-        "朱俊生谈保险"
-      ]
-    },
-    {
-      "event_id": "evt_92310abdea56",
-      "title": "传统整合公司 Marco Capital 将收购保险服务公司 Pro Global",
-      "topic": "capital_reinsurance",
-      "event_type": "acquisition",
-      "priority": 50,
-      "decision": {
-        "urgency": "watch",
-        "action": "评估战略与资本影响",
-        "decided_at": "2026-10-02T11:51:59Z"
-      },
-      "decided_at": "2026-10-02T11:51:59Z",
-      "event_published_at": "2026-08-20T15:58:14Z",
-      "entities": [
-        "Marco Capital",
-        "Pro Global",
-        "传统整合公司",
-        "保险服务公司"
+        "Howden Re",
+        "Novark",
+        "以扩大机构获取保险"
       ]
     }
   ]
