@@ -1,6 +1,6 @@
 {
   "version": "p2.5-v1.0",
-  "generated_at": "2026-10-02T03:50:28Z",
+  "generated_at": "2026-10-02T11:53:25Z",
   "principle": "只聚合既有 artifact 中的事实；观察与结论分离，样本不足时不出结论，不伪造时间线",
   "sources": {
     "p2_state.json": {
@@ -10,14 +10,14 @@
     },
     "review_queue.json": {
       "items": 100,
-      "decided": 8,
-      "pending": 92
+      "decided": 12,
+      "pending": 88
     },
     "p2_daily_brief.json": {
       "brief": 20
     },
     "knowledge_graph.json": {
-      "events_indexed": 2623
+      "events_indexed": 2642
     },
     "decisions_ledger.json": {
       "distinct_events": 34
@@ -304,8 +304,7 @@
       "sample_size": 34,
       "by_urgency": {
         "watch": 16,
-        "soon": 6,
-        "now": 12
+        "now": 18
       },
       "by_action": {
         "评估战略与资本影响": 1,
@@ -431,69 +430,69 @@
       },
       {
         "event_id": "evt_92310abdea56",
-        "decided_at": "2026-10-02T03:48:28Z",
+        "decided_at": "2026-10-02T11:51:59Z",
         "urgency": "watch"
       },
       {
         "event_id": "evt_3429758517ea",
-        "decided_at": "2026-10-02T03:48:28Z",
+        "decided_at": "2026-10-02T11:51:59Z",
         "urgency": "watch"
       },
       {
         "event_id": "evt_083577177db6",
-        "decided_at": "2026-10-02T03:48:28Z",
+        "decided_at": "2026-10-02T11:51:59Z",
         "urgency": "watch"
       },
       {
         "event_id": "evt_e833bbc251da",
-        "decided_at": "2026-10-02T03:48:28Z",
-        "urgency": "soon"
+        "decided_at": "2026-10-02T11:51:59Z",
+        "urgency": "now"
       },
       {
         "event_id": "evt_6622539bc4f2",
-        "decided_at": "2026-10-02T03:48:28Z",
+        "decided_at": "2026-10-02T11:51:59Z",
         "urgency": "watch"
       },
       {
         "event_id": "evt_ef42853e4111",
-        "decided_at": "2026-10-02T03:48:28Z",
-        "urgency": "soon"
+        "decided_at": "2026-10-02T11:51:59Z",
+        "urgency": "now"
       },
       {
         "event_id": "evt_4cd0316ba817",
-        "decided_at": "2026-10-02T03:48:28Z",
-        "urgency": "soon"
+        "decided_at": "2026-10-02T11:51:59Z",
+        "urgency": "now"
       },
       {
         "event_id": "evt_45affa7dff0d",
-        "decided_at": "2026-10-02T03:48:28Z",
+        "decided_at": "2026-10-02T11:51:59Z",
         "urgency": "watch"
       },
       {
         "event_id": "evt_88a7555a3759",
-        "decided_at": "2026-10-02T03:48:28Z",
+        "decided_at": "2026-10-02T11:51:59Z",
         "urgency": "watch"
       },
       {
         "event_id": "evt_2561fbf5f774",
-        "decided_at": "2026-10-02T03:48:28Z",
-        "urgency": "soon"
+        "decided_at": "2026-10-02T11:51:59Z",
+        "urgency": "now"
       },
       {
         "event_id": "evt_faa2d810e982",
-        "decided_at": "2026-10-02T03:48:28Z",
-        "urgency": "soon"
+        "decided_at": "2026-10-02T11:51:59Z",
+        "urgency": "now"
       },
       {
         "event_id": "evt_29cef2847b94",
-        "decided_at": "2026-10-02T03:48:28Z",
-        "urgency": "soon"
+        "decided_at": "2026-10-02T11:51:59Z",
+        "urgency": "now"
       }
     ],
     "conclusions": [
       {
         "type": "urgency_preference",
-        "statement": "最常采用的处置节奏是 watch（16/34）",
+        "statement": "最常采用的处置节奏是 now（18/34）",
         "basis": "决策账本/复核队列的 decision.urgency 分布（真实累计，不伪造）"
       }
     ],
@@ -503,11 +502,23 @@
     "basis": "knowledge_graph.json 中 Event --PARTICIPATES_IN--> Company 的一跳邻居（不做多跳扩散）",
     "acted_entities": [
       {
+        "key": "AI",
+        "count": 1
+      },
+      {
+        "key": "AIG",
+        "count": 1
+      },
+      {
         "key": "ALIRT",
         "count": 1
       },
       {
         "key": "Marco Capital",
+        "count": 1
+      },
+      {
+        "key": "Parametrix",
         "count": 1
       },
       {
@@ -528,18 +539,6 @@
       },
       {
         "key": "以降低的成本将首次巨灾再保险",
-        "count": 1
-      },
-      {
-        "key": "传统整合公司",
-        "count": 1
-      },
-      {
-        "key": "保险服务公司",
-        "count": 1
-      },
-      {
-        "key": "全面推进保险",
         "count": 1
       }
     ],
@@ -587,6 +586,10 @@
     ],
     "overlap_entities": [
       {
+        "key": "AI",
+        "count": 1
+      },
+      {
         "key": "Marco Capital",
         "count": 1
       },
@@ -611,7 +614,7 @@
         "count": 1
       }
     ],
-    "acted_event_count": 8,
+    "acted_event_count": 12,
     "watched_event_count": 20,
     "quality": {
       "cleaning": "none",
@@ -620,30 +623,30 @@
     }
   },
   "backlog": {
-    "sample_size": 92,
+    "sample_size": 88,
     "by_topic": {
-      "channel_transformation": 3,
-      "capital_reinsurance": 62,
-      "ai_intelligent": 10,
-      "product_innovation": 1,
+      "channel_transformation": 5,
+      "capital_reinsurance": 53,
+      "ai_intelligent": 13,
+      "product_innovation": 2,
       "pension_finance": 2,
-      "climate_catastrophe": 3,
-      "regulatory_change": 9,
-      "digital_transformation": 1
+      "climate_catastrophe": 2,
+      "regulatory_change": 7
     },
     "by_event_type": {
-      "claims_loss": 15,
-      "industry_update": 10,
-      "product": 8,
-      "acquisition": 3,
-      "capital": 23,
-      "market_entry": 6,
-      "regulatory": 23,
-      "rating": 4
+      "claims_loss": 12,
+      "industry_update": 15,
+      "product": 9,
+      "acquisition": 1,
+      "capital": 19,
+      "market_entry": 8,
+      "rating": 2,
+      "personnel": 5,
+      "regulatory": 17
     },
     "by_trust_level": {
       "low": 11,
-      "medium": 81
+      "medium": 77
     },
     "top_by_priority": [
       {
@@ -730,6 +733,43 @@
   ],
   "memory_entries": [
     {
+      "event_id": "evt_29cef2847b94",
+      "title": "百慕大再保险公司和边车推动美国人寿保险业扩张： ALIRT",
+      "topic": "product_innovation",
+      "event_type": "industry_update",
+      "priority": 80,
+      "decision": {
+        "urgency": "now",
+        "action": "保持跟踪，等待更多独立证据或业务信号",
+        "decided_at": "2026-10-02T11:51:59Z"
+      },
+      "decided_at": "2026-10-02T11:51:59Z",
+      "event_published_at": "2026-08-21T07:02:39Z",
+      "entities": [
+        "ALIRT",
+        "百慕大再保险公司",
+        "美国人寿保险"
+      ]
+    },
+    {
+      "event_id": "evt_e833bbc251da",
+      "title": "Talcott 与高盛合作推出价值 10 亿美元的 West Grove Re sidecar",
+      "topic": "product_innovation",
+      "event_type": "product",
+      "priority": 75,
+      "decision": {
+        "urgency": "now",
+        "action": "保持跟踪，等待更多独立证据或业务信号",
+        "decided_at": "2026-10-02T11:51:59Z"
+      },
+      "decided_at": "2026-10-02T11:51:59Z",
+      "event_published_at": "2026-08-04T14:30:58Z",
+      "entities": [
+        "Talcott",
+        "West Grove Re"
+      ]
+    },
+    {
       "event_id": "evt_3429758517ea",
       "title": "国家金融监督管理总局：全面推进保险行业AI大模型合规应用指引",
       "topic": "ai_intelligent",
@@ -738,12 +778,81 @@
       "decision": {
         "urgency": "watch",
         "action": "检查监管暴露与经营影响",
-        "decided_at": "2026-10-02T03:48:28Z"
+        "decided_at": "2026-10-02T11:51:59Z"
       },
-      "decided_at": "2026-10-02T03:48:28Z",
+      "decided_at": "2026-10-02T11:51:59Z",
       "event_published_at": "2026-06-12T09:00:00Z",
       "entities": [
         "全面推进保险"
+      ]
+    },
+    {
+      "event_id": "evt_2561fbf5f774",
+      "title": "大商所生猪“保险+期货”收入保险项目落地上海 打造长三角金融惠农示范样本",
+      "topic": "product_innovation",
+      "event_type": "product",
+      "priority": 60,
+      "decision": {
+        "urgency": "now",
+        "action": "保持跟踪，等待更多独立证据或业务信号",
+        "decided_at": "2026-10-02T11:51:59Z"
+      },
+      "decided_at": "2026-10-02T11:51:59Z",
+      "event_published_at": "2026-08-11T00:00:00+08:00",
+      "entities": [
+        "收入保险"
+      ]
+    },
+    {
+      "event_id": "evt_4cd0316ba817",
+      "title": "AIG 与 Parametrix 推出网络参数解决方案以应对云服务中断损失",
+      "topic": "product_innovation",
+      "event_type": "product",
+      "priority": 60,
+      "decision": {
+        "urgency": "now",
+        "action": "保持跟踪，等待更多独立证据或业务信号",
+        "decided_at": "2026-10-02T11:51:59Z"
+      },
+      "decided_at": "2026-10-02T11:51:59Z",
+      "event_published_at": "2026-08-14T09:30:32Z",
+      "entities": [
+        "AIG",
+        "Parametrix"
+      ]
+    },
+    {
+      "event_id": "evt_ef42853e4111",
+      "title": "中国平安郭晓涛谈百亿投入千亿Tocken：AI基建已完成，处于场景赋能创造价值阶段",
+      "topic": "product_innovation",
+      "event_type": "product",
+      "priority": 60,
+      "decision": {
+        "urgency": "now",
+        "action": "保持跟踪，等待更多独立证据或业务信号",
+        "decided_at": "2026-10-02T11:51:59Z"
+      },
+      "decided_at": "2026-10-02T11:51:59Z",
+      "event_published_at": "2026-08-21T00:00:00+08:00",
+      "entities": [
+        "AI"
+      ]
+    },
+    {
+      "event_id": "evt_faa2d810e982",
+      "title": "分红险爆发对冲佣金率压力 手回集团上半年营收增13.1%",
+      "topic": "product_innovation",
+      "event_type": "product",
+      "priority": 60,
+      "decision": {
+        "urgency": "now",
+        "action": "保持跟踪，等待更多独立证据或业务信号",
+        "decided_at": "2026-10-02T11:51:59Z"
+      },
+      "decided_at": "2026-10-02T11:51:59Z",
+      "event_published_at": "2026-08-26T00:00:00+08:00",
+      "entities": [
+        "手回集团"
       ]
     },
     {
@@ -755,31 +864,12 @@
       "decision": {
         "urgency": "watch",
         "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-10-02T03:48:28Z"
+        "decided_at": "2026-10-02T11:51:59Z"
       },
-      "decided_at": "2026-10-02T03:48:28Z",
+      "decided_at": "2026-10-02T11:51:59Z",
       "event_published_at": "2026-08-03T12:00:25Z",
       "entities": [
         "再保险"
-      ]
-    },
-    {
-      "event_id": "evt_29cef2847b94",
-      "title": "百慕大再保险公司和边车推动美国人寿保险业扩张： ALIRT",
-      "topic": "product_innovation",
-      "event_type": "industry_update",
-      "priority": 50,
-      "decision": {
-        "urgency": "soon",
-        "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-02T03:48:28Z"
-      },
-      "decided_at": "2026-10-02T03:48:28Z",
-      "event_published_at": "2026-08-21T07:02:39Z",
-      "entities": [
-        "ALIRT",
-        "百慕大再保险公司",
-        "美国人寿保险"
       ]
     },
     {
@@ -791,9 +881,9 @@
       "decision": {
         "urgency": "watch",
         "action": "评估市场与竞争响应",
-        "decided_at": "2026-10-02T03:48:28Z"
+        "decided_at": "2026-10-02T11:51:59Z"
       },
-      "decided_at": "2026-10-02T03:48:28Z",
+      "decided_at": "2026-10-02T11:51:59Z",
       "event_published_at": "2026-09-21T07:00:48Z",
       "entities": [
         "Tower",
@@ -809,9 +899,9 @@
       "decision": {
         "urgency": "watch",
         "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-10-02T03:48:28Z"
+        "decided_at": "2026-10-02T11:51:59Z"
       },
-      "decided_at": "2026-10-02T03:48:28Z",
+      "decided_at": "2026-10-02T11:51:59Z",
       "event_published_at": "2026-09-08T06:26:38Z",
       "entities": []
     },
@@ -824,9 +914,9 @@
       "decision": {
         "urgency": "watch",
         "action": "检查监管暴露与经营影响",
-        "decided_at": "2026-10-02T03:48:28Z"
+        "decided_at": "2026-10-02T11:51:59Z"
       },
-      "decided_at": "2026-10-02T03:48:28Z",
+      "decided_at": "2026-10-02T11:51:59Z",
       "event_published_at": "2026-09-10T00:00:00+08:00",
       "entities": [
         "朱俊生谈保险"
@@ -841,33 +931,15 @@
       "decision": {
         "urgency": "watch",
         "action": "评估战略与资本影响",
-        "decided_at": "2026-10-02T03:48:28Z"
+        "decided_at": "2026-10-02T11:51:59Z"
       },
-      "decided_at": "2026-10-02T03:48:28Z",
+      "decided_at": "2026-10-02T11:51:59Z",
       "event_published_at": "2026-08-20T15:58:14Z",
       "entities": [
         "Marco Capital",
         "Pro Global",
         "传统整合公司",
         "保险服务公司"
-      ]
-    },
-    {
-      "event_id": "evt_e833bbc251da",
-      "title": "Talcott 与高盛合作推出价值 10 亿美元的 West Grove Re sidecar",
-      "topic": "product_innovation",
-      "event_type": "product",
-      "priority": 45,
-      "decision": {
-        "urgency": "soon",
-        "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-02T03:48:28Z"
-      },
-      "decided_at": "2026-10-02T03:48:28Z",
-      "event_published_at": "2026-08-04T14:30:58Z",
-      "entities": [
-        "Talcott",
-        "West Grove Re"
       ]
     }
   ]
