@@ -1,6 +1,6 @@
 {
   "version": "funnel-v1.1",
-  "generated_at": "2026-10-01T22:22:04Z",
+  "generated_at": "2026-10-02T03:50:30Z",
   "principle": "待决策洪流 → 漏斗（now/soon/watch）+ 排名靠前的待决；已决只来自真实决策记录；六条件硬化为每条待决的注解 + decision_ready 子集；分角色计数；样本<30 不结论；分桶为可观测代理",
   "meta": {
     "total_review_queue": 100,
@@ -10,8 +10,8 @@
     "pending": 79,
     "pending_by_tier": {
       "now": 16,
-      "soon": 3,
-      "watch": 60
+      "soon": 4,
+      "watch": 59
     },
     "pending_by_role": {
       "ai": 7,
@@ -23,9 +23,9 @@
     "decision_ready": 0,
     "decision_ready_ceids": [],
     "six_failed_counter": {
-      "1": 58,
+      "1": 57,
       "2": 91,
-      "3": 91,
+      "3": 90,
       "4": 40,
       "5": 21,
       "6": 0
@@ -630,15 +630,47 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_6e5614ca2179",
-        "canonical_event_id": "cev_bafd134ac154",
-        "title": "保险资管“长钱长投”壮大新动能",
-        "topic": "capital_reinsurance",
+        "event_id": "evt_45b49bfdd57a",
+        "canonical_event_id": "cev_07510ed0d6d0",
+        "title": "多家险企密集“补血”：国宝人寿拟引入8家新股东 招商仁和拟增资近27亿元",
+        "topic": "regulatory_change",
         "priority": 40,
         "trust_level": "medium",
         "reason_types": [
-          "change_impact",
-          "event_cluster"
+          "change_impact"
+        ],
+        "role": "regulatory",
+        "meets_six": false,
+        "failed_conditions": [
+          2,
+          4
+        ],
+        "six_detail": {
+          "monitored": true,
+          "acted": false,
+          "t1_reg": true,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "effective",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": true,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_277466f2080c",
+        "canonical_event_id": "cev_370d3d00f3fb",
+        "title": "国寿鑫享宝专属商业养老保险入选首批个人养老金保险产品名单",
+        "topic": "pension_finance",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
         ],
         "role": "other",
         "meets_six": false,
@@ -665,22 +697,21 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_2ea292698ccb",
-        "canonical_event_id": "cev_c3dc11775dff",
-        "title": "佛罗里达州专员因盈余问题暂停 A-Cap 的大西洋海岸生活",
-        "topic": "product_innovation",
+        "event_id": "evt_167256f481ee",
+        "canonical_event_id": "cev_606825b96a93",
+        "title": "泰国全国灾害保险体系正式实施",
+        "topic": "",
         "priority": 40,
         "trust_level": "medium",
         "reason_types": [
           "change_impact"
         ],
-        "role": "regulatory",
+        "role": "other",
         "meets_six": false,
         "failed_conditions": [
           1,
           2,
-          3,
-          4
+          3
         ],
         "six_detail": {
           "monitored": false,
@@ -688,11 +719,11 @@
           "t1_reg": false,
           "has_semantic_change": false,
           "stage": "n/a",
-          "status": "unknown",
+          "status": "active",
           "evidence_count": 1,
           "trust_level": "medium",
           "source_count": 1,
-          "single_src_regulatory": true,
+          "single_src_regulatory": false,
           "decided": false,
           "feedback_status": null
         },
@@ -2701,40 +2732,6 @@
         },
         "urgency": null,
         "tier": "watch"
-      },
-      {
-        "event_id": "evt_c59209c8ae64",
-        "canonical_event_id": "cev_7261c1c7dee6",
-        "title": "稳健的资本和年金需求推动全球人寿和年金再保险公司的增长：AM Best",
-        "topic": "capital_reinsurance",
-        "priority": 30,
-        "trust_level": "medium",
-        "reason_types": [
-          "event_cluster"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "watch"
       }
     ]
   },
@@ -3195,7 +3192,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T22:20:18Z"
+      "decided_at": "2026-10-02T03:48:28Z"
     },
     {
       "event_id": "evt_96c336ca5844",
@@ -3329,7 +3326,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T22:20:18Z"
+      "decided_at": "2026-10-02T03:48:28Z"
     },
     {
       "event_id": "evt_083577177db6",
@@ -3363,7 +3360,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T22:20:18Z"
+      "decided_at": "2026-10-02T03:48:28Z"
     },
     {
       "event_id": "evt_45affa7dff0d",
@@ -3397,7 +3394,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T22:20:18Z"
+      "decided_at": "2026-10-02T03:48:28Z"
     },
     {
       "event_id": "evt_88a7555a3759",
@@ -3432,7 +3429,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T22:20:18Z"
+      "decided_at": "2026-10-02T03:48:28Z"
     },
     {
       "event_id": "evt_6622539bc4f2",
@@ -3466,7 +3463,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-01T22:20:18Z"
+      "decided_at": "2026-10-02T03:48:28Z"
     },
     {
       "event_id": "evt_0fe4820271f7",
@@ -3670,7 +3667,7 @@
         "feedback_status": null
       },
       "urgency": "soon",
-      "decided_at": "2026-10-01T22:20:18Z"
+      "decided_at": "2026-10-02T03:48:28Z"
     },
     {
       "event_id": "evt_e833bbc251da",
@@ -3704,7 +3701,7 @@
         "feedback_status": null
       },
       "urgency": "soon",
-      "decided_at": "2026-10-01T22:20:18Z"
+      "decided_at": "2026-10-02T03:48:28Z"
     },
     {
       "event_id": "evt_f546e75a4e89",
@@ -3882,7 +3879,7 @@
     {
       "dimension": "六条件硬化（决策门）",
       "status": "evaluated",
-      "reason": "待决 79 条中真正达到六条件决策门 0 条；各条件未达计数 {'1': 58, '2': 91, '3': 91, '4': 40, '5': 21, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
+      "reason": "待决 79 条中真正达到六条件决策门 0 条；各条件未达计数 {'1': 57, '2': 91, '3': 90, '4': 40, '5': 21, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
       "unblock": "六条件为可观测评估注解；decision_ready 子集供优先拍板，其余仍留 Human Review"
     },
     {
