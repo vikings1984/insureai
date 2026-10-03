@@ -1,7 +1,7 @@
 {
   "version": 1,
   "schema_version": "audit-ledger-v1",
-  "generated_at": "2026-10-03T15:43:53.608578+00:00",
+  "generated_at": "2026-10-03T20:38:03.443050+00:00",
   "privacy": "hashes_and_metadata_only",
   "coverage_principle": "ledger is generated after all analytical quality artifacts; release_manifest carries the production gate result",
   "production_quality_gate": {
@@ -14,17 +14,17 @@
       "stage": "collect",
       "producer": "collector",
       "artifact": "data.json",
-      "sha256": "c2e979433fc1c8d116039f24ebb9cef7140a0aeb1c3f1b95a1fe37061bf33285",
+      "sha256": "77c60efafce5bdbf59f9bb4da7b368e91a317dc5bd221d63085b0fb0f17b4f58",
       "counts": {
         "news": 2717,
-        "version": "2.2.248"
+        "version": "2.2.249"
       }
     },
     {
       "stage": "intelligence",
       "producer": "intelligence",
       "artifact": "intelligence.json",
-      "sha256": "5aa0112fb4603ed02ec946e042ce647ef9f96602b5a82737264bd113b1113a35",
+      "sha256": "5e64c3ff97e875f67633a3021bf8d0960f75c2e190b773922cc16d393245eb85",
       "counts": {
         "events": 2550,
         "version": 8
@@ -34,7 +34,7 @@
       "stage": "trust",
       "producer": "trust",
       "artifact": "intelligence.json",
-      "sha256": "5aa0112fb4603ed02ec946e042ce647ef9f96602b5a82737264bd113b1113a35",
+      "sha256": "5e64c3ff97e875f67633a3021bf8d0960f75c2e190b773922cc16d393245eb85",
       "counts": {
         "events": 2550,
         "version": 8
@@ -44,7 +44,7 @@
       "stage": "claims",
       "producer": "claims",
       "artifact": "claims.json",
-      "sha256": "d9f79980d9c629273a053a9b6cb118ed823e33cdbca76495c1a4a16acb72a0c2",
+      "sha256": "02cbccccefd3b0b3eb322588468e47596938b0136c4e042b4ff7fb12a60e631b",
       "counts": {
         "events": 2550,
         "version": 3
@@ -54,7 +54,7 @@
       "stage": "temporal",
       "producer": "temporal",
       "artifact": "intelligence.json",
-      "sha256": "5aa0112fb4603ed02ec946e042ce647ef9f96602b5a82737264bd113b1113a35",
+      "sha256": "5e64c3ff97e875f67633a3021bf8d0960f75c2e190b773922cc16d393245eb85",
       "counts": {
         "events": 2550,
         "version": 8
@@ -64,7 +64,7 @@
       "stage": "trend_intelligence",
       "producer": "trend_intelligence",
       "artifact": "radar.json",
-      "sha256": "54c18465254dffa341e34a07a139e1e0e66124818340ed696521dc5bd6233260",
+      "sha256": "0923bec06b269e84c74c9c3b354991e501008880b246af7b398ddde913ace96c",
       "counts": {
         "version": 2
       }
@@ -73,7 +73,7 @@
       "stage": "decision",
       "producer": "decision",
       "artifact": "intelligence.json",
-      "sha256": "5aa0112fb4603ed02ec946e042ce647ef9f96602b5a82737264bd113b1113a35",
+      "sha256": "5e64c3ff97e875f67633a3021bf8d0960f75c2e190b773922cc16d393245eb85",
       "counts": {
         "events": 2550,
         "version": 8
@@ -83,9 +83,9 @@
       "stage": "decision_stability",
       "producer": "decision_stability",
       "artifact": "decision_stability.json",
-      "sha256": "ae279cac671571e2c0bec23385b1e51fd99a8ffe3d185ba668d809a7740d32e9",
+      "sha256": "069226928782e86498314782a3a1f3f3f456e57f2caf0ecc1786f9775a10fa51",
       "counts": {
-        "results": 14,
+        "results": 12,
         "version": 1
       }
     },
@@ -93,7 +93,7 @@
       "stage": "decision_credibility",
       "producer": "decision_credibility",
       "artifact": "decision_credibility.json",
-      "sha256": "3c91036aa14b8a891100572026e74eba4fa4ba3372802209cf07b6d4a7df0253",
+      "sha256": "7927c05345daf618846da2d0e92bdf339105ccd70be0c32d7b544dd94d17d865",
       "counts": {
         "version": 3
       }
@@ -151,7 +151,7 @@
       "stage": "change_impact",
       "producer": "change_impact",
       "artifact": "change_impact.json",
-      "sha256": "5f37f8d8a924f8d0e08854a8167f6925325796e665b50a8ff9e6b0f3039eb2e4",
+      "sha256": "97ccd09cd99bf6d8440fa9c641ea94f20d3a80e1b9e19a2f49e606880fbefdc8",
       "counts": {
         "version": 1
       }
@@ -160,7 +160,7 @@
       "stage": "freshness",
       "producer": "freshness",
       "artifact": "freshness.json",
-      "sha256": "b079509356604c0ef59789f015c6ca95cc7d244bd818d3834df31606b378ac1f",
+      "sha256": "283616bf0a442657c07e81d9acc392ce7a3566c77ddda6dd46f3884f629a3c15",
       "counts": {
         "version": 1
       }
@@ -178,7 +178,7 @@
       "stage": "review_queue",
       "producer": "human_review",
       "artifact": "review_queue.json",
-      "sha256": "b0175af159c2a726201ae6e117eabc9ffe95d7b490667e2e2d7ad571b970eb58",
+      "sha256": "ca6053da3228ca3ce107589c499dee8fffbf4154a424af48aeee8af9d92c980b",
       "counts": {
         "items": 100,
         "version": 3
@@ -208,9 +208,9 @@
       "stage": "module_health_history",
       "producer": "module_health",
       "artifact": "module_health_history.json",
-      "sha256": "22771abc3b1da8facf21dcfcbbd19e4653aafd4e4c8cb74ff68773de4978ce46",
+      "sha256": "db41f03458b3620dfd4522218b12b4595c35c40a1a83900fd67e3166624ee4db",
       "counts": {
-        "snapshots": 30,
+        "snapshots": 31,
         "version": 1
       }
     },
@@ -228,7 +228,7 @@
       "stage": "trend_attribution",
       "producer": "trend_attribution",
       "artifact": "trend_attribution.json",
-      "sha256": "58e851f5bf420469c19a3cf818e00d484e3dfc5efef42ac2f2ec490c4a36ae4e",
+      "sha256": "60ea630639db3a5c924c2bf16016f95ea2142b0760dfbc9233b61a4568ff2ff4",
       "counts": {
         "modules_keys": 9,
         "version": 1
@@ -238,7 +238,7 @@
       "stage": "optimization_backlog",
       "producer": "optimization_backlog",
       "artifact": "optimization_backlog.json",
-      "sha256": "e2f2b8b506199d92af7e4fddd371c089bebee3bf52b0f9c7254aa8f7f0b67844",
+      "sha256": "f1f379c5302a0c49da2382e028b3436cd1eacfcd6f9fe38a1c84dae1188472e9",
       "counts": {
         "items": 9,
         "version": 3
@@ -248,9 +248,9 @@
       "stage": "optimization_backlog_history",
       "producer": "optimization_backlog",
       "artifact": "optimization_backlog_history.json",
-      "sha256": "7c82cf32bb7b9da093d499e4098f60033014b6f73a5c301c6df7e0af521ce30c",
+      "sha256": "bec20a20f1712f4792f049068ab15a82f0d7522efd99cc3b70b379a8f243ef78",
       "counts": {
-        "snapshots": 30,
+        "snapshots": 31,
         "version": 2
       }
     },
@@ -258,7 +258,7 @@
       "stage": "daily_risk_radar",
       "producer": "daily_risk_radar",
       "artifact": "daily_risk_radar.json",
-      "sha256": "91f7775aa88badfabf07c0699917db4c288e95efedef6a5cda49afba019c1ccd",
+      "sha256": "8ad64d58dc460f34635e47d470cb5e26c34ae76018e9040ee6e29a659c55cfc7",
       "counts": {
         "items": 30,
         "version": 4
@@ -268,7 +268,7 @@
       "stage": "owner_risk_view",
       "producer": "owner_risk_view",
       "artifact": "owner_risk_view.json",
-      "sha256": "49dca2b43eef8ceb8627afd2961c4988c8cb03f326dff91ee5b986ed84dbb898",
+      "sha256": "3fc5d7e7055ab3911d2214a9892bba7984e35a139175426ae6d2ba70cba1f97e",
       "counts": {
         "items": 30,
         "version": 2
@@ -278,7 +278,7 @@
       "stage": "executive_terminal",
       "producer": "executive_terminal",
       "artifact": "executive_terminal.json",
-      "sha256": "f66f4c3311a58e5177abbb8d6be425fe896dae10a19baf005d8fc1cc0896b0ce",
+      "sha256": "856b4e3c07319a04922e5586ab46900be6d5d87515fba45166e6bdbbed27320b",
       "counts": {
         "version": 3
       }
@@ -287,17 +287,17 @@
       "stage": "p2_daily_brief",
       "producer": "p2_intelligence",
       "artifact": "p2_daily_brief.json",
-      "sha256": "f706322f1e6a748a6cbbb8a32e7976b579d9c518d75f083c9f3b61460dabbc6e",
+      "sha256": "3d868642ecea11f0e9bf76397f7e6cc83d5043ab56ed6112cbed8856b2e109f9",
       "counts": {
         "version": "p2-v1.0"
       }
     }
   ],
   "_provenance": {
-    "run_id": "run_20261003_154354_ab6a8c",
-    "build_sha": "afae4a13233e698de867897ad44d1f5c5625b1db",
+    "run_id": "run_20261003_203804_9fdae9",
+    "build_sha": "62f2a615967b7aabd85bbcb5eab4c1bcde2ab593",
     "engine_version": "4.2",
     "schema_version": "release-provenance-v1",
-    "generated_at": "2026-10-03T15:43:55.399481+00:00"
+    "generated_at": "2026-10-03T20:38:05.239802+00:00"
   }
 }
