@@ -1,12 +1,12 @@
 {
   "version": "alert-v1.1",
-  "generated_at": "2026-10-02T21:52:04Z",
+  "generated_at": "2026-10-03T03:35:16Z",
   "principle": "两层收敛：Internal Diff（事实）→ Semantic Alert（≤8 条聚合）；两层准入（T1 系统级监管 / T2 个人级 Watch / T3 标准）；NEW_SOURCE/NEW_EVIDENCE 留内部、delta 不伪造、首跑仅种子、告警不改写业务判断",
   "meta": {
-    "total_events": 2545,
+    "total_events": 2547,
     "baseline_present": true,
     "basis": "delta_vs_baseline",
-    "internal_diff_count": 5,
+    "internal_diff_count": 0,
     "alert_count": 8,
     "max_alerts": 8,
     "alert_type_counts": {
@@ -18,73 +18,7 @@
     },
     "suppressed": 0
   },
-  "internal_diffs": [
-    {
-      "canonical_event_id": "cev_316001ba8779",
-      "event_id": "evt_bdcee533e09d",
-      "title": "Howden Re 引入 Novark 以扩大机构获取保险风险的机会",
-      "topic": "capital_reinsurance",
-      "changes": [
-        {
-          "field": "decision_urgency",
-          "old": "soon",
-          "new": "now"
-        }
-      ]
-    },
-    {
-      "canonical_event_id": "cev_ddf8e9e3c562",
-      "event_id": "evt_63164bd5c318",
-      "title": "再保险正处于“关键拐点”，创纪录的资本考验承保纪律：AM Best",
-      "topic": "capital_reinsurance",
-      "changes": [
-        {
-          "field": "decision_urgency",
-          "old": "soon",
-          "new": "now"
-        }
-      ]
-    },
-    {
-      "canonical_event_id": "cev_9670c8e761a8",
-      "event_id": "evt_96c336ca5844",
-      "title": "美洲开发银行通过瑞士再保险为伯利兹安排巨灾互换",
-      "topic": "capital_reinsurance",
-      "changes": [
-        {
-          "field": "decision_urgency",
-          "old": "soon",
-          "new": "now"
-        }
-      ]
-    },
-    {
-      "canonical_event_id": "cev_1f9acba707af",
-      "event_id": "evt_fb73abc82b8f",
-      "title": "太平再保险拟增资10亿元",
-      "topic": "capital_reinsurance",
-      "changes": [
-        {
-          "field": "decision_urgency",
-          "old": null,
-          "new": "now"
-        }
-      ]
-    },
-    {
-      "canonical_event_id": "cev_7b059f9e39d6",
-      "event_id": "evt_29cef2847b94",
-      "title": "百慕大再保险公司和边车推动美国人寿保险业扩张： ALIRT",
-      "topic": "product_innovation",
-      "changes": [
-        {
-          "field": "decision_urgency",
-          "old": "now",
-          "new": null
-        }
-      ]
-    }
-  ],
+  "internal_diffs": [],
   "semantic_alerts": [
     {
       "type": "EVENT_MATERIAL_CHANGED",
