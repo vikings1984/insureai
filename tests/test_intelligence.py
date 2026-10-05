@@ -91,6 +91,42 @@ class TestIntelligence(unittest.TestCase):
         self.assertGreaterEqual(radar["stats"]["entities"], 1)
         self.assertTrue(any(x["topic"] == "capital_reinsurance" for x in radar["topic_trends"]))
 
+    def test_event_independence_bonus_uses_source_groups_not_domains(self):
+        """V2 §7.1 回归：事件置信度独立性加成须基于独立信源组，而非原始域名。
+
+        旧口径下同一门户多频道（news.sina.com.cn + finance.sina.com.cn）或同集团
+        跨域名（eastmoney.com + 1234567.com.cn）会被算作 2 个"独立域名"而虚增 +5
+        加成；按信源组合并后两者都是 1 组，不应获得加成。
+        """
+        def item(url):
+            return {"source_url": url}
+
+        # 同门户多频道 -> grp:sina（1 组）-> 无加成
+        self.assertEqual(
+            I._independence_bonus([item("https://news.sina.com.cn/a"), item("https://finance.sina.com.cn/b")]),
+            0,
+        )
+        # 同集团跨域名 -> grp:eastmoney（1 组）-> 无加成
+        self.assertEqual(
+            I._independence_bonus([item("https://eastmoney.com/x"), item("https://www.1234567.com.cn/y")]),
+            0,
+        )
+        # 两个独立信源组 -> +5
+        self.assertEqual(
+            I._independence_bonus([item("https://reuters.com/x"), item("https://bloomberg.com/y")]),
+            5,
+        )
+        # 三个独立信源组 -> +10
+        self.assertEqual(
+            I._independence_bonus([item("https://reuters.com/x"), item("https://bloomberg.com/y"), item("https://ft.com/z")]),
+            10,
+        )
+        # 四个及以上独立信源组 -> 封顶 +12
+        self.assertEqual(
+            I._independence_bonus([item("https://reuters.com/x"), item("https://bloomberg.com/y"), item("https://ft.com/z"), item("https://xinhuanet.com/w")]),
+            12,
+        )
+
 
 class TestPerfMemoization(unittest.TestCase):
     """T1 性能债治理回归守卫。

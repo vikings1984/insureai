@@ -23,6 +23,7 @@ from urllib.parse import urlparse
 from radar import build_radar
 from intelligence_signal import extract_signals
 from source_tiers import TIER_AUTHORITY, tier_for_item
+from source_registry import independent_source_groups
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(HERE, "data.json")
@@ -309,6 +310,18 @@ def _domain(item: dict) -> str:
         return ""
 
 
+def _independence_bonus(items: list[dict]) -> int:
+    """V2 §7.1：事件独立性加成基于**独立信源组**数，而非 ``urlparse(...).netloc``
+    的原始域名数。与 claim 层独立信源组判定口径保持一致。
+
+    旧口径下 ``news.sina.com.cn`` + ``finance.sina.com.cn`` 算作 2 个"独立域名"、
+    ``eastmoney.com`` + ``1234567.com.cn`` 也算 2 个，从而虚增 +5 加成；
+    按信源组合并后两者都只是 1 组，不再虚增。
+    """
+    groups = independent_source_groups(items)
+    return min(12, max(0, groups - 1) * 5)
+
+
 def _resolve_canonical_event_id(event_id: str) -> str | None:
     """单一事实源：把局部 event_id 解析到全局 canonical_event_id（失败回退 None，不伪造）。
 
@@ -346,8 +359,8 @@ def _score(items: list[dict]) -> dict:
     relevance = max(x[0] for x in rows)
     impact = max(x[1] for x in rows)
     actionability = max(x[2] for x in rows)
-    unique_domains = len({_domain(x) for x in items if _domain(x)})
-    independent_bonus = min(12, max(0, unique_domains - 1) * 5)
+    # V2 §7.1：独立性加成改用独立信源组（见 _independence_bonus），与 claim 层一致。
+    independent_bonus = _independence_bonus(items)
     confidence = min(100, sum(x[3] for x in rows) / len(rows) + independent_bonus)
     novelty = max(55, 100 - (len(items) - 1) * 12)
     total = round(relevance * .30 + impact * .25 + novelty * .15 + actionability * .20 + confidence * .10)
