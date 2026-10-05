@@ -1,6 +1,6 @@
 {
   "version": "funnel-v1.1",
-  "generated_at": "2026-10-04T20:55:01Z",
+  "generated_at": "2026-10-05T03:48:36Z",
   "principle": "待决策洪流 → 漏斗（now/soon/watch）+ 排名靠前的待决；已决只来自真实决策记录；六条件硬化为每条待决的注解 + decision_ready 子集；分角色计数；样本<30 不结论；分桶为可观测代理",
   "meta": {
     "total_review_queue": 100,
@@ -10,23 +10,23 @@
     "pending": 70,
     "pending_by_tier": {
       "now": 16,
-      "soon": 1,
-      "watch": 53
+      "soon": 11,
+      "watch": 43
     },
     "pending_by_role": {
-      "ai": 7,
-      "ma": 3,
-      "regulatory": 19,
+      "ai": 9,
+      "ma": 2,
+      "regulatory": 21,
       "health": 0,
-      "other": 41
+      "other": 38
     },
     "decision_ready": 0,
     "decision_ready_ceids": [],
     "six_failed_counter": {
-      "1": 50,
-      "2": 92,
-      "3": 92,
-      "4": 36,
+      "1": 47,
+      "2": 91,
+      "3": 91,
+      "4": 37,
       "5": 30,
       "6": 0
     },
@@ -259,6 +259,43 @@
         "tier": "now"
       },
       {
+        "event_id": "evt_7fa20c38cc38",
+        "canonical_event_id": "cev_a95eedd8eef5",
+        "title": "养老保险个人账户余额查询",
+        "topic": "pension_finance",
+        "priority": 100,
+        "trust_level": "low",
+        "reason_types": [
+          "change_impact",
+          "conflict",
+          "input_quality"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 5,
+          "trust_level": "low",
+          "source_count": 22,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "now"
+      },
+      {
         "event_id": "evt_578b5faa780f",
         "canonical_event_id": "cev_4d7633cda292",
         "title": "Verisk 晋升 Harry White 为财产索赔服务主管",
@@ -393,42 +430,6 @@
           "evidence_count": 2,
           "trust_level": "low",
           "source_count": 2,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "now"
-      },
-      {
-        "event_id": "evt_81cd4e36bdc8",
-        "canonical_event_id": "cev_972604b9826c",
-        "title": "很多人有个观点：养老保险个人账户，多交多得没问题",
-        "topic": "pension_finance",
-        "priority": 90,
-        "trust_level": "low",
-        "reason_types": [
-          "conflict",
-          "input_quality"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 5,
-          "trust_level": "low",
-          "source_count": 21,
           "single_src_regulatory": false,
           "decided": false,
           "feedback_status": null
@@ -639,6 +640,354 @@
           "evidence_count": 1,
           "trust_level": "medium",
           "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_d4d335341c4d",
+        "canonical_event_id": "cev_8e4c593c3d05",
+        "title": "密歇根州加入针对抵押贷款服务商“强制放置”保险的和解",
+        "topic": "ai_intelligent",
+        "priority": 55,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact",
+          "input_quality"
+        ],
+        "role": "regulatory",
+        "meets_six": false,
+        "failed_conditions": [
+          2,
+          3,
+          4
+        ],
+        "six_detail": {
+          "monitored": true,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "unknown",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": true,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_e0858dea4bb8",
+        "canonical_event_id": "cev_e6f5fd6f173b",
+        "title": "代理职责——法律与道德",
+        "topic": "ai_intelligent",
+        "priority": 55,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact",
+          "input_quality"
+        ],
+        "role": "ai",
+        "meets_six": false,
+        "failed_conditions": [
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": true,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_9a0df5676407",
+        "canonical_event_id": "cev_0b97adb6347c",
+        "title": "我的新市场",
+        "topic": "ai_intelligent",
+        "priority": 55,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact",
+          "input_quality"
+        ],
+        "role": "ai",
+        "meets_six": false,
+        "failed_conditions": [
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": true,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_eaced486fdda",
+        "canonical_event_id": "cev_ece1791266aa",
+        "title": "关于印发职工基本养老保险个人账户管理暂行办法的通知",
+        "topic": "pension_finance",
+        "priority": 55,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact",
+          "input_quality"
+        ],
+        "role": "regulatory",
+        "meets_six": false,
+        "failed_conditions": [
+          4
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": true,
+          "has_semantic_change": true,
+          "stage": "n/a",
+          "status": "issued",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": true,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_4090c9e14b2f",
+        "canonical_event_id": "cev_72f320eb0863",
+        "title": "个人养老保险查询个人账户怎么查",
+        "topic": "pension_finance",
+        "priority": 55,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact",
+          "input_quality"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_6d312e14b76a",
+        "canonical_event_id": "cev_4945bd71e475",
+        "title": "洛克顿参与 NBA 快船队工资帽规避调查",
+        "topic": "",
+        "priority": 55,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact",
+          "input_quality"
+        ],
+        "role": "regulatory",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "unknown",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": true,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_95bada6ac14c",
+        "canonical_event_id": "cev_6def9caebef4",
+        "title": "在成本飙升的情况下，健康福利经纪人寻求新策略",
+        "topic": "channel_transformation",
+        "priority": 55,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact",
+          "input_quality"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_7c5c1eea8e91",
+        "canonical_event_id": "cev_95858d895a6e",
+        "title": "代理宇宙",
+        "topic": "",
+        "priority": 55,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact",
+          "input_quality"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_66f1b15b2111",
+        "canonical_event_id": "cev_4010fe4649c3",
+        "title": "存款保险守护储户“钱袋子”",
+        "topic": "",
+        "priority": 55,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact",
+          "input_quality"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": true,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_c8f8d7d077fa",
+        "canonical_event_id": "cev_6c0de85c6763",
+        "title": "个人养老保险缴费",
+        "topic": "pension_finance",
+        "priority": 55,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact",
+          "input_quality"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 5,
+          "trust_level": "medium",
+          "source_count": 7,
           "single_src_regulatory": false,
           "decided": false,
           "feedback_status": null
@@ -2144,358 +2493,6 @@
         },
         "urgency": null,
         "tier": "watch"
-      },
-      {
-        "event_id": "evt_7d937aa96ccd",
-        "canonical_event_id": "cev_b21ed1cc34d2",
-        "title": "A-Cap 保险公司面临南卡罗来纳州的“财务危险”指控",
-        "topic": "ai_intelligent",
-        "priority": 45,
-        "trust_level": "medium",
-        "reason_types": [
-          "event_cluster",
-          "input_quality"
-        ],
-        "role": "regulatory",
-        "meets_six": false,
-        "failed_conditions": [
-          2,
-          3,
-          4
-        ],
-        "six_detail": {
-          "monitored": true,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "unknown",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": true,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "watch"
-      },
-      {
-        "event_id": "evt_0f1b6f1ee64d",
-        "canonical_event_id": "cev_4a45ebd417ef",
-        "title": "瑞士再保险强调巨灾保障缺口日益扩大，自然灾害损失每年增加 5-7%",
-        "topic": "capital_reinsurance",
-        "priority": 45,
-        "trust_level": "medium",
-        "reason_types": [
-          "event_cluster",
-          "input_quality"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "watch"
-      },
-      {
-        "event_id": "evt_ea632ba1e2f9",
-        "canonical_event_id": "cev_b6a2f2e109f0",
-        "title": "数字足迹数据可以改善网络索赔预测：Gallagher Re 和 KYND",
-        "topic": "digital_transformation",
-        "priority": 45,
-        "trust_level": "medium",
-        "reason_types": [
-          "event_cluster",
-          "input_quality"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "watch"
-      },
-      {
-        "event_id": "evt_c9db5d6b6604",
-        "canonical_event_id": "cev_4dc0c02bc1be",
-        "title": "网络再保险市场将重点转向战略部署：Ariel Re 的卡尔",
-        "topic": "capital_reinsurance",
-        "priority": 45,
-        "trust_level": "medium",
-        "reason_types": [
-          "event_cluster",
-          "input_quality"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "watch"
-      },
-      {
-        "event_id": "evt_bd5d0ebd8a51",
-        "canonical_event_id": "cev_e9b655d6a52c",
-        "title": "IUA：2025 年条约再保险占伦敦承保保费总额的 26% 多一点",
-        "topic": "capital_reinsurance",
-        "priority": 45,
-        "trust_level": "medium",
-        "reason_types": [
-          "event_cluster",
-          "input_quality"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "watch"
-      },
-      {
-        "event_id": "evt_1ea2888b5965",
-        "canonical_event_id": "cev_78102864e16c",
-        "title": "尽管定价疲软，全球再保险行业预计仍将保持充足资本：标准普尔",
-        "topic": "capital_reinsurance",
-        "priority": 45,
-        "trust_level": "medium",
-        "reason_types": [
-          "event_cluster",
-          "input_quality"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": true,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "watch"
-      },
-      {
-        "event_id": "evt_fb5f7bbabd72",
-        "canonical_event_id": "cev_0c19f03068b6",
-        "title": "网络再保险买家愿意在 1 月 1 日续保时寻求更高的分保：Marsh Re 的 Cordonnier",
-        "topic": "capital_reinsurance",
-        "priority": 45,
-        "trust_level": "medium",
-        "reason_types": [
-          "event_cluster",
-          "input_quality"
-        ],
-        "role": "ma",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "rumor",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "watch"
-      },
-      {
-        "event_id": "evt_8ccf26e03152",
-        "canonical_event_id": "cev_d2ce3ac912f9",
-        "title": "再保险保护的潜在需求持续增长：瑞士再保险",
-        "topic": "capital_reinsurance",
-        "priority": 45,
-        "trust_level": "medium",
-        "reason_types": [
-          "event_cluster",
-          "input_quality"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "watch"
-      },
-      {
-        "event_id": "evt_3196f0d1824c",
-        "canonical_event_id": "cev_743a8ed47e61",
-        "title": "投资者不应将巨灾债券和私人再保险视为竞争资产类别：Bruns、LGT",
-        "topic": "capital_reinsurance",
-        "priority": 45,
-        "trust_level": "medium",
-        "reason_types": [
-          "event_cluster",
-          "input_quality"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "watch"
-      },
-      {
-        "event_id": "evt_86c0a299bc50",
-        "canonical_event_id": "cev_1ed63132c519",
-        "title": "由于利润率面临压力，再保险行业将“受控下降”：惠誉",
-        "topic": "capital_reinsurance",
-        "priority": 45,
-        "trust_level": "medium",
-        "reason_types": [
-          "event_cluster",
-          "input_quality"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": true,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "watch"
       }
     ]
   },
@@ -2722,6 +2719,43 @@
       "tier": "now"
     },
     {
+      "event_id": "evt_7fa20c38cc38",
+      "canonical_event_id": "cev_a95eedd8eef5",
+      "title": "养老保险个人账户余额查询",
+      "topic": "pension_finance",
+      "priority": 100,
+      "trust_level": "low",
+      "reason_types": [
+        "change_impact",
+        "conflict",
+        "input_quality"
+      ],
+      "role": "other",
+      "meets_six": false,
+      "failed_conditions": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "six_detail": {
+        "monitored": false,
+        "acted": false,
+        "t1_reg": false,
+        "has_semantic_change": false,
+        "stage": "n/a",
+        "status": "active",
+        "evidence_count": 5,
+        "trust_level": "low",
+        "source_count": 22,
+        "single_src_regulatory": false,
+        "decided": false,
+        "feedback_status": null
+      },
+      "urgency": null,
+      "tier": "now"
+    },
+    {
       "event_id": "evt_578b5faa780f",
       "canonical_event_id": "cev_4d7633cda292",
       "title": "Verisk 晋升 Harry White 为财产索赔服务主管",
@@ -2864,42 +2898,6 @@
       "tier": "now"
     },
     {
-      "event_id": "evt_81cd4e36bdc8",
-      "canonical_event_id": "cev_972604b9826c",
-      "title": "很多人有个观点：养老保险个人账户，多交多得没问题",
-      "topic": "pension_finance",
-      "priority": 90,
-      "trust_level": "low",
-      "reason_types": [
-        "conflict",
-        "input_quality"
-      ],
-      "role": "other",
-      "meets_six": false,
-      "failed_conditions": [
-        1,
-        2,
-        3,
-        4
-      ],
-      "six_detail": {
-        "monitored": false,
-        "acted": false,
-        "t1_reg": false,
-        "has_semantic_change": false,
-        "stage": "n/a",
-        "status": "active",
-        "evidence_count": 5,
-        "trust_level": "low",
-        "source_count": 21,
-        "single_src_regulatory": false,
-        "decided": false,
-        "feedback_status": null
-      },
-      "urgency": null,
-      "tier": "now"
-    },
-    {
       "event_id": "evt_e2024a6ee946",
       "canonical_event_id": "cev_c3772bb4f667",
       "title": "CatIQ 结束了 2024 年卡尔加里冰雹创纪录的记录，预计行业损失达 33.5 亿加元",
@@ -2970,7 +2968,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-04T20:53:19Z"
+      "decided_at": "2026-10-05T03:46:39Z"
     },
     {
       "event_id": "evt_fb73abc82b8f",
@@ -3006,7 +3004,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-04T20:53:19Z"
+      "decided_at": "2026-10-05T03:46:39Z"
     },
     {
       "event_id": "evt_e833bbc251da",
@@ -3042,7 +3040,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-04T20:53:19Z"
+      "decided_at": "2026-10-05T03:46:39Z"
     },
     {
       "event_id": "evt_bdcee533e09d",
@@ -3078,7 +3076,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-04T20:53:19Z"
+      "decided_at": "2026-10-05T03:46:39Z"
     },
     {
       "event_id": "evt_63164bd5c318",
@@ -3114,7 +3112,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-04T20:53:19Z"
+      "decided_at": "2026-10-05T03:46:39Z"
     },
     {
       "event_id": "evt_3429758517ea",
@@ -3219,7 +3217,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-04T20:53:19Z"
+      "decided_at": "2026-10-05T03:46:39Z"
     },
     {
       "event_id": "evt_ef42853e4111",
@@ -3254,7 +3252,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-04T20:53:19Z"
+      "decided_at": "2026-10-05T03:46:39Z"
     },
     {
       "event_id": "evt_4cd0316ba817",
@@ -3289,7 +3287,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-04T20:53:19Z"
+      "decided_at": "2026-10-05T03:46:39Z"
     },
     {
       "event_id": "evt_c2087cb84c7f",
@@ -3324,7 +3322,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-04T20:53:19Z"
+      "decided_at": "2026-10-05T03:46:39Z"
     },
     {
       "event_id": "evt_c51bc4db164b",
@@ -3359,7 +3357,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-04T20:53:19Z"
+      "decided_at": "2026-10-05T03:46:39Z"
     },
     {
       "event_id": "evt_44b26fce9d14",
@@ -3394,7 +3392,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-04T20:53:19Z"
+      "decided_at": "2026-10-05T03:46:39Z"
     },
     {
       "event_id": "evt_2561fbf5f774",
@@ -3429,7 +3427,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-04T20:53:19Z"
+      "decided_at": "2026-10-05T03:46:39Z"
     },
     {
       "event_id": "evt_92310abdea56",
@@ -3996,7 +3994,7 @@
     {
       "dimension": "六条件硬化（决策门）",
       "status": "evaluated",
-      "reason": "待决 70 条中真正达到六条件决策门 0 条；各条件未达计数 {'1': 50, '2': 92, '3': 92, '4': 36, '5': 30, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
+      "reason": "待决 70 条中真正达到六条件决策门 0 条；各条件未达计数 {'1': 47, '2': 91, '3': 91, '4': 37, '5': 30, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
       "unblock": "六条件为可观测评估注解；decision_ready 子集供优先拍板，其余仍留 Human Review"
     },
     {
