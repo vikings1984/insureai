@@ -680,6 +680,7 @@ def run(dry_run=False, per_source_limit=10):
     existing_titles = [n.get("title", "") for n in existing]
     collected = []
     source_health = {}
+    source_stats = {}  # P1-2：每信源 ingested/dup/noise/non_relevant 计数（供 Source Health 计算）
     next_id = max((n.get("id", 0) for n in existing), default=0) + 1
 
     # 通道 1：RSS
@@ -695,7 +696,7 @@ def run(dry_run=False, per_source_limit=10):
         for it in raw[:per_source_limit]:
             _ingest(it["title"], it["summary"], it["link"], src["name"], src["type"],
                     src["authority"], to_iso(it["published"]), existing_titles, collected,
-                    require_topic=True)
+                    require_topic=True, stats=source_stats)
             next_id += 1
 
     # 通道 2：收件箱
@@ -714,7 +715,8 @@ def run(dry_run=False, per_source_limit=10):
                 auth = entry.get("authority", 85)
                 _ingest(title, desc, url, sname, stype, auth,
                         entry.get("published_at") or to_iso(None),
-                        existing_titles, collected, reason=entry.get("reason"))
+                        existing_titles, collected, reason=entry.get("reason"),
+                        stats=source_stats)
                 processed.append(entry)
             except Exception as e:
                 print(f"  ⚠ 收件箱条目失败 {url}: {e}")
@@ -729,7 +731,7 @@ def run(dry_run=False, per_source_limit=10):
         for it in zh_items:
             _ingest(it["title"], it["summary"], it["url"], it["source_name"], it["source_type"],
                     it["authority"], it["published_at"], existing_titles, collected,
-                    require_topic=True)
+                    require_topic=True, stats=source_stats)
         source_health["东方财富搜索"] = {"count": len(zh_items), "ok": True}
         print(f"  🈶 中文源(东方财富): {len(zh_items)} 条")
     except Exception as e:
@@ -742,7 +744,7 @@ def run(dry_run=False, per_source_limit=10):
         for it in ia_items:
             _ingest(it["title"], it["summary"], it["url"], it["source_name"], it["source_type"],
                     it["authority"], it["published_at"], existing_titles, collected,
-                    require_topic=True)
+                    require_topic=True, stats=source_stats)
         source_health["中国保险行业协会"] = {"count": len(ia_items), "ok": True}
         print(f"  🏛 中文源(保险行业协会): {len(ia_items)} 条")
     except Exception as e:
@@ -755,7 +757,7 @@ def run(dry_run=False, per_source_limit=10):
         for it in sg_items:
             _ingest(it["title"], it["summary"], it["url"], it["source_name"], it["source_type"],
                     it["authority"], it["published_at"], existing_titles, collected,
-                    require_topic=True)
+                    require_topic=True, stats=source_stats)
         source_health["搜狗资讯搜索"] = {"count": len(sg_items), "ok": True}
         print(f"  🔎 联网源(搜狗资讯): {len(sg_items)} 条")
     except Exception as e:
@@ -768,7 +770,7 @@ def run(dry_run=False, per_source_limit=10):
         for it in wx_items:
             _ingest(it["title"], it["summary"], it["url"], it["source_name"], it["source_type"],
                     it["authority"], it["published_at"], existing_titles, collected,
-                    require_topic=True)
+                    require_topic=True, stats=source_stats)
         source_health["微信公众号搜索"] = {"count": len(wx_items), "ok": True}
         print(f"  💬 微信公众号: {len(wx_items)} 条")
     except Exception as e:
@@ -847,7 +849,7 @@ def run(dry_run=False, per_source_limit=10):
 
     _sync_sources(data, merged)
     days = _rebuild_days(merged)
-    _merge_source_health(data, source_health, merged)
+    _merge_source_health(data, source_health, merged, source_stats)
 
     if dry_run:
         print(f"\n[dry-run] 将新增 {len(collected)} 条，合并后共 {len(merged)} 条。")
@@ -1108,14 +1110,21 @@ def auto_reason(title, summary, sname, stype, category, ai_score, topic=None):
     return (prefix + lead + tail).strip()
 
 
-def _ingest(title, summary, url, sname, stype, authority, published, existing_titles, collected, reason=None, require_topic=False):
+def _ingest(title, summary, url, sname, stype, authority, published, existing_titles, collected, reason=None, require_topic=False, stats=None):
+    def _bump(k):
+        if stats is not None:
+            d = stats.setdefault(sname, {})
+            d[k] = d.get(k, 0) + 1
     if not title or is_dup(title, existing_titles + [c["title"] for c in collected]):
+        _bump("dup")
         return
     # 股市行情噪声过滤：剔除板块行情/涨跌停/资金流向/收评等非业务资讯
     if is_stock_noise(title, summary):
+        _bump("noise")
         return
     topic = infer_topic(title, summary)
     if require_topic and not is_insurance_relevant(title, summary):
+        _bump("non_relevant")
         return  # RSS 噪声过滤：不含强保险领域信号则不收录（剔除非保险新闻）
     cat = _category(title, summary)
     sc = score_item(title, summary, authority)
@@ -1136,6 +1145,7 @@ def _ingest(title, summary, url, sname, stype, authority, published, existing_ti
         "research_topic": topic,  # 可为 None，不再默认 product_innovation
         "is_research_report": stype in ("研究机构", "咨询"),
     })
+    _bump("ingested")
     existing_titles.append(title)
 
 
@@ -1187,16 +1197,101 @@ def _rebuild_days(news):
     return days
 
 
-def _merge_source_health(data, fetched, news):
+def _merge_source_health(data, fetched, news, source_stats=None):
+    """计算每个信源的 Source Health 六项指标（P1-2）。
+
+    输入：
+      fetched       : 采集通道 fetch 结果 {name: {count, ok}}
+      news          : 合并后的全量条目（merged）
+      source_stats  : 本轮 _ingest 记账 {name: {ingested, dup, noise, non_relevant}}
+    输出（写入 data["source_health"][name]）：
+      availability       可用性    : fetch 成功为 1.0
+      freshness          新鲜度    : 最新发布日距今归一化（30 天衰减）
+      parse_success      解析成功率 : 本轮 ingested / 本轮 attempted
+      content_quality    内容质量  : merged 平均 ai_score 归一化(/100)
+      duplicate_ratio    重复率    : 本轮 dup / 本轮 attempted
+      insurance_relevance保险相关度: 本轮 ingested / (ingested + non_relevant)
+    末轮无新条目的信源（attempted==0）：parse_success / insurance_relevance 不做事负面判定（置 1.0），
+    仅依据存量 merged 计算 freshness / content_quality。
+    """
+    source_stats = source_stats or {}
     sh = data.get("source_health", {})
-    counts = {}
+
+    # 按信源聚合 merged：条数、最新发布日、平均 ai_score
+    agg = {}
     for n in news:
-        counts[n.get("source_name", "")] = counts.get(n.get("source_name", ""), 0) + 1
-    for name, info in fetched.items():
-        sh[name] = {"count": counts.get(name, info["count"]), "ok": info["ok"]}
-    for name, c in counts.items():
-        if name not in sh:
-            sh[name] = {"count": c, "ok": True}
+        name = n.get("source_name", "")
+        if not name:
+            continue
+        a = agg.setdefault(name, {"count": 0, "latest": "", "score_sum": 0.0})
+        a["count"] += 1
+        pub = n.get("published_at", "") or ""
+        if pub > a["latest"]:
+            a["latest"] = pub
+        try:
+            a["score_sum"] += float(n.get("ai_score", 0) or 0)
+        except (TypeError, ValueError):
+            pass
+
+    now = datetime.now()
+    for name in set(list(fetched.keys()) + list(agg.keys()) + list(source_stats.keys())):
+        f = fetched.get(name)
+        ok = bool(f["ok"]) if f else True  # 未出现在 fetched（如收件箱来源）视为可用
+        st = source_stats.get(name, {})
+        ingested = st.get("ingested", 0)
+        dup = st.get("dup", 0)
+        noise = st.get("noise", 0)
+        non_relevant = st.get("non_relevant", 0)
+        attempted = ingested + dup + noise + non_relevant
+
+        # 1) 可用性
+        availability = 1.0 if ok else 0.0
+
+        # 2) 新鲜度：最新发布日距今天数归一化（30 天线性衰减到 0）
+        latest = agg.get(name, {}).get("latest", "")
+        pub_dt = None
+        if latest:
+            raw = latest.replace("Z", "")
+            for fmt in ("%Y-%m-%dT%H:%M:%S", "%Y-%m-%d"):
+                try:
+                    pub_dt = datetime.strptime(raw[:19] if "T" in raw else raw[:10], fmt)
+                    break
+                except ValueError:
+                    pub_dt = None
+        if pub_dt:
+            days = max(0, (now - pub_dt).days)
+            freshness = max(0.0, 1.0 - days / 30.0)
+        else:
+            freshness = 0.0
+
+        # 3) 解析成功率
+        parse_success = (ingested / attempted) if attempted > 0 else 1.0
+
+        # 4) 内容质量：merged 平均 ai_score 归一化
+        a = agg.get(name)
+        if a and a["count"] > 0:
+            content_quality = round(a["score_sum"] / a["count"] / 100.0, 4)
+        else:
+            content_quality = 0.0
+
+        # 5) 重复率
+        duplicate_ratio = (dup / attempted) if attempted > 0 else 0.0
+
+        # 6) 保险相关度
+        rel_denom = ingested + non_relevant
+        insurance_relevance = (ingested / rel_denom) if rel_denom > 0 else 1.0
+
+        sh[name] = {
+            "count": agg.get(name, {}).get("count", 0),
+            "ok": ok,
+            "availability": round(availability, 4),
+            "freshness": round(freshness, 4),
+            "freshness_latest": latest[:10] if latest else "",
+            "parse_success": round(parse_success, 4),
+            "content_quality": round(content_quality, 4),
+            "duplicate_ratio": round(duplicate_ratio, 4),
+            "insurance_relevance": round(insurance_relevance, 4),
+        }
     data["source_health"] = sh
 
 
