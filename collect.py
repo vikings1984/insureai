@@ -775,6 +775,20 @@ def run(dry_run=False, per_source_limit=10):
         source_health["微信公众号搜索"] = {"count": 0, "ok": False}
         print(f"  ⚠ 微信公众号采集失败: {e}")
 
+    # 通道落盘：不可变 Raw Snapshot（P0-4）——在写 data.json 之前为每个新 item 落盘，
+    # 使任意 Evidence 可经 Article → Snapshot → Original URL 回溯（方案 §4.3 / 附录 B）。
+    if not dry_run:
+        try:
+            from snapshot import build_snapshot, persist_snapshot
+            for c in collected:
+                snap = build_snapshot(
+                    c.get("title", ""), c.get("summary", ""), c.get("source_url", ""),
+                    c.get("source_name", ""), c.get("source_type", ""), c.get("published_at"),
+                )
+                c["snapshot_id"] = persist_snapshot(snap)
+        except Exception as e:
+            print(f"  ⚠ Snapshot 落盘失败（不影响采集）: {e}")
+
     # 合并
     merged = existing + collected
     # 存量噪声清洗：剔除历史采集的股市行情噪声（板块行情/涨跌停/资金流向/收评）

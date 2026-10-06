@@ -367,7 +367,7 @@ def _score(items: list[dict]) -> dict:
     return {"relevance": round(relevance), "impact": round(impact), "novelty": round(novelty), "actionability": round(actionability), "confidence": round(confidence), "intelligence_score": total}
 
 def _evidence(items: list[dict]) -> list[dict]:
-    return [{"source_name": x.get("source_name"), "source_url": x.get("source_url"), "domain": _domain(x), "title": x.get("title_zh") or x.get("title"), "published_at": x.get("published_at"), "date_verified": bool(x.get("date_verified"))} for x in sorted(items, key=_timestamp, reverse=True)[:5]]
+    return [{"source_name": x.get("source_name"), "source_url": x.get("source_url"), "domain": _domain(x), "title": x.get("title_zh") or x.get("title"), "published_at": x.get("published_at"), "date_verified": bool(x.get("date_verified")), "source_snapshot_id": x.get("snapshot_id")} for x in sorted(items, key=_timestamp, reverse=True)[:5]]
 
 def _evidence_quality(items: list[dict], evidence: list[dict]) -> tuple[float, str]:
     source_count = len({x.get("source_name") for x in items if x.get("source_name")})

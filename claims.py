@@ -370,6 +370,8 @@ def _evidence_row(item: dict, relation: str, matched_span: str = "") -> dict:
         # V2 §7.1：证据归属到"独立信源组"，而不是原始 hostname
         "source_group": source_group(item),
         "source_tier": tier_for_item(item),
+        # P0-4：回溯链 Evidence → Snapshot → Original URL（legacy 文章无 snapshot_id 时为 None）
+        "source_snapshot_id": item.get("snapshot_id"),
         "published_at": item.get("published_at"),
         "date_verified": bool(item.get("date_verified")),
         "relation": relation,
