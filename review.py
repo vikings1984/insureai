@@ -90,7 +90,18 @@ def write_queue(data):
     trend=_read_optional(TREND_ATTRIBUTION)
     if not trend.get('modules'):
         trend=build_attribution()
-    queue=build_review_queue(data,cases,impacts,evidence,trend); QUEUE.write_text(json.dumps(queue,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); return queue
+    queue=build_review_queue(data,cases,impacts,evidence,trend)
+    # P1-4：队列每日重建，但人工复核状态必须继承（已指派/已裁决/已升级不得被覆盖丢失）。
+    # 状态机在 review_state.json 中持久化；此处合并后把真实 status 写回队列项。
+    # 状态机异常绝不能阻断队列生成，故 try/except 保护。
+    try:
+        import review_state as _rs
+        state=_rs.load_state()
+        _rs.sync_items(state, queue.get('items') or [])
+        _rs.save_state(state)
+    except Exception as e:
+        print(f"  ⚠ review_state 同步跳过（不影响队列生成）: {e}")
+    QUEUE.write_text(json.dumps(queue,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); return queue
 
 def main():
     data=json.loads(INTEL.read_text(encoding='utf-8')); queue=write_queue(data); print(f"Review queue generated: {len(queue['items'])} pending candidates")
