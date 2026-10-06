@@ -1,0 +1,199 @@
+# V2 §5 / P1-1 Source Registry —— 归并表（source group）外置
+#
+# 同门户多频道（news.sina.com.cn + finance.sina.com.cn）或同集团跨域名
+# （eastmoney.com + 1234567.com.cn）合并为单一独立信源组（grp:xxx）。
+# 与 claims.py / intelligence.py 的 §7.1 判定口径保持一致。
+#
+# 设计约束：本仓库是零依赖工程（collect.py / intelligence.py 仅用标准库），
+# 因此本文件由 source_registry.py 内置的极简 YAML 子集解析器加载，不引入 PyYAML。
+# 仅使用：整行注释(#)、块映射、块序列、行内流序列 [a, b, c]、纯量字符串。
+# 请勿使用锚点 / 多行字符串 / 行内注释，以免超出解析器能力。
+
+# 多段后缀：只取最后两段会切错（sina.com.cn -> com.cn），必须保留三段。
+multipart_suffixes:
+  - com.cn
+  - net.cn
+  - org.cn
+  - gov.cn
+  - edu.cn
+  - ac.cn
+  - com.hk
+  - net.hk
+  - org.hk
+  - gov.hk
+  - com.tw
+  - net.tw
+  - org.tw
+  - co.jp
+  - or.jp
+  - ne.jp
+  - ac.jp
+  - go.jp
+  - co.uk
+  - org.uk
+  - ac.uk
+  - gov.uk
+  - me.uk
+  - com.au
+  - net.au
+  - org.au
+  - com.br
+  - com.sg
+  - co.kr
+  - co.in
+
+# 已知转载/聚合平台组：同一稿件出现在此类平台不单独构成新的独立信源。
+# 注：grp:163 当前为历史遗留项，源码未将任何域名映射到该组（163.com 实际归 grp:netease），待复核。
+syndication_groups: [grp:toutiao, grp:baidu, grp:sohu, grp:163]
+
+sources:
+  - id: xinhua
+    name: 新华网/新华财经
+    type: media
+    group: grp:xinhua
+    domains: [xinhuanet.com, news.cn, xinhua08.com]
+  - id: people
+    name: 人民网
+    type: media
+    group: grp:people
+    domains: [people.com.cn, peopledaily.com.cn]
+  - id: chinanews
+    name: 中国新闻网
+    type: media
+    group: grp:chinanews
+    domains: [chinanews.com.cn, chinanews.com]
+  - id: cctv
+    name: 央视/央广
+    type: media
+    group: grp:cctv
+    domains: [cctv.com, cntv.cn]
+  - id: cecn
+    name: 中国经济网
+    type: media
+    group: grp:cecn
+    domains: [ce.cn, ceweekly.cn]
+  - id: ftchinese
+    name: 金融时报中文网
+    type: media
+    group: grp:ftchinese
+    domains: [ftchinese.com]
+  - id: ft
+    name: Financial Times
+    type: media
+    group: grp:ft
+    domains: [ft.com]
+  - id: jiemian
+    name: 界面/蓝鲸
+    type: media
+    group: grp:jiemian
+    domains: [jiemian.com, lanjingcj.com]
+  - id: caixin
+    name: 财新
+    type: media
+    group: grp:caixin
+    domains: [caixin.com]
+  - id: caijing
+    name: 财经网
+    type: media
+    group: grp:caijing
+    domains: [caijing.com.cn]
+  - id: yicai
+    name: 第一财经
+    type: media
+    group: grp:yicai
+    domains: [yicai.com]
+  - id: jingji21
+    name: 21世纪经济报道
+    type: media
+    group: grp:21jingji
+    domains: [21jingji.com, 21cbh.com]
+  - id: stcn
+    name: 券商中国/证券时报
+    type: media
+    group: grp:stcn
+    domains: [stcn.com, quanshangcn.com]
+  - id: eastmoney
+    name: 东方财富
+    type: media
+    group: grp:eastmoney
+    domains: [eastmoney.com, 1234567.com.cn]
+  - id: ths
+    name: 同花顺
+    type: media
+    group: grp:ths
+    domains: [10jqka.com.cn]
+  - id: hexun
+    name: 和讯
+    type: media
+    group: grp:hexun
+    domains: [hexun.com]
+  - id: jrj
+    name: 金融界
+    type: media
+    group: grp:jrj
+    domains: [jrj.com.cn, jinrongjie.com]
+  - id: sina
+    name: 新浪/微博
+    type: media
+    group: grp:sina
+    domains: [sina.com.cn, sina.com, weibo.com]
+  - id: netease
+    name: 网易
+    type: media
+    group: grp:netease
+    domains: [163.com, 126.com]
+  - id: tencent
+    name: 腾讯
+    type: media
+    group: grp:tencent
+    domains: [qq.com, tencent.com]
+  - id: sohu
+    name: 搜狐/搜狗
+    type: media
+    group: grp:sohu
+    domains: [sohu.com, sogou.com]
+  - id: ifeng
+    name: 凤凰
+    type: media
+    group: grp:ifeng
+    domains: [ifeng.com]
+  - id: iachina
+    name: 中国保险行业协会
+    type: media
+    group: grp:iachina
+    domains: [iachina.cn]
+  - id: insurancejournal
+    name: Insurance Journal
+    type: media
+    group: grp:insurancejournal
+    domains: [insurancejournal.com]
+  - id: reinsurancene
+    name: Reinsurance News
+    type: media
+    group: grp:reinsurancene
+    domains: [reinsurancene.ws]
+  - id: artemis
+    name: Artemis
+    type: media
+    group: grp:artemis
+    domains: [artemis.bm]
+  - id: reuters
+    name: Reuters
+    type: media
+    group: grp:reuters
+    domains: [reuters.com]
+  - id: bloomberg
+    name: Bloomberg
+    type: media
+    group: grp:bloomberg
+    domains: [bloomberg.com]
+  - id: toutiao
+    name: 今日头条
+    type: syndication
+    group: grp:toutiao
+    domains: [toutiao.com, toutiaopage.com]
+  - id: baidu
+    name: 百度
+    type: syndication
+    group: grp:baidu
+    domains: [baidu.com]

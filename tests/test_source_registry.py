@@ -8,6 +8,7 @@ import unittest
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import claims
+import source_registry
 from source_registry import (
     independent_source_groups,
     registrable_domain,
@@ -129,6 +130,37 @@ class TestCrossCheckedRequiresIndependentGroups(unittest.TestCase):
         claim = self._claim(items)
         self.assertEqual(claim["independent_source_groups"], 1)
         self.assertEqual(claim["verification_status"], "single_source")
+
+
+class TestExternalRegistryLoading(unittest.TestCase):
+    """V2 P1-1 回归：归并表已外置到 sources/registry.yaml，模块启动时必须正确载入。"""
+
+    def test_registry_yaml_is_loaded_at_import(self):
+        # 归并表来自 YAML，而非硬编码字面量（非空即说明从磁盘载入成功）
+        self.assertGreater(len(source_registry.SOURCE_GROUPS), 0)
+        self.assertGreater(len(source_registry.MULTIPART_SUFFIXES), 0)
+
+    def test_known_domains_resolve_to_yaml_groups(self):
+        # 这些域都定义在 sources/registry.yaml 的 sources[*].domains 里
+        self.assertEqual(source_registry.SOURCE_GROUPS["sina.com.cn"], "grp:sina")
+        self.assertEqual(source_registry.SOURCE_GROUPS["reuters.com"], "grp:reuters")
+        self.assertEqual(source_registry.SOURCE_GROUPS["eastmoney.com"], "grp:eastmoney")
+
+    def test_multipart_suffix_from_yaml_includes_china_multisegment(self):
+        # 多段后缀必须含 com.cn / co.uk，否则 registrable_domain 会截断成两段
+        self.assertIn("com.cn", source_registry.MULTIPART_SUFFIXES)
+        self.assertIn("co.uk", source_registry.MULTIPART_SUFFIXES)
+
+    def test_source_group_func_uses_yaml_registry(self):
+        # 经 source_group() 走归并表，确认 YAML 来源被归到正确组
+        a = _item("1", "t", "新浪财经", "finance.sina.com.cn")
+        b = _item("2", "t", "路透", "www.reuters.com")
+        self.assertEqual(source_group(a), "grp:sina")
+        self.assertEqual(source_group(b), "grp:reuters")
+
+    def test_syndication_platforms_loaded_from_yaml(self):
+        # SYNDICATION_PLATFORMS 是原死代码，随外置忠实保留；至少含一个组
+        self.assertIn("grp:sohu", source_registry.SYNDICATION_PLATFORMS)
 
 
 if __name__ == "__main__":

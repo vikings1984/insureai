@@ -9,7 +9,7 @@
     3 URLs ≠ 3 independent sources
     cross_checked = true 必须基于 >= 2 independent source groups，而不是 URL 数量。
 
-而改造前 `claims.py` 用的是 ``len({urlparse(url).netloc})``，即**原始主机名**：
+而改造前 ``claims.py`` 用的是 ``len({urlparse(url).netloc})``，即**原始主机名**：
 
     news.sina.com.cn  +  finance.sina.com.cn   →  2 个"独立域名"  →  误判 cross_checked
     www.x.com         +  x.com                 →  2 个"独立域名"  →  误判 cross_checked
@@ -24,101 +24,124 @@ Evidence Coverage 与后续决策建议。
         → source group（同集团 / 同转载链合并）
 
 判定规则因此从"域名个数"升级为"独立信源组个数"。
+
+归并表外置（V2 P1-1）
+---------------------
+``SOURCE_GROUPS`` / ``SYNDICATION_PLATFORMS`` / ``MULTIPART_SUFFIXES`` 原先硬编码在本文件，
+现统一外置到 ``sources/registry.yaml``，由本模块启动时载入。该文件是**人工维护的单一事实源**，
+新增/调整信源组只需改 YAML，不必动代码。
+
+本仓库是零依赖工程（collect.py / intelligence.py 仅用标准库），故载入使用内置极简
+YAML 子集解析器（见 ``_yaml_lite_load``）；若运行环境已安装 PyYAML 则优先复用，结果等价。
 """
 from __future__ import annotations
 
+from pathlib import Path
 from urllib.parse import urlparse
 
-# 多段后缀：只取最后两段会切错（sina.com.cn → com.cn），必须保留三段。
-MULTIPART_SUFFIXES = frozenset({
-    "com.cn", "net.cn", "org.cn", "gov.cn", "edu.cn", "ac.cn",
-    "com.hk", "net.hk", "org.hk", "gov.hk",
-    "com.tw", "net.tw", "org.tw",
-    "co.jp", "or.jp", "ne.jp", "ac.jp", "go.jp",
-    "co.uk", "org.uk", "ac.uk", "gov.uk", "me.uk",
-    "com.au", "net.au", "org.au",
-    "com.br", "com.sg", "co.kr", "co.in",
-})
 
-# 同集团 / 同转载链的显式归并表。
-# key = registrable domain，value = source group id。
-# 只有"同一家机构、不同域名/频道"才应合并；不同门户之间不合并。
-SOURCE_GROUPS: dict[str, str] = {
-    # 新华社系
-    "xinhuanet.com": "grp:xinhua",
-    "news.cn": "grp:xinhua",
-    "xinhua08.com": "grp:xinhua",
-    # 人民日报系
-    "people.com.cn": "grp:people",
-    "peopledaily.com.cn": "grp:people",
-    # 中新社系
-    "chinanews.com.cn": "grp:chinanews",
-    "chinanews.com": "grp:chinanews",
-    # 央视 / 央广
-    "cctv.com": "grp:cctv",
-    "cntv.cn": "grp:cctv",
-    # 中国经济网 / 经济日报系
-    "ce.cn": "grp:cecn",
-    "ceweekly.cn": "grp:cecn",
-    # 金融时报系（中国）
-    "ftchinese.com": "grp:ftchinese",
-    "ft.com": "grp:ft",
-    # 界面 / 蓝鲸（同一集团不同域名）
-    "jiemian.com": "grp:jiemian",
-    "lanjingcj.com": "grp:jiemian",
-    # 财新
-    "caixin.com": "grp:caixin",
-    "caijing.com.cn": "grp:caijing",
-    # 第一财经
-    "yicai.com": "grp:yicai",
-    # 21 世纪经济报道系
-    "21jingji.com": "grp:21jingji",
-    "21cbh.com": "grp:21jingji",
-    # 券商中国 / 证券时报系
-    "stcn.com": "grp:stcn",
-    "quanshangcn.com": "grp:stcn",
-    # 东方财富系
-    "eastmoney.com": "grp:eastmoney",
-    "1234567.com.cn": "grp:eastmoney",
-    # 同花顺系
-    "10jqka.com.cn": "grp:ths",
-    "hexun.com": "grp:hexun",
-    # 和讯 / 金融界
-    "jrj.com.cn": "grp:jrj",
-    "jinrongjie.com": "grp:jrj",
-    # 新浪 / 微博
-    "sina.com.cn": "grp:sina",
-    "sina.com": "grp:sina",
-    "weibo.com": "grp:sina",
-    # 网易
-    "163.com": "grp:netease",
-    "126.com": "grp:netease",
-    # 腾讯
-    "qq.com": "grp:tencent",
-    "tencent.com": "grp:tencent",
-    # 搜狐 / 搜狗
-    "sohu.com": "grp:sohu",
-    "sogou.com": "grp:sohu",
-    # 凤凰
-    "ifeng.com": "grp:ifeng",
-    # 今日头条系
-    "toutiao.com": "grp:toutiao",
-    "toutiaopage.com": "grp:toutiao",
-    # 百度
-    "baidu.com": "grp:baidu",
-    # 保险行业垂直（各自独立，仅做域名收敛）
-    "iachina.cn": "grp:iachina",
-    "insurancejournal.com": "grp:insurancejournal",
-    "reinsurancene.ws": "grp:reinsurancene",
-    "artemis.bm": "grp:artemis",
-    "reuters.com": "grp:reuters",
-    "bloomberg.com": "grp:bloomberg",
-}
+def _yaml_lite_load(text: str) -> dict:
+    """极简 YAML 子集解析器（零依赖，失败降级用）。
 
-# 已知转载平台：同一稿件出现在这类平台上，不能单独构成"新增独立信源"。
-SYNDICATION_PLATFORMS = frozenset({
-    "grp:toutiao", "grp:baidu", "grp:sohu", "grp:163",
-})
+    仅支持 ``sources/registry.yaml`` 用到的构造：整行注释(#)、块映射、块序列、
+    行内流序列 ``[a, b, c]``、纯量字符串。请勿在该文件使用锚点 / 多行字符串 /
+    行内注释，以免超出解析能力。若已安装 PyYAML 则优先用其（更稳健、等价）。
+    """
+    try:
+        import yaml  # 可选：有 PyYAML 时优先
+        return yaml.safe_load(text) or {}
+    except Exception:
+        pass
+    lines = []
+    for raw in text.splitlines():
+        s = raw.strip()
+        if not s or s.startswith("#"):
+            continue
+        indent = len(raw) - len(raw.lstrip(" "))
+        lines.append((indent, raw.strip()))
+    n = len(lines)
+
+    def _scalar(s: str):
+        s = s.strip()
+        if len(s) >= 2 and ((s[0] == '"' and s[-1] == '"') or (s[0] == "'" and s[-1] == "'")):
+            return s[1:-1]
+        return s
+
+    def _flow_seq(s: str):
+        inner = s.strip()[1:-1].strip()
+        return [] if not inner else [_scalar(x) for x in inner.split(",")]
+
+    def _value(s: str):
+        s = s.strip()
+        return _flow_seq(s) if s.startswith("[") else _scalar(s)
+
+    i = [0]
+
+    def _mapping(indent: int) -> dict:
+        d: dict = {}
+        while i[0] < n:
+            ind, content = lines[i[0]]
+            if ind < indent or content.startswith("- "):
+                break
+            if ind > indent or ":" not in content:
+                i[0] += 1
+                continue
+            key, _, val = content.partition(":")
+            key, val = key.strip(), val.strip()
+            i[0] += 1
+            if val == "":
+                if i[0] < n and lines[i[0]][0] > indent:
+                    child = lines[i[0]][0]
+                    d[key] = _sequence(child) if lines[i[0]][1].startswith("- ") else _mapping(child)
+                else:
+                    d[key] = None
+            else:
+                d[key] = _value(val)
+        return d
+
+    def _sequence(indent: int) -> list:
+        seq: list = []
+        while i[0] < n:
+            ind, content = lines[i[0]]
+            if ind != indent or not content.startswith("- "):
+                break
+            item = content[2:].strip()
+            i[0] += 1
+            if item == "":
+                if i[0] < n and lines[i[0]][0] > indent:
+                    child = lines[i[0]][0]
+                    seq.append(_sequence(child) if lines[i[0]][1].startswith("- ") else _mapping(child))
+                else:
+                    seq.append(None)
+            elif ":" in item and not item.startswith("["):
+                m: dict = {}
+                k, _, v = item.partition(":")
+                k, v = k.strip(), v.strip()
+                if v != "":
+                    m[k] = _value(v)
+                m.update(_mapping(indent + 2))
+                seq.append(m)
+            else:
+                seq.append(_value(item))
+        return seq
+
+    return _mapping(lines[0][0]) if n else {}
+
+
+def _load_registry() -> tuple[frozenset, dict, frozenset]:
+    """从 sources/registry.yaml 载入归并表（零依赖）。"""
+    path = Path(__file__).resolve().parent / "sources" / "registry.yaml"
+    data = _yaml_lite_load(path.read_text(encoding="utf-8"))
+    multipart = frozenset(data.get("multipart_suffixes", []))
+    groups: dict[str, str] = {}
+    for s in data.get("sources", []):
+        for dom in s.get("domains", []):
+            groups[dom] = s["group"]
+    syndication = frozenset(data.get("syndication_groups", []))
+    return multipart, groups, syndication
+
+
+MULTIPART_SUFFIXES, SOURCE_GROUPS, SYNDICATION_PLATFORMS = _load_registry()
 
 
 def _host(url_or_host: str) -> str:
@@ -134,7 +157,7 @@ def _host(url_or_host: str) -> str:
 
 
 def registrable_domain(url_or_host: str) -> str:
-    """取 eTLD+1：`news.sina.com.cn` → `sina.com.cn`，`www.reuters.com` → `reuters.com`。"""
+    """取 eTLD+1：``news.sina.com.cn`` → ``sina.com.cn``，``www.reuters.com`` → ``reuters.com``。"""
     host = _host(url_or_host)
     if not host:
         return ""
@@ -151,7 +174,7 @@ def source_group(item_or_url) -> str:
 
     - 优先尊重数据自带的 ``source_group`` / ``source_group_id``（采集侧已知转载关系时）；
     - 否则查 ``SOURCE_GROUPS`` 归并表；
-    - 查不到就用 registrable domain 兜底（`dom:<eTLD+1>`），保证"未知来源互不合并"。
+    - 查不到就用 registrable domain 兜底（``dom:<eTLD+1>``），保证"未知来源互不合并"。
     """
     if isinstance(item_or_url, dict):
         explicit = item_or_url.get("source_group") or item_or_url.get("source_group_id")
