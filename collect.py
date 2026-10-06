@@ -24,6 +24,7 @@ InsureAI 自动采集管道 (collect.py)
 """
 
 import json
+import statistics
 import sys
 import os
 import re
@@ -1197,6 +1198,88 @@ def _rebuild_days(news):
     return days
 
 
+# ── P1-2 freshness 衰减窗口分档 ──────────────────────────────────────────
+# 背景：统一 30 天线性衰减会把低频权威源（监管局、行业协会、季度研究报告）
+# 按「日更源」的标准衡量，从而误判为「陈旧」。故按信源声明的 update_freq 分档。
+#
+# 设计原则：**只放宽、不收紧**。最终窗口恒 >= DEFAULT_FRESHNESS_WINDOW_DAYS，
+# 因此任何信源的 freshness 都不会因本机制而下降（零回归风险）。
+# 收紧高频源（如把「每日」压到 7 天）会误伤最活跃的源，属独立决策，此处不做。
+FRESHNESS_WINDOW_BY_FREQ = {
+    "每日": 30, "每天": 30, "日更": 30,
+    "每周": 30, "周更": 30,
+    "每月": 60, "月更": 60,
+    "每季": 120, "季度": 120, "季更": 120,
+}
+DEFAULT_FRESHNESS_WINDOW_DAYS = 30
+# 观测层（用于 update_freq 缺失或为「不定期」的信源）：从存量发布日估计真实节奏
+OBSERVED_GAP_MIN_SAMPLES = 3        # 不同发布日少于 3 个不发观测窗口
+OBSERVED_GAP_RECENT_DATES = 10      # 只用最近 10 个发布日，反映当前节奏
+OBSERVED_GAP_BREAK_DAYS = 365       # 间隔超过此值视为「停更断档」：只取断点之后的日期
+OBSERVED_GAP_TOLERANCE = 2.0        # 观测中位间隔 × 2 作为容忍窗口
+OBSERVED_WINDOW_MIN_DAYS = 30       # 下限：不劣于默认窗口
+OBSERVED_WINDOW_MAX_DAYS = 180      # 上限：超过半年未更新一律归零
+
+_ISO_DAY_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
+def _published_day(value):
+    """从 published_at 取出 YYYY-MM-DD；非法或缺失返回 ''。"""
+    raw = str(value or "")[:10]
+    return raw if _ISO_DAY_RE.match(raw) else ""
+
+
+def observed_publish_gap_days(published_days):
+    """按该信源存量条目的发布日，估计典型更新间隔（天，取中位数）。
+
+    入参为 YYYY-MM-DD 字符串的可迭代对象（自动去重、排序）。
+    只取最近 OBSERVED_GAP_RECENT_DATES 个发布日，以反映「当前」节奏而非历史平均值；
+    若其中存在超过 OBSERVED_GAP_BREAK_DAYS 的间隔，视为该信源曾长期停更后恢复，
+    只保留最后一个断点之后的日期（否则会用几年前的日更节奏衡量现在这个月更源）。
+    样本不足或全部同日发布时返回 None —— 调用方回退默认窗口。
+    """
+    days = sorted({d for d in (published_days or []) if d})
+    if len(days) < OBSERVED_GAP_MIN_SAMPLES:
+        return None
+    days = days[-OBSERVED_GAP_RECENT_DATES:]
+
+    def _diff(prev, cur):
+        try:
+            return (datetime.strptime(cur, "%Y-%m-%d") - datetime.strptime(prev, "%Y-%m-%d")).days
+        except ValueError:
+            return None
+
+    # 从后往前找到最后一个停更断点，只保留其后的一段活跃期
+    for i in range(len(days) - 1, 0, -1):
+        delta = _diff(days[i - 1], days[i])
+        if delta is not None and delta > OBSERVED_GAP_BREAK_DAYS:
+            days = days[i:]
+            break
+    if len(days) < OBSERVED_GAP_MIN_SAMPLES:
+        return None
+
+    gaps = [d for d in (_diff(a, b) for a, b in zip(days, days[1:])) if d and d > 0]
+    if not gaps:
+        return None
+    return float(statistics.median(gaps))
+
+
+def freshness_window_days(update_freq=None, observed_gap=None):
+    """返回该信源的 freshness 线性衰减窗口（天）。
+
+    三层取最大值，保证单调放宽：
+      1) 声明档位（data.json sources[].update_freq：每日/每周/每月/每季）
+      2) 观测间隔自适应（存量发布日的中位间隔 × 容忍系数，clamp 到 [30, 180]）
+      3) 默认 DEFAULT_FRESHNESS_WINDOW_DAYS
+    """
+    declared = FRESHNESS_WINDOW_BY_FREQ.get(str(update_freq or "").strip(), 0)
+    observed = 0
+    if observed_gap and observed_gap > 0:
+        observed = int(round(observed_gap * OBSERVED_GAP_TOLERANCE))
+        observed = max(OBSERVED_WINDOW_MIN_DAYS, min(OBSERVED_WINDOW_MAX_DAYS, observed))
+    return max(DEFAULT_FRESHNESS_WINDOW_DAYS, declared, observed)
+
+
 def _merge_source_health(data, fetched, news, source_stats=None):
     """计算每个信源的 Source Health 六项指标（P1-2）。
 
@@ -1206,28 +1289,40 @@ def _merge_source_health(data, fetched, news, source_stats=None):
       source_stats  : 本轮 _ingest 记账 {name: {ingested, dup, noise, non_relevant}}
     输出（写入 data["source_health"][name]）：
       availability       可用性    : fetch 成功为 1.0
-      freshness          新鲜度    : 最新发布日距今归一化（30 天衰减）
+      freshness          新鲜度    : 最新发布日距今归一化，衰减窗口按信源分档
       parse_success      解析成功率 : 本轮 ingested / 本轮 attempted
       content_quality    内容质量  : merged 平均 ai_score 归一化(/100)
       duplicate_ratio    重复率    : 本轮 dup / 本轮 attempted
       insurance_relevance保险相关度: 本轮 ingested / (ingested + non_relevant)
     末轮无新条目的信源（attempted==0）：parse_success / insurance_relevance 不做事负面判定（置 1.0），
     仅依据存量 merged 计算 freshness / content_quality。
+
+    freshness 窗口见 freshness_window_days()：声明档位 → 观测自适应 → 默认回退，
+    取最大值，只放宽不收紧。
     """
     source_stats = source_stats or {}
     sh = data.get("source_health", {})
 
-    # 按信源聚合 merged：条数、最新发布日、平均 ai_score
+    # 信源声明的更新频率（data.json sources[].update_freq），供 freshness 分档
+    freq_by_name = {}
+    for s in data.get("sources") or []:
+        if isinstance(s, dict) and s.get("name"):
+            freq_by_name[s["name"]] = s.get("update_freq")
+
+    # 按信源聚合 merged：条数、最新发布日、平均 ai_score、去重后的发布日集合
     agg = {}
     for n in news:
         name = n.get("source_name", "")
         if not name:
             continue
-        a = agg.setdefault(name, {"count": 0, "latest": "", "score_sum": 0.0})
+        a = agg.setdefault(name, {"count": 0, "latest": "", "score_sum": 0.0, "days": set()})
         a["count"] += 1
         pub = n.get("published_at", "") or ""
         if pub > a["latest"]:
             a["latest"] = pub
+        day = _published_day(pub)
+        if day:
+            a["days"].add(day)
         try:
             a["score_sum"] += float(n.get("ai_score", 0) or 0)
         except (TypeError, ValueError):
@@ -1247,8 +1342,9 @@ def _merge_source_health(data, fetched, news, source_stats=None):
         # 1) 可用性
         availability = 1.0 if ok else 0.0
 
-        # 2) 新鲜度：最新发布日距今天数归一化（30 天线性衰减到 0）
-        latest = agg.get(name, {}).get("latest", "")
+        # 2) 新鲜度：最新发布日距今天数归一化，衰减窗口按信源分档（见 freshness_window_days）
+        a = agg.get(name)
+        latest = (a or {}).get("latest", "")
         pub_dt = None
         if latest:
             raw = latest.replace("Z", "")
@@ -1258,9 +1354,13 @@ def _merge_source_health(data, fetched, news, source_stats=None):
                     break
                 except ValueError:
                     pub_dt = None
+        window = freshness_window_days(
+            freq_by_name.get(name),
+            observed_publish_gap_days((a or {}).get("days")) if a else None,
+        )
         if pub_dt:
             days = max(0, (now - pub_dt).days)
-            freshness = max(0.0, 1.0 - days / 30.0)
+            freshness = max(0.0, 1.0 - days / float(window))
         else:
             freshness = 0.0
 
@@ -1287,6 +1387,8 @@ def _merge_source_health(data, fetched, news, source_stats=None):
             "availability": round(availability, 4),
             "freshness": round(freshness, 4),
             "freshness_latest": latest[:10] if latest else "",
+            # 实际使用的衰减窗口（天），供排障与口径核对
+            "freshness_window": window,
             "parse_success": round(parse_success, 4),
             "content_quality": round(content_quality, 4),
             "duplicate_ratio": round(duplicate_ratio, 4),

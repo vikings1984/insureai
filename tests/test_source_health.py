@@ -5,8 +5,10 @@
   - _merge_source_health 计算 availability / freshness / parse_success /
     content_quality / duplicate_ratio / insurance_relevance 六项指标
   - fetch 失败 → availability=0；末轮无新条目 → 不做事负面判定
+  - freshness 衰减窗口按信源 update_freq 分档（声明 → 观测 → 默认），且只放宽不收紧
 """
 import unittest
+from datetime import datetime, timedelta
 
 import collect
 
@@ -132,6 +134,129 @@ class TestMergeSourceHealth(unittest.TestCase):
         news = [{"source_name": "X", "published_at": "2026-01-01T08:00:00Z", "ai_score": 50}]
         collect._merge_source_health(data, {"X": {"count": 1, "ok": True}}, news)
         self.assertIn("X", data["source_health"])
+
+
+class TestObservedPublishGap(unittest.TestCase):
+    """观测层：从存量发布日估计该信源的典型更新间隔。"""
+
+    def test_sample_insufficient_returns_none(self):
+        self.assertIsNone(collect.observed_publish_gap_days(["2026-01-01", "2026-01-08"]))
+
+    def test_empty_returns_none(self):
+        self.assertIsNone(collect.observed_publish_gap_days([]))
+        self.assertIsNone(collect.observed_publish_gap_days(None))
+
+    def test_median_of_gaps(self):
+        days = ["2026-01-01", "2026-01-08", "2026-01-15", "2026-01-22"]
+        self.assertEqual(collect.observed_publish_gap_days(days), 7.0)
+
+    def test_duplicate_days_collapsed(self):
+        """同一天多条不应算作 0 天间隔，否则会低估真实节奏。"""
+        days = ["2026-01-01", "2026-01-01", "2026-01-01",
+                "2026-01-08", "2026-01-15"]
+        self.assertEqual(collect.observed_publish_gap_days(days), 7.0)
+
+    def test_all_same_day_returns_none(self):
+        self.assertIsNone(collect.observed_publish_gap_days(["2026-01-01"] * 5))
+
+    def test_invalid_days_ignored(self):
+        days = ["2026-01-01", "", None, "garbage", "2026-01-08", "2026-01-15"]
+        self.assertEqual(collect.observed_publish_gap_days(days), 7.0)
+
+    def test_uses_recent_dates_only(self):
+        """很久以前是日更、最近变成月更 —— 应按最近节奏而非历史平均。"""
+        old = [f"2020-01-{d:02d}" for d in range(1, 11)]          # 日更
+        recent = ["2026-01-01", "2026-02-01", "2026-03-01"]        # 月更
+        # 2020→2026 的断档被识别为停更，只按 2026 这一段估计：31 / 28 → 中位 29.5
+        self.assertEqual(collect.observed_publish_gap_days(old + recent), 29.5)
+
+    def test_long_break_shortens_sample_to_none(self):
+        """断档之后只剩 2 个发布日 → 样本不足，回退默认窗口而非硬算。"""
+        days = ["2020-01-01", "2020-01-02", "2026-01-01", "2026-02-01"]
+        self.assertIsNone(collect.observed_publish_gap_days(days))
+
+
+class TestFreshnessWindow(unittest.TestCase):
+    """窗口分档：声明 → 观测 → 默认，取最大值，只放宽不收紧。"""
+
+    def test_default_window(self):
+        self.assertEqual(collect.freshness_window_days(), collect.DEFAULT_FRESHNESS_WINDOW_DAYS)
+        self.assertEqual(collect.freshness_window_days("不定期"), collect.DEFAULT_FRESHNESS_WINDOW_DAYS)
+
+    def test_declared_monthly_and_quarterly_are_wider(self):
+        self.assertEqual(collect.freshness_window_days("每月"), 60)
+        self.assertEqual(collect.freshness_window_days("每季"), 120)
+
+    def test_declared_daily_not_narrower_than_default(self):
+        """硬约束：不得因分档把任何信源的窗口压到默认以下。"""
+        self.assertEqual(collect.freshness_window_days("每日"), collect.DEFAULT_FRESHNESS_WINDOW_DAYS)
+        self.assertEqual(collect.freshness_window_days("每周"), collect.DEFAULT_FRESHNESS_WINDOW_DAYS)
+
+    def test_observed_gap_widens_window(self):
+        # 中位间隔 20 天 × 2 = 40
+        self.assertEqual(collect.freshness_window_days("不定期", 20.0), 40)
+
+    def test_observed_window_clamped_to_max(self):
+        # 中位间隔 365 天 × 2 = 730 → clamp 到 180
+        self.assertEqual(collect.freshness_window_days(None, 365.0), collect.OBSERVED_WINDOW_MAX_DAYS)
+
+    def test_observed_window_never_below_default(self):
+        # 中位间隔 1 天 × 2 = 2 → 下限抬回默认，绝不收紧
+        self.assertEqual(collect.freshness_window_days(None, 1.0), collect.DEFAULT_FRESHNESS_WINDOW_DAYS)
+
+    def test_declared_and_observed_take_max(self):
+        # 声明每月 60，观测给出 90 → 取 90
+        self.assertEqual(collect.freshness_window_days("每月", 45.0), 90)
+
+    def test_every_declared_window_is_not_narrower_than_default(self):
+        """不变量：分档表里的每个窗口都必须 >= 默认，保证零回归。"""
+        for freq, window in collect.FRESHNESS_WINDOW_BY_FREQ.items():
+            with self.subTest(freq=freq):
+                self.assertGreaterEqual(window, collect.DEFAULT_FRESHNESS_WINDOW_DAYS)
+
+
+class TestFreshnessUsesDeclaredFreq(unittest.TestCase):
+    """_merge_source_health 必须真正读取 sources[].update_freq 来分档。"""
+
+    def _run(self, update_freq, days_ago, extra_days=()):
+        # 用当天零点作基准，保证 (now - published).days 精确等于 days_ago
+        midnight = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        published = [(midnight - timedelta(days=days_ago)).strftime("%Y-%m-%dT00:00:00Z")]
+        published += list(extra_days)
+        data = {
+            "news": [],
+            "source_health": {},
+            "sources": [{"name": "低频权威源", "type": "监管", "update_freq": update_freq}],
+        }
+        news = [{"source_name": "低频权威源", "published_at": p, "ai_score": 80} for p in published]
+        collect._merge_source_health(data, {}, news, {})
+        return data["source_health"]["低频权威源"]
+
+    def test_monthly_source_not_flagged_as_stale(self):
+        """回归用例：每月更新、45 天前发过稿的源，旧口径 30 天窗口会判 0，分档后应为正。"""
+        rec = self._run("每月", 45)
+        self.assertEqual(rec["freshness_window"], 60)
+        self.assertAlmostEqual(rec["freshness"], 1.0 - 45 / 60.0, places=3)
+        self.assertGreater(rec["freshness"], 0.2)
+
+    def test_unknown_freq_uses_default(self):
+        rec = self._run("不定期", 10)
+        self.assertEqual(rec["freshness_window"], collect.DEFAULT_FRESHNESS_WINDOW_DAYS)
+
+    def test_window_recorded_for_troubleshooting(self):
+        rec = self._run("每季", 30)
+        self.assertEqual(rec["freshness_window"], 120)
+        self.assertAlmostEqual(rec["freshness"], 1.0 - 30 / 120.0, places=3)
+
+    def test_no_regression_for_any_window(self):
+        """不变量：任何分档下 freshness 都 >= 旧口径（30 天窗口）的取值。"""
+        for freq in (None, "不定期", "每日", "每周", "每月", "每季"):
+            for days_ago in (0, 5, 25, 45, 100):
+                with self.subTest(freq=freq, days=days_ago):
+                    rec = self._run(freq, days_ago)
+                    legacy = max(0.0, 1.0 - days_ago / 30.0)
+                    # 容差 1e-4：产物里 freshness 保留 4 位小数，round 误差上限 5e-5
+                    self.assertGreaterEqual(rec["freshness"] + 1e-4, legacy)
 
 
 if __name__ == "__main__":
