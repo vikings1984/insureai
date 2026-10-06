@@ -1,12 +1,12 @@
 {
   "version": "alert-v1.1",
-  "generated_at": "2026-10-06T12:46:43Z",
+  "generated_at": "2026-10-06T22:19:13Z",
   "principle": "两层收敛：Internal Diff（事实）→ Semantic Alert（≤8 条聚合）；两层准入（T1 系统级监管 / T2 个人级 Watch / T3 标准）；NEW_SOURCE/NEW_EVIDENCE 留内部、delta 不伪造、首跑仅种子、告警不改写业务判断",
   "meta": {
-    "total_events": 2609,
+    "total_events": 2620,
     "baseline_present": true,
     "basis": "delta_vs_baseline",
-    "internal_diff_count": 0,
+    "internal_diff_count": 2,
     "alert_count": 8,
     "max_alerts": 8,
     "alert_type_counts": {
@@ -18,7 +18,39 @@
     },
     "suppressed": 0
   },
-  "internal_diffs": [],
+  "internal_diffs": [
+    {
+      "canonical_event_id": "evt_3c6bbe29ad5c",
+      "event_id": "evt_3c6bbe29ad5c",
+      "title": "随着巨灾债券损失倍数收紧，AM Best 敦促投资者提高选择性",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "trust_score",
+          "old": 67,
+          "new": 75
+        },
+        {
+          "field": "evidence_count",
+          "old": 1,
+          "new": 2
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "evt_0fe722aba94e",
+      "event_id": "evt_0fe722aba94e",
+      "title": "AM Best 将明尼苏达州 RAM 互助保险的前景调整为正面",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "evidence_count",
+          "old": 3,
+          "new": 2
+        }
+      ]
+    }
+  ],
   "semantic_alerts": [
     {
       "type": "EVENT_MATERIAL_CHANGED",
