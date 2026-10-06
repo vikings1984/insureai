@@ -60,92 +60,12 @@ jobs:
         with:
           name: collect-input
           path: .
-      - name: Build event-based intelligence
-        run: python3 intelligence.py
-      - name: Build claim/evidence intelligence
-        run: python3 claims_build.py
-      - name: Build evidence trust layer
-        run: python3 trust_build.py
-      - name: Build temporal intelligence
-        run: python3 temporal_build.py
-      - name: Build trend intelligence (event clusters + dynamics)
-        run: python3 trend_intelligence.py
-      - name: Build bounded human-feedback calibration
-        run: python3 calibration.py
-      - name: Build decision intelligence
-        run: python3 decision_build.py
-      - name: Analyze decision stability
-        run: python3 decision_stability.py
-      - name: Build decision credibility summary
-        run: python3 decision_credibility.py
-      - name: Run counterfactual robustness analysis
-        run: python3 counterfactual.py
-      - name: Run bounded scenario intelligence
-        run: python3 scenario.py
-      - name: Run cross-scenario decision matrix
-        run: python3 scenario_matrix.py
-      - name: Build actionable trigger rules
-        run: python3 action_triggers.py
-      - name: Build execution readiness packs
-        run: python3 execution_readiness.py
-      - name: Build auditable lineage ledger
-        run: python3 audit_ledger.py
-      - name: Analyze downstream change impact
-        run: python3 change_impact.py
-      - name: Validate and stamp data contract
-        run: python3 contract.py
-      # P0-1：分片只是 intelligence.json 的投影。这里用真实产物跑一遍一致性门禁
-      # （--check 只校验不写盘），字段裁剪或顺序一旦与源脱节就在这里被拦下，
-      # 而不是等到部署时才发现。分片本体不入库，由 deploy-cloudflare.yml 部署时生成。
-      - name: Validate intelligence shards consistency
-        run: python3 intelligence_shards.py --check
-      - name: Evaluate intelligence quality
-        run: python3 evaluation.py
-      - name: Quantitative quality metrics gate
-        run: python3 -c "from evaluation_metrics import build_metrics; m=build_metrics(); assert m['macro_quality'] >= 0.95, m; assert m['production']['claim_evidence_match_rate'] >= 0.6, m; print(m)"
-      - name: Production replay
-        run: python3 production_replay.py
-      - name: Build human review queue with change-impact priority
-        run: python3 review.py
-      - name: Attribute review feedback to modules
-        run: python3 feedback_attribution.py
-      - name: Build E2 decision ledger (cumulative sample by event_id)
-        run: python3 decision_ledger.py
-      - name: Build knowledge graph
-        run: python3 knowledge_graph.py
-      - name: Validate knowledge graph
-        run: |
-          python3 - <<'PY'
-          import json
-          from pathlib import Path
-          graph=json.loads(Path('knowledge_graph.json').read_text(encoding='utf-8'))
-          assert graph['graph'] == 'insureai_traceable_knowledge_graph'
-          assert graph['stats']['node_count'] == len(graph['nodes'])
-          assert graph['stats']['edge_count'] == len(graph['edges'])
-          node_ids={n['id'] for n in graph['nodes']}
-          for edge in graph['edges']:
-              assert edge['source'] in node_ids
-              assert edge['target'] in node_ids
-              assert 0 <= edge['confidence'] <= 1
-          assert graph['stats']['node_count'] > 0, 'knowledge graph must not be empty when intelligence artifacts exist'
-          print('Knowledge graph valid:', graph['stats'])
-          PY
-      - name: Build module health profile
-        run: python3 module_health.py
-      - name: Build module health trend
-        run: python3 module_health_trend.py
-      - name: Attribute temporal health trend
-        run: python3 trend_attribution.py
-      - name: Build optimization backlog
-        run: python3 optimization_backlog.py
-      - name: Build daily risk radar
-        run: python3 daily_risk_radar.py
-      - name: Build owner-facing risk view
-        run: python3 owner_risk_view.py
-      - name: Measure input-data freshness
-        run: python3 freshness.py
-      - name: Translate freshness into evidence availability
-        run: python3 evidence_availability.py
+      # P1-7 DAG Workflow：原 analyze 长链（~30 个串行 python3 步骤）改由 dag.py 按依赖编排。
+      # 执行顺序与原顺序严格一致（dag.py 含顺序边兜底，拓扑序 == 声明顺序，见 tests/test_dag.py）；
+      # 每次执行产出 dag_run.json（逐节点 status / exit_code / duration_sec），便于定位慢节点与失败节点。
+      # 单节点重跑：python3 dag.py run --only <node>；子树重跑：--from / --to；只看计划：--dry-run。
+      - name: Build intelligence analytics (DAG)
+        run: python3 dag.py run
       - name: Data validation
         run: python3 scripts/validate_data.py
       - name: Run tests
@@ -436,7 +356,7 @@ jobs:
           git config user.name "insureai-bot"; git config user.email "bot@insureai.local"
           # 对缺失文件容错：任一可选产物未生成时，不得让 git add 因 pathspec 不匹配
           # 而失败（exit 128）并中断整条流水线。
-          files="data.json intelligence.json claims.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json trend_attribution.json radar.json optimization_backlog.json optimization_backlog_history.json release_manifest.json release_provenance.json decision_stability.json decision_history.json decision_credibility.json daily_risk_radar.json owner_risk_view.json freshness.json evidence_availability.json executive_terminal.json knowledge_graph.json p2_daily_brief.json p2_state.json index.html sitemap.xml rss.xml research.json data/quality data/translation_cache.json p2_monitoring_store.json p2_monitoring.json p2_feedback_analytics.json p2_personal_memory.json decisions_ledger.json second_brain.json canonical_events.json event_id_aliases.json resolver_report.json resolver_fingerprint_map.json lifecycle_report.json p2_alerts.json p2_alert_baseline.json decisions_pending.json p2_stage_history.json event_replays.json manifest.json run.json snapshot review_state.json"
+          files="data.json intelligence.json claims.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json trend_attribution.json radar.json optimization_backlog.json optimization_backlog_history.json release_manifest.json release_provenance.json decision_stability.json decision_history.json decision_credibility.json daily_risk_radar.json owner_risk_view.json freshness.json evidence_availability.json executive_terminal.json knowledge_graph.json p2_daily_brief.json p2_state.json index.html sitemap.xml rss.xml research.json data/quality data/translation_cache.json p2_monitoring_store.json p2_monitoring.json p2_feedback_analytics.json p2_personal_memory.json decisions_ledger.json second_brain.json canonical_events.json event_id_aliases.json resolver_report.json resolver_fingerprint_map.json lifecycle_report.json p2_alerts.json p2_alert_baseline.json decisions_pending.json p2_stage_history.json event_replays.json manifest.json run.json snapshot review_state.json dag_run.json"
           existing=""
           for f in $files; do if [ -e "$f" ]; then existing="$existing $f"; fi; done
           if [ -n "$existing" ] && [ -n "$(git status --porcelain $existing)" ]; then
