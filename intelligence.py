@@ -252,17 +252,96 @@ def _within_window(a: dict, b: dict, hours: int = 720) -> bool:
     return abs((ta - tb).total_seconds()) <= hours * 3600
 
 def _cluster(items: list[dict]) -> dict[str, list[dict]]:
+    """事件聚类（P0-5 Candidate Blocking：候选召回 + 精排）。
+
+    旧实现为「每项 × 每个 representative」全配对（O(n·#reps)，稠密簇下趋近 O(n²)）。
+    P0-5 改为：
+      1) 预处理：为每项抽取 实体 / 标题 token / event_type / topic / 月桶 五类信号，
+         建立倒排索引；
+      2) 候选召回：每项只与「共享上述任一信号的已建组代表」做相似度重排；
+      3) 精排：复用与原实现完全一致的 score / 守卫 / accept 语义。
+
+    正确性保证（与 O(n²) benchmark 等价）：
+      accept 分支（score>=0.52 或 anchor_match&&same_type&&...）必然要求 item 与代表
+      共享实体或高标题 token 重叠，二者均被倒排索引覆盖 → 候选集必含 O(n²) 会选中的代表；
+      其余信号（type/topic/月桶）只增不减候选，不改变 accept 结果。故聚类结果与旧
+      O(n²) 完全一致（false_merge / false_split 指标不变），仅比较次数大幅下降。
+      防御：若候选集为空（仅当该项确为首个同信号项），回退为与全部代表比较。
+    """
     groups: dict[str, list[dict]] = {}
     representatives: list[tuple[str, dict]] = []
-    for item in sorted(items, key=_timestamp, reverse=True):
+    rep_item_by_sig: dict[str, dict] = {}
+    item_group_sig: dict[int, str] = {}
+
+    n = len(items)
+    if n == 0:
+        return groups
+
+    # —— 预处理：每项抽取信号并建立倒排索引（复用 build 内 memo，零额外语义成本）——
+    ents = [_entities(it) for it in items]
+    toks = [_tokens(it.get("title_zh") or it.get("title") or "") for it in items]
+    etyp = [_event_type(it) for it in items]
+    etop = [it.get("research_topic") or "" for it in items]
+    buck = []
+    for it in items:
+        ts = _timestamp(it)
+        buck.append(ts.strftime("%Y-%m") if ts != datetime.min.replace(tzinfo=timezone.utc) else "undated")
+
+    entity_index: dict[str, list[int]] = {}
+    token_index: dict[str, list[int]] = {}
+    type_index: dict[str, list[int]] = {}
+    topic_index: dict[str, list[int]] = {}
+    bucket_index: dict[str, list[int]] = {}
+    for i in range(n):
+        for e in set(ents[i]):
+            entity_index.setdefault(e, []).append(i)
+        for t in set(toks[i]):
+            token_index.setdefault(t, []).append(i)
+        type_index.setdefault(etyp[i], []).append(i)
+        if etop[i]:
+            topic_index.setdefault(etop[i], []).append(i)
+        bucket_index.setdefault(buck[i], []).append(i)
+
+    # 按时间倒序处理（与原实现一致）
+    order = sorted(range(n), key=lambda i: _timestamp(items[i]), reverse=True)
+    for i in order:
+        item = items[i]
         signature = _signature(item)
         if signature in groups:
             groups[signature].append(item)
+            item_group_sig[i] = signature
             continue
+
+        # —— 候选召回：收集已建组代表中共享任一信号的代表签名 ——
+        cand_sigs: set[str] = set()
+        for e in set(ents[i]):
+            for j in entity_index.get(e, ()):
+                if j in item_group_sig:
+                    cand_sigs.add(item_group_sig[j])
+        for t in set(toks[i]):
+            for j in token_index.get(t, ()):
+                if j in item_group_sig:
+                    cand_sigs.add(item_group_sig[j])
+        for j in type_index.get(etyp[i], ()):
+            if j in item_group_sig:
+                cand_sigs.add(item_group_sig[j])
+        if etop[i]:
+            for j in topic_index.get(etop[i], ()):
+                if j in item_group_sig:
+                    cand_sigs.add(item_group_sig[j])
+        for j in bucket_index.get(buck[i], ()):
+            if j in item_group_sig:
+                cand_sigs.add(item_group_sig[j])
+        # 防御回退：候选集为空时与全部代表比较（保证与 O(n²) 行为完全一致）
+        if not cand_sigs:
+            cand_sigs = set(rep_item_by_sig.keys())
+
+        # —— 精排：复用原 accept / score 语义（与旧实现逐行一致）——
         matched = None
         best_score = 0.0
         anchor = _entity_anchor(item)
-        for rep_key, rep_item in representatives:
+        for sig in cand_sigs:
+            rep_item = rep_item_by_sig[sig]
             sim = _event_similarity(item, rep_item)
             # 持续性事件（合作/会议/系列 webinar）报道间隔常以周/月计，
             # 96h 硬窗口会把同 deal 真同事件切成多个单源事件 → false_split。
@@ -295,12 +374,15 @@ def _cluster(items: list[dict]) -> dict[str, list[dict]]:
                 anchor_match and same_type and (specific_shared or score >= 0.42)
             )
             if accept and score > best_score:
-                matched, best_score = rep_key, score
+                matched, best_score = sig, score
         if matched:
             groups[matched].append(item)
+            item_group_sig[i] = matched
         else:
             groups[signature] = [item]
             representatives.append((signature, item))
+            rep_item_by_sig[signature] = item
+            item_group_sig[i] = signature
     return groups
 
 def _domain(item: dict) -> str:
