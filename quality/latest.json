@@ -1,0 +1,64 @@
+{
+  "commit": "04166155cf3e",
+  "when": "2026-10-06T15:45:11+00:00",
+  "metrics": {
+    "macro_quality": 1.0,
+    "safety_pass": true,
+    "event.precision": 1.0,
+    "event.recall": 1.0,
+    "event.false_merge_rate": 0.0,
+    "split.false_split_rate": 0.0,
+    "split.false_merge_rate": 0.0,
+    "claim_evidence.cross_check_accuracy": 1.0,
+    "claim_evidence.single_source_state_accuracy": 1.0,
+    "claim_evidence.single_source_false_cross_check_rate": 0.0,
+    "decision.unsafe_now_rate": 0.0,
+    "decision.human_review_recall": 1.0
+  },
+  "results": {
+    "version": 2,
+    "benchmark": "insureai_core_benchmark",
+    "macro_quality": 1.0,
+    "safety_pass": true,
+    "event": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_merge_rate": 0.0,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0
+    },
+    "split": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_merge_rate": 0.0,
+      "true_positive": 3,
+      "false_positive": 0,
+      "false_negative": 0,
+      "false_split_rate": 0.0
+    },
+    "claim_evidence": {
+      "cross_check_accuracy": 1.0,
+      "single_source_state_accuracy": 1.0,
+      "single_source_false_cross_check_rate": 0.0,
+      "proposition_extraction_accuracy": 1.0,
+      "multi_source_coverage": 1.0
+    },
+    "decision": {
+      "unsafe_now_rate": 0.0,
+      "human_review_recall": 1.0,
+      "cases": [
+        {
+          "id": "decision_safe_watch_001",
+          "urgency": "now",
+          "human_review_required": false
+        },
+        {
+          "id": "decision_conflict_001",
+          "urgency": "watch",
+          "human_review_required": true
+        }
+      ]
+    }
+  }
+}

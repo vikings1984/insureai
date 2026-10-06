@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 from claims import build_claims
@@ -158,6 +159,15 @@ def main() -> None:
     macro = round((event["precision"] + event["recall"] + (1 - event["false_merge_rate"]) + (1 - split["false_split_rate"]) + claim["cross_check_accuracy"] + claim["single_source_state_accuracy"] + (1 - claim["single_source_false_cross_check_rate"]) + (1 - decision["unsafe_now_rate"]) + decision["human_review_recall"]) / 9, 4)
     result = {"version": 2, "benchmark": "insureai_core_benchmark", "macro_quality": macro, "safety_pass": safety_pass, "event": event, "split": split, "claim_evidence": claim, "decision": decision}
     OUTPUT.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    # P0-6 Quality Registry：把本次 benchmark 结果固化为该 commit 的质量档案
+    # （quality/<commit>.json + quality/index.json + quality/latest.json）。
+    # 归档失败绝不影响 benchmark 本身的通过/失败判定，故全程 try/except。
+    try:
+        import quality_registry
+        recorded = quality_registry.record(result)
+        print(f"[quality] recorded commit {recorded} -> quality/{recorded}.json", file=sys.stderr)
+    except Exception as e:
+        print(f"[quality] 归档跳过（不影响 benchmark）: {e}", file=sys.stderr)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     if not safety_pass or macro < 0.95:
         raise SystemExit(1)
