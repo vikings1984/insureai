@@ -1,65 +1,37 @@
 {
   "version": "alert-v1.1",
-  "generated_at": "2026-10-06T22:19:13Z",
+  "generated_at": "2026-10-06T22:48:28Z",
   "principle": "两层收敛：Internal Diff（事实）→ Semantic Alert（≤8 条聚合）；两层准入（T1 系统级监管 / T2 个人级 Watch / T3 标准）；NEW_SOURCE/NEW_EVIDENCE 留内部、delta 不伪造、首跑仅种子、告警不改写业务判断",
   "meta": {
     "total_events": 2620,
     "baseline_present": true,
     "basis": "delta_vs_baseline",
-    "internal_diff_count": 2,
+    "internal_diff_count": 0,
     "alert_count": 8,
     "max_alerts": 8,
     "alert_type_counts": {
-      "EVENT_MATERIAL_CHANGED": 7,
-      "DECISION_REQUIRED": 1
+      "STANDING_MATERIAL": 8
     },
+    "alert_class_counts": {
+      "standing": 8
+    },
+    "change_alert_count": 0,
+    "standing_alert_count": 8,
     "admission_counts": {
       "T1_system": 8
     },
     "suppressed": 0
   },
-  "internal_diffs": [
-    {
-      "canonical_event_id": "evt_3c6bbe29ad5c",
-      "event_id": "evt_3c6bbe29ad5c",
-      "title": "随着巨灾债券损失倍数收紧，AM Best 敦促投资者提高选择性",
-      "topic": "capital_reinsurance",
-      "changes": [
-        {
-          "field": "trust_score",
-          "old": 67,
-          "new": 75
-        },
-        {
-          "field": "evidence_count",
-          "old": 1,
-          "new": 2
-        }
-      ]
-    },
-    {
-      "canonical_event_id": "evt_0fe722aba94e",
-      "event_id": "evt_0fe722aba94e",
-      "title": "AM Best 将明尼苏达州 RAM 互助保险的前景调整为正面",
-      "topic": "capital_reinsurance",
-      "changes": [
-        {
-          "field": "evidence_count",
-          "old": 3,
-          "new": 2
-        }
-      ]
-    }
-  ],
+  "internal_diffs": [],
   "semantic_alerts": [
     {
-      "type": "EVENT_MATERIAL_CHANGED",
+      "type": "STANDING_MATERIAL",
       "canonical_event_id": "cev_cf9e0f4d40fc",
       "event_id": "evt_3429758517ea",
       "title": "国家金融监督管理总局：全面推进保险行业AI大模型合规应用指引",
       "topic": "ai_intelligent",
       "severity": "high",
-      "rationale": "监管效力状态：issued（系统级 T1 准入）",
+      "rationale": "监管效力状态：issued（系统级 T1 准入，今日无变化）",
       "basis": "standing",
       "changed_fields": [
         "status"
@@ -67,13 +39,13 @@
       "admission": "T1_system"
     },
     {
-      "type": "EVENT_MATERIAL_CHANGED",
+      "type": "STANDING_MATERIAL",
       "canonical_event_id": "cev_034ad0db6222",
       "event_id": "evt_dfac7e70021a",
       "title": "金融监管总局丛林：完善保险资金等投早、投小、投长期、投硬科技各项政策",
       "topic": "regulatory_change",
       "severity": "high",
-      "rationale": "监管效力状态：issued（系统级 T1 准入）",
+      "rationale": "监管效力状态：issued（系统级 T1 准入，今日无变化）",
       "basis": "standing",
       "changed_fields": [
         "status"
@@ -81,13 +53,13 @@
       "admission": "T1_system"
     },
     {
-      "type": "EVENT_MATERIAL_CHANGED",
+      "type": "STANDING_MATERIAL",
       "canonical_event_id": "cev_2aab5b2d16f0",
       "event_id": "evt_fd60218d12d1",
       "title": "中国再保险拟向财政部定增募资不超30亿元 用于增加核心一级资本",
       "topic": "capital_reinsurance",
       "severity": "high",
-      "rationale": "监管效力状态：issued（系统级 T1 准入）",
+      "rationale": "监管效力状态：issued（系统级 T1 准入，今日无变化）",
       "basis": "standing",
       "changed_fields": [
         "status"
@@ -95,13 +67,13 @@
       "admission": "T1_system"
     },
     {
-      "type": "EVENT_MATERIAL_CHANGED",
+      "type": "STANDING_MATERIAL",
       "canonical_event_id": "cev_42faebeeaddf",
       "event_id": "evt_a75c8e446fcd",
       "title": "平安养老贵州分公司被罚76万，涉多项违规",
       "topic": "regulatory_change",
       "severity": "high",
-      "rationale": "监管效力状态：issued（系统级 T1 准入）",
+      "rationale": "监管效力状态：issued（系统级 T1 准入，今日无变化）",
       "basis": "standing",
       "changed_fields": [
         "status"
@@ -109,13 +81,13 @@
       "admission": "T1_system"
     },
     {
-      "type": "EVENT_MATERIAL_CHANGED",
+      "type": "STANDING_MATERIAL",
       "canonical_event_id": "cev_17b22870084c",
       "event_id": "evt_62e3eeb3e9dc",
       "title": "加快上海国际再保险中心建设！8大措施发布",
       "topic": "capital_reinsurance",
       "severity": "high",
-      "rationale": "监管效力状态：issued（系统级 T1 准入）",
+      "rationale": "监管效力状态：issued（系统级 T1 准入，今日无变化）",
       "basis": "standing",
       "changed_fields": [
         "status"
@@ -123,13 +95,13 @@
       "admission": "T1_system"
     },
     {
-      "type": "EVENT_MATERIAL_CHANGED",
+      "type": "STANDING_MATERIAL",
       "canonical_event_id": "cev_af412da2a1d6",
       "event_id": "evt_c3420bbf2ee2",
       "title": "中国平安贵州分公司因管理失责被罚款15万元 5名保险代理人一并受罚",
       "topic": "regulatory_change",
       "severity": "high",
-      "rationale": "监管效力状态：issued（系统级 T1 准入）",
+      "rationale": "监管效力状态：issued（系统级 T1 准入，今日无变化）",
       "basis": "standing",
       "changed_fields": [
         "status"
@@ -137,13 +109,13 @@
       "admission": "T1_system"
     },
     {
-      "type": "EVENT_MATERIAL_CHANGED",
+      "type": "STANDING_MATERIAL",
       "canonical_event_id": "cev_e81093a78960",
       "event_id": "evt_ce5d3e5734d9",
       "title": "政策红利持续释放 科技保险发展驶入“快车道”",
       "topic": "regulatory_change",
       "severity": "high",
-      "rationale": "监管效力状态：issued（系统级 T1 准入）",
+      "rationale": "监管效力状态：issued（系统级 T1 准入，今日无变化）",
       "basis": "standing",
       "changed_fields": [
         "status"
@@ -151,16 +123,16 @@
       "admission": "T1_system"
     },
     {
-      "type": "DECISION_REQUIRED",
-      "canonical_event_id": "cev_034ad0db6222",
-      "event_id": "evt_dfac7e70021a",
-      "title": "金融监管总局丛林：完善保险资金等投早、投小、投长期、投硬科技各项政策",
+      "type": "STANDING_MATERIAL",
+      "canonical_event_id": "cev_5f5392f82411",
+      "event_id": "evt_65d96eadf80f",
+      "title": "长安保险风险处置新进展：中安财险获批承接其保险业务",
       "topic": "regulatory_change",
       "severity": "high",
-      "rationale": "待人工复核、暂无决策记录（日报优先级 91）",
+      "rationale": "监管效力状态：issued（系统级 T1 准入，今日无变化）",
       "basis": "standing",
       "changed_fields": [
-        "review_required"
+        "status"
       ],
       "admission": "T1_system"
     }

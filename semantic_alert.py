@@ -42,9 +42,22 @@ STAGE_ORDER = {
     "closing": 4, "integration": 5, "n/a": -1,
 }
 SEV_RANK = {"high": 3, "medium": 2, "low": 1}
-ALERT_TYPES = {
+
+# Change / Standing 分离（Event OS 第三阶段 1.1）
+# 语义纪律：CHANGE_* 只回答「昨天→今天发生了什么变化」，必须由真实 delta 触发；
+# STANDING_* 只回答「当前仍然重要，但今天没有新变化」。两者不可混用同一种产品语义，
+# 否则首页无法回答「这是今天发生变化，还是只是今天继续重要」。
+CHANGE_TYPES = {
     "EVENT_STAGE_CHANGED", "EVENT_MATERIAL_CHANGED",
     "RISK_INCREASED", "DECISION_REQUIRED",
+}
+STANDING_TYPES = {"STANDING_MATERIAL", "STANDING_DECISION", "STANDING_RISK"}
+ALERT_TYPES = CHANGE_TYPES | STANDING_TYPES
+# 由 standing 事实降级而来的告警类型映射（原 type → 独立 standing type）
+STANDING_TYPE_OF = {
+    "EVENT_MATERIAL_CHANGED": "STANDING_MATERIAL",
+    "DECISION_REQUIRED": "STANDING_DECISION",
+    "RISK_INCREASED": "STANDING_RISK",
 }
 
 # X2（评审修订）：两层准入 + 内部信号抑制
@@ -57,6 +70,15 @@ SUPPRESSED_BASIS = frozenset({"NEW_SOURCE", "NEW_EVIDENCE"})
 
 def _now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def _alert_class(atype: str) -> str:
+    """告警归类：change（真实 delta）/ standing（当前重要但今日无变化）/ seed（首跑播种）。"""
+    if atype in CHANGE_TYPES:
+        return "change"
+    if atype in STANDING_TYPES:
+        return "standing"
+    return "unknown"
 
 
 def _load(path: Path) -> dict:
@@ -316,9 +338,10 @@ def aggregate_alerts(current: dict[str, dict], diffs: list[dict], baseline_prese
         if st in ("issued", "effective"):
             if not any(a["type"] == "EVENT_MATERIAL_CHANGED" and a["canonical_event_id"] == ceid for a in candidates):
                 basis = "standing" if baseline_present else "seed"
+                # 「当前处于 issued/effective」是状态，不是今天的变化 → 独立 standing 语义
                 candidates.append(_mk_alert(
-                    "EVENT_MATERIAL_CHANGED", snap, "high",
-                    f"监管效力状态：{st}（系统级 T1 准入）", basis, ["status"],
+                    STANDING_TYPE_OF["EVENT_MATERIAL_CHANGED"], snap, "high",
+                    f"监管效力状态：{st}（系统级 T1 准入，今日无变化）", basis, ["status"],
                     3.0 + 1.0, "T1_system",
                 ))
                 candidates[-1]["canonical_event_id"] = ceid
@@ -336,8 +359,8 @@ def aggregate_alerts(current: dict[str, dict], diffs: list[dict], baseline_prese
                 sev = "high" if u == "now" else "medium"
                 basis = "standing" if baseline_present else "seed"
                 candidates.append(_mk_alert(
-                    "DECISION_REQUIRED", snap, sev,
-                    f"当前决策紧急度 {u}（待人工确认）", basis, ["decision_urgency"],
+                    STANDING_TYPE_OF["DECISION_REQUIRED"], snap, sev,
+                    f"当前决策紧急度 {u}（待人工确认，今日无变化）", basis, ["decision_urgency"],
                     3.0 + RANK.get(u, 0) + prio / 1000.0, tier,
                 ))
                 candidates[-1]["canonical_event_id"] = ceid
@@ -347,7 +370,7 @@ def aggregate_alerts(current: dict[str, dict], diffs: list[dict], baseline_prese
                 sev = "high" if prio >= 85 else "medium"
                 basis = "standing" if baseline_present else "seed"
                 candidates.append(_mk_alert(
-                    "DECISION_REQUIRED", snap, sev,
+                    STANDING_TYPE_OF["DECISION_REQUIRED"], snap, sev,
                     f"待人工复核、暂无决策记录（日报优先级 {prio}）", basis, ["review_required"],
                     2.5 + prio / 1000.0, tier,
                 ))
@@ -358,7 +381,7 @@ def aggregate_alerts(current: dict[str, dict], diffs: list[dict], baseline_prese
             if not any(a["type"] == "RISK_INCREASED" and a["canonical_event_id"] == ceid for a in candidates):
                 basis = "standing" if baseline_present else "seed"
                 candidates.append(_mk_alert(
-                    "RISK_INCREASED", snap, "medium",
+                    STANDING_TYPE_OF["RISK_INCREASED"], snap, "medium",
                     f"当前信任分偏低（{ts}）", basis, ["trust_score"],
                     2.0 + (40 - ts) / 10.0, "T2_personal" if ceid in watch_ceids else "T3_standard",
                 ))
@@ -411,8 +434,11 @@ def build(
 
     type_counts: dict[str, int] = {}
     tier_counts: dict[str, int] = {}
+    class_counts: dict[str, int] = {}
     for a in alerts:
         type_counts[a["type"]] = type_counts.get(a["type"], 0) + 1
+        cls = _alert_class(a["type"])
+        class_counts[cls] = class_counts.get(cls, 0) + 1
         tier_counts[a.get("admission", "T3_standard")] = tier_counts.get(a.get("admission", "T3_standard"), 0) + 1
 
     open_questions: list[dict] = []
@@ -458,6 +484,10 @@ def build(
             "alert_count": len(alerts),
             "max_alerts": MAX_ALERTS,
             "alert_type_counts": type_counts,
+            # Change / Standing 分离后的分类计数（供首页分别渲染与验收）
+            "alert_class_counts": class_counts,
+            "change_alert_count": class_counts.get("change", 0),
+            "standing_alert_count": class_counts.get("standing", 0),
             "admission_counts": tier_counts,
             "suppressed": suppressed,
         },
@@ -480,11 +510,27 @@ def validate(doc: dict) -> None:
         assert a.get("severity") in SEV_RANK, f"告警 severity 非法：{a.get('severity')}"
         assert a.get("rationale"), "告警缺少 rationale"
         assert a.get("basis") in {"delta", "standing", "seed"}, f"告警 basis 非法：{a.get('basis')}"
+        # Change / Standing 一致性：change 类必须由真实 delta 触发，standing 类不得占用 change 语义
+        cls = _alert_class(a["type"])
+        if cls == "change":
+            assert a.get("basis") == "delta", (
+                f"change 类告警 {a['type']} 的 basis 必须为 delta，实际 {a.get('basis')}"
+            )
+        elif cls == "standing":
+            assert a.get("basis") in {"standing", "seed"}, (
+                f"standing 类告警 {a['type']} 的 basis 非法：{a.get('basis')}"
+            )
         # X2 评审：Home 产品告警不得含内部 NEW_SOURCE/NEW_EVIDENCE 信号
         assert a.get("basis") not in SUPPRESSED_BASIS, f"Home 告警不得含内部信号 {a.get('basis')}"
         assert a.get("admission") in ADMISSION_TIERS, f"告警准入层级非法：{a.get('admission')}"
     assert isinstance(doc.get("internal_diffs"), list), "internal_diffs 必须为列表"
     assert doc.get("open_questions"), "open_questions 不得为空"
+    # 硬约束（1.1）：无真实 delta 时不得产出任何 change 类告警
+    if not (doc.get("internal_diffs") or []):
+        change_alerts = [a.get("type") for a in alerts if a.get("type") in CHANGE_TYPES]
+        assert not change_alerts, (
+            f"internal_diffs 为空却产出 {len(change_alerts)} 条 change 类告警：{change_alerts}"
+        )
 
 
 def run(persist: bool = True) -> dict[str, Any]:

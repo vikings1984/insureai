@@ -10,7 +10,9 @@ import unittest
 
 from semantic_alert import (
     ALERT_TYPES,
+    CHANGE_TYPES,
     MAX_ALERTS,
+    STANDING_TYPES,
     VERSION,
     build,
     validate,
@@ -46,9 +48,10 @@ class TestSeedFirstRun(unittest.TestCase):
         self.assertEqual(doc["meta"]["baseline_present"], False)
         self.assertEqual(doc["meta"]["basis"], "seed_first_run")
         self.assertLessEqual(len(doc["semantic_alerts"]), MAX_ALERTS)
-        # 待复核且无决策的事件应进入 DECISION_REQUIRED（seed）
+        # 待复核且无决策的事件应进入 standing 决策类（seed）—— 无基线时不得声称「发生变化」
         types = [a["type"] for a in doc["semantic_alerts"]]
-        self.assertIn("DECISION_REQUIRED", types)
+        self.assertIn("STANDING_DECISION", types)
+        self.assertNotIn("DECISION_REQUIRED", types)
         for a in doc["semantic_alerts"]:
             self.assertEqual(a["basis"], "seed")
         validate(doc)  # 不抛即通过
@@ -150,7 +153,93 @@ class TestCapAndValidation(unittest.TestCase):
         self.assertEqual(ALERT_TYPES, {
             "EVENT_STAGE_CHANGED", "EVENT_MATERIAL_CHANGED",
             "RISK_INCREASED", "DECISION_REQUIRED",
+            "STANDING_MATERIAL", "STANDING_DECISION", "STANDING_RISK",
         })
+
+
+class TestChangeStandingSeparation(unittest.TestCase):
+    """1.1：Change（真实 delta）与 Standing（当前重要但今日无变化）必须分离。"""
+
+    def _canon(self, domain="regulatory"):
+        return {"canonical_events": {"e1": {"domain": domain}}}
+
+    def test_standing_types_are_distinct_from_change_types(self):
+        self.assertTrue(STANDING_TYPES)
+        self.assertFalse(CHANGE_TYPES & STANDING_TYPES, "change 与 standing 类型不得重叠")
+
+    def test_no_delta_means_no_change_alert(self):
+        """硬约束：internal_diffs 为空时不得产出任何 change 类告警。"""
+        life = [{"canonical_event_id": "e1", "identity_key": "e1", "title": "t",
+                 "stage": "n/a", "status": "issued"}]
+        doc = build([_ev("e1")], life, [], [], None, _ceid(["e1"]), canonical=self._canon())
+        self.assertEqual(doc["meta"]["internal_diff_count"], 0)
+        types = [a["type"] for a in doc["semantic_alerts"]]
+        self.assertFalse([t for t in types if t in CHANGE_TYPES],
+                         f"无 delta 却产出 change 类告警：{types}")
+
+    def test_regulatory_standing_becomes_standing_type(self):
+        """「当前处于 issued」是状态不是变化 → STANDING_MATERIAL，不得占用 MATERIAL_CHANGED。"""
+        life = [{"canonical_event_id": "e1", "identity_key": "e1", "title": "t",
+                 "stage": "n/a", "status": "issued"}]
+        doc = build([_ev("e1")], life, [], [], None, _ceid(["e1"]), canonical=self._canon())
+        a = next(x for x in doc["semantic_alerts"] if x["canonical_event_id"] == "e1")
+        self.assertEqual(a["type"], "STANDING_MATERIAL")
+        self.assertEqual(a["admission"], "T1_system")
+        self.assertIn(a["basis"], {"standing", "seed"})
+
+    def test_class_counts_recorded(self):
+        life = [{"canonical_event_id": "e1", "identity_key": "e1", "title": "t",
+                 "stage": "n/a", "status": "issued"}]
+        doc = build([_ev("e1")], life, [], [], None, _ceid(["e1"]), canonical=self._canon())
+        meta = doc["meta"]
+        self.assertEqual(meta["change_alert_count"], 0)
+        self.assertGreaterEqual(meta["standing_alert_count"], 1)
+        self.assertEqual(
+            meta["change_alert_count"] + meta["standing_alert_count"], meta["alert_count"]
+        )
+
+    def test_real_status_delta_still_emits_change(self):
+        """真实 delta（unknown→effective）必须产出 change 类，且 basis=delta。"""
+        base = {"e1": {"stage": "n/a", "status": "unknown", "trust_score": 60, "evidence_count": 1,
+                       "proposition_count": 0, "decision_urgency": None, "review_required": False,
+                       "daily_priority": 50, "event_id": "e1", "title": "t", "topic": "x"}}
+        life = [{"canonical_event_id": "e1", "identity_key": "e1", "title": "t",
+                 "stage": "n/a", "status": "effective"}]
+        doc = build([_ev("e1")], life, [], [], base, _ceid(["e1"]), canonical=self._canon())
+        self.assertGreater(doc["meta"]["internal_diff_count"], 0)
+        a = next(x for x in doc["semantic_alerts"]
+                 if x["canonical_event_id"] == "e1" and x["type"] == "EVENT_MATERIAL_CHANGED")
+        self.assertEqual(a["basis"], "delta")
+
+    def test_validate_rejects_change_without_delta(self):
+        """validate 必须挡住「无 delta 却产出 change 类告警」。"""
+        doc = {
+            "version": VERSION, "generated_at": "x", "principle": "p",
+            "meta": {"alert_count": 1, "internal_diff_count": 0},
+            "internal_diffs": [],
+            "semantic_alerts": [{
+                "type": "EVENT_MATERIAL_CHANGED", "canonical_event_id": "e1",
+                "severity": "high", "rationale": "r", "basis": "delta", "admission": "T1_system",
+            }],
+            "open_questions": [{"dimension": "d", "status": "s", "reason": "r"}],
+        }
+        with self.assertRaises(AssertionError):
+            validate(doc)
+
+    def test_validate_rejects_standing_change_type_mismatch(self):
+        """change 类告警的 basis 必须 delta，不得为 standing。"""
+        doc = {
+            "version": VERSION, "generated_at": "x", "principle": "p",
+            "meta": {"alert_count": 1, "internal_diff_count": 3},
+            "internal_diffs": [{"canonical_event_id": "e1", "changes": []}],
+            "semantic_alerts": [{
+                "type": "EVENT_MATERIAL_CHANGED", "canonical_event_id": "e1",
+                "severity": "high", "rationale": "r", "basis": "standing", "admission": "T1_system",
+            }],
+            "open_questions": [{"dimension": "d", "status": "s", "reason": "r"}],
+        }
+        with self.assertRaises(AssertionError):
+            validate(doc)
 
 
 class TestTwoTierAdmission(unittest.TestCase):
@@ -179,7 +268,8 @@ class TestTwoTierAdmission(unittest.TestCase):
         a = next((x for x in doc["semantic_alerts"] if x["canonical_event_id"] == "e1"), None)
         self.assertIsNotNone(a, "监管 T1 无 watch 命中也应进首页")
         self.assertEqual(a["admission"], "T1_system")
-        self.assertEqual(a["type"], "EVENT_MATERIAL_CHANGED")
+        # 1.1：standing 事实不得占用 change 语义
+        self.assertEqual(a["type"], "STANDING_MATERIAL")
 
     def test_t2_personal_watch_admission(self):
         events = [_ev("e1", review=True)]

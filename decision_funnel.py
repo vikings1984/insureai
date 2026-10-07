@@ -68,6 +68,13 @@ REG_ISSUED_EFFECTIVE = {"issued", "effective"}
 OK_TRUST = {"medium", "high"}
 MIN_EVIDENCE = 1  # 至少一条证据；单源+监管/评级仍按纪律不出 decision_ready
 
+# 1.3 可决策 event_type 白名单（外置可配置，原仅 acquisition/regulatory）。
+# 这些 event_type 本身即代表「需要决策」的事实（资本/再保、评级、市场进入、产品、人事），
+# 不像 acquisition/regulatory 那样有显式 lifecycle 阶段语义，但其事件性质已是决策级，
+# 故在条件 2（处于可决策状态）与条件 3（属可决策集）中直接认可，无需等待每日 delta。
+# 刻意排除 industry_update（行业快讯/评论，非决策）与 claims_loss（理赔/损失为运营事实，非战略决策）。
+DECISION_RELEVANT_EVENT_TYPES = {"capital", "rating", "market_entry", "product", "personnel"}
+
 
 def _now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -162,11 +169,24 @@ def _eval_six(
 
     # 条件 1
     c1 = bool(monitored or acted or t1_reg)
-    # 条件 2：来自 S4 语义告警（真实 delta）或并购阶段已前移
-    c2 = bool(has_semantic_change) or (domain == "acquisition" and stage not in ("rumor", "n/a", None))
+    # 条件 2：真实语义变化（delta）或已进入可决策阶段/效力状态。
+    # 1.3 对称性修复：原实现只给 acquisition 兜底（stage 前移即算），regulatory 没有，
+    # 导致「当前处于 issued/effective」的监管事件因今日无 delta 而被永久挡在门外
+    # （实测 six_failed_counter[2]=99）。这与条件 3 的语义重复打架：条件 3 认可
+    # issued/effective 属可决策集，条件 2 却要求它「今天必须发生变化」。
+    # 1.3 进一步：可决策 event_type（见 DECISION_RELEVANT_EVENT_TYPES）本身即处于可决策状态，
+    # 与 acquisition/regulatory 的「阶段/效力」同属「已进入决策场」，直接认可。
+    c2 = (
+        bool(has_semantic_change)
+        or (domain == "acquisition" and stage not in ("rumor", "n/a", None))
+        or (domain == "regulatory" and status in REG_ISSUED_EFFECTIVE)
+        or (et in DECISION_RELEVANT_EVENT_TYPES)
+    )
     # 条件 3：决策集阶段
-    c3 = (domain == "acquisition" and stage in DECISION_STAGES) or (
-        domain == "regulatory" and status in REG_ISSUED_EFFECTIVE
+    c3 = (
+        (domain == "acquisition" and stage in DECISION_STAGES)
+        or (domain == "regulatory" and status in REG_ISSUED_EFFECTIVE)
+        or (et in DECISION_RELEVANT_EVENT_TYPES)
     )
     # 条件 4：证据+可信度过门；单源+监管/评级排除
     single_src_regulatory = (src <= 1) and (domain == "regulatory" or et == "rating")
@@ -210,7 +230,12 @@ def build(
     feedback_status_by_ceid: dict[str, str],
     ceid_map: dict[str, str],
     generated_at: str | None = None,
+    changed_ceids: set[str] | None = None,
 ) -> dict[str, Any]:
+    """changed_ceids：来自 internal_diffs 的「今日真实发生变化」的 CE 集合（不截断）。
+
+    缺省 None 时回退为 alert_ceids（旧口径，供向后兼容与测试对比）。
+    """
     ces = canonical_events.get("canonical_events") or {}
     # intel 按 canonical_event_id（兜底 event_id）
     intel_by_ceid: dict[str, dict] = {}
@@ -253,7 +278,9 @@ def build(
         monitored = _watched(ce, watch_topics, watch_kw) if ce else False
         acted = eid in ledger_eids
         t1_reg = (ce.get("domain") == "regulatory" and (ce.get("lifecycle") or {}).get("status") in REG_ISSUED_EFFECTIVE) or (ceid in t1_alert_ceids)
-        has_semantic_change = ceid in alert_ceids
+        # 条件 2 判据：优先用 internal_diffs（真实 delta、不截断），缺省回退旧口径
+        change_pool = changed_ceids if changed_ceids is not None else alert_ceids
+        has_semantic_change = ceid in change_pool
         six = _eval_six(
             ce, intel_by_ceid.get(ceid), monitored, acted, t1_reg, is_decided,
             feedback_status_by_ceid.get(ceid), has_semantic_change,
@@ -430,6 +457,15 @@ def run(persist: bool = True) -> dict[str, Any]:
     alert_ceids = {a.get("canonical_event_id") for a in alert_list}
     t1_alert_ceids = {a.get("canonical_event_id") for a in alert_list if a.get("admission") == "T1_system"}
 
+    # 条件 2 的语义变化判据改用 internal_diffs（per-CE 全量事实），而非截断后的 semantic_alerts。
+    # 原因：semantic_alerts 硬上限 8 条，而待决条目有 100 条 —— 用 8 条覆盖 100 个 CE
+    # 会让条件 2 在结构上必然失败 92 条（实测 six_failed_counter[2]=92）。
+    # internal_diffs 不截断，才是「这个 CE 今天是否真的变了」的正确判据。
+    changed_ceids = {
+        d.get("canonical_event_id") for d in (alerts.get("internal_diffs") or [])
+        if d.get("canonical_event_id")
+    }
+
     # 冻结 watchlist 的关注面（enabled 才计入）
     watch_topics: set[str] = set()
     watch_kw: set[str] = set()
@@ -453,6 +489,7 @@ def run(persist: bool = True) -> dict[str, Any]:
     doc = build(
         review_items, ledger_entries, intel_events, canonical, alert_ceids, t1_alert_ceids,
         watch_topics, watch_kw, feedback_status_by_ceid, ceid_map,
+        changed_ceids=changed_ceids,
     )
     validate(doc)
 

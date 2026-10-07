@@ -412,6 +412,27 @@ def load_registry() -> dict:
     return _load(OUTPUT)
 
 
+# 人工 / 管线修正字段：全量重建时必须从旧 registry 承接，不得被清空。
+# 1.2 扩池后重建覆盖的 CE 从 109 增到 2609，一旦存在人工 merge/split/alias
+# 历史，无防护的全量重建会静默丢弃。
+CARRY_OVER_FIELDS = ("merged_from", "split_into", "aliases", "merged_into", "status")
+
+
+def _carry_over_manual_edits(reg: dict, previous: dict) -> None:
+    """把上一版 registry 的人工修正字段承接回新 registry（只补不覆盖空值）。"""
+    prev = (previous or {}).get("canonical_events") or {}
+    if not prev:
+        return
+    for cev, rec in (reg.get("canonical_events") or {}).items():
+        old = prev.get(cev)
+        if not isinstance(old, dict):
+            continue
+        for field in CARRY_OVER_FIELDS:
+            # 只承接「有实质内容」的旧值，避免用空值覆盖新建的默认值
+            if old.get(field) and not rec.get(field):
+                rec[field] = old[field]
+
+
 def build_artifacts(generated_at: str | None = None) -> dict:
     """从 daily_brief + review_queue + second_brain 实体时间线自举并落盘。
 
@@ -421,7 +442,13 @@ def build_artifacts(generated_at: str | None = None) -> dict:
     db = _load(ROOT / "p2_daily_brief.json")
     rq = _load(ROOT / "review_queue.json")
     sb = _load(ROOT / "second_brain.json")
+    # 1.2：CE 池扩到全量 —— 原实现只读「跨模块引用」的三个产物，
+    # 导致 2609 个 intel 事件中仅 107 个有 CE（覆盖率 4.1%），
+    # Decision Funnel 因此只能在复核队列里打转（结构上不可能实现 89→8→3）。
+    intel = _load(ROOT / "intelligence.json")
     events: list[Any] = []
+    for e in (intel.get("events") or []):
+        events.append((e, "intelligence"))
     for e in (db.get("brief") or []):
         events.append((e, "daily_brief"))
     for e in (rq.get("items") or []):
@@ -430,6 +457,7 @@ def build_artifacts(generated_at: str | None = None) -> dict:
         for ev in (th.get("events") or []):
             events.append((ev, "second_brain"))
     reg = build(events, generated_at)
+    _carry_over_manual_edits(reg, _load(OUTPUT))
     validate(reg)
     OUTPUT.write_text(json.dumps(reg, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     # 别名表独立落盘（便于 S2 resolver 增量更新，不每次重写全量）
