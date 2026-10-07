@@ -232,11 +232,15 @@ def build(data: dict | None = None) -> dict:
 
 def main(argv: list[str]) -> int:
     doc = build()
-    if "--json" in argv:
-        print(json.dumps(doc, ensure_ascii=False, indent=2))
-        return 0
     if not doc.get("available"):
         print(f"[source_os] {doc.get('note')}")
+        return 0
+    # 始终落盘（CI 产物清单会提交它）
+    with open(OUTPUT, "w", encoding="utf-8") as f:
+        json.dump(doc, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    if "--json" in argv:
+        print(json.dumps(doc, ensure_ascii=False, indent=2))
         return 0
     m = doc["meta"]
     print(f"[source_os] sources={m['source_count']} measured={m['measured_count']} "
