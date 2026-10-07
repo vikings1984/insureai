@@ -1,19 +1,19 @@
 {
   "version": 4,
-  "generated_at": "2026-10-07T04:02:06.217557+00:00",
-  "source_commit": "473ebbfa0363f6824481fe528b5c034cf7c28891",
+  "generated_at": "2026-10-07T12:39:07.701108+00:00",
+  "source_commit": "e707dee3528ccf596d43d85359a4574ecb0b4cbe",
   "summary": {
-    "event_count": 2622,
-    "rising_topics": 1,
+    "event_count": 2635,
+    "rising_topics": 2,
     "review_queue": 100,
     "attention_signals": 30,
     "avg_evidence_coverage": 26.6,
     "system_status": "降级",
     "pipeline_status": "正常",
-    "cross_checked_claims": 34,
-    "single_source_claims": 3431,
+    "cross_checked_claims": 37,
+    "single_source_claims": 3443,
     "credibility_status": "review",
-    "deployment_status": "stale"
+    "deployment_status": "verified"
   },
   "what_changed": [
     {
@@ -690,7 +690,7 @@
       "strength": 100,
       "confidence": "medium",
       "velocity": 1.0,
-      "acceleration": 1.933,
+      "acceleration": 1.923,
       "persistence": 1,
       "source_diversity": 2,
       "why": {
@@ -705,6 +705,34 @@
         "event_ids": [
           "evt_4aecccdea155",
           "evt_70600100ef93"
+        ]
+      }
+    },
+    {
+      "topic": "digital_transformation",
+      "topic_label": "数字化转型",
+      "current_7d_events": 1,
+      "previous_7d_events": 0,
+      "current_signal": 79,
+      "previous_signal": 0,
+      "delta": 1.317,
+      "direction": "rising",
+      "strength": 60,
+      "confidence": "low",
+      "velocity": 1.0,
+      "acceleration": 2.0,
+      "persistence": 1,
+      "source_diversity": 1,
+      "why": {
+        "independent_events": 1,
+        "sources": 1,
+        "days": 1,
+        "core_entities": [
+          "core data record",
+          "lmg data council"
+        ],
+        "event_ids": [
+          "evt_10a48303ee8f"
         ]
       }
     }
@@ -783,40 +811,20 @@
       "trend_attribution": null
     },
     {
-      "event_id": "deployment:production",
-      "title": "生产部署状态：deployment_release_mismatch",
-      "urgency": "now",
-      "trust_level": null,
-      "attention_score": 98,
-      "reasons": [
-        "deployment_release_mismatch",
-        "published_marker_behind_expected"
-      ],
-      "source": "deployment_verification.json",
-      "deployment_risk": {
-        "version": 4,
-        "classification": "deployment_release_mismatch",
-        "priority": 98,
-        "attention": true,
-        "verified": false,
-        "status": "stale",
-        "error": "published_marker_behind_expected",
-        "checked_at": "2026-10-06T22:37:21.574095+00:00",
-        "trend": {
-          "version": 1,
-          "classification": "single_failure",
-          "failure_streak": 1,
-          "sample_count": 30,
-          "generated_at": "2026-10-07T04:01:04.861976+00:00"
-        },
-        "next_step": "核对线上 release marker 与当前 release manifest；确认是否仍运行旧版本，并检查最近一次发布状态。",
-        "generated_at": "2026-10-07T04:01:04.861999+00:00",
-        "principle": "部署风险只影响人工注意力与发布可信度，不修改 Decision/Trust/Urgency。"
-      }
-    },
-    {
       "event_id": "evt_7fa20c38cc38",
       "title": "养老保险个人账户余额查询",
+      "urgency": null,
+      "trust_level": "low",
+      "attention_score": 95,
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "trend_attribution": null
+    },
+    {
+      "event_id": "evt_7635b5984895",
+      "title": "慕尼黑再保险 (Munich Re) 跻身劳合社全球 50 家最大再保险公司之列：AM Best",
       "urgency": null,
       "trust_level": "low",
       "attention_score": 95,
@@ -846,8 +854,8 @@
         }
       ],
       "article_ids": [
-        485,
-        792
+        500,
+        807
       ],
       "source_count": 2,
       "trust_level": "low",
@@ -863,11 +871,11 @@
         "stale": false,
         "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency",
         "_provenance": {
-          "run_id": "run_20261006_221915_474c38",
-          "build_sha": "69dd99eea88644b92379474f43b6ed81f4047ffa",
+          "run_id": "run_20261007_040236_feeaf2",
+          "build_sha": "473ebbfa0363f6824481fe528b5c034cf7c28891",
           "engine_version": "4.2",
           "schema_version": "release-provenance-v1",
-          "generated_at": "2026-10-06T22:19:16.582636+00:00"
+          "generated_at": "2026-10-07T04:02:38.297290+00:00"
         }
       },
       "trend_attribution": null,
@@ -892,8 +900,8 @@
         }
       ],
       "article_ids": [
-        1792,
-        1794
+        1807,
+        1809
       ],
       "source_count": 2,
       "trust_level": "low",
@@ -909,11 +917,11 @@
         "stale": false,
         "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency",
         "_provenance": {
-          "run_id": "run_20261006_221915_474c38",
-          "build_sha": "69dd99eea88644b92379474f43b6ed81f4047ffa",
+          "run_id": "run_20261007_040236_feeaf2",
+          "build_sha": "473ebbfa0363f6824481fe528b5c034cf7c28891",
           "engine_version": "4.2",
           "schema_version": "release-provenance-v1",
-          "generated_at": "2026-10-06T22:19:16.582636+00:00"
+          "generated_at": "2026-10-07T04:02:38.297290+00:00"
         }
       },
       "trend_attribution": null,
@@ -938,8 +946,8 @@
         }
       ],
       "article_ids": [
-        2568,
-        2571
+        2583,
+        2586
       ],
       "source_count": 2,
       "trust_level": "low",
@@ -955,11 +963,11 @@
         "stale": false,
         "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency",
         "_provenance": {
-          "run_id": "run_20261006_221915_474c38",
-          "build_sha": "69dd99eea88644b92379474f43b6ed81f4047ffa",
+          "run_id": "run_20261007_040236_feeaf2",
+          "build_sha": "473ebbfa0363f6824481fe528b5c034cf7c28891",
           "engine_version": "4.2",
           "schema_version": "release-provenance-v1",
-          "generated_at": "2026-10-06T22:19:16.582636+00:00"
+          "generated_at": "2026-10-07T04:02:38.297290+00:00"
         }
       },
       "trend_attribution": null,
@@ -984,9 +992,9 @@
         }
       ],
       "article_ids": [
-        1563,
-        1598,
-        1750
+        1578,
+        1613,
+        1765
       ],
       "source_count": 2,
       "trust_level": "low",
@@ -1002,11 +1010,11 @@
         "stale": false,
         "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency",
         "_provenance": {
-          "run_id": "run_20261006_221915_474c38",
-          "build_sha": "69dd99eea88644b92379474f43b6ed81f4047ffa",
+          "run_id": "run_20261007_040236_feeaf2",
+          "build_sha": "473ebbfa0363f6824481fe528b5c034cf7c28891",
           "engine_version": "4.2",
           "schema_version": "release-provenance-v1",
-          "generated_at": "2026-10-06T22:19:16.582636+00:00"
+          "generated_at": "2026-10-07T04:02:38.297290+00:00"
         }
       },
       "trend_attribution": null,
@@ -1031,8 +1039,8 @@
         }
       ],
       "article_ids": [
-        1433,
-        1629
+        1448,
+        1644
       ],
       "source_count": 2,
       "trust_level": "low",
@@ -1048,11 +1056,11 @@
         "stale": false,
         "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency",
         "_provenance": {
-          "run_id": "run_20261006_221915_474c38",
-          "build_sha": "69dd99eea88644b92379474f43b6ed81f4047ffa",
+          "run_id": "run_20261007_040236_feeaf2",
+          "build_sha": "473ebbfa0363f6824481fe528b5c034cf7c28891",
           "engine_version": "4.2",
           "schema_version": "release-provenance-v1",
-          "generated_at": "2026-10-06T22:19:16.582636+00:00"
+          "generated_at": "2026-10-07T04:02:38.297290+00:00"
         }
       },
       "trend_attribution": null,
@@ -1077,9 +1085,9 @@
         }
       ],
       "article_ids": [
-        1662,
-        2245,
-        2274
+        1677,
+        2260,
+        2289
       ],
       "source_count": 2,
       "trust_level": "low",
@@ -1095,11 +1103,11 @@
         "stale": false,
         "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency",
         "_provenance": {
-          "run_id": "run_20261006_221915_474c38",
-          "build_sha": "69dd99eea88644b92379474f43b6ed81f4047ffa",
+          "run_id": "run_20261007_040236_feeaf2",
+          "build_sha": "473ebbfa0363f6824481fe528b5c034cf7c28891",
           "engine_version": "4.2",
           "schema_version": "release-provenance-v1",
-          "generated_at": "2026-10-06T22:19:16.582636+00:00"
+          "generated_at": "2026-10-07T04:02:38.297290+00:00"
         }
       },
       "trend_attribution": null,
@@ -1120,9 +1128,9 @@
         }
       ],
       "article_ids": [
-        10,
-        38,
-        320
+        25,
+        53,
+        335
       ],
       "source_count": 1,
       "trust_level": "low",
@@ -1138,11 +1146,11 @@
         "stale": false,
         "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency",
         "_provenance": {
-          "run_id": "run_20261006_221915_474c38",
-          "build_sha": "69dd99eea88644b92379474f43b6ed81f4047ffa",
+          "run_id": "run_20261007_040236_feeaf2",
+          "build_sha": "473ebbfa0363f6824481fe528b5c034cf7c28891",
           "engine_version": "4.2",
           "schema_version": "release-provenance-v1",
-          "generated_at": "2026-10-06T22:19:16.582636+00:00"
+          "generated_at": "2026-10-07T04:02:38.297290+00:00"
         }
       },
       "trend_attribution": null,
@@ -1163,8 +1171,8 @@
         }
       ],
       "article_ids": [
-        1192,
-        1196
+        1207,
+        1211
       ],
       "source_count": 2,
       "trust_level": "low",
@@ -1180,11 +1188,11 @@
         "stale": false,
         "principle": "证据可用性只描述输入质量；不直接改变事实、Trust、Decision 或 Urgency",
         "_provenance": {
-          "run_id": "run_20261006_221915_474c38",
-          "build_sha": "69dd99eea88644b92379474f43b6ed81f4047ffa",
+          "run_id": "run_20261007_040236_feeaf2",
+          "build_sha": "473ebbfa0363f6824481fe528b5c034cf7c28891",
           "engine_version": "4.2",
           "schema_version": "release-provenance-v1",
-          "generated_at": "2026-10-06T22:19:16.582636+00:00"
+          "generated_at": "2026-10-07T04:02:38.297290+00:00"
         }
       },
       "trend_attribution": null,
@@ -1196,14 +1204,13 @@
     "available": true,
     "status": "degraded",
     "status_label": "降级",
-    "score": 0.6,
+    "score": 0.7,
     "critical_count": 0,
-    "warning_count": 4,
+    "warning_count": 3,
     "reasons": [
       "16 个信源可用性低于 0.5: 中国银行保险资产管理业协会, 众安保险, 保险资管协会, 地方银保监局, 太保寿险",
       "104 个信源新鲜度低于 0.2",
-      "待复核积压 100 条，超过阈值 50",
-      "下游 CE 联动缺失：review 98/100"
+      "待复核积压 100 条，超过阈值 50"
     ],
     "alerts": [
       {
@@ -1223,20 +1230,14 @@
         "severity_label": "警告",
         "code": "REVIEW_BACKLOG",
         "message": "待复核积压 100 条，超过阈值 50"
-      },
-      {
-        "severity": "warning",
-        "severity_label": "警告",
-        "code": "CE_LINKAGE_GAP",
-        "message": "下游 CE 联动缺失：review 98/100"
       }
     ],
-    "generated_at": "2026-10-07T04:02:04+00:00"
+    "generated_at": "2026-10-07T05:46:45+00:00"
   },
   "pipeline": {
     "available": true,
     "ok": true,
-    "run_at": "2026-10-07T04:00:35+00:00",
+    "run_at": "2026-10-07T12:37:34+00:00",
     "node_count": 35,
     "ok_count": 35,
     "failed_count": 0,
@@ -1245,47 +1246,47 @@
       {
         "id": "intelligence",
         "name": "Build event-based intelligence",
-        "duration_sec": 12.865
+        "duration_sec": 11.419
       },
       {
         "id": "trust_build",
         "name": "Build evidence trust layer",
-        "duration_sec": 1.662
+        "duration_sec": 1.565
       },
       {
         "id": "claims_build",
         "name": "Build claim/evidence intelligence",
-        "duration_sec": 1.561
+        "duration_sec": 1.411
       },
       {
         "id": "knowledge_graph",
         "name": "Build knowledge graph",
-        "duration_sec": 1.5
+        "duration_sec": 1.362
       },
       {
         "id": "decision_build",
         "name": "Build decision intelligence",
-        "duration_sec": 1.303
+        "duration_sec": 1.165
       }
     ]
   },
   "review_progress": {
     "available": true,
-    "tracked": 113,
+    "tracked": 126,
     "queue_size": 100,
     "distribution": [
       {
         "status": "pending",
         "label": "待复核",
-        "count": 113
+        "count": 126
       }
     ]
   },
   "release": {
-    "deployment_status": "stale",
-    "deployment_verified": false,
-    "release_marker": "insureai-bfc58f610e24f492",
-    "release_match": false
+    "deployment_status": "verified",
+    "deployment_verified": true,
+    "release_marker": "insureai-4b402ce4d9d67a7e",
+    "release_match": true
   },
   "artifact_sources": [
     "intelligence.json",
@@ -1299,10 +1300,10 @@
     "review_state.json"
   ],
   "_provenance": {
-    "run_id": "run_20261007_040236_feeaf2",
-    "build_sha": "473ebbfa0363f6824481fe528b5c034cf7c28891",
+    "run_id": "run_20261007_123934_4b2e29",
+    "build_sha": "e707dee3528ccf596d43d85359a4574ecb0b4cbe",
     "engine_version": "4.2",
     "schema_version": "release-provenance-v1",
-    "generated_at": "2026-10-07T04:02:38.297745+00:00"
+    "generated_at": "2026-10-07T12:39:35.967686+00:00"
   }
 }
