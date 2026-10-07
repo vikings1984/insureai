@@ -290,6 +290,14 @@ jobs:
           dates=collections.Counter(s['date'] for c in hist['history'].values() for s in c)
           print(f"S6 replay valid: canonical={doc['meta']['total_canonical']} transitions={doc['meta']['with_transitions']} stages={doc['meta']['by_current_stage']} history_days={sorted(dates)}")
           PY
+      # ===== 第七阶段：Human OS（决策回流 + 复核收敛 +信源 OS）=====
+      # 三者均为只读聚合，不改业务状态、不自动处置；排在 S5 之后以读取当轮产物。
+      - name: Build decision outcome feedback (P0-1 Human OS)
+        run: python3 decision_outcome.py
+      - name: Build review decision engine (P0-2 Human OS)
+        run: python3 review_decision_engine.py
+      - name: Build source OS (P1-1 区分未测量/不健康)
+        run: python3 source_os.py
       # P1-8 Observability：把 quality / pipeline / run / sources / modules / review / ce_linkage /
       # source_degrade 八个域收敛为一张健康快照 observability.json。只读聚合，不阻断流水线。
       # P0-6（第六阶段）：必须排在 Event OS 主脊柱（S1 registry → S2 resolver → S4 alert → S5 funnel）
@@ -364,7 +372,7 @@ jobs:
           git config user.name "insureai-bot"; git config user.email "bot@insureai.local"
           # 对缺失文件容错：任一可选产物未生成时，不得让 git add 因 pathspec 不匹配
           # 而失败（exit 128）并中断整条流水线。
-          files="data.json intelligence.json claims.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json trend_attribution.json radar.json optimization_backlog.json optimization_backlog_history.json release_manifest.json release_provenance.json decision_stability.json decision_history.json decision_credibility.json daily_risk_radar.json owner_risk_view.json freshness.json evidence_availability.json executive_terminal.json knowledge_graph.json p2_daily_brief.json p2_state.json index.html sitemap.xml rss.xml research.json data/quality data/translation_cache.json p2_monitoring_store.json p2_monitoring.json p2_feedback_analytics.json p2_personal_memory.json decisions_ledger.json second_brain.json canonical_events.json event_id_aliases.json resolver_report.json resolver_fingerprint_map.json lifecycle_report.json p2_alerts.json p2_alert_baseline.json decisions_pending.json p2_stage_history.json event_replays.json manifest.json run.json snapshot review_state.json dag_run.json observability.json replay_baseline.json replay_result.json replay_compare_report.json resolution_benchmark_report.json semantic_change_benchmark_report.json"
+          files="data.json intelligence.json claims.json calibration.json counterfactual.json scenario.json scenario_matrix.json action_triggers.json execution_readiness.json audit_ledger.json change_impact.json review_queue.json feedback_attribution.json module_health.json module_health_history.json module_health_trend.json trend_attribution.json radar.json optimization_backlog.json optimization_backlog_history.json release_manifest.json release_provenance.json decision_stability.json decision_history.json decision_credibility.json daily_risk_radar.json owner_risk_view.json freshness.json evidence_availability.json executive_terminal.json knowledge_graph.json p2_daily_brief.json p2_state.json index.html sitemap.xml rss.xml research.json data/quality data/translation_cache.json p2_monitoring_store.json p2_monitoring.json p2_feedback_analytics.json p2_personal_memory.json decisions_ledger.json second_brain.json canonical_events.json event_id_aliases.json resolver_report.json resolver_fingerprint_map.json lifecycle_report.json p2_alerts.json p2_alert_baseline.json decisions_pending.json p2_stage_history.json event_replays.json manifest.json run.json snapshot review_state.json dag_run.json observability.json replay_baseline.json replay_result.json replay_compare_report.json resolution_benchmark_report.json semantic_change_benchmark_report.json decision_outcome.json review_decision.json source_os.json"
           existing=""
           for f in $files; do if [ -e "$f" ]; then existing="$existing $f"; fi; done
           if [ -n "$existing" ] && [ -n "$(git status --porcelain $existing)" ]; then
