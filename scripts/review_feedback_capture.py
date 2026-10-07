@@ -13,9 +13,9 @@
 
 用法::
 
-    # 查看待反馈的建议（含 event_id / tier / 建议动作）
+    # 查看待反馈的建议（含事件内容与判断依据）
     python3 scripts/review_feedback_capture.py list
-    python3 scripts/review_feedback_capture.py list --tier noise
+    python3 scripts/review_feedback_capture.py list --tier noise -v --limit 5
 
     # 登记反馈
     python3 scripts/review_feedback_capture.py accept  evt_xxx  --reason "确需裁决"
@@ -35,6 +35,7 @@ sys.path.insert(0, ROOT)
 import review_feedback as rf  # noqa: E402
 
 DECISION_PATH = os.path.join(ROOT, "review_decision.json")
+QUEUE_PATH = os.path.join(ROOT, "review_queue.json")
 
 
 def _load_json(path):
@@ -47,6 +48,27 @@ def _load_json(path):
         return None
 
 
+def _review_items() -> dict:
+    """review_queue 的 event_id -> item（提供人工判断所需的上下文）。"""
+    doc = _load_json(QUEUE_PATH) or {}
+    return {i.get("event_id"): i for i in (doc.get("items") or [])
+            if isinstance(i, dict) and i.get("event_id")}
+
+
+def _load_ledger() -> dict:
+    """读取反馈账本；`REVIEW_FEEDBACK_LEDGER` 可重定向（测试/演练隔离）。"""
+    path = os.environ.get("REVIEW_FEEDBACK_LEDGER") or rf.FEEDBACK
+    if not os.path.exists(path):
+        return {"version": "review-feedback-v1.0", "registrations": []}
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            doc = json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return {"version": "review-feedback-v1.0", "registrations": []}
+    doc.setdefault("registrations", [])
+    return doc
+
+
 def _suggestions() -> list[dict]:
     doc = _load_json(DECISION_PATH) or {}
     out = []
@@ -57,24 +79,57 @@ def _suggestions() -> list[dict]:
     return out
 
 
+def _fmt_one(idx: int, s: dict, item: dict | None, verbose: bool) -> str:
+    """把一条建议渲染成**可供人判断**的形态（含事件内容，不只是 id）。"""
+    eid = s.get("event_id")
+    head = f"[{idx:3d}] {eid}  [{s.get('tier')}]"
+    if not verbose:
+        title = (item or {}).get("title") or ""
+        return f"{head} {title[:46]}"
+    it = item or {}
+    reasons = "；".join(
+        f"{r.get('type')}" for r in (it.get("reasons") or []) if isinstance(r, dict)
+    ) or "-"
+    lines = [
+        f"{head}",
+        f"      标题   : {(it.get('title') or '-')[:70]}",
+        f"      建议   : {s.get('suggested_action')}  （{s.get('reason') or '-'}）",
+        f"      优先级 : {it.get('priority')}   信任: {it.get('trust_level')}   "
+        f"信源数: {it.get('source_count')}   类型: {it.get('event_type') or '-'}",
+        f"      触发   : {reasons[:70]}",
+    ]
+    return "\n".join(lines)
+
+
 def main(argv: list[str]) -> int:
     if not argv or argv[0] == "list":
-        fb = rf.load_feedback()
+        fb = _load_ledger()
         done = {r.get("event_id") for r in fb.get("registrations") or []}
         tier = None
         if "--tier" in argv:
             tier = argv[argv.index("--tier") + 1]
+        verbose = "-v" in argv or "--verbose" in argv
+        limit = 20
+        if "--limit" in argv:
+            try:
+                limit = int(argv[argv.index("--limit") + 1])
+            except (IndexError, ValueError):
+                limit = 20
+        rq = _review_items()
         rows = [s for s in _suggestions()
                 if s.get("event_id") not in done
                 and (tier is None or s.get("tier") == tier)]
         if not rows:
             print("[review_feedback_capture] 无待反馈建议（已全部登记或队列为空）")
             return 0
-        print(f"[review_feedback_capture] 待反馈 {len(rows)} 条（已登记 {len(done)} 条）")
-        for s in rows[:20]:
-            print(f"  {s['event_id']:22} {s.get('tier'):18} -> {s.get('suggested_action')}")
-        if len(rows) > 20:
-            print(f"  ... 其余 {len(rows)-20} 条")
+        print(f"[review_feedback_capture] 待反馈 {len(rows)} 条（已登记 {len(done)} 条）"
+              f"{'｜按 tier=' + tier if tier else ''}")
+        print("  人工判断后登记："
+              "<accept|reject|modify|defer> <event_id> [--to ACTION] [--reason TEXT]\n")
+        for n, s in enumerate(rows[:limit], 1):
+            print(_fmt_one(n, s, rq.get(s.get("event_id")), verbose))
+        if len(rows) > limit:
+            print(f"\n  ... 其余 {len(rows)-limit} 条（--limit 调整；-v 看详细依据）")
         return 0
 
     cmd = argv[0]
@@ -99,6 +154,8 @@ def main(argv: list[str]) -> int:
         modified = argv[argv.index("--to") + 1]
     reason = argv[argv.index("--reason") + 1] if "--reason" in argv else None
 
+    # 账本路径：默认生产文件；`REVIEW_FEEDBACK_LEDGER` 可指向别处（测试/演练隔离用）
+    ledger_path = os.environ.get("REVIEW_FEEDBACK_LEDGER") or rf.FEEDBACK
     fb = rf.load_feedback()
     try:
         row = rf.record(fb, event_id, cmd, modified_action=modified, reason=reason)
@@ -106,7 +163,7 @@ def main(argv: list[str]) -> int:
         print(f"[error] {e}", file=sys.stderr)
         return 2
 
-    with open(rf.FEEDBACK, "w", encoding="utf-8") as f:
+    with open(ledger_path, "w", encoding="utf-8") as f:
         json.dump(fb, f, ensure_ascii=False, indent=2)
         f.write("\n")
     print(f"[review_feedback_capture] 已登记：{event_id} -> {cmd}"
