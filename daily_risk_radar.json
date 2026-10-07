@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "generated_at": "2026-10-06T22:18:07.643859+00:00",
+  "generated_at": "2026-10-07T04:01:04.862043+00:00",
   "status": "review",
   "principle": "雷达只排序已有风险信号；部署风险与趋势归因只影响人工注意力与发布可信度，不重新评分、不修改原始决策、不自动执行行动。",
   "items": [
@@ -77,16 +77,36 @@
       "trend_attribution": null
     },
     {
-      "event_id": "evt_12caf4175365",
-      "title": "AM Best 报告称，随着持续增长，美国产权保险保费到 2025 年将上涨 13%",
-      "urgency": null,
-      "trust_level": "low",
-      "attention_score": 100,
+      "event_id": "deployment:production",
+      "title": "生产部署状态：deployment_release_mismatch",
+      "urgency": "now",
+      "trust_level": null,
+      "attention_score": 98,
       "reasons": [
-        "human_review"
+        "deployment_release_mismatch",
+        "published_marker_behind_expected"
       ],
-      "source": "review_queue.json",
-      "trend_attribution": null
+      "source": "deployment_verification.json",
+      "deployment_risk": {
+        "version": 4,
+        "classification": "deployment_release_mismatch",
+        "priority": 98,
+        "attention": true,
+        "verified": false,
+        "status": "stale",
+        "error": "published_marker_behind_expected",
+        "checked_at": "2026-10-06T22:37:21.574095+00:00",
+        "trend": {
+          "version": 1,
+          "classification": "single_failure",
+          "failure_streak": 1,
+          "sample_count": 30,
+          "generated_at": "2026-10-07T04:01:04.861976+00:00"
+        },
+        "next_step": "核对线上 release marker 与当前 release manifest；确认是否仍运行旧版本，并检查最近一次发布状态。",
+        "generated_at": "2026-10-07T04:01:04.861999+00:00",
+        "principle": "部署风险只影响人工注意力与发布可信度，不修改 Decision/Trust/Urgency。"
+      }
     },
     {
       "event_id": "evt_7fa20c38cc38",
@@ -139,6 +159,18 @@
     {
       "event_id": "evt_33b7e19585a0",
       "title": "负担得起且容易获得的再保险对于佛罗里达市场的稳定仍然至关重要：晨星 DBRS",
+      "urgency": null,
+      "trust_level": "low",
+      "attention_score": 95,
+      "reasons": [
+        "human_review"
+      ],
+      "source": "review_queue.json",
+      "trend_attribution": null
+    },
+    {
+      "event_id": "evt_12caf4175365",
+      "title": "AM Best 报告称，随着持续增长，美国产权保险保费到 2025 年将上涨 13%",
       "urgency": null,
       "trust_level": "low",
       "attention_score": 95,
@@ -351,33 +383,21 @@
       ],
       "source": "review_queue.json",
       "trend_attribution": null
-    },
-    {
-      "event_id": "evt_0fe4820271f7",
-      "title": "KCC 报告称，随着再保险公司/保险公司寻求更多当前风险洞察力，人工智能正在重塑猫模型",
-      "urgency": null,
-      "trust_level": "medium",
-      "attention_score": 70,
-      "reasons": [
-        "human_review"
-      ],
-      "source": "review_queue.json",
-      "trend_attribution": null
     }
   ],
   "summary": {
-    "items": 112,
+    "items": 113,
     "top_attention_score": 100,
     "credibility_status": "review",
-    "impacted_event_count": 17,
-    "deployment_attention": false,
-    "deployment_classification": "deployment_verified"
+    "impacted_event_count": 2,
+    "deployment_attention": true,
+    "deployment_classification": "deployment_release_mismatch"
   },
   "_provenance": {
-    "run_id": "run_20261006_221915_474c38",
-    "build_sha": "69dd99eea88644b92379474f43b6ed81f4047ffa",
+    "run_id": "run_20261007_040236_feeaf2",
+    "build_sha": "473ebbfa0363f6824481fe528b5c034cf7c28891",
     "engine_version": "4.2",
     "schema_version": "release-provenance-v1",
-    "generated_at": "2026-10-06T22:19:16.581639+00:00"
+    "generated_at": "2026-10-07T04:02:38.295889+00:00"
   }
 }

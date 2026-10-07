@@ -1,16 +1,17 @@
 {
   "version": "1.0",
-  "generated_at": "2026-10-07T01:41:09+00:00",
-  "commit": "48fc9e460f21",
+  "generated_at": "2026-10-07T04:02:04+00:00",
+  "commit": "473ebbfa0363",
   "overall": {
     "status": "degraded",
-    "score": 0.7,
+    "score": 0.6,
     "critical_count": 0,
-    "warning_count": 3,
+    "warning_count": 4,
     "reasons": [
       "16 个信源可用性低于 0.5: 中国银行保险资产管理业协会, 众安保险, 保险资管协会, 地方银保监局, 太保寿险",
       "104 个信源新鲜度低于 0.2",
-      "待复核积压 100 条，超过阈值 50"
+      "待复核积压 100 条，超过阈值 50",
+      "下游 CE 联动缺失：review 98/100"
     ]
   },
   "sections": {
@@ -28,11 +29,11 @@
     "pipeline": {
       "status": "healthy",
       "ok": true,
-      "node_count": 34,
+      "node_count": 35,
       "failed_nodes": [],
       "slow_nodes": [],
-      "total_duration_sec": 21.726,
-      "run_at": "2026-10-06T22:17:46+00:00"
+      "total_duration_sec": 29.167,
+      "run_at": "2026-10-07T04:00:35+00:00"
     },
     "run": {
       "status": "healthy",
@@ -47,7 +48,7 @@
       "status": "degraded",
       "source_count": 220,
       "avg_availability": 0.9273,
-      "avg_freshness": 0.3572,
+      "avg_freshness": 0.3392,
       "low_availability": [
         "中国银行保险资产管理业协会",
         "众安保险",
@@ -184,16 +185,16 @@
     },
     "review": {
       "status": "degraded",
-      "queue_generated_count": 317,
+      "queue_generated_count": 306,
       "queue_items": 100,
       "queue_status_distribution": {
         "pending": 100
       },
-      "tracked_items": 100,
+      "tracked_items": 113,
       "pending": 100,
       "aging": {
         "buckets": {
-          "0_1": 100,
+          "0_1": 113,
           "1_3": 0,
           "3_7": 0,
           "7_plus": 0
@@ -205,13 +206,13 @@
       "compression": {
         "tiers": {
           "decision_required": 20,
-          "material_change": 13,
+          "material_change": 2,
           "relevant": 13,
-          "noise": 54
+          "noise": 65
         },
         "total_pending": 100,
-        "daily_human_load": 33,
-        "compression_ratio": 0.67,
+        "daily_human_load": 22,
+        "compression_ratio": 0.78,
         "thresholds": {
           "decision_reasons": [
             "claim_conflict",
@@ -226,7 +227,7 @@
       }
     },
     "ce_linkage": {
-      "status": "healthy",
+      "status": "degraded",
       "ce_pool_size": 2620,
       "surfaces": {
         "decision": {
@@ -241,11 +242,11 @@
         },
         "review": {
           "total": 100,
-          "linked": 100,
-          "ratio": 1.0
+          "linked": 98,
+          "ratio": 0.98
         }
       },
-      "unresolved_review_event_ids": 0
+      "unresolved_review_event_ids": 2
     },
     "source_degrade": {
       "status": "degraded",
@@ -394,6 +395,11 @@
       "severity": "warning",
       "code": "REVIEW_BACKLOG",
       "message": "待复核积压 100 条，超过阈值 50"
+    },
+    {
+      "severity": "warning",
+      "code": "CE_LINKAGE_GAP",
+      "message": "下游 CE 联动缺失：review 98/100"
     }
   ]
 }
