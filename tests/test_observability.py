@@ -52,6 +52,16 @@ def _green_sources():
         ]},
         "review_state.json": {"items": {"e1": {"status": "pending"},
                                         "e2": {"status": "approved"}}},
+        # 全绿系统应同时具备 CE 池及其下游联动（否则 ce_linkage 段会如实告警）
+        "canonical_events.json": {
+            "canonical_events": {"cev1": {}, "cev2": {}},
+            "by_event_id": {"e1": "cev1", "e2": "cev2"},
+        },
+        "decisions_pending.json": {
+            "funnel": {"now": [{"canonical_event_id": "cev1"}],
+                       "soon": [], "watch": []},
+        },
+        "p2_alerts.json": {"semantic_alerts": [{"ceid": "cev1"}]},
     }
 
 

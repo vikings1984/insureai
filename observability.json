@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "generated_at": "2026-10-06T22:18:51+00:00",
-  "commit": "69dd99eea886",
+  "generated_at": "2026-10-07T00:46:55+00:00",
+  "commit": "6189ac8ebac2",
   "overall": {
     "status": "degraded",
     "score": 0.7,
@@ -16,14 +16,14 @@
   "sections": {
     "quality": {
       "status": "healthy",
-      "commit": "070d2880f158",
-      "when": "2026-10-06T17:13:56+00:00",
+      "commit": "6189ac8ebac2",
+      "when": "2026-10-07T00:37:58+00:00",
       "macro_quality": 1.0,
       "safety_pass": true,
       "event_false_merge_rate": 0.0,
       "split_false_split_rate": 0.0,
       "single_source_false_cross_check_rate": 0.0,
-      "records": 6
+      "records": 8
     },
     "pipeline": {
       "status": "healthy",
@@ -36,11 +36,11 @@
     },
     "run": {
       "status": "healthy",
-      "run_id": "run_20261006_124646_5e7073",
-      "build_sha": "06aeb83c2a20f8687bbcc71d371988b2009159a8",
+      "run_id": "run_20261006_221915_474c38",
+      "build_sha": "69dd99eea88644b92379474f43b6ed81f4047ffa",
       "engine_version": "4.2",
-      "started_at": "2026-10-06T12:46:46.243179+00:00",
-      "ended_at": "2026-10-06T12:46:48.691350+00:00",
+      "started_at": "2026-10-06T22:19:15.526130+00:00",
+      "ended_at": "2026-10-06T22:19:17.724519+00:00",
       "failed_stage": null
     },
     "sources": {
@@ -190,7 +190,159 @@
         "pending": 100
       },
       "tracked_items": 100,
-      "pending": 100
+      "pending": 100,
+      "aging": {
+        "buckets": {
+          "0_1": 100,
+          "1_3": 0,
+          "3_7": 0,
+          "7_plus": 0
+        },
+        "max_age_days": 0,
+        "stale_7plus": 0,
+        "note": "只读指标；不自动 defer/关闭 pending 项"
+      }
+    },
+    "ce_linkage": {
+      "status": "healthy",
+      "ce_pool_size": 2620,
+      "surfaces": {
+        "decision": {
+          "total": 80,
+          "linked": 80,
+          "ratio": 1.0
+        },
+        "monitoring": {
+          "total": 8,
+          "linked": 8,
+          "ratio": 1.0
+        },
+        "review": {
+          "total": 100,
+          "linked": 100,
+          "ratio": 1.0
+        }
+      },
+      "unresolved_review_event_ids": 0
+    },
+    "source_degrade": {
+      "status": "degraded",
+      "key_relevance_min": 0.8,
+      "excluded_keyword_count": 12,
+      "suggestion_count": 11,
+      "note": "只读建议清单；不自动降权/暂停任何信源，需人工拍板后执行",
+      "suggestions": [
+        {
+          "source": "平安人寿",
+          "availability": 0.0,
+          "freshness": 0.0,
+          "insurance_relevance": 0.0,
+          "reasons": [
+            "availability=0.0<0.5",
+            "freshness=0.0<0.2"
+          ]
+        },
+        {
+          "source": "众安保险",
+          "availability": 0.0,
+          "freshness": 0.0,
+          "insurance_relevance": 0.0,
+          "reasons": [
+            "availability=0.0<0.5",
+            "freshness=0.0<0.2"
+          ]
+        },
+        {
+          "source": "泰康在线",
+          "availability": 0.0,
+          "freshness": 0.0,
+          "insurance_relevance": 0.0,
+          "reasons": [
+            "availability=0.0<0.5",
+            "freshness=0.0<0.2"
+          ]
+        },
+        {
+          "source": "行业观察",
+          "availability": 0.0,
+          "freshness": 0.0,
+          "insurance_relevance": 0.0,
+          "reasons": [
+            "availability=0.0<0.5",
+            "freshness=0.0<0.2"
+          ]
+        },
+        {
+          "source": "保险资管协会",
+          "availability": 0.0,
+          "freshness": 0.0,
+          "insurance_relevance": 0.0,
+          "reasons": [
+            "availability=0.0<0.5",
+            "freshness=0.0<0.2"
+          ]
+        },
+        {
+          "source": "清华大学",
+          "availability": 0.0,
+          "freshness": 0.0,
+          "insurance_relevance": 0.0,
+          "reasons": [
+            "availability=0.0<0.5",
+            "freshness=0.0<0.2"
+          ]
+        },
+        {
+          "source": "最高人民法院",
+          "availability": 0.0,
+          "freshness": 0.0,
+          "insurance_relevance": 0.0,
+          "reasons": [
+            "availability=0.0<0.5",
+            "freshness=0.0<0.2"
+          ]
+        },
+        {
+          "source": "太保寿险",
+          "availability": 0.0,
+          "freshness": 0.0,
+          "insurance_relevance": 0.0,
+          "reasons": [
+            "availability=0.0<0.5",
+            "freshness=0.0<0.2"
+          ]
+        },
+        {
+          "source": "中国银行保险资产管理业协会",
+          "availability": 0.0,
+          "freshness": 0.0,
+          "insurance_relevance": 0.0,
+          "reasons": [
+            "availability=0.0<0.5",
+            "freshness=0.0<0.2"
+          ]
+        },
+        {
+          "source": "诉责论谈",
+          "availability": 0.0,
+          "freshness": 0.0,
+          "insurance_relevance": 0.0,
+          "reasons": [
+            "availability=0.0<0.5",
+            "freshness=0.0<0.2"
+          ]
+        },
+        {
+          "source": "审判研究",
+          "availability": 0.0,
+          "freshness": 0.0,
+          "insurance_relevance": 0.0,
+          "reasons": [
+            "availability=0.0<0.5",
+            "freshness=0.0<0.2"
+          ]
+        }
+      ]
     }
   },
   "alerts": [

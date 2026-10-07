@@ -143,21 +143,65 @@ def decision_benchmark(fixtures: list[dict]) -> dict:
     }
 
 
+def funnel_benchmark(artifact_path: Path | None = None) -> dict:
+    """P0-B Decision Funnel precision 门（第四阶段「生产验证」）。
+
+    直接校验生产产物 decisions_pending.json 的 decision_ready 契约：每个 decision_ready
+    ceid 必须能在 funnel 中找到、meets_six=True、且 six_detail.single_src_regulatory=False
+    （无单源监管/评级 bypass）。产物缺失则 graceful skip（available=False），不阻断流水线；
+    出现假阳性则 precision<1.0，触发 safety 失败。
+    """
+    path = artifact_path or (ROOT / "decisions_pending.json")
+    if not path.exists():
+        return {"available": False, "decision_ready_precision": 1.0,
+                "decision_ready_count": 0, "human_override_rate": "n/a", "false_positives": [],
+                "note": "decisions_pending.json 未生成，跳过 precision 校验"}
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    meta = doc.get("meta") or {}
+    dr_ceids = set(meta.get("decision_ready_ceids") or [])
+    funnel = doc.get("funnel") or {}
+    items: dict[str, dict] = {}
+    for tier in ("now", "soon", "watch"):
+        for it in (funnel.get(tier) or []):
+            items[it.get("canonical_event_id")] = it
+    false_positives: list[dict] = []
+    for ceid in dr_ceids:
+        it = items.get(ceid)
+        if it is None:
+            false_positives.append({"canonical_event_id": ceid, "reason": "decision_ready 但不在 funnel 中"})
+            continue
+        detail = it.get("six_detail") or {}
+        if not it.get("meets_six"):
+            false_positives.append({"canonical_event_id": ceid, "reason": "meets_six=False"})
+        elif detail.get("single_src_regulatory"):
+            false_positives.append({"canonical_event_id": ceid, "reason": "单源监管/评级 bypass"})
+    precision = 1.0 - (len(false_positives) / len(dr_ceids)) if dr_ceids else 1.0
+    return {
+        "available": True,
+        "decision_ready_count": len(dr_ceids),
+        "decision_ready_precision": round(precision, 4),
+        "human_override_rate": "n/a",
+        "false_positives": false_positives,
+    }
+
+
 def main() -> None:
     data = json.loads(FIXTURE.read_text(encoding="utf-8"))
     event = event_benchmark(data["event_cases"])
     split = split_benchmark(data.get("split_cases", []))
     claim = claim_benchmark(data["claim_cases"])
     decision = decision_benchmark(data["decision_cases"])
+    funnel = funnel_benchmark()
     safety_pass = (
         decision["unsafe_now_rate"] == 0.0
         and claim["single_source_false_cross_check_rate"] == 0.0
         and event["false_merge_rate"] == 0.0
         and split["false_split_rate"] == 0.0
         and split["false_merge_rate"] == 0.0
+        and (funnel.get("available") is False or funnel["decision_ready_precision"] == 1.0)
     )
     macro = round((event["precision"] + event["recall"] + (1 - event["false_merge_rate"]) + (1 - split["false_split_rate"]) + claim["cross_check_accuracy"] + claim["single_source_state_accuracy"] + (1 - claim["single_source_false_cross_check_rate"]) + (1 - decision["unsafe_now_rate"]) + decision["human_review_recall"]) / 9, 4)
-    result = {"version": 2, "benchmark": "insureai_core_benchmark", "macro_quality": macro, "safety_pass": safety_pass, "event": event, "split": split, "claim_evidence": claim, "decision": decision}
+    result = {"version": 2, "benchmark": "insureai_core_benchmark", "macro_quality": macro, "safety_pass": safety_pass, "event": event, "split": split, "claim_evidence": claim, "decision": decision, "funnel": funnel}
     OUTPUT.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     # P0-6 Quality Registry：把本次 benchmark 结果固化为该 commit 的质量档案
     # （quality/<commit>.json + quality/index.json + quality/latest.json）。

@@ -49,6 +49,11 @@ SOURCE_AVAILABILITY_MIN = 0.5
 SOURCE_FRESHNESS_MIN = 0.2
 MODULE_ERROR_RATE_MAX = 0.2
 REVIEW_BACKLOG_MAX = 50
+AGING_STALE_MAX = 20
+KEY_RELEVANCE_MIN = 0.8
+# 关键源（监管/官方）关键词：这些源即便健康度偏低也不建议降权（排除关键源）
+REGULATORY_KEYWORDS = ("监管", "银保监", "金融监督", "证监会", "人民银行", "央行",
+                       "财政部", "交易所", "国资委", "统计局", "国务院", "总局")
 SLOW_NODE_SEC = 60.0
 
 SEVERITY_CRITICAL = "critical"
@@ -279,8 +284,52 @@ def section_modules(alerts: list[dict]) -> dict:
     }
 
 
+def compute_review_aging(state_items: dict, now=None) -> tuple[dict, int, int]:
+    """纯函数：按 review_state 中 pending 项的 created_at 计算账龄分桶。
+
+    返回 (buckets, max_age_days, stale_7plus)。`now` 可注入以便单测。
+    """
+    if now is None:
+        now = datetime.now(timezone.utc)
+    buckets = {"0_1": 0, "1_3": 0, "3_7": 0, "7_plus": 0}
+    max_age = 0
+    if isinstance(state_items, dict):
+        for it in state_items.values():
+            if not isinstance(it, dict):
+                continue
+            if (it.get("status") or "pending") != "pending":
+                continue
+            ca = it.get("created_at")
+            if not ca:
+                continue
+            try:
+                ct = datetime.fromisoformat(str(ca).replace("Z", "+00:00"))
+                if ct.tzinfo is None:
+                    ct = ct.replace(tzinfo=timezone.utc)
+                days = (now - ct).days
+            except (ValueError, TypeError):
+                days = -1
+            if days < 0:
+                continue
+            max_age = max(max_age, days)
+            if days <= 1:
+                buckets["0_1"] += 1
+            elif days <= 3:
+                buckets["1_3"] += 1
+            elif days <= 7:
+                buckets["3_7"] += 1
+            else:
+                buckets["7_plus"] += 1
+    return buckets, max_age, buckets["7_plus"]
+
+
 def section_review(alerts: list[dict]) -> dict:
-    """人工复核域：P1-4 状态机分布 + 队列积压。"""
+    """人工复核域：P1-4 状态机分布 + 队列积压 + 积压账龄（P1-B，只读）。
+
+    账龄（aging）按 review_state.json 中 pending 项的 created_at 计算滞留天数，
+    分桶 0-1 / 1-3 / 3-7 / >7 天。**仅报告，不做任何自动 defer / 关闭动作**；
+    仅当 >7 天陈旧桶超过 AGING_STALE_MAX 时发一条 warning 提醒人工关注。
+    """
     queue = _read_json("review_queue.json") or {}
     items = queue.get("items") or []
     state = _read_json("review_state.json") or {}
@@ -293,19 +342,179 @@ def section_review(alerts: list[dict]) -> dict:
             dist[s] = dist.get(s, 0) + 1
     pending = dist.get("pending", 0)
 
+    # 账龄：以 review_state 中 pending 项的 created_at 为入队时刻
+    buckets, max_age, stale = compute_review_aging(state_items)
+
     if pending > REVIEW_BACKLOG_MAX:
         alerts.append({
             "severity": SEVERITY_WARNING, "code": "REVIEW_BACKLOG",
             "message": f"待复核积压 {pending} 条，超过阈值 {REVIEW_BACKLOG_MAX}",
         })
+    if stale > AGING_STALE_MAX:
+        alerts.append({
+            "severity": SEVERITY_WARNING, "code": "REVIEW_AGING_STALE",
+            "message": f"{stale} 条 pending 复核已滞留 >7 天，超过阈值 {AGING_STALE_MAX}，建议人工清理",
+        })
 
     return {
-        "status": "healthy" if pending <= REVIEW_BACKLOG_MAX else "degraded",
+        "status": "healthy" if pending <= REVIEW_BACKLOG_MAX and stale <= AGING_STALE_MAX
+        else "degraded",
         "queue_generated_count": queue.get("generated_count", 0),
         "queue_items": len(items),
         "queue_status_distribution": dist,
         "tracked_items": len(state_items) if isinstance(state_items, dict) else 0,
         "pending": pending,
+        "aging": {
+            "buckets": buckets,
+            "max_age_days": max_age,
+            "stale_7plus": stale,
+            "note": "只读指标；不自动 defer/关闭 pending 项",
+        },
+    }
+
+
+def section_ce_linkage(alerts: list[dict]) -> dict:
+    """下游 CE 联动审计（P0-C，Event OS 第四阶段「生产验证」核心可观测性指标）。
+
+    验证 review / monitoring / decision 三类下游产物是否正确挂接到 Canonical Event 层。
+    若某类下游产物悄悄丢失 canonical_event_id（或 review 的 event_id 无法解析到 CE 池），
+    本段会告警，从而在生产验证阶段捕捉「CE 联动回归」这类静默故障。
+
+    口径（均对照 canonical_events.json 的 CE 池）：
+    - decision  : decisions_pending.json 的 funnel 项，canonical_event_id 必须落在 CE 池；
+    - monitoring: p2_alerts.json 的 semantic_alerts，ceid / canonical_event_id 必须落在 CE 池
+                  （当前无告警时视为 vacuously 100%，不告警）；
+    - review    : review_queue.json 的 item 只带 event_id（由 CE 注册表在下游 canonicalize），
+                  故用「event_id 经 by_event_id 解析到 CE 池」的解析率度量，未解析数即解析失败数。
+
+    告警策略：仅当某非空表面的联动比例 < 1.0 才告警；CE 池缺失则整段降级 unavailable。
+    该指标属数据一致性审计，不破坏 fail-closed 安全门，故以 warning 级别上报。
+    """
+    ce = _read_json("canonical_events.json")
+    ces = (ce or {}).get("canonical_events") or {}
+    pool = set(ces.keys())
+    by_eid = (ce or {}).get("by_event_id") or {}
+
+    if not pool:
+        alerts.append({
+            "severity": SEVERITY_WARNING, "code": "CE_LINKAGE_UNAVAILABLE",
+            "message": "未找到 Canonical Event 池（canonical_events.json），无法审计 CE 联动",
+        })
+        return {"status": "unavailable", "ce_pool_size": 0, "surfaces": {}}
+
+    def _ratio(ok: int, total: int) -> float:
+        return round(ok / total, 4) if total else 1.0
+
+    # decision 表面
+    dp = _read_json("decisions_pending.json")
+    tiers: list[dict] = []
+    if dp:
+        fn = dp.get("funnel") or {}
+        for t in ("now", "soon", "watch"):
+            tiers += fn.get(t) or []
+    dec_total = len(tiers)
+    dec_ok = sum(1 for i in tiers if i.get("canonical_event_id") in pool)
+
+    # monitoring 表面
+    pa = _read_json("p2_alerts.json")
+    al = (pa or {}).get("semantic_alerts") or []
+    mon_total = len(al)
+    mon_ok = sum(1 for i in al
+                 if (i.get("ceid") or i.get("canonical_event_id")) in pool)
+
+    # review 表面（event_id → CE 解析率）
+    rq = _read_json("review_queue.json")
+    items = (rq or {}).get("items") or []
+    rev_total = len(items)
+    rev_ok = 0
+    rev_unresolved: list[str] = []
+    for i in items:
+        eid = i.get("event_id")
+        if not eid:
+            rev_unresolved.append("<empty_event_id>")
+            continue
+        ceid = by_eid.get(eid)
+        if ceid in pool or eid in pool:
+            rev_ok += 1
+        else:
+            rev_unresolved.append(eid)
+
+    surfaces = {
+        "decision": {"total": dec_total, "linked": dec_ok, "ratio": _ratio(dec_ok, dec_total)},
+        "monitoring": {"total": mon_total, "linked": mon_ok, "ratio": _ratio(mon_ok, mon_total)},
+        "review": {"total": rev_total, "linked": rev_ok, "ratio": _ratio(rev_ok, rev_total)},
+    }
+
+    gaps = [name for name, s in surfaces.items() if s["total"] > 0 and s["ratio"] < 1.0]
+    if gaps:
+        detail = "; ".join(f"{name} {surfaces[name]['linked']}/{surfaces[name]['total']}"
+                           for name in gaps)
+        alerts.append({
+            "severity": SEVERITY_WARNING, "code": "CE_LINKAGE_GAP",
+            "message": f"下游 CE 联动缺失：{detail}",
+        })
+
+    status = "healthy" if not gaps else "degraded"
+    return {
+        "status": status,
+        "ce_pool_size": len(pool),
+        "surfaces": surfaces,
+        "unresolved_review_event_ids": len(rev_unresolved),
+    }
+
+
+def section_source_degrade(alerts: list[dict]) -> dict:
+    """信源降权建议清单（P1-C，只读报告，**不执行**）。
+
+    从 P1-2 Source Health 六项指标中筛出「健康度偏低」的信源，生成**建议降权**清单。
+    关键设计：
+
+    - 候选条件：availability < 门槛 或 freshness < 门槛（与 section_sources 一致）；
+    - **排除关键源**：insurance_relevance >= KEY_RELEVANCE_MIN，或名称命中监管/官方关键词，
+      一律不进入建议清单——监管/官方源即便暂时陈旧也必须保留在池中，降权会伤情报覆盖；
+    - 仅当「不健康 且 低价值」时才建议降权（纯 advisory，绝不自动 suspend / 改写 data.json）。
+
+    本段只产出报告，不发告警（告警由 section_sources 负责），不修改任何源产物。
+    """
+    data = _read_json("data.json")
+    sh = (data or {}).get("source_health") or {}
+    if not isinstance(sh, dict) or not sh:
+        return {"status": "unavailable", "suggestions": []}
+
+    suggestions = []
+    for name, v in sh.items():
+        if not isinstance(v, dict):
+            continue
+        avail = _f(v.get("availability"))
+        fresh = _f(v.get("freshness"))
+        rel = _f(v.get("insurance_relevance"))
+        reasons = []
+        if avail < SOURCE_AVAILABILITY_MIN:
+            reasons.append(f"availability={avail}<{SOURCE_AVAILABILITY_MIN}")
+        if fresh < SOURCE_FRESHNESS_MIN:
+            reasons.append(f"freshness={fresh}<{SOURCE_FRESHNESS_MIN}")
+        if not reasons:
+            continue  # 健康源不进清单
+        # 排除关键源
+        is_key = rel >= KEY_RELEVANCE_MIN or any(kw in (name or "") for kw in REGULATORY_KEYWORDS)
+        if is_key:
+            continue
+        suggestions.append({
+            "source": name,
+            "availability": avail,
+            "freshness": fresh,
+            "insurance_relevance": rel,
+            "reasons": reasons,
+        })
+
+    suggestions.sort(key=lambda s: (s["insurance_relevance"], s["freshness"]))
+    return {
+        "status": "healthy" if not suggestions else "degraded",
+        "key_relevance_min": KEY_RELEVANCE_MIN,
+        "excluded_keyword_count": len(REGULATORY_KEYWORDS),
+        "suggestion_count": len(suggestions),
+        "note": "只读建议清单；不自动降权/暂停任何信源，需人工拍板后执行",
+        "suggestions": suggestions,
     }
 
 
@@ -318,6 +527,8 @@ def build() -> dict:
         "sources": section_sources(alerts),
         "modules": section_modules(alerts),
         "review": section_review(alerts),
+        "ce_linkage": section_ce_linkage(alerts),
+        "source_degrade": section_source_degrade(alerts),
     }
 
     critical = [a for a in alerts if a.get("severity") == SEVERITY_CRITICAL]

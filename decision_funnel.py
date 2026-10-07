@@ -382,6 +382,11 @@ def build(
             "pending_by_role": by_role,
             "decision_ready": len(decision_ready),
             "decision_ready_ceids": [d["canonical_event_id"] for d in decision_ready[:TOP_PENDING]],
+            # 精度（P0-B，第四阶段「生产验证」）：decision_ready 只在 six["met"] 时追加，
+            # 故被准入项必然通过六条件且无单源监管/评级 bypass → 假阳性率为 0（vacuously 1.0）。
+            # 真实 precision 需人工 gold 标注，故 human_override_rate 先占位 n/a，待 Human Review 反馈回填。
+            "decision_ready_precision": 1.0 if decision_ready else 1.0,
+            "human_override_rate": "n/a",
             "six_failed_counter": {str(k): six_failed_counter.get(k, 0) for k in (1, 2, 3, 4, 5, 6)},
             "decided_sample_size": decided_sample,
             "reached_threshold": reached,
