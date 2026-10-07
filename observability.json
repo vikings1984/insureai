@@ -1,30 +1,29 @@
 {
   "version": "1.0",
-  "generated_at": "2026-10-07T04:02:04+00:00",
-  "commit": "473ebbfa0363",
+  "generated_at": "2026-10-07T05:46:45+00:00",
+  "commit": "5c80d6fbef5e",
   "overall": {
     "status": "degraded",
-    "score": 0.6,
+    "score": 0.7,
     "critical_count": 0,
-    "warning_count": 4,
+    "warning_count": 3,
     "reasons": [
       "16 个信源可用性低于 0.5: 中国银行保险资产管理业协会, 众安保险, 保险资管协会, 地方银保监局, 太保寿险",
       "104 个信源新鲜度低于 0.2",
-      "待复核积压 100 条，超过阈值 50",
-      "下游 CE 联动缺失：review 98/100"
+      "待复核积压 100 条，超过阈值 50"
     ]
   },
   "sections": {
     "quality": {
       "status": "healthy",
-      "commit": "48fc9e460f21",
-      "when": "2026-10-07T01:40:57+00:00",
+      "commit": "5c80d6fbef5e",
+      "when": "2026-10-07T05:46:43+00:00",
       "macro_quality": 1.0,
       "safety_pass": true,
       "event_false_merge_rate": 0.0,
       "split_false_split_rate": 0.0,
       "single_source_false_cross_check_rate": 0.0,
-      "records": 9
+      "records": 10
     },
     "pipeline": {
       "status": "healthy",
@@ -37,11 +36,11 @@
     },
     "run": {
       "status": "healthy",
-      "run_id": "run_20261006_221915_474c38",
-      "build_sha": "69dd99eea88644b92379474f43b6ed81f4047ffa",
+      "run_id": "run_20261007_040236_feeaf2",
+      "build_sha": "473ebbfa0363f6824481fe528b5c034cf7c28891",
       "engine_version": "4.2",
-      "started_at": "2026-10-06T22:19:15.526130+00:00",
-      "ended_at": "2026-10-06T22:19:17.724519+00:00",
+      "started_at": "2026-10-07T04:02:36.961400+00:00",
+      "ended_at": "2026-10-07T04:02:39.441005+00:00",
       "failed_stage": null
     },
     "sources": {
@@ -193,6 +192,7 @@
       "tracked_items": 113,
       "pending": 100,
       "aging": {
+        "basis": "review_state",
         "buckets": {
           "0_1": 113,
           "1_3": 0,
@@ -201,7 +201,8 @@
         },
         "max_age_days": 0,
         "stale_7plus": 0,
-        "note": "只读指标；不自动 defer/关闭 pending 项"
+        "queue_items": 100,
+        "note": "只读指标；分母为 review_state 的pending（与 compression 的 review_queue 分母不同）；不自动 defer/关闭 pending 项"
       },
       "compression": {
         "tiers": {
@@ -210,7 +211,11 @@
           "relevant": 13,
           "noise": 65
         },
+        "basis": "review_queue",
         "total_pending": 100,
+        "queue_items": 100,
+        "state_tracked": 113,
+        "stale_state_entries": 13,
         "daily_human_load": 22,
         "compression_ratio": 0.78,
         "thresholds": {
@@ -227,8 +232,8 @@
       }
     },
     "ce_linkage": {
-      "status": "degraded",
-      "ce_pool_size": 2620,
+      "status": "healthy",
+      "ce_pool_size": 2622,
       "surfaces": {
         "decision": {
           "total": 80,
@@ -242,11 +247,11 @@
         },
         "review": {
           "total": 100,
-          "linked": 98,
-          "ratio": 0.98
+          "linked": 100,
+          "ratio": 1.0
         }
       },
-      "unresolved_review_event_ids": 2
+      "unresolved_review_event_ids": 0
     },
     "source_degrade": {
       "status": "degraded",
@@ -395,11 +400,6 @@
       "severity": "warning",
       "code": "REVIEW_BACKLOG",
       "message": "待复核积压 100 条，超过阈值 50"
-    },
-    {
-      "severity": "warning",
-      "code": "CE_LINKAGE_GAP",
-      "message": "下游 CE 联动缺失：review 98/100"
     }
   ]
 }

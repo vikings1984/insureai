@@ -187,10 +187,18 @@ def propose_merges_from_entity_threads(
     for th in entity_threads or []:
         entity = th.get("entity")
         etype = th.get("type")
-        eids = [ev.get("event_id") for ev in (th.get("events") or []) if ev.get("event_id")]
-        if not entity or len(eids) < min_shared:
+        # P0-1（第六阶段）：second_brain 实体线程事件只带 canonical_event_id（无 event_id），
+        # 原先只读 event_id 导致 eids 恒空 → 候选恒 0（recall=0）。此处两种 schema 兼容：
+        # 优先 canonical_event_id，回退 event_id。**只影响候选proposal，不执行任何合并**，
+        # 故不触碰 false_merge 硬约束（跨 domain 分区门仍在下方生效）。
+        refs = []
+        for ev in (th.get("events") or []):
+            ref = ev.get("canonical_event_id") or ev.get("event_id")
+            if ref:
+                refs.append(ref)
+        if not entity or len(refs) < min_shared:
             continue
-        cev_ids = sorted({c for c in (resolve(e, registry) for e in eids) if c})
+        cev_ids = sorted({c for c in (resolve(r, registry) for r in refs) if c})
         if len(cev_ids) < min_shared:
             continue
         # 分区门：跨 domain 共现 → 拒绝合并（各自保留 CE）
@@ -201,7 +209,7 @@ def propose_merges_from_entity_threads(
             "entity": entity,
             "type": etype,
             "canonical_ids": cev_ids,
-            "event_ids": eids,
+            "event_ids": refs,
             "domain": sorted(domains)[0] if domains else None,
             "evidence": f"实体共现（{entity} 跨 {len(cev_ids)} 个 canonical event）",
             "status": "proposed",

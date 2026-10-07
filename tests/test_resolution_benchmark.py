@@ -3,8 +3,7 @@
 
 验证：
 - build_gold 把同域实体线程组分为正例、跨域组分为负例（正例 domains 恒单域）；
-- run_benchmark 在真实数据上量化 recall 缺口：存在同域 gold 组但 resolver 0 候选 →
-  recall=0 且给出根因诊断。
+- run_benchmark 在真实数据上量化 recall：修复 P0-1 后同域组应全部被提议（recall=1.0）。
 本测试只读，不执行任何合并（不触碰 false_merge 硬约束）。
 """
 from __future__ import annotations
@@ -43,17 +42,24 @@ class TestResolutionBenchmark(unittest.TestCase):
         # 真实数据应存在同域可合并组（否则 recall 分母为 0，基准无意义）
         self.assertGreater(len(gold["positives"]), 0)
 
-    def test_real_state_quantifies_recall_gap(self):
+    def test_real_state_recall_fixed(self):
+        """P0-1 修复后：同域实体线程组应全部被提议为候选（recall>0，precision 保持 1.0）。
+
+        修复前因 propose_merges 只读 event_id（second_brain 只有 canonical_event_id）
+        导致候选恒 0、recall=0；现已兼容两种schema。
+        """
         out = rb.run_benchmark()
         self.assertTrue(out["available"])
         m = out["metrics"]
         c = out["counts"]
         # 存在应被提议的同域组
         self.assertGreater(c["gold_same_domain_groups"], 0)
-        # 当前 resolver 因字段名不匹配产出 0 候选 → recall=0，并给出根因诊断
-        self.assertEqual(c["resolver_proposals"], 0)
-        self.assertEqual(m["recall"], 0.0)
-        self.assertIsNotNone(out["diagnosis"])
+        # 修复后 resolver 必须真的提出候选
+        self.assertGreater(c["resolver_proposals"], 0)
+        # recall 应为满分（同域组全部被提议），precision 保持 1.0（不伪造跨域合并）
+        self.assertEqual(m["recall"], 1.0)
+        self.assertEqual(m["precision"], 1.0)
+        self.assertIsNone(out["diagnosis"])
 
 
 if __name__ == "__main__":

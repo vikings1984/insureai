@@ -19,13 +19,28 @@ jobs:
         with:
           python-version: '3.11'
       - name: Benchmark syntax check
-        run: python3 -m py_compile benchmark.py real_data_benchmark.py tests/test_benchmark.py tests/test_real_data_benchmark_v2.py scripts/sample_real_v2_candidates.py scripts/promote_real_v2_candidates.py
+        run: python3 -m py_compile benchmark.py real_data_benchmark.py resolution_benchmark.py semantic_change_benchmark.py decision_funnel.py identity_resolver.py tests/test_benchmark.py tests/test_real_data_benchmark_v2.py tests/test_resolution_benchmark.py tests/test_semantic_change_benchmark.py tests/test_decision_funnel_gold.py tests/test_identity_resolver_canonical_schema.py scripts/sample_real_v2_candidates.py scripts/promote_real_v2_candidates.py
       - name: Run core intelligence benchmark
         run: python3 benchmark.py
       - name: Run P1-4 real-data annotation benchmark
         run: python3 real_data_benchmark.py
       - name: Run P1-4.1 real-data annotation benchmark (v2.0 difficult samples)
         run: python3 real_data_benchmark.py --articles benchmarks/real_v2/articles.json --gold benchmarks/real_v2/gold.json --out real_benchmark_v2_results.json
+      # ===== 第六阶段 P0-4：三个业务精度 benchmark 正式进入 CI =====
+      # 此前这些 benchmark 只在本地/推送时运行，CI 不执行（评审「未收口」项）。
+      # 纪律：seed gold 阶段**只报告、不阻断**（不进 safety 硬门），待 gold_status=human_confirmed 后再议。
+      - name: Run P0-1 canonical resolution accuracy benchmark
+        if: always()
+        run: python3 resolution_benchmark.py
+      - name: Run P0-2 semantic change precision benchmark
+        if: always()
+        run: python3 semantic_change_benchmark.py
+      - name: Publish stage-6 precision benchmark summary
+        if: always()
+        run: |
+          if [ -f benchmark_results.json ]; then
+            python3 -c "import json; f=json.load(open('benchmark_results.json', encoding='utf-8')).get('funnel',{}); print('decision_ready_count=' + str(f.get('decision_ready_count'))); print('structural_precision=' + str(f.get('decision_ready_precision'))); print('gold_precision=' + str(f.get('gold_precision'))); print('gold_status=' + str(f.get('gold_status')))"
+          fi
       - name: Run benchmark regression tests
         run: python3 -m unittest tests.test_benchmark -v
       - name: Run P1-4.1 benchmark regression tests

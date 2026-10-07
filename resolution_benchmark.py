@@ -145,6 +145,14 @@ def run_benchmark(gold_path: str | None = None) -> dict:
 
 def main(argv: list[str]) -> int:
     out = run_benchmark()
+    # 始终落盘报告（CI 可读、可审计；第六阶段 P0-4）
+    try:
+        with open(os.path.join(HERE, "resolution_benchmark_report.json"), "w",
+                  encoding="utf-8") as f:
+            json.dump(out, f, ensure_ascii=False, indent=2)
+            f.write("\n")
+    except OSError:
+        pass
     if "--json" in argv:
         print(json.dumps(out, ensure_ascii=False, indent=2))
         return 0

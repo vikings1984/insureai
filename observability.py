@@ -290,10 +290,12 @@ def section_modules(alerts: list[dict]) -> dict:
     }
 
 
-def compute_review_aging(state_items: dict, now=None) -> tuple[dict, int, int]:
+def compute_review_aging(state_items: dict, now=None, queue_items: int | None = None) -> tuple[dict, int, int]:
     """纯函数：按 review_state 中 pending 项的 created_at 计算账龄分桶。
 
     返回 (buckets, max_age_days, stale_7plus)。`now` 可注入以便单测。
+    口径：分母是 **review_state** 的 pending（与 compression 的 review_queue 分母不同，
+    见 P0-6 口径披露：队列会每日重建，state 会累积陈旧项）。
     """
     if now is None:
         now = datetime.now(timezone.utc)
@@ -329,20 +331,25 @@ def compute_review_aging(state_items: dict, now=None) -> tuple[dict, int, int]:
     return buckets, max_age, buckets["7_plus"]
 
 
-def compute_review_compression(items: list[dict]) -> dict:
+def compute_review_compression(items: list[dict], state_items: dict | None = None) -> dict:
     """纯函数：Review Queue 压缩分级（只读）。
 
     依据实测（100 条 pending 全在 0-1 天桶 → 非积压问题，而是「一次性产生太多需关注项」），
     本函数把 pending 复核项按「决策级 / 实质变化级 / 相关 / 噪声」分档，量化
     「每天真正需人判断 N 条」（首屏负荷）。**只做排序/呈现参考，不改变任何项状态、
     不 auto-defer。** 分档优先命中：决策级 > 实质变化级 > 相关 > 噪声。
+
+    口径（P0-6）：分母是 **review_queue** 的 pending；与 aging 的 review_state 分母不同，
+    故显式披露 state_tracked / stale_state_entries（state 有、queue 无的陈旧项）。
     """
     tiers = {"decision_required": 0, "material_change": 0, "relevant": 0, "noise": 0}
+    queue_pending = 0
     for it in items or []:
         if not isinstance(it, dict):
             continue
         if (it.get("status") or "pending") != "pending":
             continue
+        queue_pending += 1
         reasons = {r.get("type") for r in (it.get("reasons") or []) if isinstance(r, dict)}
         if reasons & COMPRESS_DECISION_REASONS:
             tiers["decision_required"] += 1
@@ -355,9 +362,17 @@ def compute_review_compression(items: list[dict]) -> dict:
             tiers["noise"] += 1
     total = sum(tiers.values())
     human_load = tiers["decision_required"] + tiers["material_change"]
+    state_pending = 0
+    if isinstance(state_items, dict):
+        state_pending = sum(1 for v in state_items.values()
+                            if isinstance(v, dict) and (v.get("status") or "pending") == "pending")
     return {
         "tiers": tiers,
+        "basis": "review_queue",
         "total_pending": total,
+        "queue_items": total,
+        "state_tracked": state_pending,
+        "stale_state_entries": max(0, state_pending - total),
         "daily_human_load": human_load,
         "compression_ratio": round(1 - (human_load / total), 4) if total else 0.0,
         "thresholds": {
@@ -389,7 +404,7 @@ def section_review(alerts: list[dict]) -> dict:
     pending = dist.get("pending", 0)
 
     # 账龄：以 review_state 中 pending 项的 created_at 为入队时刻
-    buckets, max_age, stale = compute_review_aging(state_items)
+    buckets, max_age, stale = compute_review_aging(state_items, queue_items=len(items))
 
     if pending > REVIEW_BACKLOG_MAX:
         alerts.append({
@@ -411,12 +426,15 @@ def section_review(alerts: list[dict]) -> dict:
         "tracked_items": len(state_items) if isinstance(state_items, dict) else 0,
         "pending": pending,
         "aging": {
+            "basis": "review_state",
             "buckets": buckets,
             "max_age_days": max_age,
             "stale_7plus": stale,
-            "note": "只读指标；不自动 defer/关闭 pending 项",
+            "queue_items": len(items),
+            "note": "只读指标；分母为 review_state 的pending（与 compression 的 review_queue "
+                    "分母不同）；不自动 defer/关闭 pending 项",
         },
-        "compression": compute_review_compression(items),
+        "compression": compute_review_compression(items, state_items),
     }
 
 
