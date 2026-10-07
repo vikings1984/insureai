@@ -39,7 +39,11 @@ jobs:
           ]
           for marker in required:
               assert marker in text, f'missing workflow contract marker: {marker}'
-          assert text.index('Build owner-facing risk view') < text.index('Build final analytical audit ledger')
+          # P1-7 DAG 重构后，`Build owner-facing risk view` 等节点已迁入 dag.py 声明，
+          # 不再是 daily-collect.yml 的独立 step name；此处改为断言「DAG 步骤存在 +
+          # audit ledger 紧随其后」，保持原语义（审计台账必须晚于各产物生产步骤）。
+          assert 'run: python3 dag.py run' in text, 'daily-collect 必须先跑 DAG（dag.py run）'
+          assert text.index('Build intelligence analytics (DAG)') < text.index('Build final analytical audit ledger')
           # P0-3 后整包发布取代了旧的单文件提交步骤，契约断言随之对齐新步骤名
           # （语义不变：审计台账必须先于最终提交）。
           assert text.index('Build final analytical audit ledger') < text.index('Commit atomic release bundle')
