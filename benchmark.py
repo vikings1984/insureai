@@ -180,7 +180,12 @@ def funnel_benchmark(artifact_path: Path | None = None) -> dict:
         "available": True,
         "decision_ready_count": len(dr_ceids),
         "decision_ready_precision": round(precision, 4),
-        "human_override_rate": "n/a",
+        # 真实业务精度层（P0-3，第五阶段）：由 decision_funnel 从 decision_ready_gold.json 回填；
+        # seed 阶段仅作报告维度，不进 safety 门（避免用未确认的 seed 标注卡 CI）。
+        "human_override_rate": meta.get("human_override_rate", "n/a"),
+        "gold_precision": meta.get("gold_precision", "n/a"),
+        "gold_labeled": meta.get("gold_labeled", 0),
+        "gold_status": meta.get("gold_status", "absent"),
         "false_positives": false_positives,
     }
 

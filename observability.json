@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "generated_at": "2026-10-07T00:46:55+00:00",
-  "commit": "6189ac8ebac2",
+  "generated_at": "2026-10-07T01:41:09+00:00",
+  "commit": "48fc9e460f21",
   "overall": {
     "status": "degraded",
     "score": 0.7,
@@ -16,14 +16,14 @@
   "sections": {
     "quality": {
       "status": "healthy",
-      "commit": "6189ac8ebac2",
-      "when": "2026-10-07T00:37:58+00:00",
+      "commit": "48fc9e460f21",
+      "when": "2026-10-07T01:40:57+00:00",
       "macro_quality": 1.0,
       "safety_pass": true,
       "event_false_merge_rate": 0.0,
       "split_false_split_rate": 0.0,
       "single_source_false_cross_check_rate": 0.0,
-      "records": 8
+      "records": 9
     },
     "pipeline": {
       "status": "healthy",
@@ -201,6 +201,28 @@
         "max_age_days": 0,
         "stale_7plus": 0,
         "note": "只读指标；不自动 defer/关闭 pending 项"
+      },
+      "compression": {
+        "tiers": {
+          "decision_required": 20,
+          "material_change": 13,
+          "relevant": 13,
+          "noise": 54
+        },
+        "total_pending": 100,
+        "daily_human_load": 33,
+        "compression_ratio": 0.67,
+        "thresholds": {
+          "decision_reasons": [
+            "claim_conflict",
+            "conflict"
+          ],
+          "material_reasons": [
+            "change_impact"
+          ],
+          "relevant_priority": 50
+        },
+        "note": "只读压缩分级（排序/呈现用）；不 auto-defer、不改变任何项状态"
       }
     },
     "ce_linkage": {
@@ -230,7 +252,8 @@
       "key_relevance_min": 0.8,
       "excluded_keyword_count": 12,
       "suggestion_count": 11,
-      "note": "只读建议清单；不自动降权/暂停任何信源，需人工拍板后执行",
+      "confirmed_count": 0,
+      "note": "只读建议清单 + 人工确认状态；不自动降权/暂停任何信源，需人工拍板后执行",
       "suggestions": [
         {
           "source": "平安人寿",
@@ -240,7 +263,8 @@
           "reasons": [
             "availability=0.0<0.5",
             "freshness=0.0<0.2"
-          ]
+          ],
+          "status": "suggested"
         },
         {
           "source": "众安保险",
@@ -250,7 +274,8 @@
           "reasons": [
             "availability=0.0<0.5",
             "freshness=0.0<0.2"
-          ]
+          ],
+          "status": "suggested"
         },
         {
           "source": "泰康在线",
@@ -260,7 +285,8 @@
           "reasons": [
             "availability=0.0<0.5",
             "freshness=0.0<0.2"
-          ]
+          ],
+          "status": "suggested"
         },
         {
           "source": "行业观察",
@@ -270,7 +296,8 @@
           "reasons": [
             "availability=0.0<0.5",
             "freshness=0.0<0.2"
-          ]
+          ],
+          "status": "suggested"
         },
         {
           "source": "保险资管协会",
@@ -280,7 +307,8 @@
           "reasons": [
             "availability=0.0<0.5",
             "freshness=0.0<0.2"
-          ]
+          ],
+          "status": "suggested"
         },
         {
           "source": "清华大学",
@@ -290,7 +318,8 @@
           "reasons": [
             "availability=0.0<0.5",
             "freshness=0.0<0.2"
-          ]
+          ],
+          "status": "suggested"
         },
         {
           "source": "最高人民法院",
@@ -300,7 +329,8 @@
           "reasons": [
             "availability=0.0<0.5",
             "freshness=0.0<0.2"
-          ]
+          ],
+          "status": "suggested"
         },
         {
           "source": "太保寿险",
@@ -310,7 +340,8 @@
           "reasons": [
             "availability=0.0<0.5",
             "freshness=0.0<0.2"
-          ]
+          ],
+          "status": "suggested"
         },
         {
           "source": "中国银行保险资产管理业协会",
@@ -320,7 +351,8 @@
           "reasons": [
             "availability=0.0<0.5",
             "freshness=0.0<0.2"
-          ]
+          ],
+          "status": "suggested"
         },
         {
           "source": "诉责论谈",
@@ -330,7 +362,8 @@
           "reasons": [
             "availability=0.0<0.5",
             "freshness=0.0<0.2"
-          ]
+          ],
+          "status": "suggested"
         },
         {
           "source": "审判研究",
@@ -340,7 +373,8 @@
           "reasons": [
             "availability=0.0<0.5",
             "freshness=0.0<0.2"
-          ]
+          ],
+          "status": "suggested"
         }
       ]
     }

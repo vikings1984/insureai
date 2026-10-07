@@ -56,6 +56,12 @@ REGULATORY_KEYWORDS = ("监管", "银保监", "金融监督", "证监会", "人�
                        "财政部", "交易所", "国资委", "统计局", "国务院", "总局")
 SLOW_NODE_SEC = 60.0
 
+# —— Review Queue 压缩分级（P1-2，第五阶段；只读，不 auto-defer）——
+# 与 decision_funnel.CONFLICT_REASONS 对齐：conflict/claim_conflict = 直接指向需人工裁决。
+COMPRESS_DECISION_REASONS = {"conflict", "claim_conflict"}
+COMPRESS_MATERIAL_REASONS = {"change_impact"}
+COMPRESS_RELEVANT_PRIORITY = 50
+
 SEVERITY_CRITICAL = "critical"
 SEVERITY_WARNING = "warning"
 
@@ -323,6 +329,46 @@ def compute_review_aging(state_items: dict, now=None) -> tuple[dict, int, int]:
     return buckets, max_age, buckets["7_plus"]
 
 
+def compute_review_compression(items: list[dict]) -> dict:
+    """纯函数：Review Queue 压缩分级（只读）。
+
+    依据实测（100 条 pending 全在 0-1 天桶 → 非积压问题，而是「一次性产生太多需关注项」），
+    本函数把 pending 复核项按「决策级 / 实质变化级 / 相关 / 噪声」分档，量化
+    「每天真正需人判断 N 条」（首屏负荷）。**只做排序/呈现参考，不改变任何项状态、
+    不 auto-defer。** 分档优先命中：决策级 > 实质变化级 > 相关 > 噪声。
+    """
+    tiers = {"decision_required": 0, "material_change": 0, "relevant": 0, "noise": 0}
+    for it in items or []:
+        if not isinstance(it, dict):
+            continue
+        if (it.get("status") or "pending") != "pending":
+            continue
+        reasons = {r.get("type") for r in (it.get("reasons") or []) if isinstance(r, dict)}
+        if reasons & COMPRESS_DECISION_REASONS:
+            tiers["decision_required"] += 1
+        elif (reasons & COMPRESS_MATERIAL_REASONS) or it.get("change_impact") is not None:
+            tiers["material_change"] += 1
+        elif (_f(it.get("priority")) >= COMPRESS_RELEVANT_PRIORITY
+              or it.get("trust_level") == "high"):
+            tiers["relevant"] += 1
+        else:
+            tiers["noise"] += 1
+    total = sum(tiers.values())
+    human_load = tiers["decision_required"] + tiers["material_change"]
+    return {
+        "tiers": tiers,
+        "total_pending": total,
+        "daily_human_load": human_load,
+        "compression_ratio": round(1 - (human_load / total), 4) if total else 0.0,
+        "thresholds": {
+            "decision_reasons": sorted(COMPRESS_DECISION_REASONS),
+            "material_reasons": sorted(COMPRESS_MATERIAL_REASONS),
+            "relevant_priority": COMPRESS_RELEVANT_PRIORITY,
+        },
+        "note": "只读压缩分级（排序/呈现用）；不 auto-defer、不改变任何项状态",
+    }
+
+
 def section_review(alerts: list[dict]) -> dict:
     """人工复核域：P1-4 状态机分布 + 队列积压 + 积压账龄（P1-B，只读）。
 
@@ -370,6 +416,7 @@ def section_review(alerts: list[dict]) -> dict:
             "stale_7plus": stale,
             "note": "只读指标；不自动 defer/关闭 pending 项",
         },
+        "compression": compute_review_compression(items),
     }
 
 
@@ -481,6 +528,15 @@ def section_source_degrade(alerts: list[dict]) -> dict:
     if not isinstance(sh, dict) or not sh:
         return {"status": "unavailable", "suggestions": []}
 
+    # 人工确认台账（P2）：读取 source_degrade_ledger.json，把每条建议的最新人工动作
+    # 标注为 status（suggested/confirm/downweight/suspend/reject/recover）。只读呈现，
+    # 绝不据此自动改写 data.json 或暂停信源。
+    ledger = _read_json("source_degrade_ledger.json") or {}
+    latest: dict[str, str] = {}
+    for act in (ledger.get("actions") or []):
+        if isinstance(act, dict) and act.get("source"):
+            latest[act["source"]] = act.get("action", "suggested")
+
     suggestions = []
     for name, v in sh.items():
         if not isinstance(v, dict):
@@ -505,6 +561,7 @@ def section_source_degrade(alerts: list[dict]) -> dict:
             "freshness": fresh,
             "insurance_relevance": rel,
             "reasons": reasons,
+            "status": latest.get(name, "suggested"),
         })
 
     suggestions.sort(key=lambda s: (s["insurance_relevance"], s["freshness"]))
@@ -513,7 +570,8 @@ def section_source_degrade(alerts: list[dict]) -> dict:
         "key_relevance_min": KEY_RELEVANCE_MIN,
         "excluded_keyword_count": len(REGULATORY_KEYWORDS),
         "suggestion_count": len(suggestions),
-        "note": "只读建议清单；不自动降权/暂停任何信源，需人工拍板后执行",
+        "confirmed_count": sum(1 for s in suggestions if s["status"] != "suggested"),
+        "note": "只读建议清单 + 人工确认状态；不自动降权/暂停任何信源，需人工拍板后执行",
         "suggestions": suggestions,
     }
 

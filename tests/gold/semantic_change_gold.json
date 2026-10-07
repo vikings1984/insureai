@@ -1,0 +1,18 @@
+{
+  "version": "1.0",
+  "status": "seed",
+  "source": "seed_synthetic",
+  "note": "P0-2 Semantic Change 人工 gold（seed 合成场景，待人工补充真实生产多日样本）。每个 day 描述某 CE 当日状态（stage/evidence/trust/status）；expect_change=true 表示「相对前一日确有应被检出的实质变化」，expect_types 为应产出的 change 告警类型。Day1 为 seed（无 baseline，按设计不产 change，不计入指标）。人工可基于真实生产多日样本持续追加 scenarios。",
+  "scenarios": [
+    {
+      "name": "acquisition_progression",
+      "days": [
+        {"day": 1, "ceid": "cev_A", "eid": "evt_A", "stage": "rumor", "evidence": 1, "trust": 70, "expect_change": false, "expect_types": []},
+        {"day": 2, "ceid": "cev_A", "eid": "evt_A", "stage": "negotiation", "evidence": 1, "trust": 70, "expect_change": true, "expect_types": ["EVENT_STAGE_CHANGED"]},
+        {"day": 3, "ceid": "cev_A", "eid": "evt_A", "stage": "negotiation", "evidence": 3, "trust": 70, "expect_change": true, "expect_types": ["EVENT_MATERIAL_CHANGED"]},
+        {"day": 4, "ceid": "cev_A", "eid": "evt_A", "stage": "agreement", "evidence": 3, "trust": 70, "expect_change": true, "expect_types": ["EVENT_STAGE_CHANGED"]},
+        {"day": 5, "ceid": "cev_A", "eid": "evt_A", "stage": "agreement", "evidence": 3, "trust": 70, "expect_change": false, "expect_types": []}
+      ]
+    }
+  ]
+}

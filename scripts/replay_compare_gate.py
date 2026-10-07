@@ -3,8 +3,10 @@
 """P1-A Replay 发布门（Event OS 第四阶段「生产验证」）。
 
 把 ``replay_framework`` 的「重放 + 比对」接入 DAG 流水线，作为一道发布门：
-在**观察期（trial）内**发现回归只写报告、打印 warning、exit 0（不阻断流水线）；
-观察期结束后回归直接 fail-closed（exit 1），成为真正的发布硬门。
+在**观察期（trial）内**发现回归或重放失败只写报告、打印 warning、exit 0（不阻断流水线）；
+观察期结束后「回归」与「重放失败（代码/回归错误）」都直接 fail-closed（exit 1），成为真正的
+发布硬门——落实「不能证明没回归 ≠ 可发布」。唯一豁免：数据不可达（data.json 缺失等基础
+设施抖动）时重放失败始终 warn-only，避免数据临时不可用误伤发布。
 
 观察期截止由 ``REPLAY_GATE_ENFORCE_FROM`` 控制：当前日期 < 该日期 → trial（warn-only）；
 否则 → enforced（fail-closed）。落地默认值 2026-10-14（相对实施日 2026-10-07 约一周），
@@ -57,17 +59,23 @@ def _load_rf():
     return rf
 
 
-def decide(trial: bool, regression: bool, replay_ok: bool) -> tuple[int, str]:
+def decide(trial: bool, regression: bool, replay_ok: bool,
+           data_unavailable: bool = False) -> tuple[int, str]:
     """纯判定函数（便于单测）：返回 (exit_code, gating_label)。
 
-    - replay 执行本身失败：无论观察期与否都不直接 fail-closed（避免生产数据抖动误杀发布），
-      仅以 warning 报告；
+    P1-1 fail-closed 修正（第五阶段）：落实「不能证明没回归 ≠ 可发布」。
+
+    - replay 失败 + 数据不可达（data.json 缺失等基础设施抖动）：始终 warn-only，
+      不因数据临时不可用误伤发布；
+    - replay 失败（代码/回归错误）：观察期内 warn-only；观察期后 fail-closed（exit 1）；
     - 观察期内检测到回归：warn-only（exit 0）；
     - 观察期后检测到回归：fail-closed（exit 1）；
     - 无回归：exit 0。
     """
     if not replay_ok:
-        return 0, "warn"
+        if data_unavailable:
+            return 0, "warn"
+        return (0, "warn") if trial else (1, "enforce")
     if regression:
         return (0, "warn") if trial else (1, "enforce")
     return 0, "ok"
@@ -86,7 +94,8 @@ def main(argv: list[str]) -> int:
         except Exception as e:  # noqa: BLE001
             print(f"[replay_gate] 基线播种失败：{e}", file=sys.stderr)
 
-    # 2) 跑重放
+    # 2) 跑重放（P1-1：区分「数据不可达」与「代码/回归错误」）
+    data_unavailable = not os.path.exists(os.path.join(ROOT, "data.json"))
     replay_ok = True
     try:
         rf.save_result(rf.build_document(rf.execute_replay()))
@@ -103,13 +112,14 @@ def main(argv: list[str]) -> int:
     regression = bool(cmp.get("regression"))
 
     # 4) 判定
-    exit_code, gating = decide(trial, regression, replay_ok)
+    exit_code, gating = decide(trial, regression, replay_ok, data_unavailable)
     report = {
-        "version": "1.0",
+        "version": "1.1",
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "mode": mode,
         "gating": gating,
         "replay_ok": replay_ok,
+        "data_unavailable": data_unavailable,
         "regression": regression,
         "enforce_from": REPLAY_GATE_ENFORCE_FROM,
         "compare": cmp,
@@ -119,8 +129,15 @@ def main(argv: list[str]) -> int:
         f.write("\n")
 
     if not replay_ok:
-        print("[replay_gate][WARN] 重放执行失败，观察期/硬门均不阻断（需人工排查重放管线）",
-              file=sys.stderr)
+        if data_unavailable:
+            print("[replay_gate][WARN] 重放失败（数据不可达 data.json 缺失），豁免不阻断发布",
+                  file=sys.stderr)
+        elif trial:
+            print("[replay_gate][WARN] 重放执行失败（观察期内不阻断，需人工排查重放管线）",
+                  file=sys.stderr)
+        else:
+            print("[replay_gate][FAIL] 重放执行失败（观察期后 fail-closed：无法证明无回归）",
+                  file=sys.stderr)
     elif regression:
         if trial:
             print(f"[replay_gate][WARN] 检测到 replay 回归（观察期内，不阻断发布）；"

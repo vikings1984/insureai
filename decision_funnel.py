@@ -35,6 +35,7 @@ CANONICAL = ROOT / "canonical_events.json"
 ALERTS = ROOT / "p2_alerts.json"
 STATE = ROOT / "p2_state.json"
 OUTPUT = ROOT / "decisions_pending.json"
+GOLD = ROOT / "decision_ready_gold.json"
 
 VERSION = "funnel-v1.1"
 MIN_SAMPLE = 30
@@ -218,6 +219,43 @@ def _eval_six(
     }
 
 
+def _load_gold() -> dict:
+    """载入 decision_ready 人工 gold（缺失/损坏返回空 dict，不影响漏斗主流程）。"""
+    if not GOLD.exists():
+        return {}
+    try:
+        return json.loads(GOLD.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def gold_precision_metrics(decision_ready: list[dict]) -> dict:
+    """P0-3：用人工 gold 计算 decision_ready 的真实精度指标（回填 human_override_rate）。
+
+    口径：
+    - 只统计有 gold 标注的 decision_ready 项（gold_labeled）；
+    - human_override_rate = 其中人工判定 should_decide=false 的比例（= 假决策率）；
+    - gold_precision = 1 - human_override_rate；
+    - 无 gold / 无标注时 human_override_rate="n/a"，绝不伪造精度。
+    诚实性：gold 文件自带 status/source 字段（seed=待人工确认），本函数原样透出，
+    避免把 seed 标注误当作已验证的真实人工精度。
+    """
+    gold = _load_gold()
+    labels = gold.get("labels") or {}
+    ceids = [d.get("canonical_event_id") for d in (decision_ready or [])]
+    labeled = [c for c in ceids if c in labels]
+    base = {
+        "gold_labeled": len(labeled),
+        "gold_status": gold.get("status", "absent"),
+        "gold_source": gold.get("source", "none"),
+    }
+    if not labeled:
+        return {"human_override_rate": "n/a", "gold_precision": "n/a", **base}
+    overrides = sum(1 for c in labeled if labels[c].get("should_decide") is False)
+    rate = round(overrides / len(labeled), 4)
+    return {"human_override_rate": rate, "gold_precision": round(1 - rate, 4), **base}
+
+
 def build(
     review_items: list[dict],
     ledger_entries: list[dict],
@@ -366,6 +404,9 @@ def build(
         "unblock": "Human Review 持续落 decision 后，账本样本增长、时间线收敛",
     })
 
+    # P0-3：用人工 gold 回填 decision_ready 真实精度（无 gold 时保持 "n/a"，不伪造）
+    _gold = gold_precision_metrics(decision_ready)
+
     return {
         "version": VERSION,
         "generated_at": generated_at or _now(),
@@ -384,9 +425,14 @@ def build(
             "decision_ready_ceids": [d["canonical_event_id"] for d in decision_ready[:TOP_PENDING]],
             # 精度（P0-B，第四阶段「生产验证」）：decision_ready 只在 six["met"] 时追加，
             # 故被准入项必然通过六条件且无单源监管/评级 bypass → 假阳性率为 0（vacuously 1.0）。
-            # 真实 precision 需人工 gold 标注，故 human_override_rate 先占位 n/a，待 Human Review 反馈回填。
+            # 真实 precision（P0-3，第五阶段）由人工 gold 回填 human_override_rate / gold_precision；
+            # gold 未标注时保持 "n/a"，绝不伪造精度。
             "decision_ready_precision": 1.0 if decision_ready else 1.0,
-            "human_override_rate": "n/a",
+            "human_override_rate": _gold["human_override_rate"],
+            "gold_precision": _gold["gold_precision"],
+            "gold_labeled": _gold["gold_labeled"],
+            "gold_status": _gold["gold_status"],
+            "gold_source": _gold["gold_source"],
             "six_failed_counter": {str(k): six_failed_counter.get(k, 0) for k in (1, 2, 3, 4, 5, 6)},
             "decided_sample_size": decided_sample,
             "reached_threshold": reached,

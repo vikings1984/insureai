@@ -28,12 +28,24 @@ class TestReplayGateDecide(unittest.TestCase):
     def setUp(self):
         self.gate = _load()
 
-    def test_replay_failure_never_blocks(self):
-        # replay 执行本身失败：trial / enforced 都应是 warn + exit 0
+    def test_replay_failure_in_trial_is_warn_only(self):
+        # 观察期内 replay 失败：warn-only，不阻断
         self.assertEqual(self.gate.decide(trial=True, regression=False, replay_ok=False),
                          (0, "warn"))
+
+    def test_replay_failure_after_trial_is_fail_closed(self):
+        # 观察期后 replay 失败（代码/回归错误）：fail-closed（exit 1）
         self.assertEqual(self.gate.decide(trial=False, regression=False, replay_ok=False),
-                         (0, "warn"))
+                         (1, "enforce"))
+
+    def test_replay_failure_data_unavailable_always_warn(self):
+        # 数据不可达豁免：任何模式都 warn-only，不误伤发布
+        self.assertEqual(
+            self.gate.decide(trial=True, regression=False, replay_ok=False,
+                             data_unavailable=True), (0, "warn"))
+        self.assertEqual(
+            self.gate.decide(trial=False, regression=False, replay_ok=False,
+                             data_unavailable=True), (0, "warn"))
 
     def test_regression_in_trial_is_warn_only(self):
         # 观察期内检测到回归：warn-only，不阻断
