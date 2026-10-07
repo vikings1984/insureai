@@ -61,6 +61,9 @@ def build_gold(threads: list[dict], registry: dict, min_shared: int = MIN_SHARED
     """从实体线程构造 gold：same-domain 组为正例，cross-domain 组为负例。
 
     线程事件用 canonical_event_id 直接关联 CE（second_brain 的真实字段）。
+    **只保留合法 CE id**（`cev_` 前缀）——若某线程事件带的是原始 event_id
+    （second_brain 少数条目如此），它尚未解析成 CE，不能进 gold，否则会与
+    proposal 的 CE 集合永不相等（表现为"漏报 + 假阳性"同时出现）。
     """
     positives: list[dict] = []   # 应被提议的同域组
     negatives: list[dict] = []   # 跨域组：分区门应拒绝
@@ -68,7 +71,7 @@ def build_gold(threads: list[dict], registry: dict, min_shared: int = MIN_SHARED
         entity = th.get("entity")
         cev_ids = sorted({ev.get("canonical_event_id")
                           for ev in (th.get("events") or [])
-                          if ev.get("canonical_event_id")})
+                          if str(ev.get("canonical_event_id") or "").startswith("cev_")})
         if not entity or len(cev_ids) < min_shared:
             continue
         domains = {d for d in (_ce_domain(c, registry) for c in cev_ids) if d}
@@ -94,7 +97,9 @@ def run_benchmark(gold_path: str | None = None) -> dict:
     proposals = ir.propose_merges_from_entity_threads(threads, registry, min_shared=MIN_SHARED)
     prop_sets = [set(p.get("canonical_ids") or []) for p in proposals]
 
-    # recall：gold 同域组是否被某个 proposal 完整覆盖
+    # recall：gold 同域组的 CE 是否被某个 proposal **完整覆盖**。
+    # 语义说明：proposal 是 resolver 的「观察」，可以更宽（多含同实体线程里其他 CE）；
+    # 只要覆盖 gold 组即算召回——**不要求集合完全相等**，否则数据增长会假报漏报。
     tp = 0
     fn_groups = []
     for g in gold["positives"]:
@@ -103,10 +108,11 @@ def run_benchmark(gold_path: str | None = None) -> dict:
             tp += 1
         else:
             fn_groups.append(g)
-    # precision：proposal 是否对应到某个 gold 同域组（子集覆盖）
+    # precision：proposal 是否**对应到某个 gold 同域组**——即它与某个 gold 组有交集
+    # （同一实体的多个 proposal 不应彼此算作假阳性）。仅当与所有 gold 组都无交集时算假阳性。
     fp_props = []
     for p, ps in zip(proposals, prop_sets):
-        if not any(ps and ps <= set(g["cev_ids"]) for g in gold["positives"]):
+        if not any(ps & set(g["cev_ids"]) for g in gold["positives"]):
             fp_props.append(p)
 
     fn = len(fn_groups)
