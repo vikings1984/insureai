@@ -84,6 +84,65 @@ def build_gold(threads: list[dict], registry: dict, min_shared: int = MIN_SHARED
     return {"positives": positives, "negatives": negatives}
 
 
+def evaluate_human_gold() -> dict:
+    """用**人工 gold**（经 gold_ce_bridge 桥接为 CE 对）评估 resolver —— 不再自证。
+
+    `derived_from_entity_threads` 与resolver 同源（gold 由 resolver 用的同一份线程派生），
+    因此 derived 指标只能证明"实现自洽"，**不能证明对真实事件归并正确**。
+    本函数改用 `benchmarks/real_v2/gold_real.json`（人工 promoted、`validated`）的
+    same/different article 对，经桥接后在 **CE 粒度**上评估：
+
+    - same 对：两CE 应被合并到同组 → resolver 是否把它们放进同一 proposal（同组）；
+    - different 对：两 CE 不应被合到一起 → 检查是否有 proposal 同时包含两者（= 误合并）。
+
+    诚实性：
+    - 人工 gold 规模小（当前 9 same / 151 different），**样本不足时明确标注**，
+      不把小数点后的比例包装成"高精度"；
+    - `derived` 指标与 `human` 指标**并列输出**，不混为一谈。
+    """
+    try:
+        import gold_ce_bridge as gb
+    except Exception:
+        return {"available": False, "note": "gold_ce_bridge 不可用"}
+    br = gb.bridge()
+    m = br.get("meta") or {}
+    same_pairs = br.get("same_event_pairs_ce") or []
+    diff_pairs = br.get("different_event_pairs_ce") or []
+    if not same_pairs and not diff_pairs:
+        return {"available": False, "note": "人工 gold 未能桥接出任何 CE 对"}
+
+    threads = (_load_json(SECOND_BRAIN) or {}).get("entity_threads") or []
+    proposals = ir.propose_merges_from_entity_threads(threads, ir.load_registry(),
+                                                      min_shared=MIN_SHARED)
+    prop_sets = [set(p.get("canonical_ids") or []) for p in proposals]
+
+    # same 对：是否被某 proposal 归入同组
+    same_hit = 0
+    for a, b in same_pairs:
+        if any({a, b} <= ps for ps in prop_sets):
+            same_hit += 1
+    # different 对：是否有 proposal 把两者错误合到一起（误合并 = 安全事故）
+    wrong_merges = sum(1 for a, b in diff_pairs if any(a in ps and b in ps for ps in prop_sets))
+
+    return {
+        "available": True,
+        "gold_source": m.get("gold_source"),
+        "gold_status": "human_validated" if m.get("gold_source") == "validated" else m.get("gold_source"),
+        "counts": {
+            "same_pairs": len(same_pairs),
+            "different_pairs": len(diff_pairs),
+            "same_hit": same_hit,
+            "wrong_merges": wrong_merges,
+            "skipped": m.get("skipped_same", 0) + m.get("skipped_different", 0),
+        },
+        "same_pair_agreement": round(same_hit / len(same_pairs), 4) if same_pairs else None,
+        "wrong_merge_rate": round(wrong_merges / len(diff_pairs), 4) if diff_pairs else None,
+        "sample_sufficient": False,   # same 对仅个位数，样本不足，不下结论
+        "note": "人工 gold（article 级→CE 级桥接）。same 对样本量小，仅供参考；"
+                "wrong_merge_rate 应恒为 0（任何误合并都是安全事故）。",
+    }
+
+
 def run_benchmark(gold_path: str | None = None) -> dict:
     registry = ir.load_registry()
     sb = _load_json(SECOND_BRAIN) or {}
@@ -145,6 +204,8 @@ def run_benchmark(gold_path: str | None = None) -> dict:
         "missed_groups": fn_groups[:10],
         "false_proposals": fp_props[:10],
         "diagnosis": diagnosis,
+        # 人工 gold 维度（与 derived 并列，不混为一谈）——见 evaluate_human_gold()
+        "human_gold": evaluate_human_gold(),
     }
     return out
 
