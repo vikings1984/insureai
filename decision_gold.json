@@ -1,0 +1,36 @@
+{
+  "version": "decision-gold-v1.0",
+  "generated_at": "2026-10-09T13:42:55+00:00",
+  "principle": "一次人力两产出：登记 outcome 时顺带记录决策质量判断。gold 标签**只来自人工**，未填=未知（不推断）；本模块不改任何业务状态。",
+  "meta": {
+    "labeled_samples": 0,
+    "per_field_counts": {
+      "decision_was_right": 0,
+      "action_was_right": 0,
+      "urgency_regret": 0
+    },
+    "min_sample": 30,
+    "concluded": false,
+    "auto_action_enabled": false,
+    "note": "样本达 30 条后decision/action/urgency 三个维度才有结论意义"
+  },
+  "metrics": {
+    "decision_precision": null,
+    "action_precision": null,
+    "urgency_regret_counts": {
+      "none": 0,
+      "should_not_act": 0,
+      "too_early": 0,
+      "too_late": 0
+    }
+  },
+  "items": [],
+  "open_questions": [
+    {
+      "dimension": "决策 gold 样本量",
+      "status": "awaiting_human_input",
+      "reason": "0/30 条已带 gold 标注",
+      "unblock": "用 scripts/decision_outcome_capture.py outcome --right-decision ... 登记"
+    }
+  ]
+}

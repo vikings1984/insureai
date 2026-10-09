@@ -105,6 +105,15 @@ def main(argv: list[str]) -> int:
         fb = _flag("--feedback")
         if fb:
             row["feedback"] = fb
+        # —— 一次人力两产出：顺带记录决策质量 gold（B 方案）——
+        # 人登记 outcome 时本就持有判断，顺手记下成本极低；未填=未知，系统不推断。
+        gold_map = {"--right-decision": "decision_was_right",
+                    "--right-action": "action_was_right",
+                    "--urgency-regret": "urgency_regret"}
+        for flag, field in gold_map.items():
+            val = _flag(flag)
+            if val:
+                row[field] = val
 
     with open(do.INPUT, "w", encoding="utf-8") as f:
         json.dump(doc, f, ensure_ascii=False, indent=2)
