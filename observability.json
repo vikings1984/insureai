@@ -1,15 +1,15 @@
 {
   "version": "1.0",
-  "generated_at": "2026-10-09T14:02:34+00:00",
-  "commit": "4ba08fb93d03",
+  "generated_at": "2026-10-09T22:18:07+00:00",
+  "commit": "588b03970858",
   "overall": {
     "status": "degraded",
     "score": 0.7,
     "critical_count": 0,
     "warning_count": 3,
     "reasons": [
-      "16 个信源可用性低于 0.5: 中国银行保险资产管理业协会, 众安保险, 保险资管协会, 地方银保监局, 太保寿险",
-      "104 个信源新鲜度低于 0.2",
+      "15 个信源可用性低于 0.5: 中国银行保险资产管理业协会, 众安保险, 保险资管协会, 地方银保监局, 太保寿险",
+      "107 个信源新鲜度低于 0.2",
       "待复核积压 100 条，超过阈值 50"
     ]
   },
@@ -31,23 +31,23 @@
       "node_count": 35,
       "failed_nodes": [],
       "slow_nodes": [],
-      "total_duration_sec": 28.167,
-      "run_at": "2026-10-09T14:00:32+00:00"
+      "total_duration_sec": 27.501,
+      "run_at": "2026-10-09T22:16:16+00:00"
     },
     "run": {
       "status": "healthy",
-      "run_id": "run_20261007_123934_4b2e29",
-      "build_sha": "e707dee3528ccf596d43d85359a4574ecb0b4cbe",
+      "run_id": "run_20261009_140236_1b7435",
+      "build_sha": "4ba08fb93d03cd06375897fb4fdc5903adc9416a",
       "engine_version": "4.2",
-      "started_at": "2026-10-07T12:39:34.705570+00:00",
-      "ended_at": "2026-10-07T12:39:37.284383+00:00",
+      "started_at": "2026-10-09T14:02:36.435565+00:00",
+      "ended_at": "2026-10-09T14:02:39.029496+00:00",
       "failed_stage": null
     },
     "sources": {
       "status": "degraded",
-      "source_count": 221,
-      "avg_availability": 0.9276,
-      "avg_freshness": 0.3181,
+      "source_count": 224,
+      "avg_availability": 0.933,
+      "avg_freshness": 0.3182,
       "low_availability": [
         "中国银行保险资产管理业协会",
         "众安保险",
@@ -60,7 +60,6 @@
         "泰康在线",
         "清华大学",
         "行业观察",
-        "诉责论谈",
         "财政部官网",
         "金融监管总局",
         "银保监会",
@@ -121,11 +120,13 @@
         "常州求职",
         "平安人寿",
         "广州日报",
+        "建行投行",
         "徐水人社",
         "微信公众号搜索",
         "成都人社局",
         "搜狗资讯搜索",
         "文文爷爷",
+        "新华保险陕西分公司",
         "新华每日电讯",
         "新华网",
         "旧小区改造",
@@ -159,6 +160,7 @@
         "行走在退休的路上",
         "诉责论谈",
         "财政部官网",
+        "财视",
         "赢在寿险",
         "车车号外",
         "金融博览财富杂志",
@@ -184,22 +186,22 @@
     },
     "review": {
       "status": "degraded",
-      "queue_generated_count": 344,
+      "queue_generated_count": 322,
       "queue_items": 100,
       "queue_status_distribution": {
         "pending": 100
       },
-      "tracked_items": 166,
+      "tracked_items": 177,
       "pending": 100,
       "aging": {
         "basis": "review_state",
         "buckets": {
-          "0_1": 40,
+          "0_1": 51,
           "1_3": 126,
           "3_7": 0,
           "7_plus": 0
         },
-        "max_age_days": 2,
+        "max_age_days": 3,
         "stale_7plus": 0,
         "queue_items": 100,
         "note": "只读指标；分母为 review_state 的pending（与 compression 的 review_queue 分母不同）；不自动 defer/关闭 pending 项"
@@ -207,17 +209,17 @@
       "compression": {
         "tiers": {
           "decision_required": 20,
-          "material_change": 38,
+          "material_change": 11,
           "relevant": 15,
-          "noise": 27
+          "noise": 54
         },
         "basis": "review_queue",
         "total_pending": 100,
         "queue_items": 100,
-        "state_tracked": 166,
-        "stale_state_entries": 66,
-        "daily_human_load": 58,
-        "compression_ratio": 0.42,
+        "state_tracked": 177,
+        "stale_state_entries": 77,
+        "daily_human_load": 31,
+        "compression_ratio": 0.69,
         "thresholds": {
           "decision_reasons": [
             "claim_conflict",
@@ -233,7 +235,7 @@
     },
     "ce_linkage": {
       "status": "healthy",
-      "ce_pool_size": 2672,
+      "ce_pool_size": 2682,
       "surfaces": {
         "decision": {
           "total": 78,
@@ -257,7 +259,7 @@
       "status": "degraded",
       "key_relevance_min": 0.8,
       "excluded_keyword_count": 12,
-      "suggestion_count": 11,
+      "suggestion_count": 10,
       "confirmed_count": 0,
       "note": "只读建议清单 + 人工确认状态；不自动降权/暂停任何信源，需人工拍板后执行",
       "suggestions": [
@@ -361,17 +363,6 @@
           "status": "suggested"
         },
         {
-          "source": "诉责论谈",
-          "availability": 0.0,
-          "freshness": 0.0,
-          "insurance_relevance": 0.0,
-          "reasons": [
-            "availability=0.0<0.5",
-            "freshness=0.0<0.2"
-          ],
-          "status": "suggested"
-        },
-        {
           "source": "审判研究",
           "availability": 0.0,
           "freshness": 0.0,
@@ -389,12 +380,12 @@
     {
       "severity": "warning",
       "code": "SOURCE_LOW_AVAILABILITY",
-      "message": "16 个信源可用性低于 0.5: 中国银行保险资产管理业协会, 众安保险, 保险资管协会, 地方银保监局, 太保寿险"
+      "message": "15 个信源可用性低于 0.5: 中国银行保险资产管理业协会, 众安保险, 保险资管协会, 地方银保监局, 太保寿险"
     },
     {
       "severity": "warning",
       "code": "SOURCE_STALE",
-      "message": "104 个信源新鲜度低于 0.2"
+      "message": "107 个信源新鲜度低于 0.2"
     },
     {
       "severity": "warning",

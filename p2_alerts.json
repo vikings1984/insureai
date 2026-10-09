@@ -1,12 +1,12 @@
 {
   "version": "alert-v1.1",
-  "generated_at": "2026-10-09T14:02:32Z",
+  "generated_at": "2026-10-09T22:18:05Z",
   "principle": "两层收敛：Internal Diff（事实）→ Semantic Alert（≤8 条聚合）；两层准入（T1 系统级监管 / T2 个人级 Watch / T3 标准）；NEW_SOURCE/NEW_EVIDENCE 留内部、delta 不伪造、首跑仅种子、告警不改写业务判断",
   "meta": {
-    "total_events": 2672,
+    "total_events": 2682,
     "baseline_present": true,
     "basis": "delta_vs_baseline",
-    "internal_diff_count": 4,
+    "internal_diff_count": 1,
     "alert_count": 8,
     "max_alerts": 8,
     "alert_type_counts": {
@@ -24,54 +24,20 @@
   },
   "internal_diffs": [
     {
-      "canonical_event_id": "cev_7380d6ed039b",
-      "event_id": "evt_083f21f9623f",
-      "title": "加拿大皇家银行分析师预计，定价压力和较高的CAT损失将在26年第二季度对美国保险公司造成压力",
-      "topic": "capital_reinsurance",
+      "canonical_event_id": "cev_eefa8e5cb766",
+      "event_id": "evt_a96306e2d85f",
+      "title": "金融监管总局发布《财产保险公司保险产品开发管理规定》",
+      "topic": "regulatory_change",
       "changes": [
         {
-          "field": "decision_urgency",
-          "old": "watch",
-          "new": null
-        }
-      ]
-    },
-    {
-      "canonical_event_id": "cev_6f72622d8079",
-      "event_id": "evt_f546e75a4e89",
-      "title": "战略适应性、更快的决策是未来再保险领导者的关键：安永",
-      "topic": "capital_reinsurance",
-      "changes": [
+          "field": "trust_score",
+          "old": 67,
+          "new": 78
+        },
         {
-          "field": "decision_urgency",
-          "old": "watch",
-          "new": null
-        }
-      ]
-    },
-    {
-      "canonical_event_id": "cev_ca332a4acd19",
-      "event_id": "evt_dd38c6f5f6c9",
-      "title": "笛卡尔与忠意集团续签战略参数合作伙伴关系",
-      "topic": "climate_catastrophe",
-      "changes": [
-        {
-          "field": "decision_urgency",
-          "old": null,
-          "new": "now"
-        }
-      ]
-    },
-    {
-      "canonical_event_id": "cev_e6344663deac",
-      "event_id": "evt_68f62ee142eb",
-      "title": "农业保险需织起更密安全网",
-      "topic": "climate_catastrophe",
-      "changes": [
-        {
-          "field": "decision_urgency",
-          "old": null,
-          "new": "now"
+          "field": "evidence_count",
+          "old": 1,
+          "new": 2
         }
       ]
     }
