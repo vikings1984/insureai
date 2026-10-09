@@ -116,7 +116,7 @@
     {
       "event_id": "evt_083f21f9623f",
       "status": "stable",
-      "window": 5,
+      "window": 4,
       "urgency_changes": 0,
       "meaningful_changes": 0,
       "meaningful_ratio": 0.0,
@@ -127,7 +127,29 @@
     {
       "event_id": "evt_f546e75a4e89",
       "status": "stable",
-      "window": 5,
+      "window": 4,
+      "urgency_changes": 0,
+      "meaningful_changes": 0,
+      "meaningful_ratio": 0.0,
+      "churn_rate": 0.0,
+      "oscillating": false,
+      "note": "稳定性只描述输出变化，不修改原始决策。"
+    },
+    {
+      "event_id": "evt_dd38c6f5f6c9",
+      "status": "baseline",
+      "window": 1,
+      "urgency_changes": 0,
+      "meaningful_changes": 0,
+      "meaningful_ratio": 0.0,
+      "churn_rate": 0.0,
+      "oscillating": false,
+      "note": "稳定性只描述输出变化，不修改原始决策。"
+    },
+    {
+      "event_id": "evt_68f62ee142eb",
+      "status": "baseline",
+      "window": 1,
       "urgency_changes": 0,
       "meaningful_changes": 0,
       "meaningful_ratio": 0.0,
@@ -137,8 +159,22 @@
     }
   ],
   "current_snapshot": {
-    "created_at": "2026-10-07T12:37:51.545852+00:00",
+    "created_at": "2026-10-09T14:00:50.483674+00:00",
     "decisions": [
+      {
+        "event_id": "evt_dd38c6f5f6c9",
+        "urgency": "now",
+        "trust_level": "medium",
+        "temporal_phase": "accelerating",
+        "intelligence_score": 75
+      },
+      {
+        "event_id": "evt_68f62ee142eb",
+        "urgency": "now",
+        "trust_level": "medium",
+        "temporal_phase": "accelerating",
+        "intelligence_score": 72
+      },
       {
         "event_id": "evt_92310abdea56",
         "urgency": "watch",
@@ -208,28 +244,14 @@
         "trust_level": "medium",
         "temporal_phase": "cooling",
         "intelligence_score": 85
-      },
-      {
-        "event_id": "evt_083f21f9623f",
-        "urgency": "watch",
-        "trust_level": "medium",
-        "temporal_phase": "cooling",
-        "intelligence_score": 85
-      },
-      {
-        "event_id": "evt_f546e75a4e89",
-        "urgency": "watch",
-        "trust_level": "medium",
-        "temporal_phase": "cooling",
-        "intelligence_score": 84
       }
     ]
   },
   "_provenance": {
-    "run_id": "run_20261007_123934_4b2e29",
-    "build_sha": "e707dee3528ccf596d43d85359a4574ecb0b4cbe",
+    "run_id": "run_20261009_140236_1b7435",
+    "build_sha": "4ba08fb93d03cd06375897fb4fdc5903adc9416a",
     "engine_version": "4.2",
     "schema_version": "release-provenance-v1",
-    "generated_at": "2026-10-07T12:39:35.962783+00:00"
+    "generated_at": "2026-10-09T14:02:37.805208+00:00"
   }
 }
