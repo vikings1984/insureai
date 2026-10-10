@@ -1,12 +1,12 @@
 {
   "version": "alert-v1.1",
-  "generated_at": "2026-10-09T22:18:05Z",
+  "generated_at": "2026-10-10T04:05:13Z",
   "principle": "两层收敛：Internal Diff（事实）→ Semantic Alert（≤8 条聚合）；两层准入（T1 系统级监管 / T2 个人级 Watch / T3 标准）；NEW_SOURCE/NEW_EVIDENCE 留内部、delta 不伪造、首跑仅种子、告警不改写业务判断",
   "meta": {
-    "total_events": 2682,
+    "total_events": 2683,
     "baseline_present": true,
     "basis": "delta_vs_baseline",
-    "internal_diff_count": 1,
+    "internal_diff_count": 0,
     "alert_count": 8,
     "max_alerts": 8,
     "alert_type_counts": {
@@ -22,26 +22,7 @@
     },
     "suppressed": 0
   },
-  "internal_diffs": [
-    {
-      "canonical_event_id": "cev_eefa8e5cb766",
-      "event_id": "evt_a96306e2d85f",
-      "title": "金融监管总局发布《财产保险公司保险产品开发管理规定》",
-      "topic": "regulatory_change",
-      "changes": [
-        {
-          "field": "trust_score",
-          "old": 67,
-          "new": 78
-        },
-        {
-          "field": "evidence_count",
-          "old": 1,
-          "new": 2
-        }
-      ]
-    }
-  ],
+  "internal_diffs": [],
   "semantic_alerts": [
     {
       "type": "STANDING_MATERIAL",
