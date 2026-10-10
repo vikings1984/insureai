@@ -1,11 +1,11 @@
 {
   "version": "review-decision-v1.0",
-  "generated_at": "2026-10-10T11:54:23+00:00",
+  "generated_at": "2026-10-10T16:57:08+00:00",
   "principle": "三段式收敛：分层呈现(不改状态) + 建议处置(不改状态) + 人工执行(人才改状态)。不做 auto-resolve——阈值未经人工验证，无 ground truth 时自动处置=静默漏斗。",
   "meta": {
     "queue_items": 100,
     "pending": 100,
-    "human_load": 33,
+    "human_load": 24,
     "auto_resolve_enabled": false,
     "note": "所有建议 auto_executable=False；状态变更须由 Human Review 侧人工执行"
   },
@@ -83,17 +83,6 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_42313cbf0204",
-          "title": "养老保险和个人养老金的区别",
-          "tier": "decision_required",
-          "tier_label": "需人工裁决",
-          "priority": 85,
-          "suggested_action": "human_decide",
-          "auto_executable": false,
-          "reason": "命中冲突类 reason（conflict/claim_conflict）——需人工裁决",
-          "status": "pending"
-        },
-        {
           "event_id": "evt_12caf4175365",
           "title": "AM Best 报告称，随着持续增长，美国产权保险保费到 2025 年将上涨 13%",
           "tier": "decision_required",
@@ -140,6 +129,17 @@
         {
           "event_id": "evt_40ac78061367",
           "title": "红树林推出百慕大再保险Sidecar Grove Re",
+          "tier": "decision_required",
+          "tier_label": "需人工裁决",
+          "priority": 75,
+          "suggested_action": "human_decide",
+          "auto_executable": false,
+          "reason": "命中冲突类 reason（conflict/claim_conflict）——需人工裁决",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_42313cbf0204",
+          "title": "养老保险和个人养老金的区别",
           "tier": "decision_required",
           "tier_label": "需人工裁决",
           "priority": 75,
@@ -241,12 +241,12 @@
     {
       "tier": "material_change",
       "label": "复核实质变化",
-      "count": 13,
+      "count": 4,
       "default_collapsed": false,
       "items": [
         {
-          "event_id": "evt_ce2433eea2e0",
-          "title": "人力资源社会保障部：积极开展扩大企业年金覆盖面试点 扎实推进个人养老金制度实施",
+          "event_id": "evt_c65875ce45b5",
+          "title": "贵阳养老保险个人账户咋查？别急→超全查询教程来啦！",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -256,8 +256,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_51cec3b71af5",
-          "title": "国宝人寿偿付能力持续下滑，四川国资增资近31亿救场！成立8年仅2年盈利",
+          "event_id": "evt_b7eb8cb4347e",
+          "title": "社会养老保险个人账户明细查询方法→手机电脑端操作全攻略",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -267,8 +267,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_96e3e7343575",
-          "title": "未使用备案保险费率，大家财险合计被罚76万元",
+          "event_id": "evt_857fb0761863",
+          "title": "灵活就业养老保险咋自己交？超全攻略来啦！速来收藏！",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -278,107 +278,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_926c94e752fe",
-          "title": "人力资源社会保障部：持续规范基本养老保险基金、年金基金投资运营",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_ab7010261102",
-          "title": "“保险资金是稀缺的长期资本和耐心资本” 国寿资产樊燕明谈险资服务新质生产力",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_fdc7bda1f362",
-          "title": "飓风西蒙继续加剧，墨西哥灾难债券备受关注",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_6914ca2c92a6",
-          "title": "附加险不能“单飞”了！财险产品开发规则大改，新规堵住这些漏洞",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_6c14e0e569ba",
-          "title": "保险资管产品Q3业绩反转！医药、红利逆势领跑 部分科技主题回撤逾30% 机构研判后市三大方向",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_c050faddc312",
-          "title": "首批！中国人寿这个产品入选个人养老金保险产品名单",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_dae98a720f91",
-          "title": "中国人寿西安分公司及下属机构被罚7万，涉代理人管理不到位",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_810c57a88138",
-          "title": "新能源车续保返现差异大：有车主收到近千元返现，有人投保分文不返",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_bd390ee74b24",
-          "title": "保险巨头举牌券商巨头",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_d132eaa2a47f",
-          "title": "养老保险个人账户利息，正在悄悄拉开退休金差距",
+          "event_id": "evt_65562878bcf2",
+          "title": "重磅！财险新规11月施行，附加险不能再“啥都往里装”",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -565,7 +466,7 @@
     {
       "tier": "noise",
       "label": "建议归档（低优先级 cluster）",
-      "count": 52,
+      "count": 61,
       "default_collapsed": true,
       "items": [
         {
@@ -692,6 +593,17 @@
         {
           "event_id": "evt_40a505012bd4",
           "title": "甘肃省综合巨灾保险试点工作落地，首笔理赔已完成",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_ce2433eea2e0",
+          "title": "人力资源社会保障部：积极开展扩大企业年金覆盖面试点 扎实推进个人养老金制度实施",
           "tier": "noise",
           "tier_label": "建议归档（低优先级 cluster）",
           "priority": 30,
@@ -1132,6 +1044,94 @@
         {
           "event_id": "evt_bd5d0ebd8a51",
           "title": "IUA：2025 年条约再保险占伦敦承保保费总额的 26% 多一点",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_1ea2888b5965",
+          "title": "尽管定价疲软，全球再保险行业预计仍将保持充足资本：标准普尔",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_fb5f7bbabd72",
+          "title": "网络再保险买家愿意在 1 月 1 日续保时寻求更高的分保：Marsh Re 的 Cordonnier",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_8ccf26e03152",
+          "title": "再保险保护的潜在需求持续增长：瑞士再保险",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_3196f0d1824c",
+          "title": "投资者不应将巨灾债券和私人再保险视为竞争资产类别：Bruns、LGT",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_86c0a299bc50",
+          "title": "由于利润率面临压力，再保险行业将“受控下降”：惠誉",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_680817d1c767",
+          "title": "对价值高达7个资本回报点的承销保持纪律：普华永道",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_bfab0fd0daf5",
+          "title": "观点：2027 年全球再保险定价仍将面临压力",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_712ab047fe90",
+          "title": "再保险资本增长，ILS投资者基础扩大=为客户带来更多储蓄：Aon",
           "tier": "noise",
           "tier_label": "建议归档（低优先级 cluster）",
           "priority": 30,
