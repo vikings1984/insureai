@@ -1,6 +1,6 @@
 {
   "version": "p2.5-v1.0",
-  "generated_at": "2026-10-10T04:05:11Z",
+  "generated_at": "2026-10-10T11:54:19Z",
   "principle": "只聚合既有 artifact 中的事实；观察与结论分离，样本不足时不出结论，不伪造时间线",
   "sources": {
     "p2_state.json": {
@@ -10,17 +10,17 @@
     },
     "review_queue.json": {
       "items": 100,
-      "decided": 12,
-      "pending": 88
+      "decided": 11,
+      "pending": 89
     },
     "p2_daily_brief.json": {
       "brief": 20
     },
     "knowledge_graph.json": {
-      "events_indexed": 5365
+      "events_indexed": 5374
     },
     "decisions_ledger.json": {
-      "distinct_events": 37
+      "distinct_events": 38
     }
   },
   "watchlists": {
@@ -301,17 +301,18 @@
   },
   "decisions": {
     "observations": {
-      "sample_size": 37,
+      "sample_size": 38,
       "by_urgency": {
         "watch": 16,
-        "now": 21
+        "now": 21,
+        "soon": 1
       },
       "by_action": {
         "评估战略与资本影响": 1,
         "检查监管暴露与经营影响": 3,
         "复核资本配置与竞争格局": 11,
         "评估市场与竞争响应": 3,
-        "保持跟踪，等待更多独立证据或业务信号": 19
+        "保持跟踪，等待更多独立证据或业务信号": 20
       },
       "by_topic": {},
       "by_event_type": {},
@@ -444,70 +445,75 @@
         "urgency": "watch"
       },
       {
-        "event_id": "evt_92310abdea56",
-        "decided_at": "2026-10-10T04:03:33Z",
-        "urgency": "watch"
-      },
-      {
-        "event_id": "evt_3429758517ea",
-        "decided_at": "2026-10-10T04:03:33Z",
-        "urgency": "watch"
-      },
-      {
-        "event_id": "evt_083577177db6",
-        "decided_at": "2026-10-10T04:03:33Z",
-        "urgency": "watch"
-      },
-      {
-        "event_id": "evt_0fe4820271f7",
-        "decided_at": "2026-10-10T04:03:33Z",
-        "urgency": "watch"
-      },
-      {
-        "event_id": "evt_59a8566e7e13",
-        "decided_at": "2026-10-10T04:03:33Z",
-        "urgency": "watch"
-      },
-      {
-        "event_id": "evt_03c95bd12e1d",
-        "decided_at": "2026-10-10T04:03:33Z",
-        "urgency": "watch"
-      },
-      {
         "event_id": "evt_db0a3669a076",
         "decided_at": "2026-10-10T04:03:33Z",
         "urgency": "watch"
       },
       {
+        "event_id": "evt_92310abdea56",
+        "decided_at": "2026-10-10T11:52:32Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_3429758517ea",
+        "decided_at": "2026-10-10T11:52:32Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_083577177db6",
+        "decided_at": "2026-10-10T11:52:32Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_0fe4820271f7",
+        "decided_at": "2026-10-10T11:52:32Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_59a8566e7e13",
+        "decided_at": "2026-10-10T11:52:32Z",
+        "urgency": "watch"
+      },
+      {
+        "event_id": "evt_03c95bd12e1d",
+        "decided_at": "2026-10-10T11:52:32Z",
+        "urgency": "watch"
+      },
+      {
         "event_id": "evt_6622539bc4f2",
-        "decided_at": "2026-10-10T04:03:33Z",
+        "decided_at": "2026-10-10T11:52:32Z",
         "urgency": "watch"
       },
       {
         "event_id": "evt_45affa7dff0d",
-        "decided_at": "2026-10-10T04:03:33Z",
+        "decided_at": "2026-10-10T11:52:32Z",
         "urgency": "watch"
       },
       {
         "event_id": "evt_88a7555a3759",
-        "decided_at": "2026-10-10T04:03:33Z",
+        "decided_at": "2026-10-10T11:52:32Z",
         "urgency": "watch"
       },
       {
         "event_id": "evt_dd38c6f5f6c9",
-        "decided_at": "2026-10-10T04:03:33Z",
+        "decided_at": "2026-10-10T11:52:32Z",
         "urgency": "now"
       },
       {
         "event_id": "evt_68f62ee142eb",
-        "decided_at": "2026-10-10T04:03:33Z",
+        "decided_at": "2026-10-10T11:52:32Z",
         "urgency": "now"
+      },
+      {
+        "event_id": "evt_a96306e2d85f",
+        "decided_at": "2026-10-10T11:52:32Z",
+        "urgency": "soon"
       }
     ],
     "conclusions": [
       {
         "type": "urgency_preference",
-        "statement": "最常采用的处置节奏是 now（21/37）",
+        "statement": "最常采用的处置节奏是 now（21/38）",
         "basis": "决策账本/复核队列的 decision.urgency 分布（真实累计，不伪造）"
       }
     ],
@@ -517,23 +523,15 @@
     "basis": "knowledge_graph.json 中 Event --PARTICIPATES_IN--> Company 的一跳邻居（不做多跳扩散）",
     "acted_entities": [
       {
-        "key": "Guy Carpenter",
-        "count": 2
-      },
-      {
         "key": "AM Best",
         "count": 1
       },
       {
-        "key": "GC Securities",
+        "key": "Guy Carpenter",
         "count": 1
       },
       {
         "key": "KCC",
-        "count": 1
-      },
-      {
-        "key": "Klisura",
         "count": 1
       },
       {
@@ -554,6 +552,14 @@
       },
       {
         "key": "传统整合公司",
+        "count": 1
+      },
+      {
+        "key": "保险公司",
+        "count": 1
+      },
+      {
+        "key": "保险服务公司",
         "count": 1
       }
     ],
@@ -637,7 +643,7 @@
         "count": 1
       }
     ],
-    "acted_event_count": 12,
+    "acted_event_count": 11,
     "watched_event_count": 20,
     "quality": {
       "cleaning": "none",
@@ -646,30 +652,30 @@
     }
   },
   "backlog": {
-    "sample_size": 88,
+    "sample_size": 89,
     "by_topic": {
-      "channel_transformation": 3,
-      "capital_reinsurance": 60,
-      "ai_intelligent": 9,
-      "product_innovation": 2,
-      "pension_finance": 1,
-      "climate_catastrophe": 3,
-      "regulatory_change": 9,
+      "channel_transformation": 4,
+      "capital_reinsurance": 55,
+      "ai_intelligent": 10,
+      "pension_finance": 5,
+      "product_innovation": 3,
+      "climate_catastrophe": 2,
+      "regulatory_change": 8,
       "digital_transformation": 1
     },
     "by_event_type": {
-      "claims_loss": 15,
-      "industry_update": 10,
-      "rating": 5,
-      "product": 7,
-      "acquisition": 3,
-      "capital": 19,
-      "regulatory": 24,
+      "claims_loss": 14,
+      "industry_update": 14,
+      "rating": 2,
+      "product": 10,
+      "acquisition": 2,
+      "capital": 17,
+      "regulatory": 25,
       "market_entry": 5
     },
     "by_trust_level": {
       "low": 12,
-      "medium": 76
+      "medium": 77
     },
     "top_by_priority": [
       {
@@ -709,6 +715,12 @@
         "topic": "channel_transformation"
       },
       {
+        "event_id": "evt_42313cbf0204",
+        "title": "养老保险和个人养老金的区别",
+        "priority": 85,
+        "topic": "pension_finance"
+      },
+      {
         "event_id": "evt_12caf4175365",
         "title": "AM Best 报告称，随着持续增长，美国产权保险保费到 2025 年将上涨 13%",
         "priority": 75,
@@ -725,12 +737,6 @@
         "title": "红树林推出百慕大再保险Sidecar Grove Re",
         "priority": 75,
         "topic": "product_innovation"
-      },
-      {
-        "event_id": "evt_578b5faa780f",
-        "title": "Verisk 晋升 Harry White 为财产索赔服务主管",
-        "priority": 75,
-        "topic": "ai_intelligent"
       }
     ]
   },
@@ -764,9 +770,9 @@
       "decision": {
         "urgency": "watch",
         "action": "检查监管暴露与经营影响",
-        "decided_at": "2026-10-10T04:03:33Z"
+        "decided_at": "2026-10-10T11:52:32Z"
       },
-      "decided_at": "2026-10-10T04:03:33Z",
+      "decided_at": "2026-10-10T11:52:32Z",
       "event_published_at": "2026-06-12T09:00:00Z",
       "entities": [
         "全面推进保险"
@@ -781,9 +787,9 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-10T04:03:33Z"
+        "decided_at": "2026-10-10T11:52:32Z"
       },
-      "decided_at": "2026-10-10T04:03:33Z",
+      "decided_at": "2026-10-10T11:52:32Z",
       "event_published_at": "2026-09-21T00:00:00+08:00",
       "entities": [
         "农业保险"
@@ -798,9 +804,9 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-10T04:03:33Z"
+        "decided_at": "2026-10-10T11:52:32Z"
       },
-      "decided_at": "2026-10-10T04:03:33Z",
+      "decided_at": "2026-10-10T11:52:32Z",
       "event_published_at": "2026-09-03T14:00:52Z",
       "entities": [
         "笛卡尔与忠意集团"
@@ -815,9 +821,9 @@
       "decision": {
         "urgency": "watch",
         "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-10-10T04:03:33Z"
+        "decided_at": "2026-10-10T11:52:32Z"
       },
-      "decided_at": "2026-10-10T04:03:33Z",
+      "decided_at": "2026-10-10T11:52:32Z",
       "event_published_at": "2026-08-10T13:00:31Z",
       "entities": [
         "AM Best",
@@ -834,9 +840,9 @@
       "decision": {
         "urgency": "watch",
         "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-10-10T04:03:33Z"
+        "decided_at": "2026-10-10T11:52:32Z"
       },
-      "decided_at": "2026-10-10T04:03:33Z",
+      "decided_at": "2026-10-10T11:52:32Z",
       "event_published_at": "2026-08-03T12:00:25Z",
       "entities": [
         "再保险"
@@ -851,9 +857,9 @@
       "decision": {
         "urgency": "watch",
         "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-10-10T04:03:33Z"
+        "decided_at": "2026-10-10T11:52:32Z"
       },
-      "decided_at": "2026-10-10T04:03:33Z",
+      "decided_at": "2026-10-10T11:52:32Z",
       "event_published_at": "2026-08-19T15:00:02Z",
       "entities": [
         "KCC",
@@ -870,9 +876,9 @@
       "decision": {
         "urgency": "watch",
         "action": "评估市场与竞争响应",
-        "decided_at": "2026-10-10T04:03:33Z"
+        "decided_at": "2026-10-10T11:52:32Z"
       },
-      "decided_at": "2026-10-10T04:03:33Z",
+      "decided_at": "2026-10-10T11:52:32Z",
       "event_published_at": "2026-09-21T07:00:48Z",
       "entities": [
         "Tower",
@@ -888,9 +894,9 @@
       "decision": {
         "urgency": "watch",
         "action": "评估市场与竞争响应",
-        "decided_at": "2026-10-10T04:03:33Z"
+        "decided_at": "2026-10-10T11:52:32Z"
       },
-      "decided_at": "2026-10-10T04:03:33Z",
+      "decided_at": "2026-10-10T11:52:32Z",
       "event_published_at": "2026-08-13T13:00:30Z",
       "entities": []
     },
@@ -903,9 +909,9 @@
       "decision": {
         "urgency": "watch",
         "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-10-10T04:03:33Z"
+        "decided_at": "2026-10-10T11:52:32Z"
       },
-      "decided_at": "2026-10-10T04:03:33Z",
+      "decided_at": "2026-10-10T11:52:32Z",
       "event_published_at": "2026-09-08T06:26:38Z",
       "entities": []
     },
@@ -918,9 +924,9 @@
       "decision": {
         "urgency": "watch",
         "action": "检查监管暴露与经营影响",
-        "decided_at": "2026-10-10T04:03:33Z"
+        "decided_at": "2026-10-10T11:52:32Z"
       },
-      "decided_at": "2026-10-10T04:03:33Z",
+      "decided_at": "2026-10-10T11:52:32Z",
       "event_published_at": "2026-09-10T00:00:00+08:00",
       "entities": [
         "朱俊生谈保险"
@@ -935,34 +941,15 @@
       "decision": {
         "urgency": "watch",
         "action": "评估战略与资本影响",
-        "decided_at": "2026-10-10T04:03:33Z"
+        "decided_at": "2026-10-10T11:52:32Z"
       },
-      "decided_at": "2026-10-10T04:03:33Z",
+      "decided_at": "2026-10-10T11:52:32Z",
       "event_published_at": "2026-08-20T15:58:14Z",
       "entities": [
         "Marco Capital",
         "Pro Global",
         "传统整合公司",
         "保险服务公司"
-      ]
-    },
-    {
-      "event_id": "evt_db0a3669a076",
-      "title": "GC Securities 在 2026 年上半年发行了 20 只巨灾债券，总额达到创纪录的 50 亿美元：Guy Carpenter 首席执行官 Klisura",
-      "topic": "capital_reinsurance",
-      "event_type": "capital",
-      "priority": 50,
-      "decision": {
-        "urgency": "watch",
-        "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-10-10T04:03:33Z"
-      },
-      "decided_at": "2026-10-10T04:03:33Z",
-      "event_published_at": "2026-07-21T14:41:14Z",
-      "entities": [
-        "GC Securities",
-        "Guy Carpenter",
-        "Klisura"
       ]
     }
   ]

@@ -1,12 +1,12 @@
 {
   "version": "alert-v1.1",
-  "generated_at": "2026-10-10T04:05:13Z",
+  "generated_at": "2026-10-10T11:54:21Z",
   "principle": "两层收敛：Internal Diff（事实）→ Semantic Alert（≤8 条聚合）；两层准入（T1 系统级监管 / T2 个人级 Watch / T3 标准）；NEW_SOURCE/NEW_EVIDENCE 留内部、delta 不伪造、首跑仅种子、告警不改写业务判断",
   "meta": {
-    "total_events": 2683,
+    "total_events": 2694,
     "baseline_present": true,
     "basis": "delta_vs_baseline",
-    "internal_diff_count": 0,
+    "internal_diff_count": 2,
     "alert_count": 8,
     "max_alerts": 8,
     "alert_type_counts": {
@@ -22,7 +22,34 @@
     },
     "suppressed": 0
   },
-  "internal_diffs": [],
+  "internal_diffs": [
+    {
+      "canonical_event_id": "cev_e3509308cfc6",
+      "event_id": "evt_db0a3669a076",
+      "title": "GC Securities 在 2026 年上半年发行了 20 只巨灾债券，总额达到创纪录的 50 亿美元：Guy Carpenter 首席执行官 Klisura",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": "watch",
+          "new": null
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "cev_eefa8e5cb766",
+      "event_id": "evt_a96306e2d85f",
+      "title": "金融监管总局发布《财产保险公司保险产品开发管理规定》",
+      "topic": "regulatory_change",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": null,
+          "new": "soon"
+        }
+      ]
+    }
+  ],
   "semantic_alerts": [
     {
       "type": "STANDING_MATERIAL",
@@ -46,6 +73,20 @@
       "topic": "regulatory_change",
       "severity": "high",
       "rationale": "监管效力状态：issued（系统级 T1 准入，今日无变化）",
+      "basis": "standing",
+      "changed_fields": [
+        "status"
+      ],
+      "admission": "T1_system"
+    },
+    {
+      "type": "STANDING_MATERIAL",
+      "canonical_event_id": "cev_1ee010056ac4",
+      "event_id": "evt_ce2433eea2e0",
+      "title": "人力资源社会保障部：积极开展扩大企业年金覆盖面试点 扎实推进个人养老金制度实施",
+      "topic": "pension_finance",
+      "severity": "high",
+      "rationale": "监管效力状态：effective（系统级 T1 准入，今日无变化）",
       "basis": "standing",
       "changed_fields": [
         "status"
@@ -113,20 +154,6 @@
       "canonical_event_id": "cev_e81093a78960",
       "event_id": "evt_ce5d3e5734d9",
       "title": "政策红利持续释放 科技保险发展驶入“快车道”",
-      "topic": "regulatory_change",
-      "severity": "high",
-      "rationale": "监管效力状态：issued（系统级 T1 准入，今日无变化）",
-      "basis": "standing",
-      "changed_fields": [
-        "status"
-      ],
-      "admission": "T1_system"
-    },
-    {
-      "type": "STANDING_MATERIAL",
-      "canonical_event_id": "cev_5f5392f82411",
-      "event_id": "evt_65d96eadf80f",
-      "title": "长安保险风险处置新进展：中安财险获批承接其保险业务",
       "topic": "regulatory_change",
       "severity": "high",
       "rationale": "监管效力状态：issued（系统级 T1 准入，今日无变化）",
