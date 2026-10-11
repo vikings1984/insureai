@@ -1,7 +1,7 @@
 {
   "version": 1,
   "principle": "高价值结论必须在去除单一关键输入后保持合理稳健，否则进入人工复核。",
-  "total_cases": 5099,
+  "total_cases": 5111,
   "fragile_cases": 3,
   "fragility_rate": 0.0006,
   "cases": [
@@ -2886,6 +2886,22 @@
       "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
     },
     {
+      "event_id": "evt_efaae27271a1",
+      "scenario": "remove_conflict_flag",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
+    },
+    {
+      "event_id": "evt_efaae27271a1",
+      "scenario": "remove_topic_trend_signal",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
+    },
+    {
       "event_id": "evt_51cec3b71af5",
       "scenario": "remove_conflict_flag",
       "baseline_urgency": "watch",
@@ -3983,22 +3999,6 @@
     },
     {
       "event_id": "evt_d7243fa8df12",
-      "scenario": "remove_topic_trend_signal",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
-    },
-    {
-      "event_id": "evt_c2ded8413f65",
-      "scenario": "remove_conflict_flag",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
-    },
-    {
-      "event_id": "evt_c2ded8413f65",
       "scenario": "remove_topic_trend_signal",
       "baseline_urgency": "watch",
       "counterfactual_urgency": "watch",
@@ -4007,10 +4007,10 @@
     }
   ],
   "_provenance": {
-    "run_id": "run_20261011_034026_00f655",
-    "build_sha": "ada0cc36813bd8e2054a0f2dde927828a9165c9f",
+    "run_id": "run_20261011_120726_b15d19",
+    "build_sha": "e7a8add70f4c7217d1a4ac288ebaba5585ab6a19",
     "engine_version": "4.2",
     "schema_version": "release-provenance-v1",
-    "generated_at": "2026-10-11T03:40:27.876113+00:00"
+    "generated_at": "2026-10-11T12:07:27.494666+00:00"
   }
 }
