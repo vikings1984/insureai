@@ -1,6 +1,6 @@
 {
   "version": "funnel-v1.1",
-  "generated_at": "2026-10-11T17:41:27Z",
+  "generated_at": "2026-10-11T21:31:03Z",
   "principle": "待决策洪流 → 漏斗（now/soon/watch）+ 排名靠前的待决；已决只来自真实决策记录；六条件硬化为每条待决的注解 + decision_ready 子集；分角色计数；样本<30 不结论；分桶为可观测代理",
   "meta": {
     "total_review_queue": 100,
@@ -10,13 +10,13 @@
     "pending": 77,
     "pending_by_tier": {
       "now": 17,
-      "soon": 4,
-      "watch": 56
+      "soon": 1,
+      "watch": 59
     },
     "pending_by_role": {
-      "ai": 8,
+      "ai": 7,
       "ma": 3,
-      "regulatory": 21,
+      "regulatory": 22,
       "health": 0,
       "other": 45
     },
@@ -32,10 +32,10 @@
     "gold_status": "seed",
     "gold_source": "seed_assistant",
     "six_failed_counter": {
-      "1": 55,
-      "2": 49,
-      "3": 49,
-      "4": 40,
+      "1": 56,
+      "2": 47,
+      "3": 47,
+      "4": 41,
       "5": 23,
       "6": 0
     },
@@ -662,107 +662,6 @@
           "evidence_count": 1,
           "trust_level": "medium",
           "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_d898e4a2e8c8",
-        "canonical_event_id": "cev_aac23e60c54d",
-        "title": "以AI推动保险科技应用，元保CEO方锐入选福布斯中国科创人物",
-        "topic": "ai_intelligent",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "ai",
-        "meets_six": false,
-        "failed_conditions": [
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": true,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_93be984e42d8",
-        "canonical_event_id": "cev_d0f3881ad3a4",
-        "title": "个人养老保险参保证明",
-        "topic": "pension_finance",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 3,
-          "trust_level": "medium",
-          "source_count": 3,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_71b067e894a7",
-        "canonical_event_id": "cev_9ee777de56f8",
-        "title": "个人养老保险缴费对账单",
-        "topic": "pension_finance",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 5,
-          "trust_level": "medium",
-          "source_count": 6,
           "single_src_regulatory": false,
           "decided": false,
           "feedback_status": null
@@ -2616,6 +2515,105 @@
         },
         "urgency": null,
         "tier": "watch"
+      },
+      {
+        "event_id": "evt_40627a84b205",
+        "canonical_event_id": "cev_33e9385ceed8",
+        "title": "新的资本来源和风险动态创造了重要的增长机会：Oak Global 首席执行官",
+        "topic": "capital_reinsurance",
+        "priority": 30,
+        "trust_level": "medium",
+        "reason_types": [
+          "event_cluster"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "watch"
+      },
+      {
+        "event_id": "evt_50c78bfb8e81",
+        "canonical_event_id": "cev_6723ff2ede97",
+        "title": "应对气候变化 保险业如何给风险“做减法”",
+        "topic": "climate_catastrophe",
+        "priority": 30,
+        "trust_level": "medium",
+        "reason_types": [
+          "event_cluster"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "watch"
+      },
+      {
+        "event_id": "evt_d09c7b547708",
+        "canonical_event_id": "cev_16cbf700e9ea",
+        "title": "Active Re加入巴巴多斯保险贸易组织",
+        "topic": "capital_reinsurance",
+        "priority": 30,
+        "trust_level": "medium",
+        "reason_types": [
+          "event_cluster"
+        ],
+        "role": "regulatory",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "unknown",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": true,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "watch"
       }
     ]
   },
@@ -3065,7 +3063,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-11T17:39:47Z"
+      "decided_at": "2026-10-11T21:29:20Z"
     },
     {
       "event_id": "evt_96c336ca5844",
@@ -3195,7 +3193,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-11T17:39:47Z"
+      "decided_at": "2026-10-11T21:29:20Z"
     },
     {
       "event_id": "evt_dd38c6f5f6c9",
@@ -3229,7 +3227,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-11T17:39:47Z"
+      "decided_at": "2026-10-11T21:29:20Z"
     },
     {
       "event_id": "evt_68f62ee142eb",
@@ -3263,7 +3261,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-11T17:39:47Z"
+      "decided_at": "2026-10-11T21:29:20Z"
     },
     {
       "event_id": "evt_92310abdea56",
@@ -3295,7 +3293,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-11T17:39:47Z"
+      "decided_at": "2026-10-11T21:29:20Z"
     },
     {
       "event_id": "evt_083577177db6",
@@ -3327,7 +3325,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-11T17:39:47Z"
+      "decided_at": "2026-10-11T21:29:20Z"
     },
     {
       "event_id": "evt_45affa7dff0d",
@@ -3359,7 +3357,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-11T17:39:47Z"
+      "decided_at": "2026-10-11T21:29:20Z"
     },
     {
       "event_id": "evt_88a7555a3759",
@@ -3394,7 +3392,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-11T17:39:47Z"
+      "decided_at": "2026-10-11T21:29:20Z"
     },
     {
       "event_id": "evt_6622539bc4f2",
@@ -3426,7 +3424,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-11T17:39:47Z"
+      "decided_at": "2026-10-11T21:29:20Z"
     },
     {
       "event_id": "evt_0fe4820271f7",
@@ -3458,7 +3456,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-11T17:39:47Z"
+      "decided_at": "2026-10-11T21:29:20Z"
     },
     {
       "event_id": "evt_59a8566e7e13",
@@ -3490,7 +3488,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-11T17:39:47Z"
+      "decided_at": "2026-10-11T21:29:20Z"
     },
     {
       "event_id": "evt_03c95bd12e1d",
@@ -3522,7 +3520,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-11T17:39:47Z"
+      "decided_at": "2026-10-11T21:29:20Z"
     },
     {
       "event_id": "evt_db0a3669a076",
@@ -3792,7 +3790,7 @@
     {
       "dimension": "六条件硬化（决策门）",
       "status": "evaluated",
-      "reason": "待决 77 条中真正达到六条件决策门 2 条；各条件未达计数 {'1': 55, '2': 49, '3': 49, '4': 40, '5': 23, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
+      "reason": "待决 77 条中真正达到六条件决策门 2 条；各条件未达计数 {'1': 56, '2': 47, '3': 47, '4': 41, '5': 23, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
       "unblock": "六条件为可观测评估注解；decision_ready 子集供优先拍板，其余仍留 Human Review"
     },
     {
