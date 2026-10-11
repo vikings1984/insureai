@@ -1,15 +1,15 @@
 {
   "version": "1.0",
-  "generated_at": "2026-10-10T21:09:11+00:00",
-  "commit": "751db3474311",
+  "generated_at": "2026-10-11T03:40:24+00:00",
+  "commit": "ada0cc36813b",
   "overall": {
     "status": "degraded",
     "score": 0.7,
     "critical_count": 0,
     "warning_count": 3,
     "reasons": [
-      "15 个信源可用性低于 0.5: 中国银行保险资产管理业协会, 众安保险, 保险资管协会, 地方银保监局, 太保寿险",
-      "110 个信源新鲜度低于 0.2",
+      "13 个信源可用性低于 0.5: 众安保险, 保险资管协会, 地方银保监局, 太保寿险, 平安人寿",
+      "112 个信源新鲜度低于 0.2",
       "待复核积压 100 条，超过阈值 50"
     ]
   },
@@ -31,30 +31,28 @@
       "node_count": 35,
       "failed_nodes": [],
       "slow_nodes": [],
-      "total_duration_sec": 28.255,
-      "run_at": "2026-10-10T21:07:14+00:00"
+      "total_duration_sec": 28.889,
+      "run_at": "2026-10-11T03:38:20+00:00"
     },
     "run": {
       "status": "healthy",
-      "run_id": "run_20261010_165711_c9b402",
-      "build_sha": "095c64fc450cef79543014d0399cb8ca432bf00c",
+      "run_id": "run_20261010_210913_704b2f",
+      "build_sha": "751db3474311ff7a13eb19d402b97c474814c6a7",
       "engine_version": "4.2",
-      "started_at": "2026-10-10T16:57:11.002263+00:00",
-      "ended_at": "2026-10-10T16:57:13.561365+00:00",
+      "started_at": "2026-10-10T21:09:13.619920+00:00",
+      "ended_at": "2026-10-10T21:09:16.186687+00:00",
       "failed_stage": null
     },
     "sources": {
       "status": "degraded",
       "source_count": 228,
-      "avg_availability": 0.9342,
-      "avg_freshness": 0.3267,
+      "avg_availability": 0.943,
+      "avg_freshness": 0.315,
       "low_availability": [
-        "中国银行保险资产管理业协会",
         "众安保险",
         "保险资管协会",
         "地方银保监局",
         "太保寿险",
-        "审判研究",
         "平安人寿",
         "最高人民法院",
         "泰康在线",
@@ -95,6 +93,7 @@
         "今日保条",
         "众安保险",
         "佛山本地宝",
+        "保藏侃哥",
         "保观",
         "保险岛",
         "保险资管协会",
@@ -143,6 +142,7 @@
         "消费日报财经",
         "深圳市医保局",
         "深圳银保监局",
+        "深蓝财富观",
         "清养新说",
         "清华大学",
         "湾财ND",
@@ -189,22 +189,22 @@
     },
     "review": {
       "status": "degraded",
-      "queue_generated_count": 313,
+      "queue_generated_count": 316,
       "queue_items": 100,
       "queue_status_distribution": {
         "pending": 100
       },
-      "tracked_items": 196,
+      "tracked_items": 199,
       "pending": 100,
       "aging": {
         "basis": "review_state",
         "buckets": {
-          "0_1": 70,
-          "1_3": 126,
-          "3_7": 0,
+          "0_1": 73,
+          "1_3": 26,
+          "3_7": 100,
           "7_plus": 0
         },
-        "max_age_days": 3,
+        "max_age_days": 4,
         "stale_7plus": 0,
         "queue_items": 100,
         "note": "只读指标；分母为 review_state 的pending（与 compression 的 review_queue 分母不同）；不自动 defer/关闭 pending 项"
@@ -212,17 +212,17 @@
       "compression": {
         "tiers": {
           "decision_required": 20,
-          "material_change": 0,
+          "material_change": 3,
           "relevant": 15,
-          "noise": 65
+          "noise": 62
         },
         "basis": "review_queue",
         "total_pending": 100,
         "queue_items": 100,
-        "state_tracked": 196,
-        "stale_state_entries": 96,
-        "daily_human_load": 20,
-        "compression_ratio": 0.8,
+        "state_tracked": 199,
+        "stale_state_entries": 99,
+        "daily_human_load": 23,
+        "compression_ratio": 0.77,
         "thresholds": {
           "decision_reasons": [
             "claim_conflict",
@@ -238,7 +238,7 @@
     },
     "ce_linkage": {
       "status": "healthy",
-      "ce_pool_size": 2698,
+      "ce_pool_size": 2701,
       "surfaces": {
         "decision": {
           "total": 78,
@@ -262,7 +262,7 @@
       "status": "degraded",
       "key_relevance_min": 0.8,
       "excluded_keyword_count": 12,
-      "suggestion_count": 10,
+      "suggestion_count": 8,
       "confirmed_count": 0,
       "note": "只读建议清单 + 人工确认状态；不自动降权/暂停任何信源，需人工拍板后执行",
       "suggestions": [
@@ -353,28 +353,6 @@
             "freshness=0.0<0.2"
           ],
           "status": "suggested"
-        },
-        {
-          "source": "中国银行保险资产管理业协会",
-          "availability": 0.0,
-          "freshness": 0.0,
-          "insurance_relevance": 0.0,
-          "reasons": [
-            "availability=0.0<0.5",
-            "freshness=0.0<0.2"
-          ],
-          "status": "suggested"
-        },
-        {
-          "source": "审判研究",
-          "availability": 0.0,
-          "freshness": 0.0,
-          "insurance_relevance": 0.0,
-          "reasons": [
-            "availability=0.0<0.5",
-            "freshness=0.0<0.2"
-          ],
-          "status": "suggested"
         }
       ]
     }
@@ -383,12 +361,12 @@
     {
       "severity": "warning",
       "code": "SOURCE_LOW_AVAILABILITY",
-      "message": "15 个信源可用性低于 0.5: 中国银行保险资产管理业协会, 众安保险, 保险资管协会, 地方银保监局, 太保寿险"
+      "message": "13 个信源可用性低于 0.5: 众安保险, 保险资管协会, 地方银保监局, 太保寿险, 平安人寿"
     },
     {
       "severity": "warning",
       "code": "SOURCE_STALE",
-      "message": "110 个信源新鲜度低于 0.2"
+      "message": "112 个信源新鲜度低于 0.2"
     },
     {
       "severity": "warning",

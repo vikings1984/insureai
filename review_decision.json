@@ -1,11 +1,11 @@
 {
   "version": "review-decision-v1.0",
-  "generated_at": "2026-10-10T21:09:11+00:00",
+  "generated_at": "2026-10-11T03:40:23+00:00",
   "principle": "三段式收敛：分层呈现(不改状态) + 建议处置(不改状态) + 人工执行(人才改状态)。不做 auto-resolve——阈值未经人工验证，无 ground truth 时自动处置=静默漏斗。",
   "meta": {
     "queue_items": 100,
     "pending": 100,
-    "human_load": 20,
+    "human_load": 23,
     "auto_resolve_enabled": false,
     "note": "所有建议 auto_executable=False；状态变更须由 Human Review 侧人工执行"
   },
@@ -241,9 +241,43 @@
     {
       "tier": "material_change",
       "label": "复核实质变化",
-      "count": 0,
+      "count": 3,
       "default_collapsed": false,
-      "items": []
+      "items": [
+        {
+          "event_id": "evt_5932238a39b2",
+          "title": "持股比例突破20%！新华保险增持国泰海通H股，年内险资举牌降温，转道押注硬科技IPO",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 40,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_242b3fcb7c91",
+          "title": "46岁，办了居民养老保险，给自己的老年一份保障",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 40,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_b6d254f6e4b5",
+          "title": "（乡村行·看振兴）“淘金客”后代归巢 吉林百年金矿焕新",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 40,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        }
+      ]
     },
     {
       "tier": "relevant",
@@ -421,7 +455,7 @@
     {
       "tier": "noise",
       "label": "建议归档（低优先级 cluster）",
-      "count": 65,
+      "count": 62,
       "default_collapsed": true,
       "items": [
         {
@@ -1098,39 +1132,6 @@
         {
           "event_id": "evt_40627a84b205",
           "title": "新的资本来源和风险动态创造了重要的增长机会：Oak Global 首席执行官",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_50c78bfb8e81",
-          "title": "应对气候变化 保险业如何给风险“做减法”",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_d09c7b547708",
-          "title": "Active Re加入巴巴多斯保险贸易组织",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_65d96eadf80f",
-          "title": "长安保险风险处置新进展：中安财险获批承接其保险业务",
           "tier": "noise",
           "tier_label": "建议归档（低优先级 cluster）",
           "priority": 30,
