@@ -1,12 +1,12 @@
 {
   "version": "alert-v1.1",
-  "generated_at": "2026-10-12T04:05:27Z",
+  "generated_at": "2026-10-12T14:21:31Z",
   "principle": "两层收敛：Internal Diff（事实）→ Semantic Alert（≤8 条聚合）；两层准入（T1 系统级监管 / T2 个人级 Watch / T3 标准）；NEW_SOURCE/NEW_EVIDENCE 留内部、delta 不伪造、首跑仅种子、告警不改写业务判断",
   "meta": {
-    "total_events": 2714,
+    "total_events": 2734,
     "baseline_present": true,
     "basis": "delta_vs_baseline",
-    "internal_diff_count": 0,
+    "internal_diff_count": 5,
     "alert_count": 8,
     "max_alerts": 8,
     "alert_type_counts": {
@@ -22,7 +22,73 @@
     },
     "suppressed": 0
   },
-  "internal_diffs": [],
+  "internal_diffs": [
+    {
+      "canonical_event_id": "cev_e3509308cfc6",
+      "event_id": "evt_db0a3669a076",
+      "title": "GC Securities 在 2026 年上半年发行了 20 只巨灾债券，总额达到创纪录的 50 亿美元：Guy Carpenter 首席执行官 Klisura",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": null,
+          "new": "watch"
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "cev_7380d6ed039b",
+      "event_id": "evt_083f21f9623f",
+      "title": "加拿大皇家银行分析师预计，定价压力和较高的CAT损失将在26年第二季度对美国保险公司造成压力",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": null,
+          "new": "watch"
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "cev_638ac28e9559",
+      "event_id": "evt_38bc62c79877",
+      "title": "米勒完成对迪拜再保险经纪公司 Shields 的收购",
+      "topic": "ai_intelligent",
+      "changes": [
+        {
+          "field": "daily_priority",
+          "old": 89,
+          "new": 0
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "cev_ca332a4acd19",
+      "event_id": "evt_dd38c6f5f6c9",
+      "title": "笛卡尔与忠意集团续签战略参数合作伙伴关系",
+      "topic": "climate_catastrophe",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": "now",
+          "new": null
+        }
+      ]
+    },
+    {
+      "canonical_event_id": "cev_e6344663deac",
+      "event_id": "evt_68f62ee142eb",
+      "title": "农业保险需织起更密安全网",
+      "topic": "climate_catastrophe",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": "now",
+          "new": null
+        }
+      ]
+    }
+  ],
   "semantic_alerts": [
     {
       "type": "STANDING_MATERIAL",
@@ -124,9 +190,9 @@
     },
     {
       "type": "STANDING_MATERIAL",
-      "canonical_event_id": "cev_e81093a78960",
-      "event_id": "evt_ce5d3e5734d9",
-      "title": "政策红利持续释放 科技保险发展驶入“快车道”",
+      "canonical_event_id": "cev_88738a3db62f",
+      "event_id": "evt_05b5a9be1660",
+      "title": "最高法、中国人民银行、金融监管总局、中国证监会联合发布金融消费者、投资者合法权益保护典型案例",
       "topic": "regulatory_change",
       "severity": "high",
       "rationale": "监管效力状态：issued（系统级 T1 准入，今日无变化）",
