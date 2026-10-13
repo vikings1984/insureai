@@ -1,12 +1,12 @@
 {
   "version": "alert-v1.1",
-  "generated_at": "2026-10-12T14:21:31Z",
+  "generated_at": "2026-10-13T00:12:17Z",
   "principle": "两层收敛：Internal Diff（事实）→ Semantic Alert（≤8 条聚合）；两层准入（T1 系统级监管 / T2 个人级 Watch / T3 标准）；NEW_SOURCE/NEW_EVIDENCE 留内部、delta 不伪造、首跑仅种子、告警不改写业务判断",
   "meta": {
-    "total_events": 2734,
+    "total_events": 2749,
     "baseline_present": true,
     "basis": "delta_vs_baseline",
-    "internal_diff_count": 5,
+    "internal_diff_count": 3,
     "alert_count": 8,
     "max_alerts": 8,
     "alert_type_counts": {
@@ -24,35 +24,9 @@
   },
   "internal_diffs": [
     {
-      "canonical_event_id": "cev_e3509308cfc6",
-      "event_id": "evt_db0a3669a076",
-      "title": "GC Securities 在 2026 年上半年发行了 20 只巨灾债券，总额达到创纪录的 50 亿美元：Guy Carpenter 首席执行官 Klisura",
-      "topic": "capital_reinsurance",
-      "changes": [
-        {
-          "field": "decision_urgency",
-          "old": null,
-          "new": "watch"
-        }
-      ]
-    },
-    {
-      "canonical_event_id": "cev_7380d6ed039b",
-      "event_id": "evt_083f21f9623f",
-      "title": "加拿大皇家银行分析师预计，定价压力和较高的CAT损失将在26年第二季度对美国保险公司造成压力",
-      "topic": "capital_reinsurance",
-      "changes": [
-        {
-          "field": "decision_urgency",
-          "old": null,
-          "new": "watch"
-        }
-      ]
-    },
-    {
-      "canonical_event_id": "cev_638ac28e9559",
-      "event_id": "evt_38bc62c79877",
-      "title": "米勒完成对迪拜再保险经纪公司 Shields 的收购",
+      "canonical_event_id": "cev_320aae2a5add",
+      "event_id": "evt_7f1f859efcd5",
+      "title": "随着人工智能重塑风险，网络再保险市场为买家提供了更多选择：Marsh Re",
       "topic": "ai_intelligent",
       "changes": [
         {
@@ -63,23 +37,23 @@
       ]
     },
     {
-      "canonical_event_id": "cev_ca332a4acd19",
-      "event_id": "evt_dd38c6f5f6c9",
-      "title": "笛卡尔与忠意集团续签战略参数合作伙伴关系",
-      "topic": "climate_catastrophe",
+      "canonical_event_id": "cev_1da0c22e7dc9",
+      "event_id": "evt_c59dccb34e4c",
+      "title": "HX发现，高级承销专业知识的丧失高于人工智能替代恐惧",
+      "topic": "ai_intelligent",
       "changes": [
         {
-          "field": "decision_urgency",
-          "old": "now",
-          "new": null
+          "field": "daily_priority",
+          "old": 89,
+          "new": 0
         }
       ]
     },
     {
-      "canonical_event_id": "cev_e6344663deac",
-      "event_id": "evt_68f62ee142eb",
-      "title": "农业保险需织起更密安全网",
-      "topic": "climate_catastrophe",
+      "canonical_event_id": "cev_eefa8e5cb766",
+      "event_id": "evt_a96306e2d85f",
+      "title": "金融监管总局发布《财产保险公司保险产品开发管理规定》",
+      "topic": "regulatory_change",
       "changes": [
         {
           "field": "decision_urgency",
@@ -96,6 +70,20 @@
       "event_id": "evt_3429758517ea",
       "title": "国家金融监督管理总局：全面推进保险行业AI大模型合规应用指引",
       "topic": "ai_intelligent",
+      "severity": "high",
+      "rationale": "监管效力状态：issued（系统级 T1 准入，今日无变化）",
+      "basis": "standing",
+      "changed_fields": [
+        "status"
+      ],
+      "admission": "T1_system"
+    },
+    {
+      "type": "STANDING_MATERIAL",
+      "canonical_event_id": "cev_3bb595441646",
+      "event_id": "evt_449645219546",
+      "title": "金融监管总局首次保险大会将亮相2026金融街论坛年会",
+      "topic": "regulatory_change",
       "severity": "high",
       "rationale": "监管效力状态：issued（系统级 T1 准入，今日无变化）",
       "basis": "standing",
@@ -179,20 +167,6 @@
       "canonical_event_id": "cev_af412da2a1d6",
       "event_id": "evt_c3420bbf2ee2",
       "title": "中国平安贵州分公司因管理失责被罚款15万元 5名保险代理人一并受罚",
-      "topic": "regulatory_change",
-      "severity": "high",
-      "rationale": "监管效力状态：issued（系统级 T1 准入，今日无变化）",
-      "basis": "standing",
-      "changed_fields": [
-        "status"
-      ],
-      "admission": "T1_system"
-    },
-    {
-      "type": "STANDING_MATERIAL",
-      "canonical_event_id": "cev_88738a3db62f",
-      "event_id": "evt_05b5a9be1660",
-      "title": "最高法、中国人民银行、金融监管总局、中国证监会联合发布金融消费者、投资者合法权益保护典型案例",
       "topic": "regulatory_change",
       "severity": "high",
       "rationale": "监管效力状态：issued（系统级 T1 准入，今日无变化）",

@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "generated_at": "2026-10-12T14:21:33+00:00",
-  "commit": "cae232264b79",
+  "generated_at": "2026-10-13T00:12:19+00:00",
+  "commit": "26c20b299866",
   "overall": {
     "status": "degraded",
     "score": 0.7,
@@ -9,7 +9,7 @@
     "warning_count": 3,
     "reasons": [
       "13 个信源可用性低于 0.5: 众安保险, 保险资管协会, 地方银保监局, 太保寿险, 平安人寿",
-      "114 个信源新鲜度低于 0.2",
+      "115 个信源新鲜度低于 0.2",
       "待复核积压 100 条，超过阈值 50"
     ]
   },
@@ -31,23 +31,23 @@
       "node_count": 35,
       "failed_nodes": [],
       "slow_nodes": [],
-      "total_duration_sec": 16.35,
-      "run_at": "2026-10-12T14:20:09+00:00"
+      "total_duration_sec": 23.164,
+      "run_at": "2026-10-13T00:10:37+00:00"
     },
     "run": {
       "status": "healthy",
-      "run_id": "run_20261012_040530_e13f7e",
-      "build_sha": "b89d9f70d49707d5bce91b03635af31feae38349",
+      "run_id": "run_20261012_142134_de50a3",
+      "build_sha": "cae232264b79f8138144dc5af0d3f276c26bd89b",
       "engine_version": "4.2",
-      "started_at": "2026-10-12T04:05:30.955233+00:00",
-      "ended_at": "2026-10-12T04:05:33.223996+00:00",
+      "started_at": "2026-10-12T14:21:34.509438+00:00",
+      "ended_at": "2026-10-12T14:21:36.302814+00:00",
       "failed_stage": null
     },
     "sources": {
       "status": "degraded",
-      "source_count": 235,
-      "avg_availability": 0.9447,
-      "avg_freshness": 0.3336,
+      "source_count": 236,
+      "avg_availability": 0.9449,
+      "avg_freshness": 0.3239,
       "low_availability": [
         "众安保险",
         "保险资管协会",
@@ -141,7 +141,6 @@
         "河南发布",
         "泰康在线",
         "海燕探保",
-        "消费日报财经",
         "深圳市医保局",
         "深圳银保监局",
         "深蓝财富观",
@@ -173,9 +172,11 @@
         "金融明白人",
         "金融监管总局",
         "金融科技研究",
+        "钱公子",
         "银保监会",
         "银保监会官网",
         "长沙本地宝",
+        "阳光保险集团",
         "麦肯锡",
         "黑糖巧克力面"
       ]
@@ -191,22 +192,22 @@
     },
     "review": {
       "status": "degraded",
-      "queue_generated_count": 335,
+      "queue_generated_count": 330,
       "queue_items": 100,
       "queue_status_distribution": {
         "pending": 100
       },
-      "tracked_items": 240,
+      "tracked_items": 255,
       "pending": 100,
       "aging": {
         "basis": "review_state",
         "buckets": {
-          "0_1": 48,
-          "1_3": 66,
+          "0_1": 59,
+          "1_3": 70,
           "3_7": 126,
           "7_plus": 0
         },
-        "max_age_days": 5,
+        "max_age_days": 6,
         "stale_7plus": 0,
         "queue_items": 100,
         "note": "只读指标；分母为 review_state 的pending（与 compression 的 review_queue 分母不同）；不自动 defer/关闭 pending 项"
@@ -214,17 +215,17 @@
       "compression": {
         "tiers": {
           "decision_required": 19,
-          "material_change": 23,
-          "relevant": 14,
-          "noise": 44
+          "material_change": 15,
+          "relevant": 13,
+          "noise": 53
         },
         "basis": "review_queue",
         "total_pending": 100,
         "queue_items": 100,
-        "state_tracked": 240,
-        "stale_state_entries": 140,
-        "daily_human_load": 42,
-        "compression_ratio": 0.58,
+        "state_tracked": 255,
+        "stale_state_entries": 155,
+        "daily_human_load": 34,
+        "compression_ratio": 0.66,
         "thresholds": {
           "decision_reasons": [
             "claim_conflict",
@@ -240,7 +241,7 @@
     },
     "ce_linkage": {
       "status": "healthy",
-      "ce_pool_size": 2734,
+      "ce_pool_size": 2749,
       "surfaces": {
         "decision": {
           "total": 79,
@@ -368,7 +369,7 @@
     {
       "severity": "warning",
       "code": "SOURCE_STALE",
-      "message": "114 个信源新鲜度低于 0.2"
+      "message": "115 个信源新鲜度低于 0.2"
     },
     {
       "severity": "warning",

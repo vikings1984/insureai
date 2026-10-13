@@ -1,17 +1,19 @@
 {
   "version": 3,
   "principle": "在不确定性下最大化跨情景有效性与选择权，而不是预测唯一未来。",
-  "event_count": 100,
+  "event_count": 109,
   "results": [
     {
       "event_id": "evt_92310abdea56",
-      "scenario_count": 2,
+      "scenario_count": 3,
       "scenarios": [
         "competition_follows",
+        "trend_accelerates",
         "trend_cools"
       ],
       "evidence_ready_scenarios": [
         "competition_follows",
+        "trend_accelerates",
         "trend_cools"
       ],
       "robust_actions": [
@@ -24,6 +26,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "competition_follows",
+            "trend_accelerates",
             "trend_cools"
           ],
           "evidence_quality": 0.7,
@@ -40,6 +43,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "competition_follows",
+            "trend_accelerates",
             "trend_cools"
           ],
           "evidence_quality": 0.7,
@@ -56,6 +60,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "competition_follows",
+            "trend_accelerates",
             "trend_cools"
           ],
           "evidence_quality": 0.7,
@@ -78,6 +83,18 @@
           "applies": true
         },
         {
+          "scenario": "trend_accelerates",
+          "action_id": "capacity_review",
+          "label": "复核资源与能力容量",
+          "applies": true
+        },
+        {
+          "scenario": "trend_accelerates",
+          "action_id": "resource_priority",
+          "label": "准备资源优先级方案",
+          "applies": true
+        },
+        {
           "scenario": "trend_cools",
           "action_id": "investment_gate",
           "label": "设置新增投入闸门",
@@ -97,13 +114,15 @@
     },
     {
       "event_id": "evt_3429758517ea",
-      "scenario_count": 2,
+      "scenario_count": 3,
       "scenarios": [
         "regulation_leads",
+        "trend_accelerates",
         "trend_cools"
       ],
       "evidence_ready_scenarios": [
         "regulation_leads",
+        "trend_accelerates",
         "trend_cools"
       ],
       "robust_actions": [
@@ -116,6 +135,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
+            "trend_accelerates",
             "trend_cools"
           ],
           "evidence_quality": 0.7,
@@ -132,6 +152,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
+            "trend_accelerates",
             "trend_cools"
           ],
           "evidence_quality": 0.7,
@@ -148,6 +169,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
+            "trend_accelerates",
             "trend_cools"
           ],
           "evidence_quality": 0.7,
@@ -167,6 +189,18 @@
           "scenario": "regulation_leads",
           "action_id": "compliance_impact_map",
           "label": "建立合规影响清单",
+          "applies": true
+        },
+        {
+          "scenario": "trend_accelerates",
+          "action_id": "capacity_review",
+          "label": "复核资源与能力容量",
+          "applies": true
+        },
+        {
+          "scenario": "trend_accelerates",
+          "action_id": "resource_priority",
+          "label": "准备资源优先级方案",
           "applies": true
         },
         {
@@ -259,6 +293,98 @@
           "scenario": "competition_follows",
           "action_id": "response_playbook",
           "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_449645219546",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "regulation_leads",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "regulation_leads",
+          "action_id": "regulatory_gap_review",
+          "label": "提前做监管差距分析",
+          "applies": true
+        },
+        {
+          "scenario": "regulation_leads",
+          "action_id": "compliance_impact_map",
+          "label": "建立合规影响清单",
           "applies": true
         },
         {
@@ -1296,11 +1422,11 @@
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "evidence_ready_scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "robust_actions": [
         {
@@ -1312,7 +1438,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -1328,7 +1454,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -1344,7 +1470,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -1366,15 +1492,15 @@
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
           "applies": true
         }
       ],
@@ -2768,11 +2894,11 @@
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "evidence_ready_scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "robust_actions": [
         {
@@ -2784,7 +2910,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -2800,7 +2926,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -2816,7 +2942,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -2838,15 +2964,15 @@
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
           "applies": true
         }
       ],
@@ -4424,11 +4550,11 @@
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "evidence_ready_scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "robust_actions": [
         {
@@ -4440,7 +4566,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -4456,7 +4582,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -4472,7 +4598,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -4494,15 +4620,15 @@
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
           "applies": true
         }
       ],
@@ -4516,11 +4642,11 @@
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "evidence_ready_scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "robust_actions": [
         {
@@ -4532,7 +4658,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -4548,7 +4674,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -4564,7 +4690,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -4586,15 +4712,15 @@
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
           "applies": true
         }
       ],
@@ -4608,11 +4734,11 @@
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "evidence_ready_scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "robust_actions": [
         {
@@ -4624,7 +4750,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -4640,7 +4766,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -4656,7 +4782,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -4678,15 +4804,107 @@
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_508c326550c9",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "regulation_leads",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "regulation_leads",
+          "action_id": "regulatory_gap_review",
+          "label": "提前做监管差距分析",
+          "applies": true
+        },
+        {
+          "scenario": "regulation_leads",
+          "action_id": "compliance_impact_map",
+          "label": "建立合规影响清单",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
           "applies": true
         }
       ],
@@ -4792,11 +5010,11 @@
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "evidence_ready_scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "robust_actions": [
         {
@@ -4808,7 +5026,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -4824,7 +5042,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -4840,7 +5058,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -4862,15 +5080,15 @@
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
           "applies": true
         }
       ],
@@ -4884,11 +5102,11 @@
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "evidence_ready_scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "robust_actions": [
         {
@@ -4900,7 +5118,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -4916,7 +5134,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -4932,7 +5150,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -4954,15 +5172,15 @@
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
           "applies": true
         }
       ],
@@ -5064,15 +5282,107 @@
       "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
     },
     {
+      "event_id": "evt_28b32c444a39",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
       "event_id": "evt_1f48f344df0c",
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "evidence_ready_scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "robust_actions": [
         {
@@ -5084,7 +5394,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -5100,7 +5410,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -5116,7 +5426,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -5138,15 +5448,15 @@
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
           "applies": true
         }
       ],
@@ -5227,6 +5537,466 @@
           "scenario": "regulation_leads",
           "action_id": "compliance_impact_map",
           "label": "建立合规影响清单",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_fb5f7bbabd72",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_3196f0d1824c",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_680817d1c767",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_712ab047fe90",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_40627a84b205",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
           "applies": true
         },
         {
@@ -5344,11 +6114,11 @@
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "evidence_ready_scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "robust_actions": [
         {
@@ -5360,7 +6130,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -5376,7 +6146,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -5392,7 +6162,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -5414,15 +6184,659 @@
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_c59209c8ae64",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_78e6ab93bc1c",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_10a73c36e2cb",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_a71823bd4a5e",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_2a40eace85a9",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_36d1d35b5071",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_e000cb8ec4c4",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
           "applies": true
         }
       ],
@@ -5503,6 +6917,926 @@
           "scenario": "regulation_leads",
           "action_id": "compliance_impact_map",
           "label": "建立合规影响清单",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_1b795b25013d",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_360fe72b3c1c",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_91d81f0c844f",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_c7b446a384d5",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_bd0b6a1d6307",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_3a50c2e412bf",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_bd0531bbff1b",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_08990ff04e85",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_9c3a168bcc68",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_56285b09be8a",
+      "scenario_count": 2,
+      "scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "competition_follows",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "competition_follows",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "competition_follows",
+          "action_id": "competitor_monitoring",
+          "label": "建立竞争对手监测",
+          "applies": true
+        },
+        {
+          "scenario": "competition_follows",
+          "action_id": "response_playbook",
+          "label": "准备可逆的竞争响应预案",
           "applies": true
         },
         {
@@ -5620,11 +7954,11 @@
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "evidence_ready_scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "robust_actions": [
         {
@@ -5636,7 +7970,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -5652,7 +7986,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -5668,7 +8002,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -5690,15 +8024,15 @@
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
           "applies": true
         }
       ],
@@ -5712,11 +8046,11 @@
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "evidence_ready_scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "robust_actions": [
         {
@@ -5728,7 +8062,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -5744,7 +8078,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -5760,7 +8094,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -5782,659 +8116,15 @@
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
-      "event_id": "evt_efaae27271a1",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
-      "event_id": "evt_613f89ae3ac1",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
-      "event_id": "evt_9668f5b184e9",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
-      "event_id": "evt_fdc173f9e52d",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
-      "event_id": "evt_14b382f0b853",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
-      "event_id": "evt_4d25a49a76b1",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
-      "event_id": "evt_44e73e279dc7",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
           "applies": true
         }
       ],
@@ -6628,190 +8318,6 @@
       "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
     },
     {
-      "event_id": "evt_74bce32b9948",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
-      "event_id": "evt_0b4f3b0090e6",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
       "event_id": "evt_376fff2c3a52",
       "scenario_count": 2,
       "scenarios": [
@@ -6895,1018 +8401,6 @@
           "scenario": "trend_cools",
           "action_id": "monitor_without_expansion",
           "label": "保持监测但避免过早扩张",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
-      "event_id": "evt_8f195ec0a9d8",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
-      "event_id": "evt_1d8e38d7c067",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
-      "event_id": "evt_3259f7221480",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
-      "event_id": "evt_c08f10f46d1b",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
-      "event_id": "evt_14ed8cd4baf3",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
-      "event_id": "evt_bdd980f43622",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
-      "event_id": "evt_4814a1772437",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
-      "event_id": "evt_c3ebc60cc833",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
-      "event_id": "evt_bac6b1449dbc",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
-      "event_id": "evt_d5a703563d3f",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
-      "event_id": "evt_d323b69bc8ab",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
           "applies": true
         }
       ],
@@ -8100,190 +8594,6 @@
       "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
     },
     {
-      "event_id": "evt_2c2e583c690f",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
-      "event_id": "evt_ffc77103dbea",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
       "event_id": "evt_2f30bc19817b",
       "scenario_count": 2,
       "scenarios": [
@@ -8367,98 +8677,6 @@
           "scenario": "trend_cools",
           "action_id": "monitor_without_expansion",
           "label": "保持监测但避免过早扩张",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
-      "event_id": "evt_2e6c86e17aaa",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
           "applies": true
         }
       ],
@@ -8652,98 +8870,6 @@
       "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
     },
     {
-      "event_id": "evt_8de3f64eb0f3",
-      "scenario_count": 2,
-      "scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "evidence_ready_scenarios": [
-        "regulation_leads",
-        "trend_accelerates"
-      ],
-      "robust_actions": [
-        {
-          "action_id": "evidence_refresh",
-          "label": "持续刷新证据",
-          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "exposure_mapping",
-          "label": "做影响暴露映射",
-          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        },
-        {
-          "action_id": "trigger_thresholds",
-          "label": "建立触发阈值",
-          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
-          "coverage": 1.0,
-          "robust": true,
-          "reversibility": "high",
-          "eligible_scenarios": [
-            "regulation_leads",
-            "trend_accelerates"
-          ],
-          "evidence_quality": 0.7,
-          "reversibility_score": 1.0,
-          "robustness_score": 0.895,
-          "robustness_confidence": "high"
-        }
-      ],
-      "scenario_specific_actions": [
-        {
-          "scenario": "regulation_leads",
-          "action_id": "regulatory_gap_review",
-          "label": "提前做监管差距分析",
-          "applies": true
-        },
-        {
-          "scenario": "regulation_leads",
-          "action_id": "compliance_impact_map",
-          "label": "建立合规影响清单",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
-          "applies": true
-        },
-        {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
-          "applies": true
-        }
-      ],
-      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
-      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
-      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
-      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
-    },
-    {
       "event_id": "evt_d6f008aa0fcd",
       "scenario_count": 2,
       "scenarios": [
@@ -8836,15 +8962,15 @@
       "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
     },
     {
-      "event_id": "evt_514d5dc978d5",
+      "event_id": "evt_51cec3b71af5",
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "evidence_ready_scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "robust_actions": [
         {
@@ -8856,7 +8982,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -8872,7 +8998,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -8888,7 +9014,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -8910,15 +9036,15 @@
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
           "applies": true
         }
       ],
@@ -8928,15 +9054,15 @@
       "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
     },
     {
-      "event_id": "evt_9a557709b1bd",
+      "event_id": "evt_2c9c7c91aab7",
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "evidence_ready_scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "robust_actions": [
         {
@@ -8948,7 +9074,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -8964,7 +9090,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -8980,7 +9106,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -9002,15 +9128,15 @@
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
           "applies": true
         }
       ],
@@ -9020,15 +9146,15 @@
       "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
     },
     {
-      "event_id": "evt_4a2e7ef528a0",
+      "event_id": "evt_a7e2da294e54",
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "evidence_ready_scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "robust_actions": [
         {
@@ -9040,7 +9166,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -9056,7 +9182,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -9072,7 +9198,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -9094,15 +9220,15 @@
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
           "applies": true
         }
       ],
@@ -9112,15 +9238,15 @@
       "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
     },
     {
-      "event_id": "evt_406df403d259",
+      "event_id": "evt_0086e0acbae3",
       "scenario_count": 2,
       "scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "evidence_ready_scenarios": [
         "regulation_leads",
-        "trend_accelerates"
+        "trend_cools"
       ],
       "robust_actions": [
         {
@@ -9132,7 +9258,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -9148,7 +9274,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -9164,7 +9290,7 @@
           "reversibility": "high",
           "eligible_scenarios": [
             "regulation_leads",
-            "trend_accelerates"
+            "trend_cools"
           ],
           "evidence_quality": 0.7,
           "reversibility_score": 1.0,
@@ -9186,15 +9312,751 @@
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "capacity_review",
-          "label": "复核资源与能力容量",
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
           "applies": true
         },
         {
-          "scenario": "trend_accelerates",
-          "action_id": "resource_priority",
-          "label": "准备资源优先级方案",
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_96308337995b",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "regulation_leads",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "regulation_leads",
+          "action_id": "regulatory_gap_review",
+          "label": "提前做监管差距分析",
+          "applies": true
+        },
+        {
+          "scenario": "regulation_leads",
+          "action_id": "compliance_impact_map",
+          "label": "建立合规影响清单",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_19a1a6784124",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "regulation_leads",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "regulation_leads",
+          "action_id": "regulatory_gap_review",
+          "label": "提前做监管差距分析",
+          "applies": true
+        },
+        {
+          "scenario": "regulation_leads",
+          "action_id": "compliance_impact_map",
+          "label": "建立合规影响清单",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_efffc5e09b1d",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "regulation_leads",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "regulation_leads",
+          "action_id": "regulatory_gap_review",
+          "label": "提前做监管差距分析",
+          "applies": true
+        },
+        {
+          "scenario": "regulation_leads",
+          "action_id": "compliance_impact_map",
+          "label": "建立合规影响清单",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_19565d004f94",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "regulation_leads",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "regulation_leads",
+          "action_id": "regulatory_gap_review",
+          "label": "提前做监管差距分析",
+          "applies": true
+        },
+        {
+          "scenario": "regulation_leads",
+          "action_id": "compliance_impact_map",
+          "label": "建立合规影响清单",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_c16a4553c12c",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "regulation_leads",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "regulation_leads",
+          "action_id": "regulatory_gap_review",
+          "label": "提前做监管差距分析",
+          "applies": true
+        },
+        {
+          "scenario": "regulation_leads",
+          "action_id": "compliance_impact_map",
+          "label": "建立合规影响清单",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_5288038fcf1b",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "regulation_leads",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "regulation_leads",
+          "action_id": "regulatory_gap_review",
+          "label": "提前做监管差距分析",
+          "applies": true
+        },
+        {
+          "scenario": "regulation_leads",
+          "action_id": "compliance_impact_map",
+          "label": "建立合规影响清单",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_f6ced99b0dc8",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "regulation_leads",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "regulation_leads",
+          "action_id": "regulatory_gap_review",
+          "label": "提前做监管差距分析",
+          "applies": true
+        },
+        {
+          "scenario": "regulation_leads",
+          "action_id": "compliance_impact_map",
+          "label": "建立合规影响清单",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
+          "applies": true
+        }
+      ],
+      "principle": "先做跨情景稳健且可逆的动作，再等待决定性证据；不要求押注单一情景。",
+      "robustness_note": "只有至少两个证据可用的独立情景，才允许标记为跨情景稳健。",
+      "robustness_scoring_note": "稳健行动评分综合情景覆盖、最弱情景证据质量与可逆性；评分仅用于排序，不替代业务决策。",
+      "disclaimer": "决策矩阵是情报辅助，不替代承保、投资、合规或管理决策。"
+    },
+    {
+      "event_id": "evt_9b34dfce1e32",
+      "scenario_count": 2,
+      "scenarios": [
+        "regulation_leads",
+        "trend_cools"
+      ],
+      "evidence_ready_scenarios": [
+        "regulation_leads",
+        "trend_cools"
+      ],
+      "robust_actions": [
+        {
+          "action_id": "evidence_refresh",
+          "label": "持续刷新证据",
+          "description": "跟踪独立来源、监管原文与新增业务信号，避免单次新闻驱动决策。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "exposure_mapping",
+          "label": "做影响暴露映射",
+          "description": "把事件可能影响的产品、客户、渠道、资本或运营环节列成清单。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        },
+        {
+          "action_id": "trigger_thresholds",
+          "label": "建立触发阈值",
+          "description": "预先定义哪些新增证据会让关注等级升级或降级。",
+          "coverage": 1.0,
+          "robust": true,
+          "reversibility": "high",
+          "eligible_scenarios": [
+            "regulation_leads",
+            "trend_cools"
+          ],
+          "evidence_quality": 0.7,
+          "reversibility_score": 1.0,
+          "robustness_score": 0.895,
+          "robustness_confidence": "high"
+        }
+      ],
+      "scenario_specific_actions": [
+        {
+          "scenario": "regulation_leads",
+          "action_id": "regulatory_gap_review",
+          "label": "提前做监管差距分析",
+          "applies": true
+        },
+        {
+          "scenario": "regulation_leads",
+          "action_id": "compliance_impact_map",
+          "label": "建立合规影响清单",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "investment_gate",
+          "label": "设置新增投入闸门",
+          "applies": true
+        },
+        {
+          "scenario": "trend_cools",
+          "action_id": "monitor_without_expansion",
+          "label": "保持监测但避免过早扩张",
           "applies": true
         }
       ],
@@ -9205,10 +10067,10 @@
     }
   ],
   "_provenance": {
-    "run_id": "run_20261012_142134_de50a3",
-    "build_sha": "cae232264b79f8138144dc5af0d3f276c26bd89b",
+    "run_id": "run_20261013_001220_e96d8d",
+    "build_sha": "26c20b2998667370c67b0ffac1b4224cbfdd7c72",
     "engine_version": "4.2",
     "schema_version": "release-provenance-v1",
-    "generated_at": "2026-10-12T14:21:35.326217+00:00"
+    "generated_at": "2026-10-13T00:12:21.711517+00:00"
   }
 }
