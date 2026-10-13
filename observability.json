@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "generated_at": "2026-10-13T13:31:12+00:00",
-  "commit": "6fe9983cdb56",
+  "generated_at": "2026-10-13T22:19:59+00:00",
+  "commit": "b7f5578a6afc",
   "overall": {
     "status": "degraded",
     "score": 0.7,
@@ -31,23 +31,23 @@
       "node_count": 35,
       "failed_nodes": [],
       "slow_nodes": [],
-      "total_duration_sec": 17.916,
-      "run_at": "2026-10-13T13:29:39+00:00"
+      "total_duration_sec": 30.992,
+      "run_at": "2026-10-13T22:17:54+00:00"
     },
     "run": {
       "status": "healthy",
-      "run_id": "run_20261013_001220_e96d8d",
-      "build_sha": "26c20b2998667370c67b0ffac1b4224cbfdd7c72",
+      "run_id": "run_20261013_133113_a1ab15",
+      "build_sha": "6fe9983cdb563e22d7931baf9d0d471dad0a2392",
       "engine_version": "4.2",
-      "started_at": "2026-10-13T00:12:20.559808+00:00",
-      "ended_at": "2026-10-13T00:12:22.809894+00:00",
+      "started_at": "2026-10-13T13:31:13.334626+00:00",
+      "ended_at": "2026-10-13T13:31:15.243055+00:00",
       "failed_stage": null
     },
     "sources": {
       "status": "degraded",
       "source_count": 237,
       "avg_availability": 0.9451,
-      "avg_freshness": 0.3362,
+      "avg_freshness": 0.3394,
       "low_availability": [
         "众安保险",
         "保险资管协会",
@@ -192,22 +192,22 @@
     },
     "review": {
       "status": "degraded",
-      "queue_generated_count": 342,
+      "queue_generated_count": 336,
       "queue_items": 100,
       "queue_status_distribution": {
         "pending": 100
       },
-      "tracked_items": 279,
+      "tracked_items": 296,
       "pending": 100,
       "aging": {
         "basis": "review_state",
         "buckets": {
-          "0_1": 71,
-          "1_3": 82,
-          "3_7": 126,
+          "0_1": 85,
+          "1_3": 34,
+          "3_7": 177,
           "7_plus": 0
         },
-        "max_age_days": 6,
+        "max_age_days": 7,
         "stale_7plus": 0,
         "queue_items": 100,
         "note": "只读指标；分母为 review_state 的pending（与 compression 的 review_queue 分母不同）；不自动 defer/关闭 pending 项"
@@ -215,17 +215,17 @@
       "compression": {
         "tiers": {
           "decision_required": 19,
-          "material_change": 24,
-          "relevant": 14,
-          "noise": 43
+          "material_change": 17,
+          "relevant": 15,
+          "noise": 49
         },
         "basis": "review_queue",
         "total_pending": 100,
         "queue_items": 100,
-        "state_tracked": 279,
-        "stale_state_entries": 179,
-        "daily_human_load": 43,
-        "compression_ratio": 0.57,
+        "state_tracked": 296,
+        "stale_state_entries": 196,
+        "daily_human_load": 36,
+        "compression_ratio": 0.64,
         "thresholds": {
           "decision_reasons": [
             "claim_conflict",
@@ -241,7 +241,7 @@
     },
     "ce_linkage": {
       "status": "healthy",
-      "ce_pool_size": 2772,
+      "ce_pool_size": 2788,
       "surfaces": {
         "decision": {
           "total": 78,
