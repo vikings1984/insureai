@@ -1,11 +1,11 @@
 {
   "version": "review-decision-v1.0",
-  "generated_at": "2026-10-13T22:19:59+00:00",
+  "generated_at": "2026-10-15T03:00:38+00:00",
   "principle": "三段式收敛：分层呈现(不改状态) + 建议处置(不改状态) + 人工执行(人才改状态)。不做 auto-resolve——阈值未经人工验证，无 ground truth 时自动处置=静默漏斗。",
   "meta": {
     "queue_items": 100,
     "pending": 100,
-    "human_load": 36,
+    "human_load": 45,
     "auto_resolve_enabled": false,
     "note": "所有建议 auto_executable=False；状态变更须由 Human Review 侧人工执行"
   },
@@ -13,7 +13,7 @@
     {
       "tier": "decision_required",
       "label": "需人工裁决",
-      "count": 19,
+      "count": 20,
       "default_collapsed": false,
       "items": [
         {
@@ -77,6 +77,17 @@
           "tier": "decision_required",
           "tier_label": "需人工裁决",
           "priority": 100,
+          "suggested_action": "human_decide",
+          "auto_executable": false,
+          "reason": "命中冲突类 reason（conflict/claim_conflict）——需人工裁决",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_7e02d4b37c1f",
+          "title": "PICC P&C宣布在香港发行首辆Sidecar",
+          "tier": "decision_required",
+          "tier_label": "需人工裁决",
+          "priority": 85,
           "suggested_action": "human_decide",
           "auto_executable": false,
           "reason": "命中冲突类 reason（conflict/claim_conflict）——需人工裁决",
@@ -230,12 +241,12 @@
     {
       "tier": "material_change",
       "label": "复核实质变化",
-      "count": 17,
+      "count": 25,
       "default_collapsed": false,
       "items": [
         {
-          "event_id": "evt_cfb6f3829111",
-          "title": "Leadenhall 通过 ILS 产品规则和受控人工智能使用实现增长：Albertini",
+          "event_id": "evt_234382ffd75c",
+          "title": "人保财险成功发行香港市场首笔“侧挂车”保险连接证券",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -245,8 +256,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_6f60162d3b36",
-          "title": "ICW Re 选择 Ultrassure 的 AI 工作区来支持再保险工作流程",
+          "event_id": "evt_2f406bb5b07a",
+          "title": "Cat债券为固定收益和另类投资分配提供灵活性： Victory Capital",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -256,8 +267,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_c30a130462e6",
-          "title": "Chariot Re 完成首笔涵盖日本债务的再保险交易",
+          "event_id": "evt_a168246eafab",
+          "title": "香港保险市场再破冰！内地险企在香港发行首宗“侧挂车”保险相连证券",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -267,8 +278,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_edb98377af97",
-          "title": "保障意识年轻化 2025年健康养老指数双升",
+          "event_id": "evt_1eb7885c542a",
+          "title": "在证明多元化方面， ILS有一个高端、强有力的叙述：融合",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -278,8 +289,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_b939933921bd",
-          "title": "ILS 投资者需要大声疾呼并征求替代模型的观点：Karen Clark",
+          "event_id": "evt_0b09c4941df0",
+          "title": "甜橙保险代理保险中介许可证正式注销",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -289,8 +300,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_82b4939d7d02",
-          "title": "Verisk 估计飓风伊萨亚斯造成的陆上财产损失在 10 亿至 20 亿美元之间",
+          "event_id": "evt_6e0e82720a2e",
+          "title": "Constellation Re Bermuda完成首笔再保险交易，获得“A”惠誉评级",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -300,8 +311,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_5a61b6b76841",
-          "title": "惠誉表示，Isaias 的中个位数数十亿美元损失不太可能影响财产和意外险/保险公司的信用状况",
+          "event_id": "evt_0114e61f3578",
+          "title": "再保险市场的成功不仅仅取决于产能：韦斯特菲尔德的格雷",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -311,8 +322,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_7826f55f7c66",
-          "title": "买车险被塞“全家桶”、家财险搭售无关险……11月起，这些操作被叫停",
+          "event_id": "evt_889fcd159d1d",
+          "title": "城乡居民养老保险个人资助政策您了解吗？",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -322,8 +333,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_ad9eb5712a2b",
-          "title": "Etude 推出用于商业 P&C 的 E&S 载体",
+          "event_id": "evt_c564a58ec8fa",
+          "title": "保险资管激发耐心资本活力",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -333,8 +344,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_7f75be952845",
-          "title": "拉斯维加斯企业主承认策划武装抢劫欺诈计划有罪",
+          "event_id": "evt_4c9c2a36039b",
+          "title": "在伤员中， ILS动机是关键，时间表必须现实： Trahan、Calidris",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -344,8 +355,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_a337996b3024",
-          "title": "北京人身险行业发布养老金融服务举措",
+          "event_id": "evt_21b536f2bfd0",
+          "title": "护理险产品占比3.3％，肿瘤特药自费近半，养老保障短板亟待破题",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -355,8 +366,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_0e68071b65cc",
-          "title": "Etude 推出 E&S Carrier，盈余达 1 亿美元",
+          "event_id": "evt_6c1b88643c8b",
+          "title": "成立以来年化收益普超3%，养老理财如何走进个人“养老账本”",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -366,8 +377,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_11582b2bc03d",
-          "title": "华夏银行做实养老金融大文章",
+          "event_id": "evt_ac62a2c065de",
+          "title": "社保养老-税优个人养老金-商业养老保险",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -377,8 +388,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_270ce38f3ff4",
-          "title": "研究报告：2025年居民健康保险保障指数同比小幅上涨",
+          "event_id": "evt_1a3970d5433b",
+          "title": "中国银行保险资产管理业协会秘书长贺竹君：推动更多保险资金助力内蒙古重大战略部署",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -388,8 +399,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_d0b7315c2fa1",
-          "title": "豪顿将根西岛团队聚集在新的共享办公室",
+          "event_id": "evt_3b6a729055a2",
+          "title": "内蒙古自治区罗艳君：内蒙古有保险资金不可或缺的合意资产",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -399,8 +410,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_a7d729922a20",
-          "title": "黑客 让法国一夜之间损失数百万欧元",
+          "event_id": "evt_f6d0ced97ca8",
+          "title": "自己交城乡居民养老保险，国家每年到底补贴我多少钱进去？",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -410,8 +421,96 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_45cb95b4875b",
-          "title": "RT FLEX 扩展到财产、伤亡、建筑以及行政和专业责任险领域",
+          "event_id": "evt_1c62d7ea155b",
+          "title": "再保险公司专注于与客户保持相关性： Gallagher Re的Spenner",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 40,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_97227f2a025d",
+          "title": "Scott Yin将担任苏黎世中国首席执行官",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 40,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_dfbcc4dea378",
+          "title": "养老保险个人最早何时交？一文读懂国家到个人缴纳时间线！",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 40,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_b24b5d6e012b",
+          "title": "Hartford宣布扩大职位并任命新的首席风险官",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 40,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_b5b82ec86cd5",
+          "title": "600010，被罚款200万元",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 40,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_538ae2c39c2f",
+          "title": "算力保险，保什么、怎么保？",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 40,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_a54e54749025",
+          "title": "Slabbert被任命为Aviva GCS董事总经理兼Aviva Syndicates首席执行官",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 40,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_9c9a75851ab0",
+          "title": "Magowan被任命为Duck Creek Technologies的首席销售官",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 40,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_eb60daf925e1",
+          "title": "Generali任命Emanuele Moneghini为集团首席审计官",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -598,7 +697,7 @@
     {
       "tier": "noise",
       "label": "建议归档（低优先级 cluster）",
-      "count": 49,
+      "count": 40,
       "default_collapsed": true,
       "items": [
         {
@@ -1033,105 +1132,6 @@
         {
           "event_id": "evt_62e3eeb3e9dc",
           "title": "加快上海国际再保险中心建设！8大措施发布",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_7f010a567259",
-          "title": "金融监管总局：2026年二季度保险业偿付能力充足率保持行业高位",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_c3420bbf2ee2",
-          "title": "中国平安贵州分公司因管理失责被罚款15万元 5名保险代理人一并受罚",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_05b5a9be1660",
-          "title": "最高法、中国人民银行、金融监管总局、中国证监会联合发布金融消费者、投资者合法权益保护典型案例",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_508c326550c9",
-          "title": "央行、金融监管总局等四部门发布金融消费者 投资者合法权益保护典型案例",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_c24973a3287a",
-          "title": "报道称 Bajaj Finserv 正在考虑进军再保险领域，前 GIC Re 首席执行官有望领导该公司",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_472f7e24cd1c",
-          "title": "WTW 获得监管部门批准完全控制阿联酋合资企业 AFW",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_b0ef954f28d2",
-          "title": "Stone Ridge 猫债券基金资产管理规模达到 50 亿美元里程碑，ILS 共同资产总额目前约为 76 亿美元",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_ce5d3e5734d9",
-          "title": "政策红利持续释放 科技保险发展驶入“快车道”",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_443a2f6013d0",
-          "title": "随着发行量的激增，巨灾债券产能必须追随真正的机遇：Icosa 的 Dell’Amore",
           "tier": "noise",
           "tier_label": "建议归档（低优先级 cluster）",
           "priority": 30,
