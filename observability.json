@@ -1,17 +1,17 @@
 {
   "version": "1.0",
-  "generated_at": "2026-10-15T03:00:39+00:00",
-  "commit": "5cc51c1b1bd5",
+  "generated_at": "2026-10-16T10:41:47+00:00",
+  "commit": "71ed1c0d893b",
   "overall": {
     "status": "degraded",
     "score": 0.6,
     "critical_count": 0,
     "warning_count": 4,
     "reasons": [
-      "14 个信源可用性低于 0.5: Insurance Journal, 众安保险, 保险资管协会, 地方银保监局, 太保寿险",
-      "122 个信源新鲜度低于 0.2",
+      "13 个信源可用性低于 0.5: 众安保险, 保险资管协会, 地方银保监局, 太保寿险, 平安人寿",
+      "127 个信源新鲜度低于 0.2",
       "待复核积压 100 条，超过阈值 50",
-      "100 条 pending 复核已滞留 >7 天，超过阈值 20，建议人工清理"
+      "126 条 pending 复核已滞留 >7 天，超过阈值 20，建议人工清理"
     ]
   },
   "sections": {
@@ -32,25 +32,24 @@
       "node_count": 35,
       "failed_nodes": [],
       "slow_nodes": [],
-      "total_duration_sec": 29.784,
-      "run_at": "2026-10-15T02:58:39+00:00"
+      "total_duration_sec": 24.555,
+      "run_at": "2026-10-16T10:40:05+00:00"
     },
     "run": {
       "status": "healthy",
-      "run_id": "run_20261013_222001_dda80d",
-      "build_sha": "b7f5578a6afc8c02e7c4487cceb4acf1170c041a",
+      "run_id": "run_20261015_030041_e89c2f",
+      "build_sha": "5cc51c1b1bd548c5e5f4ec536ab780e124c204c1",
       "engine_version": "4.2",
-      "started_at": "2026-10-13T22:20:01.799782+00:00",
-      "ended_at": "2026-10-13T22:20:04.585759+00:00",
+      "started_at": "2026-10-15T03:00:41.260894+00:00",
+      "ended_at": "2026-10-15T03:00:43.906050+00:00",
       "failed_stage": null
     },
     "sources": {
       "status": "degraded",
-      "source_count": 239,
-      "avg_availability": 0.9414,
-      "avg_freshness": 0.3224,
+      "source_count": 240,
+      "avg_availability": 0.9458,
+      "avg_freshness": 0.3196,
       "low_availability": [
-        "Insurance Journal",
         "众安保险",
         "保险资管协会",
         "地方银保监局",
@@ -88,6 +87,7 @@
         "中国经济网",
         "中国网财经",
         "中国银行保险资产管理业协会",
+        "乡村知遇",
         "亭亭星河寻梦",
         "人保健康",
         "人民公安报",
@@ -131,6 +131,7 @@
         "微信公众号搜索",
         "成都人社局",
         "报名普通话报名",
+        "捕获不惑",
         "掌中电白",
         "搜狗资讯搜索",
         "文文爷爷",
@@ -143,6 +144,7 @@
         "最高人民法院",
         "月落无题江南阅览",
         "期货日报",
+        "机械设计群",
         "欣欣向保",
         "水滴公司",
         "河南发布",
@@ -164,6 +166,7 @@
         "福州招工",
         "稻农阳儿",
         "红星资本局",
+        "缘起读书",
         "老王只读书",
         "胜说杂民曰",
         "艾瑞咨询",
@@ -176,6 +179,7 @@
         "财闻",
         "赢在寿险",
         "车车号外",
+        "金柚网",
         "金融博览财富杂志",
         "金融时报",
         "金融明白人",
@@ -201,40 +205,40 @@
     },
     "review": {
       "status": "degraded",
-      "queue_generated_count": 348,
+      "queue_generated_count": 366,
       "queue_items": 100,
       "queue_status_distribution": {
         "pending": 100
       },
-      "tracked_items": 322,
+      "tracked_items": 363,
       "pending": 100,
       "aging": {
         "basis": "review_state",
         "buckets": {
           "0_1": 67,
-          "1_3": 59,
-          "3_7": 96,
-          "7_plus": 100
+          "1_3": 79,
+          "3_7": 91,
+          "7_plus": 126
         },
-        "max_age_days": 8,
-        "stale_7plus": 100,
+        "max_age_days": 9,
+        "stale_7plus": 126,
         "queue_items": 100,
         "note": "只读指标；分母为 review_state 的pending（与 compression 的 review_queue 分母不同）；不自动 defer/关闭 pending 项"
       },
       "compression": {
         "tiers": {
           "decision_required": 20,
-          "material_change": 25,
+          "material_change": 41,
           "relevant": 15,
-          "noise": 40
+          "noise": 24
         },
         "basis": "review_queue",
         "total_pending": 100,
         "queue_items": 100,
-        "state_tracked": 322,
-        "stale_state_entries": 222,
-        "daily_human_load": 45,
-        "compression_ratio": 0.55,
+        "state_tracked": 363,
+        "stale_state_entries": 263,
+        "daily_human_load": 61,
+        "compression_ratio": 0.39,
         "thresholds": {
           "decision_reasons": [
             "claim_conflict",
@@ -250,7 +254,7 @@
     },
     "ce_linkage": {
       "status": "healthy",
-      "ce_pool_size": 2813,
+      "ce_pool_size": 2854,
       "surfaces": {
         "decision": {
           "total": 78,
@@ -373,12 +377,12 @@
     {
       "severity": "warning",
       "code": "SOURCE_LOW_AVAILABILITY",
-      "message": "14 个信源可用性低于 0.5: Insurance Journal, 众安保险, 保险资管协会, 地方银保监局, 太保寿险"
+      "message": "13 个信源可用性低于 0.5: 众安保险, 保险资管协会, 地方银保监局, 太保寿险, 平安人寿"
     },
     {
       "severity": "warning",
       "code": "SOURCE_STALE",
-      "message": "122 个信源新鲜度低于 0.2"
+      "message": "127 个信源新鲜度低于 0.2"
     },
     {
       "severity": "warning",
@@ -388,7 +392,7 @@
     {
       "severity": "warning",
       "code": "REVIEW_AGING_STALE",
-      "message": "100 条 pending 复核已滞留 >7 天，超过阈值 20，建议人工清理"
+      "message": "126 条 pending 复核已滞留 >7 天，超过阈值 20，建议人工清理"
     }
   ]
 }
