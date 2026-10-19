@@ -1,20 +1,20 @@
 {
   "version": "ir-v1.1",
   "registry_version": "er-v1.1",
-  "generated_at": "2026-10-16T10:41:45Z",
+  "generated_at": "2026-10-19T03:04:10Z",
   "principle": "单一事实源：所有模块引用 canonical_event_id；resolver 只解析、不发明身份。合并与分裂由证据 + 人工 review 决定，resolver 仅产出候选。",
-  "total_references": 113,
-  "resolved": 113,
+  "total_references": 112,
+  "resolved": 112,
   "unresolved": 0,
   "unresolved_rate": 0.0,
   "unresolved_samples": [],
   "partition_stats": {
-    "other": 86,
-    "regulatory": 24,
+    "other": 81,
+    "regulatory": 28,
     "acquisition": 3
   },
   "candidate_merges": {
-    "count": 6,
+    "count": 7,
     "status": "proposed",
     "items": [
       {
@@ -87,26 +87,30 @@
         "status": "proposed"
       },
       {
-        "entity": "Guy Carpenter",
+        "entity": "Howden Re",
         "type": "Company",
         "canonical_ids": [
-          "cev_7116251ba82a",
-          "cev_75ffa0799040",
-          "cev_7f2a43c0f409",
-          "cev_d0cb57ed1b2d",
-          "cev_e3509308cfc6",
-          "cev_e689f5bd3651"
+          "cev_2fe2447b1b51",
+          "cev_316001ba8779",
+          "cev_3a72687921a6",
+          "cev_3e43741cfcf5",
+          "cev_749406e0c17b",
+          "cev_ba3101e0c252",
+          "cev_ca357c220d24",
+          "cev_e15921429f4d"
         ],
         "event_ids": [
-          "cev_7f2a43c0f409",
-          "cev_7116251ba82a",
-          "cev_e3509308cfc6",
-          "cev_75ffa0799040",
-          "cev_e689f5bd3651",
-          "cev_d0cb57ed1b2d"
+          "cev_2fe2447b1b51",
+          "cev_3a72687921a6",
+          "cev_ba3101e0c252",
+          "cev_3e43741cfcf5",
+          "cev_749406e0c17b",
+          "cev_316001ba8779",
+          "cev_e15921429f4d",
+          "cev_ca357c220d24"
         ],
         "domain": "other",
-        "evidence": "实体共现（Guy Carpenter 跨 6 个 canonical event）",
+        "evidence": "实体共现（Howden Re 跨 8 个 canonical event）",
         "status": "proposed"
       },
       {
@@ -126,25 +130,42 @@
           "cev_d3d1eb4b6057",
           "cev_4e41b10c42c3",
           "cev_9ea9ce0b2a0e",
-          "evt_4ca19fe20cc8"
+          "cev_2dc4ad6ee09d"
         ],
         "domain": "other",
         "evidence": "实体共现（KCC 跨 6 个 canonical event）",
         "status": "proposed"
       },
       {
-        "entity": "Tower",
+        "entity": "Novark",
         "type": "Company",
         "canonical_ids": [
-          "cev_0adf70c0264a",
-          "cev_9d8ff9c8de58"
+          "cev_316001ba8779",
+          "cev_e15921429f4d"
         ],
         "event_ids": [
-          "cev_9d8ff9c8de58",
-          "cev_0adf70c0264a"
+          "cev_316001ba8779",
+          "cev_e15921429f4d"
         ],
         "domain": "other",
-        "evidence": "实体共现（Tower 跨 2 个 canonical event）",
+        "evidence": "实体共现（Novark 跨 2 个 canonical event）",
+        "status": "proposed"
+      },
+      {
+        "entity": "TWIA",
+        "type": "Company",
+        "canonical_ids": [
+          "cev_5ffbe2c5bc27",
+          "cev_c6272458389e",
+          "cev_de8d11d1f5e4"
+        ],
+        "event_ids": [
+          "cev_c6272458389e",
+          "cev_de8d11d1f5e4",
+          "cev_5ffbe2c5bc27"
+        ],
+        "domain": "other",
+        "evidence": "实体共现（TWIA 跨 3 个 canonical event）",
         "status": "proposed"
       }
     ]
@@ -189,13 +210,13 @@
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
-        "entity": "GC Securities",
+        "entity": "Generali",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
-        "entity": "Guy Carpenter",
+        "entity": "Howden Re",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
@@ -207,13 +228,19 @@
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
-        "entity": "Klisura",
+        "entity": "Mangrove",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
         "entity": "Marco Capital",
+        "type": "Company",
+        "into_ce": false,
+        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
+      },
+      {
+        "entity": "Novark",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
@@ -231,19 +258,25 @@
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
-        "entity": "Tower",
+        "entity": "Red Bridge",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
-        "entity": "以降低的成本将首次巨灾再保险",
+        "entity": "Syndicate",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
-        "entity": "传统整合公司",
+        "entity": "TWIA",
+        "type": "Company",
+        "into_ce": false,
+        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
+      },
+      {
+        "entity": "Urs Baertschi",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
@@ -255,19 +288,7 @@
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
-        "entity": "保险服务公司",
-        "type": "Company",
-        "into_ce": false,
-        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
-      },
-      {
-        "entity": "全面推进保险",
-        "type": "Company",
-        "into_ce": false,
-        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
-      },
-      {
-        "entity": "再保险",
+        "entity": "新华保险",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
