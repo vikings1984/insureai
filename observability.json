@@ -1,17 +1,17 @@
 {
   "version": "1.0",
-  "generated_at": "2026-10-19T03:04:13+00:00",
-  "commit": "eacdfb94e0f5",
+  "generated_at": "2026-10-20T16:22:36+00:00",
+  "commit": "574ddfdaa593",
   "overall": {
     "status": "degraded",
     "score": 0.6,
     "critical_count": 0,
     "warning_count": 4,
     "reasons": [
-      "14 个信源可用性低于 0.5: Insurance Journal, 众安保险, 保险资管协会, 地方银保监局, 太保寿险",
+      "13 个信源可用性低于 0.5: 众安保险, 保险资管协会, 地方银保监局, 太保寿险, 平安人寿",
       "148 个信源新鲜度低于 0.2",
       "待复核积压 100 条，超过阈值 50",
-      "196 条 pending 复核已滞留 >7 天，超过阈值 20，建议人工清理"
+      "240 条 pending 复核已滞留 >7 天，超过阈值 20，建议人工清理"
     ]
   },
   "sections": {
@@ -32,25 +32,24 @@
       "node_count": 35,
       "failed_nodes": [],
       "slow_nodes": [],
-      "total_duration_sec": 23.604,
-      "run_at": "2026-10-19T03:02:30+00:00"
+      "total_duration_sec": 27.797,
+      "run_at": "2026-10-20T16:20:36+00:00"
     },
     "run": {
       "status": "healthy",
-      "run_id": "run_20261016_104149_8730a1",
-      "build_sha": "71ed1c0d893b8c9fa52e084b67adde8b91e6bddd",
+      "run_id": "run_20261019_030415_977b93",
+      "build_sha": "eacdfb94e0f5bfc89079d04f0a0d9d4a817e186c",
       "engine_version": "4.2",
-      "started_at": "2026-10-16T10:41:49.595653+00:00",
-      "ended_at": "2026-10-16T10:41:52.063329+00:00",
+      "started_at": "2026-10-19T03:04:15.046072+00:00",
+      "ended_at": "2026-10-19T03:04:17.406351+00:00",
       "failed_stage": null
     },
     "sources": {
       "status": "degraded",
-      "source_count": 241,
-      "avg_availability": 0.9419,
-      "avg_freshness": 0.2818,
+      "source_count": 242,
+      "avg_availability": 0.9463,
+      "avg_freshness": 0.2895,
       "low_availability": [
-        "Insurance Journal",
         "众安保险",
         "保险资管协会",
         "地方银保监局",
@@ -67,14 +66,15 @@
       ],
       "stale": [
         "DeepTech深科技",
+        "OC-AI研究",
         "l 看齐 l",
         "一本人生攻略",
         "万达信息股份有限公司",
         "上海保险",
         "上海本地宝",
-        "上观新闻",
         "世览",
         "东方财富AI妙想",
+        "东方财富Choice数据",
         "东方财富搜索",
         "东方财富证券",
         "东郭先生7086",
@@ -167,7 +167,6 @@
         "深蓝财富观",
         "清养新说",
         "清华大学",
-        "湾财ND",
         "演说了",
         "理财周刊-财事汇",
         "瑞士再保险",
@@ -227,40 +226,40 @@
     },
     "review": {
       "status": "degraded",
-      "queue_generated_count": 391,
+      "queue_generated_count": 418,
       "queue_items": 100,
       "queue_status_distribution": {
         "pending": 100
       },
-      "tracked_items": 395,
+      "tracked_items": 453,
       "pending": 100,
       "aging": {
         "basis": "review_state",
         "buckets": {
-          "0_1": 32,
-          "1_3": 41,
-          "3_7": 126,
-          "7_plus": 196
+          "0_1": 90,
+          "1_3": 0,
+          "3_7": 123,
+          "7_plus": 240
         },
-        "max_age_days": 12,
-        "stale_7plus": 196,
+        "max_age_days": 13,
+        "stale_7plus": 240,
         "queue_items": 100,
         "note": "只读指标；分母为 review_state 的pending（与 compression 的 review_queue 分母不同）；不自动 defer/关闭 pending 项"
       },
       "compression": {
         "tiers": {
           "decision_required": 20,
-          "material_change": 25,
-          "relevant": 24,
-          "noise": 31
+          "material_change": 58,
+          "relevant": 15,
+          "noise": 7
         },
         "basis": "review_queue",
         "total_pending": 100,
         "queue_items": 100,
-        "state_tracked": 395,
-        "stale_state_entries": 295,
-        "daily_human_load": 45,
-        "compression_ratio": 0.55,
+        "state_tracked": 453,
+        "stale_state_entries": 353,
+        "daily_human_load": 78,
+        "compression_ratio": 0.22,
         "thresholds": {
           "decision_reasons": [
             "claim_conflict",
@@ -276,11 +275,11 @@
     },
     "ce_linkage": {
       "status": "healthy",
-      "ce_pool_size": 2877,
+      "ce_pool_size": 2931,
       "surfaces": {
         "decision": {
-          "total": 68,
-          "linked": 68,
+          "total": 79,
+          "linked": 79,
           "ratio": 1.0
         },
         "monitoring": {
@@ -399,7 +398,7 @@
     {
       "severity": "warning",
       "code": "SOURCE_LOW_AVAILABILITY",
-      "message": "14 个信源可用性低于 0.5: Insurance Journal, 众安保险, 保险资管协会, 地方银保监局, 太保寿险"
+      "message": "13 个信源可用性低于 0.5: 众安保险, 保险资管协会, 地方银保监局, 太保寿险, 平安人寿"
     },
     {
       "severity": "warning",
@@ -414,7 +413,7 @@
     {
       "severity": "warning",
       "code": "REVIEW_AGING_STALE",
-      "message": "196 条 pending 复核已滞留 >7 天，超过阈值 20，建议人工清理"
+      "message": "240 条 pending 复核已滞留 >7 天，超过阈值 20，建议人工清理"
     }
   ]
 }
