@@ -1,7 +1,7 @@
 {
   "available": true,
   "version": "source-os-v1.0",
-  "generated_at": "2026-10-20T21:16:56+00:00",
+  "generated_at": "2026-10-21T03:07:03+00:00",
   "principle": "connectivity 与 content 正交；且区分 measured / unmeasured —— 指标缺失≠源不健康。degrade 只依据 content，权威源受保护；只读，不改权重。",
   "thresholds": {
     "crawl_health_min": 0.5,
@@ -15,8 +15,8 @@
     "unmeasured_count": 13,
     "authority_count": 8,
     "crawl_incident_count": 0,
-    "content_weak_count": 61,
-    "watch_content_count": 108
+    "content_weak_count": 60,
+    "watch_content_count": 113
   },
   "unmeasured_sources": [
     "平安人寿",
@@ -35,6 +35,7 @@
   ],
   "crawl_incidents": [],
   "content_weak": [
+    "中国太平洋保险",
     "中国保险行业协会",
     "Insurance Journal",
     "Reinsurance News",
@@ -66,7 +67,6 @@
     "中国经营网",
     "国际金融报",
     "上观新闻",
-    "央视财经",
     "人民网",
     "人民财讯",
     "湾财ND",
@@ -76,10 +76,9 @@
     "微信公众号",
     "今日保",
     "北大法律信息网",
-    "万达信息股份有限公司",
-    "DeepTech深科技",
     "保险岛",
     "赢在寿险",
+    "分子实验室",
     "河南发布",
     "上海保险",
     "中国银行保险资产管理业协会",
@@ -153,22 +152,22 @@
       "has_content": true,
       "connectivity": {
         "measured": true,
-        "crawl_health": 1.0,
+        "crawl_health": 0.5,
         "availability": 1.0,
-        "parse_success": 1.0,
+        "parse_success": 0.0,
         "crawl_incident": false,
         "note": null
       },
       "content": {
         "measured": true,
-        "content_health": 0.975,
+        "content_health": 0.475,
         "content_quality": 0.95,
-        "duplicate_ratio": 0.0,
+        "duplicate_ratio": 1.0,
         "publication_frequency": 0.0,
         "business_coverage": 1.0
       },
-      "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.0）但内容/覆盖尚可"
+      "suggested_action": "suggest_downweight",
+      "reason": "内容质量低（0.475）"
     },
     {
       "source": "瑞士再保险",
@@ -401,7 +400,7 @@
         "content_health": 0.458,
         "content_quality": 0.916,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 0.8333,
+        "publication_frequency": 0.8,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -564,22 +563,22 @@
       "has_content": true,
       "connectivity": {
         "measured": true,
-        "crawl_health": 0.55,
+        "crawl_health": 0.5,
         "availability": 1.0,
-        "parse_success": 0.1,
+        "parse_success": 0.0,
         "crawl_incident": false,
         "note": null
       },
       "content": {
         "measured": true,
-        "content_health": 0.6936,
+        "content_health": 0.6436,
         "content_quality": 0.8872,
-        "duplicate_ratio": 0.5,
+        "duplicate_ratio": 0.6,
         "publication_frequency": 1.0,
-        "business_coverage": 0.2
+        "business_coverage": 0.0
       },
       "suggested_action": "suggest_downweight",
-      "reason": "业务相关度低（0.2）"
+      "reason": "业务相关度低（0.0）"
     },
     {
       "source": "Reinsurance News",
@@ -597,7 +596,7 @@
       "content": {
         "measured": true,
         "content_health": 0.4086,
-        "content_quality": 0.8172,
+        "content_quality": 0.8171,
         "duplicate_ratio": 1.0,
         "publication_frequency": 1.0,
         "business_coverage": 1.0
@@ -612,22 +611,22 @@
       "has_content": true,
       "connectivity": {
         "measured": true,
-        "crawl_health": 0.55,
+        "crawl_health": 0.5,
         "availability": 1.0,
-        "parse_success": 0.1,
+        "parse_success": 0.0,
         "crawl_incident": false,
         "note": null
       },
       "content": {
         "measured": true,
-        "content_health": 0.5681,
-        "content_quality": 0.9363,
-        "duplicate_ratio": 0.8,
+        "content_health": 0.5182,
+        "content_quality": 0.9364,
+        "duplicate_ratio": 0.9,
         "publication_frequency": 1.0,
-        "business_coverage": 0.5
+        "business_coverage": 0.0
       },
       "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.5681）"
+      "reason": "内容质量低（0.5182）"
     },
     {
       "source": "东方财富搜索",
@@ -671,7 +670,7 @@
         "content_health": 0.4441,
         "content_quality": 0.8882,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 0.9667,
+        "publication_frequency": 0.9333,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -695,7 +694,7 @@
         "content_health": 0.4498,
         "content_quality": 0.8996,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 1.0,
+        "publication_frequency": 0.9667,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -716,14 +715,14 @@
       },
       "content": {
         "measured": true,
-        "content_health": 0.4539,
-        "content_quality": 0.9078,
+        "content_health": 0.454,
+        "content_quality": 0.9079,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 1.0,
+        "publication_frequency": 0.9667,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.4539）"
+      "reason": "内容质量低（0.454）"
     },
     {
       "source": "中国证券报",
@@ -743,7 +742,7 @@
         "content_health": 0.4425,
         "content_quality": 0.885,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 0.7333,
+        "publication_frequency": 0.7,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -767,7 +766,7 @@
         "content_health": 0.9461,
         "content_quality": 0.8922,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.8667,
+        "publication_frequency": 0.8333,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -788,14 +787,14 @@
       },
       "content": {
         "measured": true,
-        "content_health": 0.4538,
-        "content_quality": 0.9077,
+        "content_health": 0.4543,
+        "content_quality": 0.9086,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 0.9667,
+        "publication_frequency": 0.9333,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.4538）"
+      "reason": "内容质量低（0.4543）"
     },
     {
       "source": "北京商报",
@@ -812,14 +811,14 @@
       },
       "content": {
         "measured": true,
-        "content_health": 0.45,
-        "content_quality": 0.9,
+        "content_health": 0.4501,
+        "content_quality": 0.9003,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 1.0,
+        "publication_frequency": 0.9667,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.45）"
+      "reason": "内容质量低（0.4501）"
     },
     {
       "source": "中国经营报",
@@ -836,14 +835,14 @@
       },
       "content": {
         "measured": true,
-        "content_health": 0.4611,
-        "content_quality": 0.9221,
+        "content_health": 0.4612,
+        "content_quality": 0.9224,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 1.0,
+        "publication_frequency": 0.9667,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.4611）"
+      "reason": "内容质量低（0.4612）"
     },
     {
       "source": "消费日报财经",
@@ -863,7 +862,7 @@
         "content_health": 0.9606,
         "content_quality": 0.9211,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 1.0,
+        "publication_frequency": 0.9667,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -887,7 +886,7 @@
         "content_health": 0.4606,
         "content_quality": 0.9211,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 0.6667,
+        "publication_frequency": 0.6333,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -911,7 +910,7 @@
         "content_health": 0.4594,
         "content_quality": 0.9188,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 1.0,
+        "publication_frequency": 0.9667,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -932,14 +931,14 @@
       },
       "content": {
         "measured": true,
-        "content_health": 0.4525,
-        "content_quality": 0.905,
+        "content_health": 0.4531,
+        "content_quality": 0.9062,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 1.0,
+        "publication_frequency": 0.9667,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.4525）"
+      "reason": "内容质量低（0.4531）"
     },
     {
       "source": "第一财经",
@@ -959,7 +958,7 @@
         "content_health": 0.4547,
         "content_quality": 0.9094,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 1.0,
+        "publication_frequency": 0.9667,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -983,7 +982,7 @@
         "content_health": 0.46,
         "content_quality": 0.92,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 0.7333,
+        "publication_frequency": 0.7,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -1007,7 +1006,7 @@
         "content_health": 0.4461,
         "content_quality": 0.8921,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 0.6667,
+        "publication_frequency": 0.6333,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -1028,10 +1027,10 @@
       },
       "content": {
         "measured": true,
-        "content_health": 0.9569,
-        "content_quality": 0.9139,
+        "content_health": 0.9561,
+        "content_quality": 0.9121,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.3,
+        "publication_frequency": 1.0,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -1055,7 +1054,7 @@
         "content_health": 0.4479,
         "content_quality": 0.8958,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 0.1,
+        "publication_frequency": 0.0667,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -1076,14 +1075,14 @@
       },
       "content": {
         "measured": true,
-        "content_health": 0.449,
-        "content_quality": 0.898,
+        "content_health": 0.4491,
+        "content_quality": 0.8981,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 1.0,
+        "publication_frequency": 0.9667,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.449）"
+      "reason": "内容质量低（0.4491）"
     },
     {
       "source": "财中社",
@@ -1100,14 +1099,14 @@
       },
       "content": {
         "measured": true,
-        "content_health": 0.4446,
-        "content_quality": 0.8892,
+        "content_health": 0.445,
+        "content_quality": 0.89,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 1.0,
+        "publication_frequency": 0.9667,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.4446）"
+      "reason": "内容质量低（0.445）"
     },
     {
       "source": "券商中国",
@@ -1127,7 +1126,7 @@
         "content_health": 0.9587,
         "content_quality": 0.9175,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.5667,
+        "publication_frequency": 0.5333,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -1151,7 +1150,7 @@
         "content_health": 0.4533,
         "content_quality": 0.9067,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 0.8333,
+        "publication_frequency": 0.8,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -1172,10 +1171,10 @@
       },
       "content": {
         "measured": true,
-        "content_health": 0.952,
-        "content_quality": 0.9039,
+        "content_health": 0.9506,
+        "content_quality": 0.9012,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.7667,
+        "publication_frequency": 1.0,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -1220,14 +1219,14 @@
       },
       "content": {
         "measured": true,
-        "content_health": 0.4521,
-        "content_quality": 0.9042,
+        "content_health": 0.4522,
+        "content_quality": 0.9045,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 0.9667,
+        "publication_frequency": 0.9333,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.4521）"
+      "reason": "内容质量低（0.4522）"
     },
     {
       "source": "华夏时报网",
@@ -1247,7 +1246,7 @@
         "content_health": 0.9642,
         "content_quality": 0.9283,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.8,
+        "publication_frequency": 0.7667,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -1271,7 +1270,7 @@
         "content_health": 0.475,
         "content_quality": 0.95,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 0.7667,
+        "publication_frequency": 0.7333,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -1295,7 +1294,7 @@
         "content_health": 0.449,
         "content_quality": 0.898,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 1.0,
+        "publication_frequency": 0.9667,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -1319,7 +1318,7 @@
         "content_health": 0.9523,
         "content_quality": 0.9045,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.3333,
+        "publication_frequency": 0.3,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -1343,7 +1342,7 @@
         "content_health": 0.4496,
         "content_quality": 0.8991,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 0.7667,
+        "publication_frequency": 0.7333,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -1367,7 +1366,7 @@
         "content_health": 0.4379,
         "content_quality": 0.8757,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 0.8056,
+        "publication_frequency": 0.7778,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -1391,7 +1390,7 @@
         "content_health": 0.96,
         "content_quality": 0.92,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.6667,
+        "publication_frequency": 0.6333,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -1415,7 +1414,7 @@
         "content_health": 0.4404,
         "content_quality": 0.8807,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 0.9667,
+        "publication_frequency": 0.9333,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -1463,11 +1462,11 @@
         "content_health": 0.949,
         "content_quality": 0.898,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.1765,
+        "publication_frequency": 0.1471,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.1765）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.1471）但内容/覆盖尚可"
     },
     {
       "source": "中国基金报",
@@ -1487,7 +1486,7 @@
         "content_health": 0.9606,
         "content_quality": 0.9211,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.8667,
+        "publication_frequency": 0.8333,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -1511,7 +1510,7 @@
         "content_health": 0.4522,
         "content_quality": 0.9045,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 0.6667,
+        "publication_frequency": 0.6333,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -1583,7 +1582,7 @@
         "content_health": 0.9425,
         "content_quality": 0.885,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.5,
+        "publication_frequency": 0.4706,
         "business_coverage": 1.0
       },
       "suggested_action": "protect",
@@ -1607,7 +1606,7 @@
         "content_health": 0.9565,
         "content_quality": 0.9129,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.2667,
+        "publication_frequency": 0.2333,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -1631,7 +1630,7 @@
         "content_health": 0.9524,
         "content_quality": 0.9048,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.8,
+        "publication_frequency": 0.7667,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -1655,7 +1654,7 @@
         "content_health": 0.4506,
         "content_quality": 0.9012,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 0.8333,
+        "publication_frequency": 0.8,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -1679,7 +1678,7 @@
         "content_health": 0.9587,
         "content_quality": 0.9175,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.8387,
+        "publication_frequency": 0.8226,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -1727,7 +1726,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.5,
+        "publication_frequency": 0.4844,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -1751,7 +1750,7 @@
         "content_health": 0.9606,
         "content_quality": 0.9211,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.4,
+        "publication_frequency": 0.3667,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -1799,7 +1798,7 @@
         "content_health": 0.9559,
         "content_quality": 0.9118,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.3,
+        "publication_frequency": 0.2667,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -1823,7 +1822,7 @@
         "content_health": 0.4471,
         "content_quality": 0.8943,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 0.9808,
+        "publication_frequency": 0.9615,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -1836,22 +1835,22 @@
       "has_content": true,
       "connectivity": {
         "measured": true,
-        "crawl_health": 0.5,
+        "crawl_health": 1.0,
         "availability": 1.0,
-        "parse_success": 0.0,
+        "parse_success": 1.0,
         "crawl_incident": false,
         "note": null
       },
       "content": {
         "measured": true,
-        "content_health": 0.449,
+        "content_health": 0.949,
         "content_quality": 0.898,
-        "duplicate_ratio": 1.0,
-        "publication_frequency": 0.9412,
+        "duplicate_ratio": 0.0,
+        "publication_frequency": 0.9118,
         "business_coverage": 1.0
       },
-      "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.449）"
+      "suggested_action": "keep",
+      "reason": "内容与覆盖正常"
     },
     {
       "source": "中国政府采购报",
@@ -1919,7 +1918,7 @@
         "content_health": 0.4587,
         "content_quality": 0.9175,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 1.0,
+        "publication_frequency": 0.9667,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -1943,7 +1942,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.85,
+        "publication_frequency": 0.8333,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -1991,11 +1990,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.1053,
+        "publication_frequency": 0.0789,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.1053）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.0789）但内容/覆盖尚可"
     },
     {
       "source": "人民财讯",
@@ -2015,7 +2014,7 @@
         "content_health": 0.475,
         "content_quality": 0.95,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 0.8971,
+        "publication_frequency": 0.8824,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -2039,7 +2038,7 @@
         "content_health": 0.4316,
         "content_quality": 0.8633,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 1.0,
+        "publication_frequency": 0.9865,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -2087,7 +2086,7 @@
         "content_health": 0.41,
         "content_quality": 0.82,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 0.9667,
+        "publication_frequency": 0.9333,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -2207,7 +2206,7 @@
         "content_health": 0.4516,
         "content_quality": 0.9031,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 0.8333,
+        "publication_frequency": 0.8,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -2364,22 +2363,22 @@
       "has_content": true,
       "connectivity": {
         "measured": true,
-        "crawl_health": 0.5,
+        "crawl_health": 1.0,
         "availability": 1.0,
-        "parse_success": 0.0,
+        "parse_success": 1.0,
         "crawl_incident": false,
         "note": null
       },
       "content": {
         "measured": true,
-        "content_health": 0.475,
+        "content_health": 0.975,
         "content_quality": 0.95,
-        "duplicate_ratio": 1.0,
+        "duplicate_ratio": 0.0,
         "publication_frequency": 0.0,
         "business_coverage": 1.0
       },
-      "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.475）"
+      "suggested_action": "watch_content",
+      "reason": "新鲜度低（0.0）但内容/覆盖尚可"
     },
     {
       "source": "DeepTech深科技",
@@ -2388,22 +2387,22 @@
       "has_content": true,
       "connectivity": {
         "measured": true,
-        "crawl_health": 0.5,
+        "crawl_health": 1.0,
         "availability": 1.0,
-        "parse_success": 0.0,
+        "parse_success": 1.0,
         "crawl_incident": false,
         "note": null
       },
       "content": {
         "measured": true,
-        "content_health": 0.475,
+        "content_health": 0.975,
         "content_quality": 0.95,
-        "duplicate_ratio": 1.0,
+        "duplicate_ratio": 0.0,
         "publication_frequency": 0.0,
         "business_coverage": 1.0
       },
-      "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.475）"
+      "suggested_action": "watch_content",
+      "reason": "新鲜度低（0.0）但内容/覆盖尚可"
     },
     {
       "source": "农村金融时报",
@@ -2508,22 +2507,22 @@
       "has_content": true,
       "connectivity": {
         "measured": true,
-        "crawl_health": 1.0,
+        "crawl_health": 0.5,
         "availability": 1.0,
-        "parse_success": 1.0,
+        "parse_success": 0.0,
         "crawl_incident": false,
         "note": null
       },
       "content": {
         "measured": true,
-        "content_health": 0.975,
+        "content_health": 0.475,
         "content_quality": 0.95,
-        "duplicate_ratio": 0.0,
+        "duplicate_ratio": 1.0,
         "publication_frequency": 0.0,
         "business_coverage": 1.0
       },
-      "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.0）但内容/覆盖尚可"
+      "suggested_action": "suggest_downweight",
+      "reason": "内容质量低（0.475）"
     },
     {
       "source": "中国人寿",
@@ -3167,11 +3166,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.1667,
+        "publication_frequency": 0.1333,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.1667）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.1333）但内容/覆盖尚可"
     },
     {
       "source": "养老议事厅",
@@ -3311,7 +3310,7 @@
         "content_health": 0.475,
         "content_quality": 0.95,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 0.775,
+        "publication_frequency": 0.75,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
@@ -3359,7 +3358,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.3333,
+        "publication_frequency": 0.3,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -3431,11 +3430,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.1,
+        "publication_frequency": 0.0667,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.1）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.0667）但内容/覆盖尚可"
     },
     {
       "source": "我的电子退休证",
@@ -3455,7 +3454,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.8125,
+        "publication_frequency": 0.7812,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -3479,11 +3478,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.2,
+        "publication_frequency": 0.1667,
         "business_coverage": 1.0
       },
-      "suggested_action": "keep",
-      "reason": "内容与覆盖正常"
+      "suggested_action": "watch_content",
+      "reason": "新鲜度低（0.1667）但内容/覆盖尚可"
     },
     {
       "source": "文文爷爷",
@@ -3623,7 +3622,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.6667,
+        "publication_frequency": 0.6333,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -3647,7 +3646,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.7667,
+        "publication_frequency": 0.7333,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -3668,14 +3667,14 @@
       },
       "content": {
         "measured": true,
-        "content_health": 0.4733,
-        "content_quality": 0.9467,
+        "content_health": 0.475,
+        "content_quality": 0.95,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 1.0,
+        "publication_frequency": 0.9667,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.4733）"
+      "reason": "内容质量低（0.475）"
     },
     {
       "source": "东郭先生7086",
@@ -3743,11 +3742,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.0667,
+        "publication_frequency": 0.0333,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.0667）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.0333）但内容/覆盖尚可"
     },
     {
       "source": "车车号外",
@@ -3815,11 +3814,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.1,
+        "publication_frequency": 0.0667,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.1）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.0667）但内容/覆盖尚可"
     },
     {
       "source": "退休人员年审",
@@ -3839,7 +3838,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.9333,
+        "publication_frequency": 0.9,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -3887,11 +3886,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.1,
+        "publication_frequency": 0.0667,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.1）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.0667）但内容/覆盖尚可"
     },
     {
       "source": "小北芋圆",
@@ -4007,7 +4006,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.9333,
+        "publication_frequency": 0.9,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -4103,7 +4102,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.8667,
+        "publication_frequency": 0.8333,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -4223,11 +4222,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.0333,
+        "publication_frequency": 0.0,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.0333）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.0）但内容/覆盖尚可"
     },
     {
       "source": "乡村知遇",
@@ -4247,11 +4246,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.0333,
+        "publication_frequency": 0.0,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.0333）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.0）但内容/覆盖尚可"
     },
     {
       "source": "机械设计群",
@@ -4271,11 +4270,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.0333,
+        "publication_frequency": 0.0,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.0333）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.0）但内容/覆盖尚可"
     },
     {
       "source": "捕获不惑",
@@ -4295,11 +4294,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.0333,
+        "publication_frequency": 0.0,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.0333）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.0）但内容/覆盖尚可"
     },
     {
       "source": "水滴公司",
@@ -4343,11 +4342,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.0667,
+        "publication_frequency": 0.0333,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.0667）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.0333）但内容/覆盖尚可"
     },
     {
       "source": "土右新鲜本地职讯",
@@ -4391,86 +4390,14 @@
         "content_health": 0.89,
         "content_quality": 0.78,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.0667,
+        "publication_frequency": 0.0333,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.0667）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.0333）但内容/覆盖尚可"
     },
     {
       "source": "马孔多奇物集",
-      "status": "measured",
-      "is_authority": false,
-      "has_content": true,
-      "connectivity": {
-        "measured": true,
-        "crawl_health": 1.0,
-        "availability": 1.0,
-        "parse_success": 1.0,
-        "crawl_incident": false,
-        "note": null
-      },
-      "content": {
-        "measured": true,
-        "content_health": 0.975,
-        "content_quality": 0.95,
-        "duplicate_ratio": 0.0,
-        "publication_frequency": 0.0667,
-        "business_coverage": 1.0
-      },
-      "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.0667）但内容/覆盖尚可"
-    },
-    {
-      "source": "废旧轮胎",
-      "status": "measured",
-      "is_authority": false,
-      "has_content": true,
-      "connectivity": {
-        "measured": true,
-        "crawl_health": 1.0,
-        "availability": 1.0,
-        "parse_success": 1.0,
-        "crawl_incident": false,
-        "note": null
-      },
-      "content": {
-        "measured": true,
-        "content_health": 0.975,
-        "content_quality": 0.95,
-        "duplicate_ratio": 0.0,
-        "publication_frequency": 0.0667,
-        "business_coverage": 1.0
-      },
-      "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.0667）但内容/覆盖尚可"
-    },
-    {
-      "source": "提钱退休的徐敏",
-      "status": "measured",
-      "is_authority": false,
-      "has_content": true,
-      "connectivity": {
-        "measured": true,
-        "crawl_health": 1.0,
-        "availability": 1.0,
-        "parse_success": 1.0,
-        "crawl_incident": false,
-        "note": null
-      },
-      "content": {
-        "measured": true,
-        "content_health": 0.975,
-        "content_quality": 0.95,
-        "duplicate_ratio": 0.0,
-        "publication_frequency": 0.0667,
-        "business_coverage": 1.0
-      },
-      "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.0667）但内容/覆盖尚可"
-    },
-    {
-      "source": "缘起读书",
       "status": "measured",
       "is_authority": false,
       "has_content": true,
@@ -4494,6 +4421,78 @@
       "reason": "新鲜度低（0.0333）但内容/覆盖尚可"
     },
     {
+      "source": "废旧轮胎",
+      "status": "measured",
+      "is_authority": false,
+      "has_content": true,
+      "connectivity": {
+        "measured": true,
+        "crawl_health": 1.0,
+        "availability": 1.0,
+        "parse_success": 1.0,
+        "crawl_incident": false,
+        "note": null
+      },
+      "content": {
+        "measured": true,
+        "content_health": 0.975,
+        "content_quality": 0.95,
+        "duplicate_ratio": 0.0,
+        "publication_frequency": 0.0333,
+        "business_coverage": 1.0
+      },
+      "suggested_action": "watch_content",
+      "reason": "新鲜度低（0.0333）但内容/覆盖尚可"
+    },
+    {
+      "source": "提钱退休的徐敏",
+      "status": "measured",
+      "is_authority": false,
+      "has_content": true,
+      "connectivity": {
+        "measured": true,
+        "crawl_health": 1.0,
+        "availability": 1.0,
+        "parse_success": 1.0,
+        "crawl_incident": false,
+        "note": null
+      },
+      "content": {
+        "measured": true,
+        "content_health": 0.975,
+        "content_quality": 0.95,
+        "duplicate_ratio": 0.0,
+        "publication_frequency": 0.0333,
+        "business_coverage": 1.0
+      },
+      "suggested_action": "watch_content",
+      "reason": "新鲜度低（0.0333）但内容/覆盖尚可"
+    },
+    {
+      "source": "缘起读书",
+      "status": "measured",
+      "is_authority": false,
+      "has_content": true,
+      "connectivity": {
+        "measured": true,
+        "crawl_health": 1.0,
+        "availability": 1.0,
+        "parse_success": 1.0,
+        "crawl_incident": false,
+        "note": null
+      },
+      "content": {
+        "measured": true,
+        "content_health": 0.975,
+        "content_quality": 0.95,
+        "duplicate_ratio": 0.0,
+        "publication_frequency": 0.0,
+        "business_coverage": 1.0
+      },
+      "suggested_action": "watch_content",
+      "reason": "新鲜度低（0.0）但内容/覆盖尚可"
+    },
+    {
       "source": "风中的承诺8732",
       "status": "measured",
       "is_authority": false,
@@ -4511,11 +4510,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.1,
+        "publication_frequency": 0.0667,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.1）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.0667）但内容/覆盖尚可"
     },
     {
       "source": "我的养老资格验证",
@@ -4535,11 +4534,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.1,
+        "publication_frequency": 0.0667,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.1）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.0667）但内容/覆盖尚可"
     },
     {
       "source": "服务早安问候",
@@ -4559,11 +4558,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.1,
+        "publication_frequency": 0.0667,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.1）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.0667）但内容/覆盖尚可"
     },
     {
       "source": "粒屏话康养",
@@ -4583,11 +4582,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.1,
+        "publication_frequency": 0.0667,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.1）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.0667）但内容/覆盖尚可"
     },
     {
       "source": "法治日报",
@@ -4607,11 +4606,11 @@
         "content_health": 0.91,
         "content_quality": 0.82,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.1333,
+        "publication_frequency": 0.1,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.1333）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.1）但内容/覆盖尚可"
     },
     {
       "source": "菊菊有理",
@@ -4631,11 +4630,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.1333,
+        "publication_frequency": 0.1,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.1333）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.1）但内容/覆盖尚可"
     },
     {
       "source": "金融投资报",
@@ -4655,11 +4654,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.1333,
+        "publication_frequency": 0.1,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.1333）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.1）但内容/覆盖尚可"
     },
     {
       "source": "梅州人社",
@@ -4679,11 +4678,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.1333,
+        "publication_frequency": 0.1,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.1333）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.1）但内容/覆盖尚可"
     },
     {
       "source": "作业交流群",
@@ -4703,11 +4702,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.1333,
+        "publication_frequency": 0.1,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.1333）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.1）但内容/覆盖尚可"
     },
     {
       "source": "星想事成发发发",
@@ -4727,11 +4726,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.1333,
+        "publication_frequency": 0.1,
         "business_coverage": 1.0
       },
       "suggested_action": "watch_content",
-      "reason": "新鲜度低（0.1333）但内容/覆盖尚可"
+      "reason": "新鲜度低（0.1）但内容/覆盖尚可"
     },
     {
       "source": "二手电动车转让",
@@ -4751,7 +4750,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.7,
+        "publication_frequency": 0.6667,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -4775,11 +4774,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.2,
+        "publication_frequency": 0.1667,
         "business_coverage": 1.0
       },
-      "suggested_action": "keep",
-      "reason": "内容与覆盖正常"
+      "suggested_action": "watch_content",
+      "reason": "新鲜度低（0.1667）但内容/覆盖尚可"
     },
     {
       "source": "代亚冲",
@@ -4799,11 +4798,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.2,
+        "publication_frequency": 0.1667,
         "business_coverage": 1.0
       },
-      "suggested_action": "keep",
-      "reason": "内容与覆盖正常"
+      "suggested_action": "watch_content",
+      "reason": "新鲜度低（0.1667）但内容/覆盖尚可"
     },
     {
       "source": "热爱生活2023",
@@ -4823,11 +4822,11 @@
         "content_health": 0.89,
         "content_quality": 0.78,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.2,
+        "publication_frequency": 0.1667,
         "business_coverage": 1.0
       },
-      "suggested_action": "keep",
-      "reason": "内容与覆盖正常"
+      "suggested_action": "watch_content",
+      "reason": "新鲜度低（0.1667）但内容/覆盖尚可"
     },
     {
       "source": "数据说世界",
@@ -4847,11 +4846,11 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.2,
+        "publication_frequency": 0.1667,
         "business_coverage": 1.0
       },
-      "suggested_action": "keep",
-      "reason": "内容与覆盖正常"
+      "suggested_action": "watch_content",
+      "reason": "新鲜度低（0.1667）但内容/覆盖尚可"
     },
     {
       "source": "金融明白人",
@@ -4895,7 +4894,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.3333,
+        "publication_frequency": 0.3,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -4943,7 +4942,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.3333,
+        "publication_frequency": 0.3,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -4991,7 +4990,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.3667,
+        "publication_frequency": 0.3333,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5039,7 +5038,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.3667,
+        "publication_frequency": 0.3333,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5063,7 +5062,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.3,
+        "publication_frequency": 0.2667,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5087,7 +5086,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.4,
+        "publication_frequency": 0.3667,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5111,7 +5110,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.4,
+        "publication_frequency": 0.3667,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5135,7 +5134,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.5,
+        "publication_frequency": 0.4667,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5159,7 +5158,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.4667,
+        "publication_frequency": 0.4333,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5183,7 +5182,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.4667,
+        "publication_frequency": 0.4333,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5207,7 +5206,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.5,
+        "publication_frequency": 0.4667,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5279,7 +5278,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.6333,
+        "publication_frequency": 0.6,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5399,7 +5398,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.6667,
+        "publication_frequency": 0.6333,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5423,7 +5422,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.6667,
+        "publication_frequency": 0.6333,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5447,7 +5446,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.6667,
+        "publication_frequency": 0.6333,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5471,7 +5470,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.7,
+        "publication_frequency": 0.6667,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5495,7 +5494,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.3333,
+        "publication_frequency": 0.3,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5543,7 +5542,7 @@
         "content_health": 0.91,
         "content_quality": 0.82,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.7333,
+        "publication_frequency": 0.7,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5567,7 +5566,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.7333,
+        "publication_frequency": 0.7,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5591,7 +5590,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.7333,
+        "publication_frequency": 0.7,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5615,7 +5614,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.7,
+        "publication_frequency": 0.6667,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5663,7 +5662,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.7667,
+        "publication_frequency": 0.7333,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5687,7 +5686,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.8333,
+        "publication_frequency": 0.8,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5711,7 +5710,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.8,
+        "publication_frequency": 0.7667,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5735,7 +5734,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.8667,
+        "publication_frequency": 0.8333,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5759,7 +5758,7 @@
         "content_health": 0.975,
         "content_quality": 0.95,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.9667,
+        "publication_frequency": 0.9333,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -5780,14 +5779,14 @@
       },
       "content": {
         "measured": true,
-        "content_health": 0.465,
-        "content_quality": 0.93,
+        "content_health": 0.475,
+        "content_quality": 0.95,
         "duplicate_ratio": 1.0,
-        "publication_frequency": 1.0,
+        "publication_frequency": 0.9667,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.465）"
+      "reason": "内容质量低（0.475）"
     },
     {
       "source": "卓越人才发展",
@@ -5804,10 +5803,10 @@
       },
       "content": {
         "measured": true,
-        "content_health": 0.94,
-        "content_quality": 0.88,
+        "content_health": 0.965,
+        "content_quality": 0.93,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 1.0,
+        "publication_frequency": 0.9667,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",

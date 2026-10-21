@@ -1,6 +1,6 @@
 {
   "version": "funnel-v1.1",
-  "generated_at": "2026-10-20T21:16:54Z",
+  "generated_at": "2026-10-21T03:07:02Z",
   "principle": "待决策洪流 → 漏斗（now/soon/watch）+ 排名靠前的待决；已决只来自真实决策记录；六条件硬化为每条待决的注解 + decision_ready 子集；分角色计数；样本<30 不结论；分桶为可观测代理",
   "meta": {
     "total_review_queue": 100,
@@ -10,15 +10,15 @@
     "pending": 78,
     "pending_by_tier": {
       "now": 17,
-      "soon": 4,
-      "watch": 57
+      "soon": 3,
+      "watch": 58
     },
     "pending_by_role": {
-      "ai": 7,
+      "ai": 8,
       "ma": 3,
       "regulatory": 27,
       "health": 0,
-      "other": 41
+      "other": 40
     },
     "decision_ready": 3,
     "decision_ready_ceids": [
@@ -33,10 +33,10 @@
     "gold_status": "seed",
     "gold_source": "seed_assistant",
     "six_failed_counter": {
-      "1": 50,
+      "1": 49,
       "2": 48,
-      "3": 49,
-      "4": 45,
+      "3": 48,
+      "4": 46,
       "5": 22,
       "6": 0
     },
@@ -671,24 +671,23 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_cb8b1fdb3968",
-        "canonical_event_id": "cev_fe5076464961",
-        "title": "PERILS 将 7 月份欧洲对流风暴承保市场损失预估上调至 28 亿欧元",
-        "topic": "capital_reinsurance",
+        "event_id": "evt_ab67fa7e4a49",
+        "canonical_event_id": "cev_b8d803b0dd0a",
+        "title": "当未来产业风险不再“可计算”，科技保险如何接住？",
+        "topic": "ai_intelligent",
         "priority": 40,
         "trust_level": "medium",
         "reason_types": [
           "change_impact"
         ],
-        "role": "other",
+        "role": "ai",
         "meets_six": false,
         "failed_conditions": [
-          1,
           2,
           3
         ],
         "six_detail": {
-          "monitored": false,
+          "monitored": true,
           "acted": false,
           "t1_reg": false,
           "has_semantic_change": false,
@@ -705,43 +704,9 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_60a0879506c0",
-        "canonical_event_id": "cev_64f90bb28196",
-        "title": "领取失业保险金，基本养老保险个人账户里的钱会变少吗？",
-        "topic": "pension_finance",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_ecc24c2c7899",
-        "canonical_event_id": "cev_1db8e3666ad9",
-        "title": "家庭保险是美国家庭最紧缩的财产税",
+        "event_id": "evt_b2d96f6fbd34",
+        "canonical_event_id": "cev_7ee90a1ca34c",
+        "title": "补齐高端航运服务“软实力”短板 多项航运金融领域成果实现首发",
         "topic": "",
         "priority": 40,
         "trust_level": "medium",
@@ -2090,6 +2055,7 @@
         "role": "regulatory",
         "meets_six": false,
         "failed_conditions": [
+          2,
           3,
           4
         ],
@@ -2097,7 +2063,7 @@
           "monitored": true,
           "acted": false,
           "t1_reg": false,
-          "has_semantic_change": true,
+          "has_semantic_change": false,
           "stage": "n/a",
           "status": "unknown",
           "evidence_count": 1,
@@ -2649,6 +2615,39 @@
         },
         "urgency": null,
         "tier": "watch"
+      },
+      {
+        "event_id": "evt_1ea2888b5965",
+        "canonical_event_id": "cev_78102864e16c",
+        "title": "尽管定价疲软，全球再保险行业预计仍将保持充足资本：标准普尔",
+        "topic": "capital_reinsurance",
+        "priority": 30,
+        "trust_level": "medium",
+        "reason_types": [
+          "event_cluster"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          4
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": true,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "watch"
       }
     ]
   },
@@ -3094,7 +3093,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-20T21:14:58Z"
+      "decided_at": "2026-10-21T03:05:44Z"
     },
     {
       "event_id": "evt_96c336ca5844",
@@ -3224,7 +3223,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-20T21:14:58Z"
+      "decided_at": "2026-10-21T03:05:44Z"
     },
     {
       "event_id": "evt_083577177db6",
@@ -3256,7 +3255,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-20T21:14:58Z"
+      "decided_at": "2026-10-21T03:05:44Z"
     },
     {
       "event_id": "evt_df8ab2dae218",
@@ -3289,7 +3288,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-20T21:14:58Z"
+      "decided_at": "2026-10-21T03:05:44Z"
     },
     {
       "event_id": "evt_449645219546",
@@ -3322,7 +3321,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-20T21:14:58Z"
+      "decided_at": "2026-10-21T03:05:44Z"
     },
     {
       "event_id": "evt_45affa7dff0d",
@@ -3354,7 +3353,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-20T21:14:58Z"
+      "decided_at": "2026-10-21T03:05:44Z"
     },
     {
       "event_id": "evt_88a7555a3759",
@@ -3389,7 +3388,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-20T21:14:58Z"
+      "decided_at": "2026-10-21T03:05:44Z"
     },
     {
       "event_id": "evt_6622539bc4f2",
@@ -3421,7 +3420,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-20T21:14:58Z"
+      "decided_at": "2026-10-21T03:05:44Z"
     },
     {
       "event_id": "evt_0fe4820271f7",
@@ -3453,7 +3452,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-20T21:14:58Z"
+      "decided_at": "2026-10-21T03:05:44Z"
     },
     {
       "event_id": "evt_59a8566e7e13",
@@ -3485,7 +3484,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-20T21:14:58Z"
+      "decided_at": "2026-10-21T03:05:44Z"
     },
     {
       "event_id": "evt_03c95bd12e1d",
@@ -3517,7 +3516,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-20T21:14:58Z"
+      "decided_at": "2026-10-21T03:05:44Z"
     },
     {
       "event_id": "evt_db0a3669a076",
@@ -3549,7 +3548,7 @@
         "feedback_status": null
       },
       "urgency": "watch",
-      "decided_at": "2026-10-20T21:14:58Z"
+      "decided_at": "2026-10-21T03:05:44Z"
     },
     {
       "event_id": "evt_083f21f9623f",
@@ -3787,7 +3786,7 @@
     {
       "dimension": "六条件硬化（决策门）",
       "status": "evaluated",
-      "reason": "待决 78 条中真正达到六条件决策门 3 条；各条件未达计数 {'1': 50, '2': 48, '3': 49, '4': 45, '5': 22, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
+      "reason": "待决 78 条中真正达到六条件决策门 3 条；各条件未达计数 {'1': 49, '2': 48, '3': 48, '4': 46, '5': 22, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
       "unblock": "六条件为可观测评估注解；decision_ready 子集供优先拍板，其余仍留 Human Review"
     },
     {

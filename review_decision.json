@@ -1,11 +1,11 @@
 {
   "version": "review-decision-v1.0",
-  "generated_at": "2026-10-20T21:16:56+00:00",
+  "generated_at": "2026-10-21T03:07:03+00:00",
   "principle": "三段式收敛：分层呈现(不改状态) + 建议处置(不改状态) + 人工执行(人才改状态)。不做 auto-resolve——阈值未经人工验证，无 ground truth 时自动处置=静默漏斗。",
   "meta": {
     "queue_items": 100,
     "pending": 100,
-    "human_load": 23,
+    "human_load": 22,
     "auto_resolve_enabled": false,
     "note": "所有建议 auto_executable=False；状态变更须由 Human Review 侧人工执行"
   },
@@ -241,12 +241,12 @@
     {
       "tier": "material_change",
       "label": "复核实质变化",
-      "count": 3,
+      "count": 2,
       "default_collapsed": false,
       "items": [
         {
-          "event_id": "evt_cb8b1fdb3968",
-          "title": "PERILS 将 7 月份欧洲对流风暴承保市场损失预估上调至 28 亿欧元",
+          "event_id": "evt_ab67fa7e4a49",
+          "title": "当未来产业风险不再“可计算”，科技保险如何接住？",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -256,19 +256,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_60a0879506c0",
-          "title": "领取失业保险金，基本养老保险个人账户里的钱会变少吗？",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_ecc24c2c7899",
-          "title": "家庭保险是美国家庭最紧缩的财产税",
+          "event_id": "evt_b2d96f6fbd34",
+          "title": "补齐高端航运服务“软实力”短板 多项航运金融领域成果实现首发",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -455,7 +444,7 @@
     {
       "tier": "noise",
       "label": "建议归档（低优先级 cluster）",
-      "count": 62,
+      "count": 63,
       "default_collapsed": true,
       "items": [
         {
@@ -1132,6 +1121,17 @@
         {
           "event_id": "evt_bd5d0ebd8a51",
           "title": "IUA：2025 年条约再保险占伦敦承保保费总额的 26% 多一点",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_1ea2888b5965",
+          "title": "尽管定价疲软，全球再保险行业预计仍将保持充足资本：标准普尔",
           "tier": "noise",
           "tier_label": "建议归档（低优先级 cluster）",
           "priority": 30,
