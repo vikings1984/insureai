@@ -1,7 +1,7 @@
 {
   "available": true,
   "version": "source-os-v1.0",
-  "generated_at": "2026-10-21T03:07:03+00:00",
+  "generated_at": "2026-10-21T11:11:36+00:00",
   "principle": "connectivity 与 content 正交；且区分 measured / unmeasured —— 指标缺失≠源不健康。degrade 只依据 content，权威源受保护；只读，不改权重。",
   "thresholds": {
     "crawl_health_min": 0.5,
@@ -10,12 +10,12 @@
     "coverage_min": 0.5
   },
   "meta": {
-    "source_count": 243,
-    "measured_count": 230,
+    "source_count": 245,
+    "measured_count": 232,
     "unmeasured_count": 13,
     "authority_count": 8,
     "crawl_incident_count": 0,
-    "content_weak_count": 60,
+    "content_weak_count": 51,
     "watch_content_count": 113
   },
   "unmeasured_sources": [
@@ -37,26 +37,20 @@
   "content_weak": [
     "中国太平洋保险",
     "中国保险行业协会",
-    "Insurance Journal",
-    "Reinsurance News",
-    "Artemis (ILS)",
     "东方财富搜索",
     "界面新闻",
     "每日经济新闻",
-    "财联社",
     "中国证券报",
     "新华财经",
     "北京商报",
     "中国经营报",
-    "上海证券报",
     "21世纪经济报道",
     "时代周报",
-    "第一财经",
     "中国证券报·中证金牛座",
     "蓝鲸财经",
+    "证券时报网",
     "中国证券报·中证网",
     "上海证券报·中国证券网",
-    "财中社",
     "经济日报",
     "证券日报",
     "经济参考网",
@@ -84,8 +78,6 @@
     "中国银行保险资产管理业协会",
     "诉责论谈",
     "审判研究",
-    "养老院养老",
-    "退休金验证人脸识别",
     "今日保条",
     "成都人社局",
     "财视",
@@ -93,8 +85,7 @@
     "建行投行",
     "财闻",
     "报名普通话报名",
-    "阳光保险集团",
-    "徐姑娘的三二事"
+    "阳光保险集团"
   ],
   "sources": [
     {
@@ -563,22 +554,22 @@
       "has_content": true,
       "connectivity": {
         "measured": true,
-        "crawl_health": 0.5,
+        "crawl_health": 0.85,
         "availability": 1.0,
-        "parse_success": 0.0,
+        "parse_success": 0.7,
         "crawl_incident": false,
         "note": null
       },
       "content": {
         "measured": true,
-        "content_health": 0.6436,
-        "content_quality": 0.8872,
-        "duplicate_ratio": 0.6,
+        "content_health": 0.9439,
+        "content_quality": 0.8878,
+        "duplicate_ratio": 0.0,
         "publication_frequency": 1.0,
-        "business_coverage": 0.0
+        "business_coverage": 0.7
       },
-      "suggested_action": "suggest_downweight",
-      "reason": "业务相关度低（0.0）"
+      "suggested_action": "keep",
+      "reason": "内容与覆盖正常"
     },
     {
       "source": "Reinsurance News",
@@ -587,22 +578,22 @@
       "has_content": true,
       "connectivity": {
         "measured": true,
-        "crawl_health": 0.5,
+        "crawl_health": 0.9,
         "availability": 1.0,
-        "parse_success": 0.0,
+        "parse_success": 0.8,
         "crawl_incident": false,
         "note": null
       },
       "content": {
         "measured": true,
-        "content_health": 0.4086,
-        "content_quality": 0.8171,
-        "duplicate_ratio": 1.0,
+        "content_health": 0.9086,
+        "content_quality": 0.8173,
+        "duplicate_ratio": 0.0,
         "publication_frequency": 1.0,
-        "business_coverage": 1.0
+        "business_coverage": 0.8
       },
-      "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.4086）"
+      "suggested_action": "keep",
+      "reason": "内容与覆盖正常"
     },
     {
       "source": "Artemis (ILS)",
@@ -611,22 +602,22 @@
       "has_content": true,
       "connectivity": {
         "measured": true,
-        "crawl_health": 0.5,
+        "crawl_health": 0.7,
         "availability": 1.0,
-        "parse_success": 0.0,
+        "parse_success": 0.4,
         "crawl_incident": false,
         "note": null
       },
       "content": {
         "measured": true,
-        "content_health": 0.5182,
-        "content_quality": 0.9364,
-        "duplicate_ratio": 0.9,
+        "content_health": 0.7181,
+        "content_quality": 0.9362,
+        "duplicate_ratio": 0.5,
         "publication_frequency": 1.0,
-        "business_coverage": 0.0
+        "business_coverage": 0.8
       },
-      "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.5182）"
+      "suggested_action": "keep",
+      "reason": "内容与覆盖正常"
     },
     {
       "source": "东方财富搜索",
@@ -659,22 +650,22 @@
       "has_content": true,
       "connectivity": {
         "measured": true,
-        "crawl_health": 0.5,
+        "crawl_health": 0.625,
         "availability": 1.0,
-        "parse_success": 0.0,
+        "parse_success": 0.25,
         "crawl_incident": false,
         "note": null
       },
       "content": {
         "measured": true,
-        "content_health": 0.4441,
-        "content_quality": 0.8882,
-        "duplicate_ratio": 1.0,
-        "publication_frequency": 0.9333,
+        "content_health": 0.5682,
+        "content_quality": 0.8864,
+        "duplicate_ratio": 0.75,
+        "publication_frequency": 1.0,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.4441）"
+      "reason": "内容质量低（0.5682）"
     },
     {
       "source": "每日经济新闻",
@@ -707,22 +698,22 @@
       "has_content": true,
       "connectivity": {
         "measured": true,
-        "crawl_health": 0.5,
+        "crawl_health": 0.8,
         "availability": 1.0,
-        "parse_success": 0.0,
+        "parse_success": 0.6,
         "crawl_incident": false,
         "note": null
       },
       "content": {
         "measured": true,
-        "content_health": 0.454,
-        "content_quality": 0.9079,
-        "duplicate_ratio": 1.0,
-        "publication_frequency": 0.9667,
+        "content_health": 0.7528,
+        "content_quality": 0.9056,
+        "duplicate_ratio": 0.4,
+        "publication_frequency": 1.0,
         "business_coverage": 1.0
       },
-      "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.454）"
+      "suggested_action": "keep",
+      "reason": "内容与覆盖正常"
     },
     {
       "source": "中国证券报",
@@ -803,22 +794,22 @@
       "has_content": true,
       "connectivity": {
         "measured": true,
-        "crawl_health": 0.5,
+        "crawl_health": 0.625,
         "availability": 1.0,
-        "parse_success": 0.0,
+        "parse_success": 0.25,
         "crawl_incident": false,
         "note": null
       },
       "content": {
         "measured": true,
-        "content_health": 0.4501,
-        "content_quality": 0.9003,
-        "duplicate_ratio": 1.0,
-        "publication_frequency": 0.9667,
+        "content_health": 0.5754,
+        "content_quality": 0.9007,
+        "duplicate_ratio": 0.75,
+        "publication_frequency": 1.0,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.4501）"
+      "reason": "内容质量低（0.5754）"
     },
     {
       "source": "中国经营报",
@@ -875,22 +866,22 @@
       "has_content": true,
       "connectivity": {
         "measured": true,
-        "crawl_health": 0.5,
+        "crawl_health": 1.0,
         "availability": 1.0,
-        "parse_success": 0.0,
+        "parse_success": 1.0,
         "crawl_incident": false,
         "note": null
       },
       "content": {
         "measured": true,
-        "content_health": 0.4606,
+        "content_health": 0.9606,
         "content_quality": 0.9211,
-        "duplicate_ratio": 1.0,
+        "duplicate_ratio": 0.0,
         "publication_frequency": 0.6333,
         "business_coverage": 1.0
       },
-      "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.4606）"
+      "suggested_action": "keep",
+      "reason": "内容与覆盖正常"
     },
     {
       "source": "21世纪经济报道",
@@ -931,14 +922,14 @@
       },
       "content": {
         "measured": true,
-        "content_health": 0.4531,
-        "content_quality": 0.9062,
+        "content_health": 0.4537,
+        "content_quality": 0.9075,
         "duplicate_ratio": 1.0,
         "publication_frequency": 0.9667,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.4531）"
+      "reason": "内容质量低（0.4537）"
     },
     {
       "source": "第一财经",
@@ -947,22 +938,22 @@
       "has_content": true,
       "connectivity": {
         "measured": true,
-        "crawl_health": 0.5,
+        "crawl_health": 1.0,
         "availability": 1.0,
-        "parse_success": 0.0,
+        "parse_success": 1.0,
         "crawl_incident": false,
         "note": null
       },
       "content": {
         "measured": true,
-        "content_health": 0.4547,
-        "content_quality": 0.9094,
-        "duplicate_ratio": 1.0,
-        "publication_frequency": 0.9667,
+        "content_health": 0.955,
+        "content_quality": 0.91,
+        "duplicate_ratio": 0.0,
+        "publication_frequency": 1.0,
         "business_coverage": 1.0
       },
-      "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.4547）"
+      "suggested_action": "keep",
+      "reason": "内容与覆盖正常"
     },
     {
       "source": "中国证券报·中证金牛座",
@@ -1019,22 +1010,22 @@
       "has_content": true,
       "connectivity": {
         "measured": true,
-        "crawl_health": 1.0,
+        "crawl_health": 0.5,
         "availability": 1.0,
-        "parse_success": 1.0,
+        "parse_success": 0.0,
         "crawl_incident": false,
         "note": null
       },
       "content": {
         "measured": true,
-        "content_health": 0.9561,
-        "content_quality": 0.9121,
-        "duplicate_ratio": 0.0,
+        "content_health": 0.4568,
+        "content_quality": 0.9137,
+        "duplicate_ratio": 1.0,
         "publication_frequency": 1.0,
         "business_coverage": 1.0
       },
-      "suggested_action": "keep",
-      "reason": "内容与覆盖正常"
+      "suggested_action": "suggest_downweight",
+      "reason": "内容质量低（0.4568）"
     },
     {
       "source": "中国证券报·中证网",
@@ -1091,22 +1082,22 @@
       "has_content": true,
       "connectivity": {
         "measured": true,
-        "crawl_health": 0.5,
+        "crawl_health": 0.6666,
         "availability": 1.0,
-        "parse_success": 0.0,
+        "parse_success": 0.3333,
         "crawl_incident": false,
         "note": null
       },
       "content": {
         "measured": true,
-        "content_health": 0.445,
-        "content_quality": 0.89,
-        "duplicate_ratio": 1.0,
-        "publication_frequency": 0.9667,
+        "content_health": 0.6092,
+        "content_quality": 0.885,
+        "duplicate_ratio": 0.6667,
+        "publication_frequency": 1.0,
         "business_coverage": 1.0
       },
-      "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.445）"
+      "suggested_action": "keep",
+      "reason": "内容与覆盖正常"
     },
     {
       "source": "券商中国",
@@ -1219,14 +1210,14 @@
       },
       "content": {
         "measured": true,
-        "content_health": 0.4522,
-        "content_quality": 0.9045,
+        "content_health": 0.4523,
+        "content_quality": 0.9047,
         "duplicate_ratio": 1.0,
         "publication_frequency": 0.9333,
         "business_coverage": 1.0
       },
       "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.4522）"
+      "reason": "内容质量低（0.4523）"
     },
     {
       "source": "华夏时报网",
@@ -1627,10 +1618,10 @@
       },
       "content": {
         "measured": true,
-        "content_health": 0.9524,
-        "content_quality": 0.9048,
+        "content_health": 0.9533,
+        "content_quality": 0.9067,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.7667,
+        "publication_frequency": 1.0,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -1747,10 +1738,10 @@
       },
       "content": {
         "measured": true,
-        "content_health": 0.9606,
-        "content_quality": 0.9211,
+        "content_health": 0.9555,
+        "content_quality": 0.911,
         "duplicate_ratio": 0.0,
-        "publication_frequency": 0.3667,
+        "publication_frequency": 1.0,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -3299,22 +3290,22 @@
       "has_content": true,
       "connectivity": {
         "measured": true,
-        "crawl_health": 0.5,
+        "crawl_health": 1.0,
         "availability": 1.0,
-        "parse_success": 0.0,
+        "parse_success": 1.0,
         "crawl_incident": false,
         "note": null
       },
       "content": {
         "measured": true,
-        "content_health": 0.475,
+        "content_health": 0.975,
         "content_quality": 0.95,
-        "duplicate_ratio": 1.0,
+        "duplicate_ratio": 0.0,
         "publication_frequency": 0.75,
         "business_coverage": 1.0
       },
-      "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.475）"
+      "suggested_action": "keep",
+      "reason": "内容与覆盖正常"
     },
     {
       "source": "四级英语真题",
@@ -3443,18 +3434,18 @@
       "has_content": true,
       "connectivity": {
         "measured": true,
-        "crawl_health": 1.0,
+        "crawl_health": 0.75,
         "availability": 1.0,
-        "parse_success": 1.0,
+        "parse_success": 0.5,
         "crawl_incident": false,
         "note": null
       },
       "content": {
         "measured": true,
-        "content_health": 0.975,
-        "content_quality": 0.95,
-        "duplicate_ratio": 0.0,
-        "publication_frequency": 0.7812,
+        "content_health": 0.718,
+        "content_quality": 0.936,
+        "duplicate_ratio": 0.5,
+        "publication_frequency": 1.0,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
@@ -3659,22 +3650,22 @@
       "has_content": true,
       "connectivity": {
         "measured": true,
-        "crawl_health": 0.5,
+        "crawl_health": 1.0,
         "availability": 1.0,
-        "parse_success": 0.0,
+        "parse_success": 1.0,
         "crawl_incident": false,
         "note": null
       },
       "content": {
         "measured": true,
-        "content_health": 0.475,
+        "content_health": 0.975,
         "content_quality": 0.95,
-        "duplicate_ratio": 1.0,
+        "duplicate_ratio": 0.0,
         "publication_frequency": 0.9667,
         "business_coverage": 1.0
       },
-      "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.475）"
+      "suggested_action": "keep",
+      "reason": "内容与覆盖正常"
     },
     {
       "source": "东郭先生7086",
@@ -5771,22 +5762,22 @@
       "has_content": true,
       "connectivity": {
         "measured": true,
-        "crawl_health": 0.5,
+        "crawl_health": 1.0,
         "availability": 1.0,
-        "parse_success": 0.0,
+        "parse_success": 1.0,
         "crawl_incident": false,
         "note": null
       },
       "content": {
         "measured": true,
-        "content_health": 0.475,
+        "content_health": 0.975,
         "content_quality": 0.95,
-        "duplicate_ratio": 1.0,
+        "duplicate_ratio": 0.0,
         "publication_frequency": 0.9667,
         "business_coverage": 1.0
       },
-      "suggested_action": "suggest_downweight",
-      "reason": "内容质量低（0.475）"
+      "suggested_action": "keep",
+      "reason": "内容与覆盖正常"
     },
     {
       "source": "卓越人才发展",
@@ -5803,10 +5794,58 @@
       },
       "content": {
         "measured": true,
-        "content_health": 0.965,
-        "content_quality": 0.93,
+        "content_health": 0.975,
+        "content_quality": 0.95,
         "duplicate_ratio": 0.0,
         "publication_frequency": 0.9667,
+        "business_coverage": 1.0
+      },
+      "suggested_action": "keep",
+      "reason": "内容与覆盖正常"
+    },
+    {
+      "source": "掌上呼家楼",
+      "status": "measured",
+      "is_authority": false,
+      "has_content": true,
+      "connectivity": {
+        "measured": true,
+        "crawl_health": 1.0,
+        "availability": 1.0,
+        "parse_success": 1.0,
+        "crawl_incident": false,
+        "note": null
+      },
+      "content": {
+        "measured": true,
+        "content_health": 0.94,
+        "content_quality": 0.88,
+        "duplicate_ratio": 0.0,
+        "publication_frequency": 1.0,
+        "business_coverage": 1.0
+      },
+      "suggested_action": "keep",
+      "reason": "内容与覆盖正常"
+    },
+    {
+      "source": "三石进化论",
+      "status": "measured",
+      "is_authority": false,
+      "has_content": true,
+      "connectivity": {
+        "measured": true,
+        "crawl_health": 1.0,
+        "availability": 1.0,
+        "parse_success": 1.0,
+        "crawl_incident": false,
+        "note": null
+      },
+      "content": {
+        "measured": true,
+        "content_health": 0.94,
+        "content_quality": 0.88,
+        "duplicate_ratio": 0.0,
+        "publication_frequency": 1.0,
         "business_coverage": 1.0
       },
       "suggested_action": "keep",
