@@ -1,9 +1,9 @@
 {
   "version": 1,
   "principle": "高价值结论必须在去除单一关键输入后保持合理稳健，否则进入人工复核。",
-  "total_cases": 5670,
-  "fragile_cases": 8,
-  "fragility_rate": 0.0014,
+  "total_cases": 5692,
+  "fragile_cases": 29,
+  "fragility_rate": 0.0051,
   "cases": [
     {
       "event_id": "evt_92310abdea56",
@@ -1910,6 +1910,22 @@
       "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
     },
     {
+      "event_id": "evt_8ae67256aed3",
+      "scenario": "remove_conflict_flag",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
+    },
+    {
+      "event_id": "evt_8ae67256aed3",
+      "scenario": "remove_topic_trend_signal",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
+    },
+    {
       "event_id": "evt_41f4834f4882",
       "scenario": "remove_conflict_flag",
       "baseline_urgency": "watch",
@@ -3206,7 +3222,7 @@
       "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
     },
     {
-      "event_id": "evt_8ae67256aed3",
+      "event_id": "evt_b3beca4e84ef",
       "scenario": "remove_conflict_flag",
       "baseline_urgency": "watch",
       "counterfactual_urgency": "watch",
@@ -3214,7 +3230,23 @@
       "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
     },
     {
-      "event_id": "evt_8ae67256aed3",
+      "event_id": "evt_b3beca4e84ef",
+      "scenario": "remove_topic_trend_signal",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
+    },
+    {
+      "event_id": "evt_51499cc09327",
+      "scenario": "remove_conflict_flag",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
+    },
+    {
+      "event_id": "evt_51499cc09327",
       "scenario": "remove_topic_trend_signal",
       "baseline_urgency": "watch",
       "counterfactual_urgency": "watch",
@@ -3967,38 +3999,6 @@
     },
     {
       "event_id": "evt_4eec611f4cce",
-      "scenario": "remove_topic_trend_signal",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
-    },
-    {
-      "event_id": "evt_bcf52d6f2efd",
-      "scenario": "remove_conflict_flag",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
-    },
-    {
-      "event_id": "evt_bcf52d6f2efd",
-      "scenario": "remove_topic_trend_signal",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
-    },
-    {
-      "event_id": "evt_df509377ed0c",
-      "scenario": "remove_conflict_flag",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
-    },
-    {
-      "event_id": "evt_df509377ed0c",
       "scenario": "remove_topic_trend_signal",
       "baseline_urgency": "watch",
       "counterfactual_urgency": "watch",
@@ -4007,10 +4007,10 @@
     }
   ],
   "_provenance": {
-    "run_id": "run_20261022_110957_89840d",
-    "build_sha": "ed8465da58d2bc2b16dfad4aa30162558e954b25",
+    "run_id": "run_20261022_163851_d377a4",
+    "build_sha": "1440fbe39ebd15028c4ab34ee127bad7184e04b1",
     "engine_version": "4.2",
     "schema_version": "release-provenance-v1",
-    "generated_at": "2026-10-22T11:09:59.073571+00:00"
+    "generated_at": "2026-10-22T16:38:53.590911+00:00"
   }
 }

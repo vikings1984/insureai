@@ -1,6 +1,6 @@
 {
   "version": "p2.5-v1.0",
-  "generated_at": "2026-10-22T11:09:50Z",
+  "generated_at": "2026-10-22T16:38:42Z",
   "principle": "只聚合既有 artifact 中的事实；观察与结论分离，样本不足时不出结论，不伪造时间线",
   "sources": {
     "p2_state.json": {
@@ -10,17 +10,17 @@
     },
     "review_queue.json": {
       "items": 100,
-      "decided": 12,
-      "pending": 88
+      "decided": 9,
+      "pending": 91
     },
     "p2_daily_brief.json": {
       "brief": 20
     },
     "knowledge_graph.json": {
-      "events_indexed": 5964
+      "events_indexed": 6019
     },
     "decisions_ledger.json": {
-      "distinct_events": 48
+      "distinct_events": 52
     }
   },
   "watchlists": {
@@ -300,17 +300,18 @@
   },
   "decisions": {
     "observations": {
-      "sample_size": 48,
+      "sample_size": 52,
       "by_urgency": {
         "watch": 18,
-        "now": 30
+        "now": 31,
+        "soon": 3
       },
       "by_action": {
         "评估战略与资本影响": 1,
         "检查监管暴露与经营影响": 5,
-        "复核资本配置与竞争格局": 11,
+        "复核资本配置与竞争格局": 12,
         "评估市场与竞争响应": 4,
-        "保持跟踪，等待更多独立证据或业务信号": 27
+        "保持跟踪，等待更多独立证据或业务信号": 30
       },
       "by_topic": {},
       "by_event_type": {},
@@ -385,11 +386,6 @@
       {
         "event_id": "evt_68f62ee142eb",
         "decided_at": "2026-10-12T04:04:14Z",
-        "urgency": "now"
-      },
-      {
-        "event_id": "evt_a96306e2d85f",
-        "decided_at": "2026-10-12T14:20:18Z",
         "urgency": "now"
       },
       {
@@ -513,55 +509,80 @@
         "urgency": "watch"
       },
       {
-        "event_id": "evt_845ca4e8e5b6",
-        "decided_at": "2026-10-22T11:08:15Z",
-        "urgency": "now"
-      },
-      {
-        "event_id": "evt_e7f5525b0fd2",
-        "decided_at": "2026-10-22T11:08:15Z",
-        "urgency": "now"
-      },
-      {
-        "event_id": "evt_f525d8414893",
-        "decided_at": "2026-10-22T11:08:15Z",
-        "urgency": "now"
-      },
-      {
         "event_id": "evt_df8ab2dae218",
         "decided_at": "2026-10-22T11:08:15Z",
         "urgency": "watch"
       },
       {
-        "event_id": "evt_763e21374709",
+        "event_id": "evt_ab67fa7e4a49",
         "decided_at": "2026-10-22T11:08:15Z",
+        "urgency": "now"
+      },
+      {
+        "event_id": "evt_845ca4e8e5b6",
+        "decided_at": "2026-10-22T16:36:46Z",
+        "urgency": "now"
+      },
+      {
+        "event_id": "evt_e7f5525b0fd2",
+        "decided_at": "2026-10-22T16:36:46Z",
+        "urgency": "now"
+      },
+      {
+        "event_id": "evt_f525d8414893",
+        "decided_at": "2026-10-22T16:36:46Z",
+        "urgency": "now"
+      },
+      {
+        "event_id": "evt_a96306e2d85f",
+        "decided_at": "2026-10-22T16:36:46Z",
+        "urgency": "soon"
+      },
+      {
+        "event_id": "evt_763e21374709",
+        "decided_at": "2026-10-22T16:36:46Z",
         "urgency": "now"
       },
       {
         "event_id": "evt_b3ef30cfa939",
-        "decided_at": "2026-10-22T11:08:15Z",
+        "decided_at": "2026-10-22T16:36:46Z",
         "urgency": "now"
       },
       {
         "event_id": "evt_485ed18aba46",
-        "decided_at": "2026-10-22T11:08:15Z",
+        "decided_at": "2026-10-22T16:36:46Z",
         "urgency": "now"
       },
       {
         "event_id": "evt_23641498bbcf",
-        "decided_at": "2026-10-22T11:08:15Z",
+        "decided_at": "2026-10-22T16:36:46Z",
         "urgency": "now"
       },
       {
-        "event_id": "evt_ab67fa7e4a49",
-        "decided_at": "2026-10-22T11:08:15Z",
+        "event_id": "evt_b095cc78b764",
+        "decided_at": "2026-10-22T16:36:46Z",
         "urgency": "now"
+      },
+      {
+        "event_id": "evt_309a903f922f",
+        "decided_at": "2026-10-22T16:36:46Z",
+        "urgency": "now"
+      },
+      {
+        "event_id": "evt_6008ceee915d",
+        "decided_at": "2026-10-22T16:36:46Z",
+        "urgency": "soon"
+      },
+      {
+        "event_id": "evt_db6275b23067",
+        "decided_at": "2026-10-22T16:36:46Z",
+        "urgency": "soon"
       }
     ],
     "conclusions": [
       {
         "type": "urgency_preference",
-        "statement": "最常采用的处置节奏是 now（30/48）",
+        "statement": "最常采用的处置节奏是 now（31/52）",
         "basis": "决策账本/复核队列的 decision.urgency 分布（真实累计，不伪造）"
       }
     ],
@@ -571,12 +592,12 @@
     "basis": "knowledge_graph.json 中 Event --PARTICIPATES_IN--> Company 的一跳邻居（不做多跳扩散）",
     "acted_entities": [
       {
-        "key": "科技保险",
+        "key": "AI",
         "count": 3
       },
       {
-        "key": "AI",
-        "count": 2
+        "key": "科技保险",
+        "count": 3
       },
       {
         "key": "Althoff",
@@ -584,14 +605,6 @@
       },
       {
         "key": "KCC",
-        "count": 1
-      },
-      {
-        "key": "Marco Capital",
-        "count": 1
-      },
-      {
-        "key": "Pro Global",
         "count": 1
       },
       {
@@ -603,11 +616,11 @@
         "count": 1
       },
       {
-        "key": "传统整合公司",
+        "key": "带来的信息平权正在重塑保险",
         "count": 1
       },
       {
-        "key": "保险服务公司",
+        "key": "汉诺威再保险",
         "count": 1
       }
     ],
@@ -661,33 +674,9 @@
       {
         "key": "KCC",
         "count": 1
-      },
-      {
-        "key": "Marco Capital",
-        "count": 1
-      },
-      {
-        "key": "Pro Global",
-        "count": 1
-      },
-      {
-        "key": "传统整合公司",
-        "count": 1
-      },
-      {
-        "key": "保险服务公司",
-        "count": 1
-      },
-      {
-        "key": "全面推进保险",
-        "count": 1
-      },
-      {
-        "key": "再保险",
-        "count": 1
       }
     ],
-    "acted_event_count": 12,
+    "acted_event_count": 9,
     "watched_event_count": 20,
     "quality": {
       "cleaning": "none",
@@ -696,30 +685,29 @@
     }
   },
   "backlog": {
-    "sample_size": 88,
+    "sample_size": 91,
     "by_topic": {
-      "channel_transformation": 7,
-      "capital_reinsurance": 34,
-      "climate_catastrophe": 2,
-      "ai_intelligent": 16,
-      "pension_finance": 13,
-      "product_innovation": 6,
-      "regulatory_change": 5
+      "channel_transformation": 3,
+      "capital_reinsurance": 55,
+      "climate_catastrophe": 4,
+      "ai_intelligent": 11,
+      "product_innovation": 5,
+      "pension_finance": 3,
+      "regulatory_change": 8
     },
     "by_event_type": {
-      "claims_loss": 18,
-      "industry_update": 26,
-      "rating": 1,
-      "product": 7,
-      "acquisition": 2,
-      "regulatory": 10,
-      "market_entry": 3,
-      "capital": 14,
-      "personnel": 7
+      "claims_loss": 14,
+      "industry_update": 15,
+      "rating": 3,
+      "product": 8,
+      "regulatory": 20,
+      "acquisition": 3,
+      "capital": 20,
+      "market_entry": 8
     },
     "by_trust_level": {
       "low": 14,
-      "medium": 74
+      "medium": 77
     },
     "top_by_priority": [
       {
@@ -765,16 +753,16 @@
         "topic": "channel_transformation"
       },
       {
-        "event_id": "evt_5e08a8896b55",
-        "title": "养老保险、个人养老金、企业年金三大保障体系多元化供给，跨省全覆盖！",
+        "event_id": "evt_01df2d86ed30",
+        "title": "AM Best 报告社会通胀成本上升继续对美国责任保险公司构成挑战",
         "priority": 85,
-        "topic": "pension_finance"
+        "topic": "capital_reinsurance"
       },
       {
-        "event_id": "evt_12caf4175365",
-        "title": "AM Best 报告称，随着持续增长，美国产权保险保费到 2025 年将上涨 13%",
-        "priority": 75,
-        "topic": "capital_reinsurance"
+        "event_id": "evt_6265dd729720",
+        "title": "USAA 再次降低 3.5 亿美元住宅 Re 2026-2 巨灾债券的定价",
+        "priority": 80,
+        "topic": "ai_intelligent"
       },
       {
         "event_id": "evt_33b7e19585a0",
@@ -814,29 +802,29 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-22T11:08:15Z"
+        "decided_at": "2026-10-22T16:36:46Z"
       },
-      "decided_at": "2026-10-22T11:08:15Z",
+      "decided_at": "2026-10-22T16:36:46Z",
       "event_published_at": "2026-09-09T00:00:00+08:00",
       "entities": [
         "科技保险"
       ]
     },
     {
-      "event_id": "evt_3429758517ea",
-      "title": "国家金融监督管理总局：全面推进保险行业AI大模型合规应用指引",
+      "event_id": "evt_309a903f922f",
+      "title": "金融街论坛｜科技保险如何筑牢科技创新“防护网”",
       "topic": "ai_intelligent",
-      "event_type": "regulatory",
+      "event_type": "industry_update",
       "priority": 70,
       "decision": {
-        "urgency": "watch",
-        "action": "检查监管暴露与经营影响",
-        "decided_at": "2026-10-22T11:08:15Z"
+        "urgency": "now",
+        "action": "保持跟踪，等待更多独立证据或业务信号",
+        "decided_at": "2026-10-22T16:36:46Z"
       },
-      "decided_at": "2026-10-22T11:08:15Z",
-      "event_published_at": "2026-06-12T09:00:00Z",
+      "decided_at": "2026-10-22T16:36:46Z",
+      "event_published_at": "2026-10-22T00:00:00+08:00",
       "entities": [
-        "全面推进保险"
+        "科技保险"
       ]
     },
     {
@@ -848,9 +836,9 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-22T11:08:15Z"
+        "decided_at": "2026-10-22T16:36:46Z"
       },
-      "decided_at": "2026-10-22T11:08:15Z",
+      "decided_at": "2026-10-22T16:36:46Z",
       "event_published_at": "2026-09-28T00:00:00+08:00",
       "entities": [
         "AI"
@@ -865,9 +853,9 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-22T11:08:15Z"
+        "decided_at": "2026-10-22T16:36:46Z"
       },
-      "decided_at": "2026-10-22T11:08:15Z",
+      "decided_at": "2026-10-22T16:36:46Z",
       "event_published_at": "2026-09-23T00:00:00+08:00",
       "entities": [
         "众安保险"
@@ -882,9 +870,9 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-22T11:08:15Z"
+        "decided_at": "2026-10-22T16:36:46Z"
       },
-      "decided_at": "2026-10-22T11:08:15Z",
+      "decided_at": "2026-10-22T16:36:46Z",
       "event_published_at": "2026-09-15T14:00:43Z",
       "entities": [
         "KCC",
@@ -900,9 +888,9 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-22T11:08:15Z"
+        "decided_at": "2026-10-22T16:36:46Z"
       },
-      "decided_at": "2026-10-22T11:08:15Z",
+      "decided_at": "2026-10-22T16:36:46Z",
       "event_published_at": "2026-08-12T11:00:51Z",
       "entities": [
         "Althoff",
@@ -910,20 +898,21 @@
       ]
     },
     {
-      "event_id": "evt_ab67fa7e4a49",
-      "title": "当未来产业风险不再“可计算”，科技保险如何接住？",
+      "event_id": "evt_b095cc78b764",
+      "title": "国民养老黄涛：AI带来的信息平权正在重塑保险业态",
       "topic": "ai_intelligent",
       "event_type": "industry_update",
       "priority": 60,
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-22T11:08:15Z"
+        "decided_at": "2026-10-22T16:36:46Z"
       },
-      "decided_at": "2026-10-22T11:08:15Z",
-      "event_published_at": "2026-10-21T00:00:00+08:00",
+      "decided_at": "2026-10-22T16:36:46Z",
+      "event_published_at": "2026-10-22T00:00:00+08:00",
       "entities": [
-        "科技保险"
+        "AI",
+        "带来的信息平权正在重塑保险"
       ]
     },
     {
@@ -935,9 +924,9 @@
       "decision": {
         "urgency": "now",
         "action": "评估市场与竞争响应",
-        "decided_at": "2026-10-22T11:08:15Z"
+        "decided_at": "2026-10-22T16:36:46Z"
       },
-      "decided_at": "2026-10-22T11:08:15Z",
+      "decided_at": "2026-10-22T16:36:46Z",
       "event_published_at": "2026-09-11T00:00:00+08:00",
       "entities": [
         "AI"
@@ -952,65 +941,13 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-22T11:08:15Z"
+        "decided_at": "2026-10-22T16:36:46Z"
       },
-      "decided_at": "2026-10-22T11:08:15Z",
+      "decided_at": "2026-10-22T16:36:46Z",
       "event_published_at": "2026-07-22T00:00:00+08:00",
       "entities": [
         "科技保险"
       ]
-    },
-    {
-      "event_id": "evt_083577177db6",
-      "title": "摩根大通表示再保险定价在 2027 年之前不太可能稳定",
-      "topic": "capital_reinsurance",
-      "event_type": "capital",
-      "priority": 50,
-      "decision": {
-        "urgency": "watch",
-        "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-10-22T11:08:15Z"
-      },
-      "decided_at": "2026-10-22T11:08:15Z",
-      "event_published_at": "2026-08-03T12:00:25Z",
-      "entities": [
-        "再保险"
-      ]
-    },
-    {
-      "event_id": "evt_92310abdea56",
-      "title": "传统整合公司 Marco Capital 将收购保险服务公司 Pro Global",
-      "topic": "capital_reinsurance",
-      "event_type": "acquisition",
-      "priority": 50,
-      "decision": {
-        "urgency": "watch",
-        "action": "评估战略与资本影响",
-        "decided_at": "2026-10-22T11:08:15Z"
-      },
-      "decided_at": "2026-10-22T11:08:15Z",
-      "event_published_at": "2026-08-20T15:58:14Z",
-      "entities": [
-        "Marco Capital",
-        "Pro Global",
-        "传统整合公司",
-        "保险服务公司"
-      ]
-    },
-    {
-      "event_id": "evt_df8ab2dae218",
-      "title": "保险央企首次纳入注资范围",
-      "topic": "capital_reinsurance",
-      "event_type": "regulatory",
-      "priority": 50,
-      "decision": {
-        "urgency": "watch",
-        "action": "检查监管暴露与经营影响",
-        "decided_at": "2026-10-22T11:08:15Z"
-      },
-      "decided_at": "2026-10-22T11:08:15Z",
-      "event_published_at": "2026-10-13T00:00:00+08:00",
-      "entities": []
     }
   ]
 }

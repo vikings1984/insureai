@@ -1,20 +1,20 @@
 {
   "version": "ir-v1.1",
   "registry_version": "er-v1.1",
-  "generated_at": "2026-10-22T11:09:51Z",
+  "generated_at": "2026-10-22T16:38:43Z",
   "principle": "单一事实源：所有模块引用 canonical_event_id；resolver 只解析、不发明身份。合并与分裂由证据 + 人工 review 决定，resolver 仅产出候选。",
-  "total_references": 112,
-  "resolved": 112,
+  "total_references": 108,
+  "resolved": 108,
   "unresolved": 0,
   "unresolved_rate": 0.0,
   "unresolved_samples": [],
   "partition_stats": {
-    "other": 86,
-    "regulatory": 23,
+    "other": 77,
+    "regulatory": 28,
     "acquisition": 3
   },
   "candidate_merges": {
-    "count": 3,
+    "count": 4,
     "status": "proposed",
     "items": [
       {
@@ -81,11 +81,32 @@
         "domain": "other",
         "evidence": "实体共现（KCC 跨 6 个 canonical event）",
         "status": "proposed"
+      },
+      {
+        "entity": "汉诺威再保险",
+        "type": "Company",
+        "canonical_ids": [
+          "cev_048303e4d28b",
+          "cev_26ec0af1a081",
+          "cev_4b0b5e3798a1",
+          "cev_9539668a983c",
+          "cev_9a163d433e28"
+        ],
+        "event_ids": [
+          "cev_4b0b5e3798a1",
+          "cev_26ec0af1a081",
+          "cev_9539668a983c",
+          "cev_048303e4d28b",
+          "cev_9a163d433e28"
+        ],
+        "domain": "other",
+        "evidence": "实体共现（汉诺威再保险 跨 5 个 canonical event）",
+        "status": "proposed"
       }
     ]
   },
   "generic_review": {
-    "count": 18,
+    "count": 16,
     "items": [
       {
         "entity": "A-Cap",
@@ -160,31 +181,19 @@
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
-        "entity": "传统整合公司",
-        "type": "Company",
-        "into_ce": false,
-        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
-      },
-      {
         "entity": "保险公司",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
-        "entity": "保险服务公司",
+        "entity": "带来的信息平权正在重塑保险",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
-        "entity": "全面推进保险",
-        "type": "Company",
-        "into_ce": false,
-        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
-      },
-      {
-        "entity": "再保险",
+        "entity": "汉诺威再保险",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
