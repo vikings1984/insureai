@@ -1,17 +1,17 @@
 {
   "version": "ir-v1.1",
   "registry_version": "er-v1.1",
-  "generated_at": "2026-10-22T16:38:43Z",
+  "generated_at": "2026-10-22T21:14:56Z",
   "principle": "单一事实源：所有模块引用 canonical_event_id；resolver 只解析、不发明身份。合并与分裂由证据 + 人工 review 决定，resolver 仅产出候选。",
-  "total_references": 108,
-  "resolved": 108,
+  "total_references": 104,
+  "resolved": 104,
   "unresolved": 0,
   "unresolved_rate": 0.0,
   "unresolved_samples": [],
   "partition_stats": {
-    "other": 77,
-    "regulatory": 28,
-    "acquisition": 3
+    "other": 73,
+    "regulatory": 29,
+    "acquisition": 2
   },
   "candidate_merges": {
     "count": 4,
@@ -83,30 +83,28 @@
         "status": "proposed"
       },
       {
-        "entity": "汉诺威再保险",
+        "entity": "国民养老保险",
         "type": "Company",
         "canonical_ids": [
-          "cev_048303e4d28b",
-          "cev_26ec0af1a081",
-          "cev_4b0b5e3798a1",
-          "cev_9539668a983c",
-          "cev_9a163d433e28"
+          "cev_3ed3aa38496a",
+          "cev_425808e8acdf",
+          "cev_761a49a7b5eb",
+          "cev_914577eb1eef"
         ],
         "event_ids": [
-          "cev_4b0b5e3798a1",
-          "cev_26ec0af1a081",
-          "cev_9539668a983c",
-          "cev_048303e4d28b",
-          "cev_9a163d433e28"
+          "cev_425808e8acdf",
+          "cev_3ed3aa38496a",
+          "cev_761a49a7b5eb",
+          "cev_914577eb1eef"
         ],
         "domain": "other",
-        "evidence": "实体共现（汉诺威再保险 跨 5 个 canonical event）",
+        "evidence": "实体共现（国民养老保险 跨 4 个 canonical event）",
         "status": "proposed"
       }
     ]
   },
   "generic_review": {
-    "count": 16,
+    "count": 18,
     "items": [
       {
         "entity": "A-Cap",
@@ -163,6 +161,12 @@
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
+        "entity": "个人养老金基金",
+        "type": "Company",
+        "into_ce": false,
+        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
+      },
+      {
         "entity": "个省市联动多层次综合巨灾保险",
         "type": "Company",
         "into_ce": false,
@@ -187,13 +191,19 @@
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
+        "entity": "国民养老保险",
+        "type": "Company",
+        "into_ce": false,
+        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
+      },
+      {
         "entity": "带来的信息平权正在重塑保险",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
-        "entity": "汉诺威再保险",
+        "entity": "年金基金",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
