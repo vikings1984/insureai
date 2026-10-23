@@ -1,7 +1,7 @@
 {
   "version": "ir-v1.1",
   "registry_version": "er-v1.1",
-  "generated_at": "2026-10-23T11:02:52Z",
+  "generated_at": "2026-10-23T16:28:03Z",
   "principle": "单一事实源：所有模块引用 canonical_event_id；resolver 只解析、不发明身份。合并与分裂由证据 + 人工 review 决定，resolver 仅产出候选。",
   "total_references": 109,
   "resolved": 109,
@@ -9,12 +9,12 @@
   "unresolved_rate": 0.0,
   "unresolved_samples": [],
   "partition_stats": {
-    "other": 79,
-    "regulatory": 27,
-    "acquisition": 3
+    "other": 77,
+    "regulatory": 30,
+    "acquisition": 2
   },
   "candidate_merges": {
-    "count": 4,
+    "count": 8,
     "status": "proposed",
     "items": [
       {
@@ -45,6 +45,33 @@
         "status": "proposed"
       },
       {
+        "entity": "AIG",
+        "type": "Company",
+        "canonical_ids": [
+          "cev_1531211a5ffd",
+          "cev_6b75e374085d",
+          "cev_7851da468cff",
+          "cev_7b4c815db2e0",
+          "cev_88f964faf2fd",
+          "cev_8ddc2219238f",
+          "cev_97b1a39a5334",
+          "cev_e6ac7f7efdd6"
+        ],
+        "event_ids": [
+          "cev_6b75e374085d",
+          "cev_7851da468cff",
+          "cev_88f964faf2fd",
+          "cev_e6ac7f7efdd6",
+          "cev_1531211a5ffd",
+          "cev_8ddc2219238f",
+          "cev_97b1a39a5334",
+          "cev_7b4c815db2e0"
+        ],
+        "domain": "other",
+        "evidence": "实体共现（AIG 跨 8 个 canonical event）",
+        "status": "proposed"
+      },
+      {
         "entity": "Althoff",
         "type": "Company",
         "canonical_ids": [
@@ -57,6 +84,23 @@
         ],
         "domain": "other",
         "evidence": "实体共现（Althoff 跨 2 个 canonical event）",
+        "status": "proposed"
+      },
+      {
+        "entity": "Arbol",
+        "type": "Company",
+        "canonical_ids": [
+          "cev_280dead02bbd",
+          "cev_5e4328a89ff0",
+          "cev_bb6c44cbe278"
+        ],
+        "event_ids": [
+          "cev_280dead02bbd",
+          "cev_5e4328a89ff0",
+          "cev_bb6c44cbe278"
+        ],
+        "domain": "other",
+        "evidence": "实体共现（Arbol 跨 3 个 canonical event）",
         "status": "proposed"
       },
       {
@@ -80,6 +124,36 @@
         ],
         "domain": "other",
         "evidence": "实体共现（KCC 跨 6 个 canonical event）",
+        "status": "proposed"
+      },
+      {
+        "entity": "Parametrix",
+        "type": "Company",
+        "canonical_ids": [
+          "cev_293cae6f87c9",
+          "cev_88f964faf2fd"
+        ],
+        "event_ids": [
+          "cev_88f964faf2fd",
+          "cev_293cae6f87c9"
+        ],
+        "domain": "other",
+        "evidence": "实体共现（Parametrix 跨 2 个 canonical event）",
+        "status": "proposed"
+      },
+      {
+        "entity": "Talcott",
+        "type": "Company",
+        "canonical_ids": [
+          "cev_7b4d73cf6c5c",
+          "cev_f14b0669672a"
+        ],
+        "event_ids": [
+          "cev_7b4d73cf6c5c",
+          "cev_f14b0669672a"
+        ],
+        "domain": "other",
+        "evidence": "实体共现（Talcott 跨 2 个 canonical event）",
         "status": "proposed"
       },
       {
@@ -125,7 +199,19 @@
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
+        "entity": "AIG",
+        "type": "Company",
+        "into_ce": false,
+        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
+      },
+      {
         "entity": "Althoff",
+        "type": "Company",
+        "into_ce": false,
+        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
+      },
+      {
+        "entity": "Arbol",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
@@ -143,6 +229,12 @@
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
+        "entity": "Parametrix",
+        "type": "Company",
+        "into_ce": false,
+        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
+      },
+      {
         "entity": "Pro Global",
         "type": "Company",
         "into_ce": false,
@@ -155,13 +247,19 @@
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
+        "entity": "Talcott",
+        "type": "Company",
+        "into_ce": false,
+        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
+      },
+      {
         "entity": "WTW",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
-        "entity": "个人养老金基金",
+        "entity": "West Grove Re",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
@@ -179,12 +277,6 @@
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
-        "entity": "众安保险",
-        "type": "Company",
-        "into_ce": false,
-        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
-      },
-      {
         "entity": "保险公司",
         "type": "Company",
         "into_ce": false,
@@ -192,24 +284,6 @@
       },
       {
         "entity": "国民养老保险",
-        "type": "Company",
-        "into_ce": false,
-        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
-      },
-      {
-        "entity": "带来的信息平权正在重塑保险",
-        "type": "Company",
-        "into_ce": false,
-        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
-      },
-      {
-        "entity": "年金基金",
-        "type": "Company",
-        "into_ce": false,
-        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
-      },
-      {
-        "entity": "科技保险",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
