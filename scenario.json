@@ -1,7 +1,7 @@
 {
   "version": 1,
   "principle": "只在已有证据基础上构造显式假设，不把情景支持度冒充预测概率。",
-  "scenario_count": 7253,
+  "scenario_count": 7291,
   "scenarios": [
     {
       "event_id": "evt_92310abdea56",
@@ -3075,6 +3075,21 @@
         "intelligence_score": 81,
         "trust_level": "medium",
         "temporal_phase": "accelerating"
+      },
+      "disclaimer": "场景推演不是预测；support_level 表示当前证据对该假设的支持强度，不是发生概率。"
+    },
+    {
+      "event_id": "evt_8b4df575444c",
+      "topic": "capital_reinsurance",
+      "scenario": "trend_cools",
+      "scenario_label": "趋势降温",
+      "support_level": 100,
+      "phase": "cooling",
+      "assumption": "后续周期事件量下降、关注度回落且无新增高可信事件",
+      "evidence_basis": {
+        "intelligence_score": 80,
+        "trust_level": "medium",
+        "temporal_phase": "cooling"
       },
       "disclaimer": "场景推演不是预测；support_level 表示当前证据对该假设的支持强度，不是发生概率。"
     },
@@ -7487,28 +7502,13 @@
         "temporal_phase": "cooling"
       },
       "disclaimer": "场景推演不是预测；support_level 表示当前证据对该假设的支持强度，不是发生概率。"
-    },
-    {
-      "event_id": "evt_360fe72b3c1c",
-      "topic": "capital_reinsurance",
-      "scenario": "competition_follows",
-      "scenario_label": "竞争跟随",
-      "support_level": 98,
-      "phase": "cooling",
-      "assumption": "同类公司出现产品、并购、渠道或资本跟进行动",
-      "evidence_basis": {
-        "intelligence_score": 82,
-        "trust_level": "medium",
-        "temporal_phase": "cooling"
-      },
-      "disclaimer": "场景推演不是预测；support_level 表示当前证据对该假设的支持强度，不是发生概率。"
     }
   ],
   "_provenance": {
-    "run_id": "run_20261023_031119_c7bcc1",
-    "build_sha": "79cdaeec306cdab8b3e21c03b49d520c71007db3",
+    "run_id": "run_20261023_110257_68c564",
+    "build_sha": "969495aa6a44804f6d965d733ef9300a29242972",
     "engine_version": "4.2",
     "schema_version": "release-provenance-v1",
-    "generated_at": "2026-10-23T03:11:20.577638+00:00"
+    "generated_at": "2026-10-23T11:02:58.939180+00:00"
   }
 }

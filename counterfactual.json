@@ -1,9 +1,9 @@
 {
   "version": 1,
   "principle": "高价值结论必须在去除单一关键输入后保持合理稳健，否则进入人工复核。",
-  "total_cases": 5698,
-  "fragile_cases": 30,
-  "fragility_rate": 0.0053,
+  "total_cases": 5730,
+  "fragile_cases": 31,
+  "fragility_rate": 0.0054,
   "cases": [
     {
       "event_id": "evt_92310abdea56",
@@ -3222,6 +3222,22 @@
       "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
     },
     {
+      "event_id": "evt_8b4df575444c",
+      "scenario": "remove_conflict_flag",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
+    },
+    {
+      "event_id": "evt_8b4df575444c",
+      "scenario": "remove_topic_trend_signal",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
+    },
+    {
       "event_id": "evt_b3beca4e84ef",
       "scenario": "remove_conflict_flag",
       "baseline_urgency": "watch",
@@ -3983,22 +3999,6 @@
     },
     {
       "event_id": "evt_d7b18b38b124",
-      "scenario": "remove_topic_trend_signal",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
-    },
-    {
-      "event_id": "evt_4eec611f4cce",
-      "scenario": "remove_conflict_flag",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
-    },
-    {
-      "event_id": "evt_4eec611f4cce",
       "scenario": "remove_topic_trend_signal",
       "baseline_urgency": "watch",
       "counterfactual_urgency": "watch",
@@ -4007,10 +4007,10 @@
     }
   ],
   "_provenance": {
-    "run_id": "run_20261023_031119_c7bcc1",
-    "build_sha": "79cdaeec306cdab8b3e21c03b49d520c71007db3",
+    "run_id": "run_20261023_110257_68c564",
+    "build_sha": "969495aa6a44804f6d965d733ef9300a29242972",
     "engine_version": "4.2",
     "schema_version": "release-provenance-v1",
-    "generated_at": "2026-10-23T03:11:20.572917+00:00"
+    "generated_at": "2026-10-23T11:02:58.935414+00:00"
   }
 }
