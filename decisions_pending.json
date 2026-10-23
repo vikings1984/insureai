@@ -1,6 +1,6 @@
 {
   "version": "funnel-v1.1",
-  "generated_at": "2026-10-22T21:14:57Z",
+  "generated_at": "2026-10-23T03:11:14Z",
   "principle": "待决策洪流 → 漏斗（now/soon/watch）+ 排名靠前的待决；已决只来自真实决策记录；六条件硬化为每条待决的注解 + decision_ready 子集；分角色计数；样本<30 不结论；分桶为可观测代理",
   "meta": {
     "total_review_queue": 100,
@@ -10,15 +10,15 @@
     "pending": 67,
     "pending_by_tier": {
       "now": 21,
-      "soon": 2,
-      "watch": 44
+      "soon": 5,
+      "watch": 41
     },
     "pending_by_role": {
       "ai": 8,
       "ma": 2,
-      "regulatory": 20,
+      "regulatory": 19,
       "health": 0,
-      "other": 37
+      "other": 38
     },
     "decision_ready": 3,
     "decision_ready_ceids": [
@@ -33,10 +33,10 @@
     "gold_status": "seed",
     "gold_source": "seed_assistant",
     "six_failed_counter": {
-      "1": 42,
-      "2": 43,
-      "3": 45,
-      "4": 40,
+      "1": 43,
+      "2": 46,
+      "3": 47,
+      "4": 39,
       "5": 33,
       "6": 0
     },
@@ -299,6 +299,42 @@
         "tier": "now"
       },
       {
+        "event_id": "evt_4fd5c9ac9e9f",
+        "canonical_event_id": "cev_1847387b43a2",
+        "title": "养老保险比例单位和个人",
+        "topic": "pension_finance",
+        "priority": 85,
+        "trust_level": "low",
+        "reason_types": [
+          "change_impact",
+          "conflict"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 5,
+          "trust_level": "low",
+          "source_count": 15,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "now"
+      },
+      {
         "event_id": "evt_578b5faa780f",
         "canonical_event_id": "cev_4d7633cda292",
         "title": "Verisk 晋升 Harry White 为财产索赔服务主管",
@@ -496,41 +532,6 @@
           "trust_level": "low",
           "source_count": 1,
           "single_src_regulatory": true,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "now"
-      },
-      {
-        "event_id": "evt_5e08a8896b55",
-        "canonical_event_id": "cev_546374a85d38",
-        "title": "养老保险、个人养老金、企业年金三大保障体系多元化供给，跨省全覆盖！",
-        "topic": "pension_finance",
-        "priority": 75,
-        "trust_level": "low",
-        "reason_types": [
-          "conflict"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 5,
-          "trust_level": "low",
-          "source_count": 14,
-          "single_src_regulatory": false,
           "decided": false,
           "feedback_status": null
         },
@@ -809,9 +810,43 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_2d6d12967cce",
-        "canonical_event_id": "cev_e7eb61788389",
-        "title": "小螺号|金融街论坛首设保险大会，重新定义保险的价值",
+        "event_id": "evt_7ba195f4105c",
+        "canonical_event_id": "cev_b3a5980e412d",
+        "title": "AI成“好帮手”赋能大城养老，浦东打造养老科技融合发展新标杆",
+        "topic": "ai_intelligent",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
+        ],
+        "role": "regulatory",
+        "meets_six": false,
+        "failed_conditions": [
+          2,
+          3,
+          4
+        ],
+        "six_detail": {
+          "monitored": true,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "unknown",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": true,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_b89a661e9064",
+        "canonical_event_id": "cev_eaa23979e88c",
+        "title": "灵活就业自己交养老保险，每月交1000，为啥",
         "topic": "pension_finance",
         "priority": 40,
         "trust_level": "medium",
@@ -835,6 +870,74 @@
           "evidence_count": 1,
           "trust_level": "medium",
           "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_abae1822b80e",
+        "canonical_event_id": "cev_8c3ab654f646",
+        "title": "养老保险查询个人认证",
+        "topic": "pension_finance",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 2,
+          "trust_level": "medium",
+          "source_count": 2,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_d1a8d6ac837d",
+        "canonical_event_id": "cev_fa0476368600",
+        "title": "养老保险个人账户怎么算，60岁退休计发月数为什么是139",
+        "topic": "pension_finance",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 5,
+          "trust_level": "medium",
+          "source_count": 17,
           "single_src_regulatory": false,
           "decided": false,
           "feedback_status": null
@@ -868,6 +971,39 @@
           "trust_level": "medium",
           "source_count": 1,
           "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "watch"
+      },
+      {
+        "event_id": "evt_cd365b896fd5",
+        "canonical_event_id": "cev_f94fdd72d5b0",
+        "title": "金融监管总局定调“十五五”保险监管主线！谭炯履新人保董事长首秀：让保险保障覆盖每个该覆盖的人群",
+        "topic": "regulatory_change",
+        "priority": 30,
+        "trust_level": "medium",
+        "reason_types": [
+          "event_cluster"
+        ],
+        "role": "regulatory",
+        "meets_six": false,
+        "failed_conditions": [
+          3,
+          4
+        ],
+        "six_detail": {
+          "monitored": true,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": true,
+          "stage": "n/a",
+          "status": "unknown",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": true,
           "decided": false,
           "feedback_status": null
         },
@@ -1159,40 +1295,6 @@
           "has_semantic_change": false,
           "stage": "n/a",
           "status": "issued",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": true,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "watch"
-      },
-      {
-        "event_id": "evt_cd365b896fd5",
-        "canonical_event_id": "cev_f94fdd72d5b0",
-        "title": "金融监管总局定调“十五五”保险监管主线！谭炯履新人保董事长首秀：让保险保障覆盖每个该覆盖的人群",
-        "topic": "regulatory_change",
-        "priority": 30,
-        "trust_level": "medium",
-        "reason_types": [
-          "event_cluster"
-        ],
-        "role": "regulatory",
-        "meets_six": false,
-        "failed_conditions": [
-          2,
-          3,
-          4
-        ],
-        "six_detail": {
-          "monitored": true,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "unknown",
           "evidence_count": 1,
           "trust_level": "medium",
           "source_count": 1,
@@ -2180,104 +2282,6 @@
         },
         "urgency": null,
         "tier": "watch"
-      },
-      {
-        "event_id": "evt_c3420bbf2ee2",
-        "canonical_event_id": "cev_af412da2a1d6",
-        "title": "中国平安贵州分公司因管理失责被罚款15万元 5名保险代理人一并受罚",
-        "topic": "regulatory_change",
-        "priority": 30,
-        "trust_level": "medium",
-        "reason_types": [
-          "event_cluster"
-        ],
-        "role": "regulatory",
-        "meets_six": false,
-        "failed_conditions": [
-          4
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": true,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "issued",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": true,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "watch"
-      },
-      {
-        "event_id": "evt_b600e473a591",
-        "canonical_event_id": "cev_7493e31a4ae0",
-        "title": "金融监管总局丛林：保险业要全力服务新质生产力发展，精准对接国家战略的重点领域和薄弱环节",
-        "topic": "regulatory_change",
-        "priority": 30,
-        "trust_level": "medium",
-        "reason_types": [
-          "event_cluster"
-        ],
-        "role": "regulatory",
-        "meets_six": false,
-        "failed_conditions": [
-          2,
-          3,
-          4
-        ],
-        "six_detail": {
-          "monitored": true,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "unknown",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": true,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "watch"
-      },
-      {
-        "event_id": "evt_1b340f2945c8",
-        "canonical_event_id": "cev_7f6bd2d7d51e",
-        "title": "SafePoint 目标发行 2.5 亿美元 Nature Coast Re 2026-2 巨灾债券，覆盖范围最广",
-        "topic": "capital_reinsurance",
-        "priority": 30,
-        "trust_level": "medium",
-        "reason_types": [
-          "event_cluster"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "watch"
       }
     ]
   },
@@ -2624,6 +2628,42 @@
       "tier": "now"
     },
     {
+      "event_id": "evt_4fd5c9ac9e9f",
+      "canonical_event_id": "cev_1847387b43a2",
+      "title": "养老保险比例单位和个人",
+      "topic": "pension_finance",
+      "priority": 85,
+      "trust_level": "low",
+      "reason_types": [
+        "change_impact",
+        "conflict"
+      ],
+      "role": "other",
+      "meets_six": false,
+      "failed_conditions": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "six_detail": {
+        "monitored": false,
+        "acted": false,
+        "t1_reg": false,
+        "has_semantic_change": false,
+        "stage": "n/a",
+        "status": "active",
+        "evidence_count": 5,
+        "trust_level": "low",
+        "source_count": 15,
+        "single_src_regulatory": false,
+        "decided": false,
+        "feedback_status": null
+      },
+      "urgency": null,
+      "tier": "now"
+    },
+    {
       "event_id": "evt_578b5faa780f",
       "canonical_event_id": "cev_4d7633cda292",
       "title": "Verisk 晋升 Harry White 为财产索赔服务主管",
@@ -2642,41 +2682,6 @@
       ],
       "six_detail": {
         "monitored": true,
-        "acted": false,
-        "t1_reg": false,
-        "has_semantic_change": false,
-        "stage": "n/a",
-        "status": "active",
-        "evidence_count": 2,
-        "trust_level": "low",
-        "source_count": 2,
-        "single_src_regulatory": false,
-        "decided": false,
-        "feedback_status": null
-      },
-      "urgency": null,
-      "tier": "now"
-    },
-    {
-      "event_id": "evt_7e02d4b37c1f",
-      "canonical_event_id": "cev_59c2a579f30c",
-      "title": "PICC P&C宣布在香港发行首辆Sidecar",
-      "topic": "capital_reinsurance",
-      "priority": 75,
-      "trust_level": "low",
-      "reason_types": [
-        "conflict"
-      ],
-      "role": "other",
-      "meets_six": false,
-      "failed_conditions": [
-        1,
-        2,
-        3,
-        4
-      ],
-      "six_detail": {
-        "monitored": false,
         "acted": false,
         "t1_reg": false,
         "has_semantic_change": false,
@@ -2725,7 +2730,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-22T21:13:40Z"
+      "decided_at": "2026-10-23T03:09:01Z"
     },
     {
       "event_id": "evt_3429758517ea",
@@ -2857,7 +2862,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-22T21:13:40Z"
+      "decided_at": "2026-10-23T03:09:01Z"
     },
     {
       "event_id": "evt_845ca4e8e5b6",
@@ -2891,7 +2896,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-22T21:13:40Z"
+      "decided_at": "2026-10-23T03:09:01Z"
     },
     {
       "event_id": "evt_6008ceee915d",
@@ -2912,7 +2917,7 @@
         "monitored": false,
         "acted": true,
         "t1_reg": false,
-        "has_semantic_change": true,
+        "has_semantic_change": false,
         "stage": "n/a",
         "status": "active",
         "evidence_count": 2,
@@ -2923,7 +2928,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-22T21:13:40Z"
+      "decided_at": "2026-10-23T03:09:01Z"
     },
     {
       "event_id": "evt_b095cc78b764",
@@ -2957,7 +2962,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-22T21:13:40Z"
+      "decided_at": "2026-10-23T03:09:01Z"
     },
     {
       "event_id": "evt_db6275b23067",
@@ -2972,6 +2977,7 @@
       "role": "ai",
       "meets_six": false,
       "failed_conditions": [
+        2,
         3,
         5
       ],
@@ -2979,7 +2985,7 @@
         "monitored": true,
         "acted": true,
         "t1_reg": false,
-        "has_semantic_change": true,
+        "has_semantic_change": false,
         "stage": "n/a",
         "status": "active",
         "evidence_count": 2,
@@ -2990,7 +2996,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-22T21:13:40Z"
+      "decided_at": "2026-10-23T03:09:01Z"
     },
     {
       "event_id": "evt_061f47627c61",
@@ -3005,6 +3011,7 @@
       "role": "other",
       "meets_six": false,
       "failed_conditions": [
+        2,
         3,
         5
       ],
@@ -3012,7 +3019,7 @@
         "monitored": false,
         "acted": true,
         "t1_reg": false,
-        "has_semantic_change": true,
+        "has_semantic_change": false,
         "stage": "n/a",
         "status": "active",
         "evidence_count": 2,
@@ -3023,7 +3030,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-22T21:13:40Z"
+      "decided_at": "2026-10-23T03:09:01Z"
     },
     {
       "event_id": "evt_a6eab18b7680",
@@ -3044,7 +3051,7 @@
         "monitored": false,
         "acted": true,
         "t1_reg": false,
-        "has_semantic_change": true,
+        "has_semantic_change": false,
         "stage": "n/a",
         "status": "active",
         "evidence_count": 2,
@@ -3055,7 +3062,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-22T21:13:40Z"
+      "decided_at": "2026-10-23T03:09:01Z"
     },
     {
       "event_id": "evt_b3ef30cfa939",
@@ -3087,7 +3094,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-22T21:13:40Z"
+      "decided_at": "2026-10-23T03:09:01Z"
     },
     {
       "event_id": "evt_f525d8414893",
@@ -3119,7 +3126,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-22T21:13:40Z"
+      "decided_at": "2026-10-23T03:09:01Z"
     },
     {
       "event_id": "evt_f7ca8c219612",
@@ -3140,7 +3147,7 @@
         "monitored": false,
         "acted": true,
         "t1_reg": false,
-        "has_semantic_change": true,
+        "has_semantic_change": false,
         "stage": "n/a",
         "status": "active",
         "evidence_count": 2,
@@ -3151,7 +3158,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-22T21:13:40Z"
+      "decided_at": "2026-10-23T03:09:01Z"
     },
     {
       "event_id": "evt_485ed18aba46",
@@ -3185,7 +3192,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-22T21:13:40Z"
+      "decided_at": "2026-10-23T03:09:01Z"
     },
     {
       "event_id": "evt_92310abdea56",
@@ -3780,7 +3787,7 @@
     {
       "dimension": "六条件硬化（决策门）",
       "status": "evaluated",
-      "reason": "待决 67 条中真正达到六条件决策门 3 条；各条件未达计数 {'1': 42, '2': 43, '3': 45, '4': 40, '5': 33, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
+      "reason": "待决 67 条中真正达到六条件决策门 3 条；各条件未达计数 {'1': 43, '2': 46, '3': 47, '4': 39, '5': 33, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
       "unblock": "六条件为可观测评估注解；decision_ready 子集供优先拍板，其余仍留 Human Review"
     },
     {
