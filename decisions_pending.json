@@ -1,6 +1,6 @@
 {
   "version": "funnel-v1.1",
-  "generated_at": "2026-10-24T03:06:34Z",
+  "generated_at": "2026-10-24T10:16:10Z",
   "principle": "待决策洪流 → 漏斗（now/soon/watch）+ 排名靠前的待决；已决只来自真实决策记录；六条件硬化为每条待决的注解 + decision_ready 子集；分角色计数；样本<30 不结论；分桶为可观测代理",
   "meta": {
     "total_review_queue": 100,
@@ -10,18 +10,19 @@
     "pending": 67,
     "pending_by_tier": {
       "now": 21,
-      "soon": 6,
-      "watch": 40
+      "soon": 3,
+      "watch": 43
     },
     "pending_by_role": {
-      "ai": 8,
+      "ai": 7,
       "ma": 2,
-      "regulatory": 18,
+      "regulatory": 21,
       "health": 0,
-      "other": 39
+      "other": 37
     },
-    "decision_ready": 3,
+    "decision_ready": 4,
     "decision_ready_ceids": [
+      "cev_7af437853333",
       "cev_bb54ddbe0129",
       "cev_f045ffa38e68",
       "cev_96ad5d9212a7"
@@ -33,10 +34,10 @@
     "gold_status": "seed",
     "gold_source": "seed_assistant",
     "six_failed_counter": {
-      "1": 45,
-      "2": 44,
-      "3": 44,
-      "4": 38,
+      "1": 42,
+      "2": 42,
+      "3": 42,
+      "4": 40,
       "5": 33,
       "6": 0
     },
@@ -299,77 +300,6 @@
         "tier": "now"
       },
       {
-        "event_id": "evt_342a7c61633a",
-        "canonical_event_id": "cev_e645a8a3a787",
-        "title": "养老保险个人账户能继承吗 养老保险认证怎么操作 养老保险60岁每月领多少 身后事提前知",
-        "topic": "pension_finance",
-        "priority": 85,
-        "trust_level": "low",
-        "reason_types": [
-          "change_impact",
-          "conflict"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 5,
-          "trust_level": "low",
-          "source_count": 18,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "now"
-      },
-      {
-        "event_id": "evt_a4023075adcb",
-        "canonical_event_id": "cev_0fc29f3a904b",
-        "title": "USAA 获得 3.5 亿美元住宅再保险 2026-2 巨灾债券规模扩大 56%，价格低于指导值",
-        "topic": "capital_reinsurance",
-        "priority": 80,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact",
-          "claim_conflict"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 4,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "now"
-      },
-      {
         "event_id": "evt_578b5faa780f",
         "canonical_event_id": "cev_4d7633cda292",
         "title": "Verisk 晋升 Harry White 为财产索赔服务主管",
@@ -574,6 +504,41 @@
         "tier": "now"
       },
       {
+        "event_id": "evt_342a7c61633a",
+        "canonical_event_id": "cev_e645a8a3a787",
+        "title": "养老保险个人账户能继承吗 养老保险认证怎么操作 养老保险60岁每月领多少 身后事提前知",
+        "topic": "pension_finance",
+        "priority": 75,
+        "trust_level": "low",
+        "reason_types": [
+          "conflict"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 5,
+          "trust_level": "low",
+          "source_count": 18,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "now"
+      },
+      {
         "event_id": "evt_88ee308c221a",
         "canonical_event_id": "cev_63818dd551eb",
         "title": "Gallagher Re 报告自 2019 年以来前 9 个月全球保险巨灾损失最低",
@@ -709,6 +674,40 @@
         "tier": "now"
       },
       {
+        "event_id": "evt_a4023075adcb",
+        "canonical_event_id": "cev_0fc29f3a904b",
+        "title": "USAA 获得 3.5 亿美元住宅再保险 2026-2 巨灾债券规模扩大 56%，价格低于指导值",
+        "topic": "capital_reinsurance",
+        "priority": 70,
+        "trust_level": "medium",
+        "reason_types": [
+          "claim_conflict"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 4,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "now"
+      },
+      {
         "event_id": "evt_921559f7cbbd",
         "canonical_event_id": "cev_46f86b625d33",
         "title": "世界保险收购新泽西州的 TE Freuler Agency",
@@ -812,94 +811,25 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_6024eb95de9a",
-        "canonical_event_id": "cev_f3b6be3233de",
-        "title": "2025年交强险覆盖面持续扩大 参保机动车数量同比增长3.8%",
-        "topic": "product_innovation",
+        "event_id": "evt_8f2c71a2a01c",
+        "canonical_event_id": "cev_7af437853333",
+        "title": "城乡居民养老保险缴费指南（五）：个人可资助缴费，手机几分钟办理，资金直达参保人养老账户",
+        "topic": "pension_finance",
         "priority": 40,
         "trust_level": "medium",
         "reason_types": [
           "change_impact"
         ],
         "role": "regulatory",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3,
-          4
-        ],
+        "meets_six": true,
+        "failed_conditions": [],
         "six_detail": {
           "monitored": false,
           "acted": false,
-          "t1_reg": false,
+          "t1_reg": true,
           "has_semantic_change": false,
           "stage": "n/a",
-          "status": "unknown",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": true,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_8e3c5cb821a8",
-        "canonical_event_id": "cev_aded7b266fc4",
-        "title": "普惠保险暖民心也要可持续",
-        "topic": "product_innovation",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_406e730226b2",
-        "canonical_event_id": "cev_2992e9e423fb",
-        "title": "从保硬件到保应用 算力保险“摸索”责任边界",
-        "topic": "product_innovation",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
+          "status": "issued",
           "evidence_count": 2,
           "trust_level": "medium",
           "source_count": 2,
@@ -911,42 +841,9 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_bef2b330ed9a",
-        "canonical_event_id": "cev_d9dbc58847c8",
-        "title": "科技保险加快适配未来产业",
-        "topic": "ai_intelligent",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "ai",
-        "meets_six": false,
-        "failed_conditions": [
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": true,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 4,
-          "trust_level": "medium",
-          "source_count": 4,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_738bb4b19396",
-        "canonical_event_id": "cev_de20ac8fdc72",
-        "title": "养老保险个人账户的钱，可以提前取吗？",
+        "event_id": "evt_161f6170da63",
+        "canonical_event_id": "cev_e15a8ff262d6",
+        "title": "个人养老金里，我为什么先聊“保险”这一类",
         "topic": "pension_finance",
         "priority": 40,
         "trust_level": "medium",
@@ -956,9 +853,7 @@
         "role": "other",
         "meets_six": false,
         "failed_conditions": [
-          1,
-          2,
-          3
+          1
         ],
         "six_detail": {
           "monitored": false,
@@ -967,9 +862,9 @@
           "has_semantic_change": false,
           "stage": "n/a",
           "status": "active",
-          "evidence_count": 5,
+          "evidence_count": 1,
           "trust_level": "medium",
-          "source_count": 15,
+          "source_count": 1,
           "single_src_regulatory": false,
           "decided": false,
           "feedback_status": null
@@ -2281,10 +2176,138 @@
         },
         "urgency": null,
         "tier": "watch"
+      },
+      {
+        "event_id": "evt_62e3eeb3e9dc",
+        "canonical_event_id": "cev_17b22870084c",
+        "title": "加快上海国际再保险中心建设！8大措施发布",
+        "topic": "capital_reinsurance",
+        "priority": 30,
+        "trust_level": "medium",
+        "reason_types": [
+          "event_cluster"
+        ],
+        "role": "regulatory",
+        "meets_six": false,
+        "failed_conditions": [
+          4
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": true,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "issued",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": true,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "watch"
+      },
+      {
+        "event_id": "evt_7f010a567259",
+        "canonical_event_id": "cev_43731806412d",
+        "title": "金融监管总局：2026年二季度保险业偿付能力充足率保持行业高位",
+        "topic": "regulatory_change",
+        "priority": 30,
+        "trust_level": "medium",
+        "reason_types": [
+          "event_cluster"
+        ],
+        "role": "regulatory",
+        "meets_six": false,
+        "failed_conditions": [
+          2,
+          3,
+          4
+        ],
+        "six_detail": {
+          "monitored": true,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "unknown",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": true,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "watch"
+      },
+      {
+        "event_id": "evt_c3420bbf2ee2",
+        "canonical_event_id": "cev_af412da2a1d6",
+        "title": "中国平安贵州分公司因管理失责被罚款15万元 5名保险代理人一并受罚",
+        "topic": "regulatory_change",
+        "priority": 30,
+        "trust_level": "medium",
+        "reason_types": [
+          "event_cluster"
+        ],
+        "role": "regulatory",
+        "meets_six": false,
+        "failed_conditions": [
+          4
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": true,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "issued",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": true,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "watch"
       }
     ]
   },
   "top_pending": [
+    {
+      "event_id": "evt_8f2c71a2a01c",
+      "canonical_event_id": "cev_7af437853333",
+      "title": "城乡居民养老保险缴费指南（五）：个人可资助缴费，手机几分钟办理，资金直达参保人养老账户",
+      "topic": "pension_finance",
+      "priority": 40,
+      "trust_level": "medium",
+      "reason_types": [
+        "change_impact"
+      ],
+      "role": "regulatory",
+      "meets_six": true,
+      "failed_conditions": [],
+      "six_detail": {
+        "monitored": false,
+        "acted": false,
+        "t1_reg": true,
+        "has_semantic_change": false,
+        "stage": "n/a",
+        "status": "issued",
+        "evidence_count": 2,
+        "trust_level": "medium",
+        "source_count": 2,
+        "single_src_regulatory": false,
+        "decided": false,
+        "feedback_status": null
+      },
+      "urgency": null,
+      "tier": "soon"
+    },
     {
       "event_id": "evt_c82d9a9ff13c",
       "canonical_event_id": "cev_bb54ddbe0129",
@@ -2627,69 +2650,32 @@
       "tier": "now"
     },
     {
-      "event_id": "evt_342a7c61633a",
-      "canonical_event_id": "cev_e645a8a3a787",
-      "title": "养老保险个人账户能继承吗 养老保险认证怎么操作 养老保险60岁每月领多少 身后事提前知",
-      "topic": "pension_finance",
-      "priority": 85,
+      "event_id": "evt_578b5faa780f",
+      "canonical_event_id": "cev_4d7633cda292",
+      "title": "Verisk 晋升 Harry White 为财产索赔服务主管",
+      "topic": "ai_intelligent",
+      "priority": 75,
       "trust_level": "low",
       "reason_types": [
-        "change_impact",
         "conflict"
       ],
-      "role": "other",
+      "role": "ai",
       "meets_six": false,
       "failed_conditions": [
-        1,
         2,
         3,
         4
       ],
       "six_detail": {
-        "monitored": false,
+        "monitored": true,
         "acted": false,
         "t1_reg": false,
         "has_semantic_change": false,
         "stage": "n/a",
         "status": "active",
-        "evidence_count": 5,
+        "evidence_count": 2,
         "trust_level": "low",
-        "source_count": 18,
-        "single_src_regulatory": false,
-        "decided": false,
-        "feedback_status": null
-      },
-      "urgency": null,
-      "tier": "now"
-    },
-    {
-      "event_id": "evt_a4023075adcb",
-      "canonical_event_id": "cev_0fc29f3a904b",
-      "title": "USAA 获得 3.5 亿美元住宅再保险 2026-2 巨灾债券规模扩大 56%，价格低于指导值",
-      "topic": "capital_reinsurance",
-      "priority": 80,
-      "trust_level": "medium",
-      "reason_types": [
-        "change_impact",
-        "claim_conflict"
-      ],
-      "role": "other",
-      "meets_six": false,
-      "failed_conditions": [
-        1,
-        2,
-        3
-      ],
-      "six_detail": {
-        "monitored": false,
-        "acted": false,
-        "t1_reg": false,
-        "has_semantic_change": false,
-        "stage": "n/a",
-        "status": "active",
-        "evidence_count": 4,
-        "trust_level": "medium",
-        "source_count": 1,
+        "source_count": 2,
         "single_src_regulatory": false,
         "decided": false,
         "feedback_status": null
@@ -2730,7 +2716,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T03:04:39Z"
+      "decided_at": "2026-10-24T10:14:09Z"
     },
     {
       "event_id": "evt_e833bbc251da",
@@ -2763,7 +2749,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T03:04:39Z"
+      "decided_at": "2026-10-24T10:14:09Z"
     },
     {
       "event_id": "evt_3429758517ea",
@@ -2895,7 +2881,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T03:04:39Z"
+      "decided_at": "2026-10-24T10:14:09Z"
     },
     {
       "event_id": "evt_a96306e2d85f",
@@ -2927,7 +2913,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T03:04:39Z"
+      "decided_at": "2026-10-24T10:14:09Z"
     },
     {
       "event_id": "evt_ef42853e4111",
@@ -2959,7 +2945,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T03:04:39Z"
+      "decided_at": "2026-10-24T10:14:09Z"
     },
     {
       "event_id": "evt_4cd0316ba817",
@@ -2991,7 +2977,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T03:04:39Z"
+      "decided_at": "2026-10-24T10:14:09Z"
     },
     {
       "event_id": "evt_845ca4e8e5b6",
@@ -3025,7 +3011,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T03:04:39Z"
+      "decided_at": "2026-10-24T10:14:09Z"
     },
     {
       "event_id": "evt_f4b1111a1183",
@@ -3057,7 +3043,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T03:04:39Z"
+      "decided_at": "2026-10-24T10:14:09Z"
     },
     {
       "event_id": "evt_6008ceee915d",
@@ -3089,7 +3075,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T03:04:39Z"
+      "decided_at": "2026-10-24T10:14:09Z"
     },
     {
       "event_id": "evt_b095cc78b764",
@@ -3123,7 +3109,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T03:04:39Z"
+      "decided_at": "2026-10-24T10:14:09Z"
     },
     {
       "event_id": "evt_db6275b23067",
@@ -3157,7 +3143,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T03:04:39Z"
+      "decided_at": "2026-10-24T10:14:09Z"
     },
     {
       "event_id": "evt_061f47627c61",
@@ -3191,7 +3177,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T03:04:39Z"
+      "decided_at": "2026-10-24T10:14:09Z"
     },
     {
       "event_id": "evt_92310abdea56",
@@ -3786,7 +3772,7 @@
     {
       "dimension": "六条件硬化（决策门）",
       "status": "evaluated",
-      "reason": "待决 67 条中真正达到六条件决策门 3 条；各条件未达计数 {'1': 45, '2': 44, '3': 44, '4': 38, '5': 33, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
+      "reason": "待决 67 条中真正达到六条件决策门 4 条；各条件未达计数 {'1': 42, '2': 42, '3': 42, '4': 40, '5': 33, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
       "unblock": "六条件为可观测评估注解；decision_ready 子集供优先拍板，其余仍留 Human Review"
     },
     {

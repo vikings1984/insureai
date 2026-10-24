@@ -1,11 +1,11 @@
 {
   "version": "review-decision-v1.0",
-  "generated_at": "2026-10-24T03:06:36+00:00",
+  "generated_at": "2026-10-24T10:16:12+00:00",
   "principle": "三段式收敛：分层呈现(不改状态) + 建议处置(不改状态) + 人工执行(人才改状态)。不做 auto-resolve——阈值未经人工验证，无 ground truth 时自动处置=静默漏斗。",
   "meta": {
     "queue_items": 100,
     "pending": 100,
-    "human_load": 29,
+    "human_load": 26,
     "auto_resolve_enabled": false,
     "note": "所有建议 auto_executable=False；状态变更须由 Human Review 侧人工执行"
   },
@@ -105,28 +105,6 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_342a7c61633a",
-          "title": "养老保险个人账户能继承吗 养老保险认证怎么操作 养老保险60岁每月领多少 身后事提前知",
-          "tier": "decision_required",
-          "tier_label": "需人工裁决",
-          "priority": 85,
-          "suggested_action": "human_decide",
-          "auto_executable": false,
-          "reason": "命中冲突类 reason（conflict/claim_conflict）——需人工裁决",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_a4023075adcb",
-          "title": "USAA 获得 3.5 亿美元住宅再保险 2026-2 巨灾债券规模扩大 56%，价格低于指导值",
-          "tier": "decision_required",
-          "tier_label": "需人工裁决",
-          "priority": 80,
-          "suggested_action": "human_decide",
-          "auto_executable": false,
-          "reason": "命中冲突类 reason（conflict/claim_conflict）——需人工裁决",
-          "status": "pending"
-        },
-        {
           "event_id": "evt_578b5faa780f",
           "title": "Verisk 晋升 Harry White 为财产索赔服务主管",
           "tier": "decision_required",
@@ -184,6 +162,17 @@
         {
           "event_id": "evt_01df2d86ed30",
           "title": "AM Best 报告社会通胀成本上升继续对美国责任保险公司构成挑战",
+          "tier": "decision_required",
+          "tier_label": "需人工裁决",
+          "priority": 75,
+          "suggested_action": "human_decide",
+          "auto_executable": false,
+          "reason": "命中冲突类 reason（conflict/claim_conflict）——需人工裁决",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_342a7c61633a",
+          "title": "养老保险个人账户能继承吗 养老保险认证怎么操作 养老保险60岁每月领多少 身后事提前知",
           "tier": "decision_required",
           "tier_label": "需人工裁决",
           "priority": 75,
@@ -259,6 +248,17 @@
           "status": "pending"
         },
         {
+          "event_id": "evt_a4023075adcb",
+          "title": "USAA 获得 3.5 亿美元住宅再保险 2026-2 巨灾债券规模扩大 56%，价格低于指导值",
+          "tier": "decision_required",
+          "tier_label": "需人工裁决",
+          "priority": 70,
+          "suggested_action": "human_decide",
+          "auto_executable": false,
+          "reason": "命中冲突类 reason（conflict/claim_conflict）——需人工裁决",
+          "status": "pending"
+        },
+        {
           "event_id": "evt_921559f7cbbd",
           "title": "世界保险收购新泽西州的 TE Freuler Agency",
           "tier": "decision_required",
@@ -285,12 +285,12 @@
     {
       "tier": "material_change",
       "label": "复核实质变化",
-      "count": 5,
+      "count": 2,
       "default_collapsed": false,
       "items": [
         {
-          "event_id": "evt_6024eb95de9a",
-          "title": "2025年交强险覆盖面持续扩大 参保机动车数量同比增长3.8%",
+          "event_id": "evt_8f2c71a2a01c",
+          "title": "城乡居民养老保险缴费指南（五）：个人可资助缴费，手机几分钟办理，资金直达参保人养老账户",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -300,41 +300,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_8e3c5cb821a8",
-          "title": "普惠保险暖民心也要可持续",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_406e730226b2",
-          "title": "从保硬件到保应用 算力保险“摸索”责任边界",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_bef2b330ed9a",
-          "title": "科技保险加快适配未来产业",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_738bb4b19396",
-          "title": "养老保险个人账户的钱，可以提前取吗？",
+          "event_id": "evt_161f6170da63",
+          "title": "个人养老金里，我为什么先聊“保险”这一类",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -642,7 +609,7 @@
     {
       "tier": "noise",
       "label": "建议归档（低优先级 cluster）",
-      "count": 45,
+      "count": 48,
       "default_collapsed": true,
       "items": [
         {
@@ -1132,6 +1099,39 @@
         {
           "event_id": "evt_cd1750e23fee",
           "title": "国家金融监督管理总局等两部门：支持再保险机构增资扩股和发行资本补充工具",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_62e3eeb3e9dc",
+          "title": "加快上海国际再保险中心建设！8大措施发布",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_7f010a567259",
+          "title": "金融监管总局：2026年二季度保险业偿付能力充足率保持行业高位",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_c3420bbf2ee2",
+          "title": "中国平安贵州分公司因管理失责被罚款15万元 5名保险代理人一并受罚",
           "tier": "noise",
           "tier_label": "建议归档（低优先级 cluster）",
           "priority": 30,
