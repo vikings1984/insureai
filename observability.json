@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "generated_at": "2026-10-24T10:16:13+00:00",
-  "commit": "745e2f39b1c1",
+  "generated_at": "2026-10-24T15:23:18+00:00",
+  "commit": "696ba2b05c01",
   "overall": {
     "status": "degraded",
     "score": 0.6,
@@ -9,9 +9,9 @@
     "warning_count": 4,
     "reasons": [
       "13 个信源可用性低于 0.5: 众安保险, 保险资管协会, 地方银保监局, 太保寿险, 平安人寿",
-      "154 个信源新鲜度低于 0.2",
+      "153 个信源新鲜度低于 0.2",
       "待复核积压 100 条，超过阈值 50",
-      "322 条 pending 复核已滞留 >7 天，超过阈值 20，建议人工清理"
+      "363 条 pending 复核已滞留 >7 天，超过阈值 20，建议人工清理"
     ]
   },
   "sections": {
@@ -32,23 +32,23 @@
       "node_count": 35,
       "failed_nodes": [],
       "slow_nodes": [],
-      "total_duration_sec": 33.283,
-      "run_at": "2026-10-24T10:13:48+00:00"
+      "total_duration_sec": 20.718,
+      "run_at": "2026-10-24T15:21:36+00:00"
     },
     "run": {
       "status": "healthy",
-      "run_id": "run_20261024_030639_bf8be8",
-      "build_sha": "4e6ba50608795e60c712fd2c75b2ed559f13aaeb",
+      "run_id": "run_20261024_101615_29af81",
+      "build_sha": "745e2f39b1c153b75d352d05bceba3c6ce772f47",
       "engine_version": "4.2",
-      "started_at": "2026-10-24T03:06:39.724236+00:00",
-      "ended_at": "2026-10-24T03:06:42.654747+00:00",
+      "started_at": "2026-10-24T10:16:15.176589+00:00",
+      "ended_at": "2026-10-24T10:16:18.170090+00:00",
       "failed_stage": null
     },
     "sources": {
       "status": "degraded",
       "source_count": 254,
       "avg_availability": 0.9488,
-      "avg_freshness": 0.2993,
+      "avg_freshness": 0.3051,
       "low_availability": [
         "众安保险",
         "保险资管协会",
@@ -130,7 +130,6 @@
         "平安人寿",
         "广州日报",
         "广州日报新花城",
-        "废旧轮胎",
         "建行投行",
         "徐水人社",
         "微信公众号搜索",
@@ -237,18 +236,18 @@
       "queue_status_distribution": {
         "pending": 100
       },
-      "tracked_items": 629,
+      "tracked_items": 631,
       "pending": 100,
       "aging": {
         "basis": "review_state",
         "buckets": {
-          "0_1": 139,
-          "1_3": 95,
-          "3_7": 73,
-          "7_plus": 322
+          "0_1": 87,
+          "1_3": 149,
+          "3_7": 32,
+          "7_plus": 363
         },
         "max_age_days": 17,
-        "stale_7plus": 322,
+        "stale_7plus": 363,
         "queue_items": 100,
         "note": "只读指标；分母为 review_state 的pending（与 compression 的 review_queue 分母不同）；不自动 defer/关闭 pending 项"
       },
@@ -262,8 +261,8 @@
         "basis": "review_queue",
         "total_pending": 100,
         "queue_items": 100,
-        "state_tracked": 629,
-        "stale_state_entries": 529,
+        "state_tracked": 631,
+        "stale_state_entries": 531,
         "daily_human_load": 26,
         "compression_ratio": 0.74,
         "thresholds": {
@@ -281,7 +280,7 @@
     },
     "ce_linkage": {
       "status": "healthy",
-      "ce_pool_size": 3067,
+      "ce_pool_size": 3069,
       "surfaces": {
         "decision": {
           "total": 67,
@@ -409,7 +408,7 @@
     {
       "severity": "warning",
       "code": "SOURCE_STALE",
-      "message": "154 个信源新鲜度低于 0.2"
+      "message": "153 个信源新鲜度低于 0.2"
     },
     {
       "severity": "warning",
@@ -419,7 +418,7 @@
     {
       "severity": "warning",
       "code": "REVIEW_AGING_STALE",
-      "message": "322 条 pending 复核已滞留 >7 天，超过阈值 20，建议人工清理"
+      "message": "363 条 pending 复核已滞留 >7 天，超过阈值 20，建议人工清理"
     }
   ]
 }

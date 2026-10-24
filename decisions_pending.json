@@ -1,6 +1,6 @@
 {
   "version": "funnel-v1.1",
-  "generated_at": "2026-10-24T10:16:10Z",
+  "generated_at": "2026-10-24T15:23:16Z",
   "principle": "待决策洪流 → 漏斗（now/soon/watch）+ 排名靠前的待决；已决只来自真实决策记录；六条件硬化为每条待决的注解 + decision_ready 子集；分角色计数；样本<30 不结论；分桶为可观测代理",
   "meta": {
     "total_review_queue": 100,
@@ -20,9 +20,8 @@
       "health": 0,
       "other": 37
     },
-    "decision_ready": 4,
+    "decision_ready": 3,
     "decision_ready_ceids": [
-      "cev_7af437853333",
       "cev_bb54ddbe0129",
       "cev_f045ffa38e68",
       "cev_96ad5d9212a7"
@@ -34,10 +33,10 @@
     "gold_status": "seed",
     "gold_source": "seed_assistant",
     "six_failed_counter": {
-      "1": 42,
-      "2": 42,
-      "3": 42,
-      "4": 40,
+      "1": 43,
+      "2": 44,
+      "3": 44,
+      "4": 41,
       "5": 33,
       "6": 0
     },
@@ -811,29 +810,35 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_8f2c71a2a01c",
-        "canonical_event_id": "cev_7af437853333",
-        "title": "城乡居民养老保险缴费指南（五）：个人可资助缴费，手机几分钟办理，资金直达参保人养老账户",
-        "topic": "pension_finance",
+        "event_id": "evt_8789d53ddeb1",
+        "canonical_event_id": "cev_9698a259dba8",
+        "title": "西藏辖内保险公司针对城乡居民住房巨灾保险等险种估损已近两千万",
+        "topic": "climate_catastrophe",
         "priority": 40,
         "trust_level": "medium",
         "reason_types": [
-          "change_impact"
+          "change_impact",
+          "event_cluster"
         ],
         "role": "regulatory",
-        "meets_six": true,
-        "failed_conditions": [],
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3,
+          4
+        ],
         "six_detail": {
           "monitored": false,
           "acted": false,
-          "t1_reg": true,
+          "t1_reg": false,
           "has_semantic_change": false,
           "stage": "n/a",
-          "status": "issued",
-          "evidence_count": 2,
+          "status": "unknown",
+          "evidence_count": 1,
           "trust_level": "medium",
-          "source_count": 2,
-          "single_src_regulatory": false,
+          "source_count": 1,
+          "single_src_regulatory": true,
           "decided": false,
           "feedback_status": null
         },
@@ -841,9 +846,9 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_161f6170da63",
-        "canonical_event_id": "cev_e15a8ff262d6",
-        "title": "个人养老金里，我为什么先聊“保险”这一类",
+        "event_id": "evt_0cdd51731f18",
+        "canonical_event_id": "cev_7a86553419f2",
+        "title": "职工养老保险单位交多少个人交多少",
         "topic": "pension_finance",
         "priority": 40,
         "trust_level": "medium",
@@ -853,7 +858,9 @@
         "role": "other",
         "meets_six": false,
         "failed_conditions": [
-          1
+          1,
+          2,
+          3
         ],
         "six_detail": {
           "monitored": false,
@@ -2279,36 +2286,6 @@
   },
   "top_pending": [
     {
-      "event_id": "evt_8f2c71a2a01c",
-      "canonical_event_id": "cev_7af437853333",
-      "title": "城乡居民养老保险缴费指南（五）：个人可资助缴费，手机几分钟办理，资金直达参保人养老账户",
-      "topic": "pension_finance",
-      "priority": 40,
-      "trust_level": "medium",
-      "reason_types": [
-        "change_impact"
-      ],
-      "role": "regulatory",
-      "meets_six": true,
-      "failed_conditions": [],
-      "six_detail": {
-        "monitored": false,
-        "acted": false,
-        "t1_reg": true,
-        "has_semantic_change": false,
-        "stage": "n/a",
-        "status": "issued",
-        "evidence_count": 2,
-        "trust_level": "medium",
-        "source_count": 2,
-        "single_src_regulatory": false,
-        "decided": false,
-        "feedback_status": null
-      },
-      "urgency": null,
-      "tier": "soon"
-    },
-    {
       "event_id": "evt_c82d9a9ff13c",
       "canonical_event_id": "cev_bb54ddbe0129",
       "title": "橡树资本收购 A-Cap 保险公司的交易破裂，引发新的谈判",
@@ -2682,6 +2659,41 @@
       },
       "urgency": null,
       "tier": "now"
+    },
+    {
+      "event_id": "evt_7e02d4b37c1f",
+      "canonical_event_id": "cev_59c2a579f30c",
+      "title": "PICC P&C宣布在香港发行首辆Sidecar",
+      "topic": "capital_reinsurance",
+      "priority": 75,
+      "trust_level": "low",
+      "reason_types": [
+        "conflict"
+      ],
+      "role": "other",
+      "meets_six": false,
+      "failed_conditions": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "six_detail": {
+        "monitored": false,
+        "acted": false,
+        "t1_reg": false,
+        "has_semantic_change": false,
+        "stage": "n/a",
+        "status": "active",
+        "evidence_count": 2,
+        "trust_level": "low",
+        "source_count": 2,
+        "single_src_regulatory": false,
+        "decided": false,
+        "feedback_status": null
+      },
+      "urgency": null,
+      "tier": "now"
     }
   ],
   "decided_list": [
@@ -2716,7 +2728,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T10:14:09Z"
+      "decided_at": "2026-10-24T15:21:48Z"
     },
     {
       "event_id": "evt_e833bbc251da",
@@ -2749,7 +2761,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T10:14:09Z"
+      "decided_at": "2026-10-24T15:21:48Z"
     },
     {
       "event_id": "evt_3429758517ea",
@@ -2881,7 +2893,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T10:14:09Z"
+      "decided_at": "2026-10-24T15:21:48Z"
     },
     {
       "event_id": "evt_a96306e2d85f",
@@ -2913,7 +2925,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T10:14:09Z"
+      "decided_at": "2026-10-24T15:21:48Z"
     },
     {
       "event_id": "evt_ef42853e4111",
@@ -2945,7 +2957,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T10:14:09Z"
+      "decided_at": "2026-10-24T15:21:48Z"
     },
     {
       "event_id": "evt_4cd0316ba817",
@@ -2977,7 +2989,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T10:14:09Z"
+      "decided_at": "2026-10-24T15:21:48Z"
     },
     {
       "event_id": "evt_845ca4e8e5b6",
@@ -3011,7 +3023,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T10:14:09Z"
+      "decided_at": "2026-10-24T15:21:48Z"
     },
     {
       "event_id": "evt_f4b1111a1183",
@@ -3043,7 +3055,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T10:14:09Z"
+      "decided_at": "2026-10-24T15:21:48Z"
     },
     {
       "event_id": "evt_6008ceee915d",
@@ -3075,7 +3087,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T10:14:09Z"
+      "decided_at": "2026-10-24T15:21:48Z"
     },
     {
       "event_id": "evt_b095cc78b764",
@@ -3109,7 +3121,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T10:14:09Z"
+      "decided_at": "2026-10-24T15:21:48Z"
     },
     {
       "event_id": "evt_db6275b23067",
@@ -3143,7 +3155,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T10:14:09Z"
+      "decided_at": "2026-10-24T15:21:48Z"
     },
     {
       "event_id": "evt_061f47627c61",
@@ -3177,7 +3189,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T10:14:09Z"
+      "decided_at": "2026-10-24T15:21:48Z"
     },
     {
       "event_id": "evt_92310abdea56",
@@ -3772,7 +3784,7 @@
     {
       "dimension": "六条件硬化（决策门）",
       "status": "evaluated",
-      "reason": "待决 67 条中真正达到六条件决策门 4 条；各条件未达计数 {'1': 42, '2': 42, '3': 42, '4': 40, '5': 33, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
+      "reason": "待决 67 条中真正达到六条件决策门 3 条；各条件未达计数 {'1': 43, '2': 44, '3': 44, '4': 41, '5': 33, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
       "unblock": "六条件为可观测评估注解；decision_ready 子集供优先拍板，其余仍留 Human Review"
     },
     {
