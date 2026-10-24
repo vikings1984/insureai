@@ -1,6 +1,6 @@
 {
   "version": "funnel-v1.1",
-  "generated_at": "2026-10-24T15:23:16Z",
+  "generated_at": "2026-10-24T20:13:05Z",
   "principle": "待决策洪流 → 漏斗（now/soon/watch）+ 排名靠前的待决；已决只来自真实决策记录；六条件硬化为每条待决的注解 + decision_ready 子集；分角色计数；样本<30 不结论；分桶为可观测代理",
   "meta": {
     "total_review_queue": 100,
@@ -10,21 +10,22 @@
     "pending": 67,
     "pending_by_tier": {
       "now": 21,
-      "soon": 3,
-      "watch": 43
+      "soon": 1,
+      "watch": 45
     },
     "pending_by_role": {
-      "ai": 7,
+      "ai": 8,
       "ma": 2,
       "regulatory": 21,
       "health": 0,
-      "other": 37
+      "other": 36
     },
-    "decision_ready": 3,
+    "decision_ready": 4,
     "decision_ready_ceids": [
       "cev_bb54ddbe0129",
       "cev_f045ffa38e68",
-      "cev_96ad5d9212a7"
+      "cev_96ad5d9212a7",
+      "cev_07af19833c30"
     ],
     "decision_ready_precision": 1.0,
     "human_override_rate": 0.0,
@@ -33,9 +34,9 @@
     "gold_status": "seed",
     "gold_source": "seed_assistant",
     "six_failed_counter": {
-      "1": 43,
-      "2": 44,
-      "3": 44,
+      "1": 41,
+      "2": 42,
+      "3": 42,
       "4": 41,
       "5": 33,
       "6": 0
@@ -784,76 +785,6 @@
         "trust_level": "medium",
         "reason_types": [
           "evidence"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_8789d53ddeb1",
-        "canonical_event_id": "cev_9698a259dba8",
-        "title": "西藏辖内保险公司针对城乡居民住房巨灾保险等险种估损已近两千万",
-        "topic": "climate_catastrophe",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact",
-          "event_cluster"
-        ],
-        "role": "regulatory",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "unknown",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": true,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_0cdd51731f18",
-        "canonical_event_id": "cev_7a86553419f2",
-        "title": "职工养老保险单位交多少个人交多少",
-        "topic": "pension_finance",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
         ],
         "role": "other",
         "meets_six": false,
@@ -2281,6 +2212,68 @@
         },
         "urgency": null,
         "tier": "watch"
+      },
+      {
+        "event_id": "evt_90e9acc70026",
+        "canonical_event_id": "cev_07af19833c30",
+        "title": "慕尼黑再保险公司因第三季度初步业绩强劲而将 2026 年利润指引上调至 66 亿欧元",
+        "topic": "ai_intelligent",
+        "priority": 30,
+        "trust_level": "medium",
+        "reason_types": [
+          "event_cluster"
+        ],
+        "role": "ai",
+        "meets_six": true,
+        "failed_conditions": [],
+        "six_detail": {
+          "monitored": true,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "watch"
+      },
+      {
+        "event_id": "evt_a28ba7ff2791",
+        "canonical_event_id": "cev_ccd8903d901d",
+        "title": "霍羿名因虚假理赔骗取保险金被禁业十二年",
+        "topic": "regulatory_change",
+        "priority": 30,
+        "trust_level": "medium",
+        "reason_types": [
+          "event_cluster"
+        ],
+        "role": "regulatory",
+        "meets_six": false,
+        "failed_conditions": [
+          4
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": true,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "issued",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": true,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "watch"
       }
     ]
   },
@@ -2349,6 +2342,36 @@
       "event_id": "evt_bc369073060b",
       "canonical_event_id": "cev_96ad5d9212a7",
       "title": "中国平安亮相世界人工智能大会 发布医疗、保险、支付领域最新AI成果 AI驱动“综合金融+医疗养老”服务升级",
+      "topic": "ai_intelligent",
+      "priority": 30,
+      "trust_level": "medium",
+      "reason_types": [
+        "event_cluster"
+      ],
+      "role": "ai",
+      "meets_six": true,
+      "failed_conditions": [],
+      "six_detail": {
+        "monitored": true,
+        "acted": false,
+        "t1_reg": false,
+        "has_semantic_change": false,
+        "stage": "n/a",
+        "status": "active",
+        "evidence_count": 1,
+        "trust_level": "medium",
+        "source_count": 1,
+        "single_src_regulatory": false,
+        "decided": false,
+        "feedback_status": null
+      },
+      "urgency": null,
+      "tier": "watch"
+    },
+    {
+      "event_id": "evt_90e9acc70026",
+      "canonical_event_id": "cev_07af19833c30",
+      "title": "慕尼黑再保险公司因第三季度初步业绩强劲而将 2026 年利润指引上调至 66 亿欧元",
       "topic": "ai_intelligent",
       "priority": 30,
       "trust_level": "medium",
@@ -2659,41 +2682,6 @@
       },
       "urgency": null,
       "tier": "now"
-    },
-    {
-      "event_id": "evt_7e02d4b37c1f",
-      "canonical_event_id": "cev_59c2a579f30c",
-      "title": "PICC P&C宣布在香港发行首辆Sidecar",
-      "topic": "capital_reinsurance",
-      "priority": 75,
-      "trust_level": "low",
-      "reason_types": [
-        "conflict"
-      ],
-      "role": "other",
-      "meets_six": false,
-      "failed_conditions": [
-        1,
-        2,
-        3,
-        4
-      ],
-      "six_detail": {
-        "monitored": false,
-        "acted": false,
-        "t1_reg": false,
-        "has_semantic_change": false,
-        "stage": "n/a",
-        "status": "active",
-        "evidence_count": 2,
-        "trust_level": "low",
-        "source_count": 2,
-        "single_src_regulatory": false,
-        "decided": false,
-        "feedback_status": null
-      },
-      "urgency": null,
-      "tier": "now"
     }
   ],
   "decided_list": [
@@ -2728,7 +2716,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T15:21:48Z"
+      "decided_at": "2026-10-24T20:11:15Z"
     },
     {
       "event_id": "evt_e833bbc251da",
@@ -2761,7 +2749,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T15:21:48Z"
+      "decided_at": "2026-10-24T20:11:15Z"
     },
     {
       "event_id": "evt_3429758517ea",
@@ -2893,7 +2881,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T15:21:48Z"
+      "decided_at": "2026-10-24T20:11:15Z"
     },
     {
       "event_id": "evt_a96306e2d85f",
@@ -2925,7 +2913,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T15:21:48Z"
+      "decided_at": "2026-10-24T20:11:15Z"
     },
     {
       "event_id": "evt_ef42853e4111",
@@ -2957,7 +2945,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T15:21:48Z"
+      "decided_at": "2026-10-24T20:11:15Z"
     },
     {
       "event_id": "evt_4cd0316ba817",
@@ -2989,7 +2977,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T15:21:48Z"
+      "decided_at": "2026-10-24T20:11:15Z"
     },
     {
       "event_id": "evt_845ca4e8e5b6",
@@ -3023,7 +3011,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T15:21:48Z"
+      "decided_at": "2026-10-24T20:11:15Z"
     },
     {
       "event_id": "evt_f4b1111a1183",
@@ -3055,7 +3043,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T15:21:48Z"
+      "decided_at": "2026-10-24T20:11:15Z"
     },
     {
       "event_id": "evt_6008ceee915d",
@@ -3087,7 +3075,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T15:21:48Z"
+      "decided_at": "2026-10-24T20:11:15Z"
     },
     {
       "event_id": "evt_b095cc78b764",
@@ -3121,7 +3109,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T15:21:48Z"
+      "decided_at": "2026-10-24T20:11:15Z"
     },
     {
       "event_id": "evt_db6275b23067",
@@ -3155,7 +3143,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T15:21:48Z"
+      "decided_at": "2026-10-24T20:11:15Z"
     },
     {
       "event_id": "evt_061f47627c61",
@@ -3189,7 +3177,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-24T15:21:48Z"
+      "decided_at": "2026-10-24T20:11:15Z"
     },
     {
       "event_id": "evt_92310abdea56",
@@ -3784,7 +3772,7 @@
     {
       "dimension": "六条件硬化（决策门）",
       "status": "evaluated",
-      "reason": "待决 67 条中真正达到六条件决策门 3 条；各条件未达计数 {'1': 43, '2': 44, '3': 44, '4': 41, '5': 33, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
+      "reason": "待决 67 条中真正达到六条件决策门 4 条；各条件未达计数 {'1': 41, '2': 42, '3': 42, '4': 41, '5': 33, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
       "unblock": "六条件为可观测评估注解；decision_ready 子集供优先拍板，其余仍留 Human Review"
     },
     {

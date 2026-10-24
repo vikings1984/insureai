@@ -1,11 +1,11 @@
 {
   "version": "review-decision-v1.0",
-  "generated_at": "2026-10-24T15:23:17+00:00",
+  "generated_at": "2026-10-24T20:13:07+00:00",
   "principle": "三段式收敛：分层呈现(不改状态) + 建议处置(不改状态) + 人工执行(人才改状态)。不做 auto-resolve——阈值未经人工验证，无 ground truth 时自动处置=静默漏斗。",
   "meta": {
     "queue_items": 100,
     "pending": 100,
-    "human_load": 26,
+    "human_load": 24,
     "auto_resolve_enabled": false,
     "note": "所有建议 auto_executable=False；状态变更须由 Human Review 侧人工执行"
   },
@@ -285,32 +285,9 @@
     {
       "tier": "material_change",
       "label": "复核实质变化",
-      "count": 2,
+      "count": 0,
       "default_collapsed": false,
-      "items": [
-        {
-          "event_id": "evt_8789d53ddeb1",
-          "title": "西藏辖内保险公司针对城乡居民住房巨灾保险等险种估损已近两千万",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_0cdd51731f18",
-          "title": "职工养老保险单位交多少个人交多少",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        }
-      ]
+      "items": []
     },
     {
       "tier": "relevant",
@@ -609,7 +586,7 @@
     {
       "tier": "noise",
       "label": "建议归档（低优先级 cluster）",
-      "count": 48,
+      "count": 50,
       "default_collapsed": true,
       "items": [
         {
@@ -1132,6 +1109,28 @@
         {
           "event_id": "evt_c3420bbf2ee2",
           "title": "中国平安贵州分公司因管理失责被罚款15万元 5名保险代理人一并受罚",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_90e9acc70026",
+          "title": "慕尼黑再保险公司因第三季度初步业绩强劲而将 2026 年利润指引上调至 66 亿欧元",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_a28ba7ff2791",
+          "title": "霍羿名因虚假理赔骗取保险金被禁业十二年",
           "tier": "noise",
           "tier_label": "建议归档（低优先级 cluster）",
           "priority": 30,
