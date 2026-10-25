@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "generated_at": "2026-10-24T20:13:08+00:00",
-  "commit": "51bc63d8cb1b",
+  "generated_at": "2026-10-25T02:59:54+00:00",
+  "commit": "f79f1df690fb",
   "overall": {
     "status": "degraded",
     "score": 0.6,
@@ -9,7 +9,7 @@
     "warning_count": 4,
     "reasons": [
       "13 个信源可用性低于 0.5: 众安保险, 保险资管协会, 地方银保监局, 太保寿险, 平安人寿",
-      "153 个信源新鲜度低于 0.2",
+      "157 个信源新鲜度低于 0.2",
       "待复核积压 100 条，超过阈值 50",
       "363 条 pending 复核已滞留 >7 天，超过阈值 20，建议人工清理"
     ]
@@ -32,23 +32,23 @@
       "node_count": 35,
       "failed_nodes": [],
       "slow_nodes": [],
-      "total_duration_sec": 33.63,
-      "run_at": "2026-10-24T20:10:55+00:00"
+      "total_duration_sec": 29.655,
+      "run_at": "2026-10-25T02:57:50+00:00"
     },
     "run": {
       "status": "healthy",
-      "run_id": "run_20261024_152319_9bfcd5",
-      "build_sha": "696ba2b05c010c307cabeb433e262fd230a7e41b",
+      "run_id": "run_20261024_201310_18db21",
+      "build_sha": "51bc63d8cb1b30dffb73b597e0753d3bee77d9e6",
       "engine_version": "4.2",
-      "started_at": "2026-10-24T15:23:19.479567+00:00",
-      "ended_at": "2026-10-24T15:23:21.528539+00:00",
+      "started_at": "2026-10-24T20:13:10.494414+00:00",
+      "ended_at": "2026-10-24T20:13:13.445258+00:00",
       "failed_stage": null
     },
     "sources": {
       "status": "degraded",
-      "source_count": 254,
-      "avg_availability": 0.9488,
-      "avg_freshness": 0.3045,
+      "source_count": 255,
+      "avg_availability": 0.949,
+      "avg_freshness": 0.2942,
       "low_availability": [
         "众安保险",
         "保险资管协会",
@@ -174,6 +174,7 @@
         "理财周刊-财事汇",
         "瑞士再保险",
         "生活是一首歌18",
+        "电焊群电焊",
         "白大褂小课堂",
         "百度AI",
         "祈年商贸",
@@ -182,6 +183,7 @@
         "粒屏话康养",
         "红星资本局",
         "缘起读书",
+        "老年健康服务平台",
         "老王只读书",
         "胜说杂民曰",
         "艾瑞咨询",
@@ -189,9 +191,11 @@
         "蚂蚁技术AntTech",
         "行业观察",
         "行走在退休的路上",
+        "西飘印记",
         "证券时报",
         "诉责论谈",
         "财政部官网",
+        "财智盘点",
         "财视",
         "财闻",
         "赢在寿险",
@@ -231,22 +235,22 @@
     },
     "review": {
       "status": "degraded",
-      "queue_generated_count": 369,
+      "queue_generated_count": 3072,
       "queue_items": 100,
       "queue_status_distribution": {
         "pending": 100
       },
-      "tracked_items": 631,
+      "tracked_items": 635,
       "pending": 100,
       "aging": {
         "basis": "review_state",
         "buckets": {
-          "0_1": 70,
+          "0_1": 71,
           "1_3": 108,
-          "3_7": 90,
+          "3_7": 93,
           "7_plus": 363
         },
-        "max_age_days": 17,
+        "max_age_days": 18,
         "stale_7plus": 363,
         "queue_items": 100,
         "note": "只读指标；分母为 review_state 的pending（与 compression 的 review_queue 分母不同）；不自动 defer/关闭 pending 项"
@@ -254,17 +258,17 @@
       "compression": {
         "tiers": {
           "decision_required": 24,
-          "material_change": 0,
+          "material_change": 3,
           "relevant": 26,
-          "noise": 50
+          "noise": 47
         },
         "basis": "review_queue",
         "total_pending": 100,
         "queue_items": 100,
-        "state_tracked": 631,
-        "stale_state_entries": 531,
-        "daily_human_load": 24,
-        "compression_ratio": 0.76,
+        "state_tracked": 635,
+        "stale_state_entries": 535,
+        "daily_human_load": 27,
+        "compression_ratio": 0.73,
         "thresholds": {
           "decision_reasons": [
             "claim_conflict",
@@ -280,7 +284,7 @@
     },
     "ce_linkage": {
       "status": "healthy",
-      "ce_pool_size": 3069,
+      "ce_pool_size": 3072,
       "surfaces": {
         "decision": {
           "total": 67,
@@ -408,7 +412,7 @@
     {
       "severity": "warning",
       "code": "SOURCE_STALE",
-      "message": "153 个信源新鲜度低于 0.2"
+      "message": "157 个信源新鲜度低于 0.2"
     },
     {
       "severity": "warning",
