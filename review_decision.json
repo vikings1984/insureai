@@ -1,11 +1,11 @@
 {
   "version": "review-decision-v1.0",
-  "generated_at": "2026-10-26T12:15:39+00:00",
+  "generated_at": "2026-10-26T22:20:44+00:00",
   "principle": "三段式收敛：分层呈现(不改状态) + 建议处置(不改状态) + 人工执行(人才改状态)。不做 auto-resolve——阈值未经人工验证，无 ground truth 时自动处置=静默漏斗。",
   "meta": {
     "queue_items": 100,
     "pending": 100,
-    "human_load": 41,
+    "human_load": 48,
     "auto_resolve_enabled": false,
     "note": "所有建议 auto_executable=False；状态变更须由 Human Review 侧人工执行"
   },
@@ -105,6 +105,17 @@
           "status": "pending"
         },
         {
+          "event_id": "evt_293ac31b7290",
+          "title": "养老保险个人账户继承",
+          "tier": "decision_required",
+          "tier_label": "需人工裁决",
+          "priority": 85,
+          "suggested_action": "human_decide",
+          "auto_executable": false,
+          "reason": "命中冲突类 reason（conflict/claim_conflict）——需人工裁决",
+          "status": "pending"
+        },
+        {
           "event_id": "evt_578b5faa780f",
           "title": "Verisk 晋升 Harry White 为财产索赔服务主管",
           "tier": "decision_required",
@@ -162,17 +173,6 @@
         {
           "event_id": "evt_01df2d86ed30",
           "title": "AM Best 报告社会通胀成本上升继续对美国责任保险公司构成挑战",
-          "tier": "decision_required",
-          "tier_label": "需人工裁决",
-          "priority": 75,
-          "suggested_action": "human_decide",
-          "auto_executable": false,
-          "reason": "命中冲突类 reason（conflict/claim_conflict）——需人工裁决",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_342a7c61633a",
-          "title": "养老保险个人账户能继承吗 养老保险认证怎么操作 养老保险60岁每月领多少 身后事提前知",
           "tier": "decision_required",
           "tier_label": "需人工裁决",
           "priority": 75,
@@ -285,12 +285,12 @@
     {
       "tier": "material_change",
       "label": "复核实质变化",
-      "count": 17,
+      "count": 24,
       "default_collapsed": false,
       "items": [
         {
-          "event_id": "evt_8aa49dacbdb0",
-          "title": "AM Best：法国内乱对再保险的影响可能很小",
+          "event_id": "evt_144d96f30837",
+          "title": "健全完善巨灾保险保障体系",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -300,8 +300,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_50c5f4d093c4",
-          "title": "尽管净利润下降了约 30%，但 Kinsale 的 CoR 仍实现了 75.4% 的强劲增长",
+          "event_id": "evt_53f29a3c2de3",
+          "title": "Sidecar 和数据中心是 HCMA 2027 年的关键机遇领域：首席执行官 Madea",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -311,8 +311,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_6a10ccfa1bb2",
-          "title": "PIC 完成了 Interface Europe 养老金计划 8500 万英镑的买入",
+          "event_id": "evt_083216d58132",
+          "title": "甘肃金融监管局：指导夏粮保险理赔工作提质提速，落实快赔、预赔政策",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -322,8 +322,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_69f6d579c187",
-          "title": "人民人寿辽源分公司被罚9万，涉误导宣传等",
+          "event_id": "evt_55ab27eabb28",
+          "title": "上半年港险新单保费大涨58.4%，保费融资成增长推手",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -333,8 +333,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_407a8a726bb4",
-          "title": "LM Re 与 Celest.Science 合作解决参数化覆盖中的缺失数据问题",
+          "event_id": "evt_efa508f7afb1",
+          "title": "LIRG 采用 Jaguar Risk 名称以反映全球影响力",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -344,8 +344,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_6100560feb29",
-          "title": "VKB 回归寻求对 King Max Re 德国多重风险巨灾债券进行低附加续订",
+          "event_id": "evt_9aa2900d3869",
+          "title": "VP Bank 对巨灾债券保持中立，指出飓风季节平静且对冲成本",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -355,8 +355,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_132b1036f59e",
-          "title": "宠物保险保费连续五年近翻倍，这家险企加码全链条保障",
+          "event_id": "evt_b50966786f8c",
+          "title": "Mariner Re 启动 7.5 亿美元 TIAA 投资，以支持 Symetra 的年金增长",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -366,8 +366,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_5f580abc890d",
-          "title": "Liberty Mutual Re和Celest.Science探索参数触发数据回退",
+          "event_id": "evt_984ffb9237ab",
+          "title": "Brown & Brown 推出互联智能生态系统以改善保险决策",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -377,8 +377,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_7bc7df48005b",
-          "title": "宾夕法尼亚州联邦大学增加风险管理/保险项目",
+          "event_id": "evt_e87d47989391",
+          "title": "Synthetik and Marsh Re extend CityScape collaboration",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -388,8 +388,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_f1b0838fa89f",
-          "title": "佛罗里达州改革降低了房产保费，但数据显示多户家庭负债率上升",
+          "event_id": "evt_aa6653218df2",
+          "title": "从居家养老到医养社区，河南保险机构探索多元养老服务",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -399,8 +399,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_ff29538362fb",
-          "title": "2026金融街论坛年会保险大会在京举...",
+          "event_id": "evt_cd3b34bd2c44",
+          "title": "乘势而上开新局 护航核能谱新章——2026中国核保险共同体年会在京召开",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -410,8 +410,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_6b840559a115",
-          "title": "14家保司线上“拒保” 新能源车险正被模型重新定价",
+          "event_id": "evt_f27ee9f7a6d2",
+          "title": "Slide Insurance通过两国扩张扩大了美国的影响力",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -421,8 +421,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_1fab8a4ff6ff",
-          "title": "AmTrust International 收购 Wakam 以加强在英国和欧洲的地位",
+          "event_id": "evt_5b93750e848f",
+          "title": "一线保险家｜国民养老保险总经理黄涛：养老金账户不能赔钱，以丰厚储备应对不确定性",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -432,8 +432,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_a021d1b5bfa2",
-          "title": "艾莉森·里根 (Allison Reagan) 加入 CRC Specialty，担任房地产经纪人高级副总裁",
+          "event_id": "evt_28f9f13ee989",
+          "title": "史带成立意大利办事处，任命 Arrigoni 为分公司经理",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -443,8 +443,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_fd014784b6d0",
-          "title": "闽东电力：前三季度净利润同比减少30.23%",
+          "event_id": "evt_4c3a0e168690",
+          "title": "城乡居民养老保险个人资助",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -454,8 +454,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_7ecad31c6413",
-          "title": "OAK Global 通过高级风险和承保任命来支持劳埃德平台",
+          "event_id": "evt_855945e32495",
+          "title": "保险科技与人工智能",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -465,8 +465,85 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_b3e4b7c960f3",
-          "title": "K2 保险服务公司将关闭 Aegis General 的执行风险部门",
+          "event_id": "evt_e00804c505e4",
+          "title": "车险拖累财险保费、人身险保费反弹 跑输大盘的保险股后市怎么走",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 40,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_984cc92f9bbc",
+          "title": "前三季度新能源商业车险签单保费同比增长18.6%",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 40,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_7c4ca333ae8f",
+          "title": "城乡居民养老保险，个人账户领完139个月之后，还能继续领钱吗？",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 40,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_5022302b29f8",
+          "title": "World 收购德克萨斯州 Zoom 保险",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 40,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_99bf505f48ef",
+          "title": "CopperPoint completes acquisition of General Indemnity Group",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 40,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_d5d56ccd696d",
+          "title": "大众计划在佐治亚州新建价值 4B 美元的奥迪工厂",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 40,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_96d447edf9a3",
+          "title": "上半年港险新单保费激增六成：分红险与保费融资双轮驱动",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 40,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_ca924bca8233",
+          "title": "养老保险个人账户会有利息？利息最后算进养老金吗？",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -741,7 +818,7 @@
     {
       "tier": "noise",
       "label": "建议归档（低优先级 cluster）",
-      "count": 36,
+      "count": 29,
       "default_collapsed": true,
       "items": [
         {
@@ -1055,83 +1132,6 @@
         {
           "event_id": "evt_0b848c9301cc",
           "title": "投资失速、罚单不断，平安产险这份半年成绩单并不轻松",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_9e0d6e83b07e",
-          "title": "从化险到减量提质 金融机构改革重塑资源配置格局",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_7f1a02658795",
-          "title": "半年净利23亿元、偿付能力回升，中信保诚的增长“含金量”几何？",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_336b18b7e6c7",
-          "title": "保险中介行业加速出清，多家机构注销许可证、摘牌离场",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_b1ad5827253d",
-          "title": "Vantage 的多元化平台支持 26 年第二季度的增长，GWP 增长 29%",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_b95303fbedaf",
-          "title": "十二证券在台湾建立新的分销合作伙伴关系，制定亚洲战略",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_fdce63d983d9",
-          "title": "马云罕见海外投资布局公示",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_968c64638d08",
-          "title": "Ceres 支持加州关于长期保险偿付能力规划的提案",
           "tier": "noise",
           "tier_label": "建议归档（低优先级 cluster）",
           "priority": 30,
