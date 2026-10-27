@@ -1,7 +1,7 @@
 {
   "version": 1,
   "schema_version": "audit-ledger-v1",
-  "generated_at": "2026-10-27T11:37:37.076977+00:00",
+  "generated_at": "2026-10-27T21:52:47.223495+00:00",
   "privacy": "hashes_and_metadata_only",
   "coverage_principle": "ledger is generated after all analytical quality artifacts; release_manifest carries the production gate result",
   "production_quality_gate": {
@@ -14,19 +14,19 @@
       "stage": "collect",
       "producer": "collector",
       "artifact": "data.json",
-      "sha256": "52fdc0c34a87f5640021955e33ff3773cc8b90dd45eedcda5783e303090399d9",
+      "sha256": "b4b16279ea3c9ab9fce01b9fe59c44119811eb956fd8ac1b8ef0bf124b20c1df",
       "counts": {
-        "news": 3366,
-        "version": "2.2.302"
+        "news": 3389,
+        "version": "2.2.303"
       }
     },
     {
       "stage": "intelligence",
       "producer": "intelligence",
       "artifact": "intelligence.json",
-      "sha256": "cf955f52ead81920e713e88a78474fece0a6daa52f9a6440a7b5c5b6a6a1e329",
+      "sha256": "79f4e704472b8c0af2ec669e7e60c96ecea4aff7bd4f4bf85fa24132042321bf",
       "counts": {
-        "events": 3137,
+        "events": 3159,
         "version": 8
       }
     },
@@ -34,9 +34,9 @@
       "stage": "trust",
       "producer": "trust",
       "artifact": "intelligence.json",
-      "sha256": "cf955f52ead81920e713e88a78474fece0a6daa52f9a6440a7b5c5b6a6a1e329",
+      "sha256": "79f4e704472b8c0af2ec669e7e60c96ecea4aff7bd4f4bf85fa24132042321bf",
       "counts": {
-        "events": 3137,
+        "events": 3159,
         "version": 8
       }
     },
@@ -44,9 +44,9 @@
       "stage": "claims",
       "producer": "claims",
       "artifact": "claims.json",
-      "sha256": "f0a8a23395524b40b67bbb8fde5baf2893f059cdc1ba82b482f95b395805002e",
+      "sha256": "7536373f1e6308d3428600f27541dd4a455e7ac8f93c999f96e816a287f2a3e3",
       "counts": {
-        "events": 3137,
+        "events": 3159,
         "version": 3
       }
     },
@@ -54,9 +54,9 @@
       "stage": "temporal",
       "producer": "temporal",
       "artifact": "intelligence.json",
-      "sha256": "cf955f52ead81920e713e88a78474fece0a6daa52f9a6440a7b5c5b6a6a1e329",
+      "sha256": "79f4e704472b8c0af2ec669e7e60c96ecea4aff7bd4f4bf85fa24132042321bf",
       "counts": {
-        "events": 3137,
+        "events": 3159,
         "version": 8
       }
     },
@@ -64,7 +64,7 @@
       "stage": "trend_intelligence",
       "producer": "trend_intelligence",
       "artifact": "radar.json",
-      "sha256": "afc9b9bf19f92aed37412a32ba37c2742de27edcfaa59bc0036f43176fe45b64",
+      "sha256": "14bc4b4ca881f7c3e5e0c5b08654a802a029b46acc73b4475d5eb55a95a70472",
       "counts": {
         "version": 2
       }
@@ -73,9 +73,9 @@
       "stage": "decision",
       "producer": "decision",
       "artifact": "intelligence.json",
-      "sha256": "cf955f52ead81920e713e88a78474fece0a6daa52f9a6440a7b5c5b6a6a1e329",
+      "sha256": "79f4e704472b8c0af2ec669e7e60c96ecea4aff7bd4f4bf85fa24132042321bf",
       "counts": {
-        "events": 3137,
+        "events": 3159,
         "version": 8
       }
     },
@@ -83,9 +83,9 @@
       "stage": "decision_stability",
       "producer": "decision_stability",
       "artifact": "decision_stability.json",
-      "sha256": "7e965dec0fa362e0f0afa004748c85b41db65a06dbd669b2b6937bc652611eeb",
+      "sha256": "32fc56e2583bf2c93820dd531e37c549cd737b165d8da50ea262c005feefb7a8",
       "counts": {
-        "results": 29,
+        "results": 21,
         "version": 1
       }
     },
@@ -93,7 +93,7 @@
       "stage": "decision_credibility",
       "producer": "decision_credibility",
       "artifact": "decision_credibility.json",
-      "sha256": "4532612b8fc6d9aa8ed3ab1cccf39e87be7e24c180d10d42b483139607ed06c3",
+      "sha256": "b2fc5e89f440cc22cd5182b93acb22bf676901271c82e0d9d9cff77641a0a439",
       "counts": {
         "version": 3
       }
@@ -102,7 +102,7 @@
       "stage": "counterfactual",
       "producer": "counterfactual",
       "artifact": "counterfactual.json",
-      "sha256": "7e218dd4400c75ef731cc9884a516dbb16a54b707763a690049e88337fcf2f5f",
+      "sha256": "e6ed5adf46648e0fcbef4032ccaa6434a56af7094732cd5028211a350511f3c6",
       "counts": {
         "version": 1
       }
@@ -111,7 +111,7 @@
       "stage": "scenario",
       "producer": "scenario",
       "artifact": "scenario.json",
-      "sha256": "4fbbe997d9d9b15a1bb5f5439b027fc4f0611b86452b0dd6e178021c55c3d734",
+      "sha256": "243b011c51c2973d52ebf08c1103b3486d6318b87d980aab471050402ae34e59",
       "counts": {
         "scenarios": 500,
         "version": 1
@@ -151,7 +151,7 @@
       "stage": "change_impact",
       "producer": "change_impact",
       "artifact": "change_impact.json",
-      "sha256": "b4c18a0d654de7eb964db48e950ae9508d37e3c40fbd977df00b52f0d3b95eda",
+      "sha256": "b733c2d83c89ec22ca4ffbef6465d0a60f1f47269d20abc7d9540dbb9e504157",
       "counts": {
         "version": 1
       }
@@ -160,7 +160,7 @@
       "stage": "freshness",
       "producer": "freshness",
       "artifact": "freshness.json",
-      "sha256": "50e418f52fdf3492529e5093848a8ecab3d949baee196cafc4212b5212943948",
+      "sha256": "1f84088363fa0b1235ac225afc0d0ddd085bf3e2ce76f2a4dcc68b5e8bc22bef",
       "counts": {
         "version": 1
       }
@@ -178,7 +178,7 @@
       "stage": "review_queue",
       "producer": "human_review",
       "artifact": "review_queue.json",
-      "sha256": "ea1cf80e3711aa6ce5496b079f10617b91a490d47002b5c60ef9dc48a31a669d",
+      "sha256": "f78dbbd0596f27ae4b9906cf1dc5825322bea1183bf4476a427dac6e836a4411",
       "counts": {
         "items": 100,
         "version": 3
@@ -198,7 +198,7 @@
       "stage": "module_health",
       "producer": "module_health",
       "artifact": "module_health.json",
-      "sha256": "50574d7a102ddd8b92a704f09cc183245e9f362429fb2928d32f340653e3f425",
+      "sha256": "c1748f93dbf72f7276ff6acdfe78edc0e0293f261b34afc9cff6c85a69f84cc5",
       "counts": {
         "modules": 9,
         "version": 1
@@ -208,9 +208,9 @@
       "stage": "module_health_history",
       "producer": "module_health",
       "artifact": "module_health_history.json",
-      "sha256": "436246293f280c6313e43b13dfe6bc5eb88fa923fffc9b9c668935be2e641cbd",
+      "sha256": "7de27d28578aacb4c6b682ca672f9be95884a057add0759938ba4a17223aa8ce",
       "counts": {
-        "snapshots": 84,
+        "snapshots": 85,
         "version": 1
       }
     },
@@ -228,7 +228,7 @@
       "stage": "trend_attribution",
       "producer": "trend_attribution",
       "artifact": "trend_attribution.json",
-      "sha256": "c346c8bf1f46ed2c17859c8b9721bca0600316fdfe870a8cfac46deaa65ea2fc",
+      "sha256": "16034ad6a227e0b14f8e85cf6ed9fdf616e26acb1766df1d79ab9d3a39ff074d",
       "counts": {
         "modules_keys": 9,
         "version": 1
@@ -238,7 +238,7 @@
       "stage": "optimization_backlog",
       "producer": "optimization_backlog",
       "artifact": "optimization_backlog.json",
-      "sha256": "cf03d79f8d3a150ab9f6406f005bd3e5f7f00c9f301765ab677e71f0d5bf0833",
+      "sha256": "5a8bafa198a6982719827c5f57086589285980697048ae7375f8ecc921517758",
       "counts": {
         "items": 9,
         "version": 3
@@ -248,9 +248,9 @@
       "stage": "optimization_backlog_history",
       "producer": "optimization_backlog",
       "artifact": "optimization_backlog_history.json",
-      "sha256": "a061d703d9ca22a61f1bbcbde884e8e2bc5429c230a45e730cfd2f05a42c03f5",
+      "sha256": "cc48394cb6f8671f61d351de0f202c8ce4c21ab3e812e11abfd22bc5f620ce2a",
       "counts": {
-        "snapshots": 84,
+        "snapshots": 85,
         "version": 2
       }
     },
@@ -258,7 +258,7 @@
       "stage": "daily_risk_radar",
       "producer": "daily_risk_radar",
       "artifact": "daily_risk_radar.json",
-      "sha256": "66b0945fe4e7d1a4014482aa2e5e81d38b6ef73aef50f7779074a9249b36643c",
+      "sha256": "b9a15484764daec00d7e39e671603184598f7609cf51d31cf848fdae2cd875a0",
       "counts": {
         "items": 30,
         "version": 4
@@ -268,7 +268,7 @@
       "stage": "owner_risk_view",
       "producer": "owner_risk_view",
       "artifact": "owner_risk_view.json",
-      "sha256": "700c48e7f90106f9cffb1749d188d3508b84147994f0ae71adce1589258e5a81",
+      "sha256": "03ab36b8c7af1d0a659924b28369fb1c4f8fb04b1a9811a43b9e9080597c2089",
       "counts": {
         "items": 30,
         "version": 2
@@ -278,7 +278,7 @@
       "stage": "executive_terminal",
       "producer": "executive_terminal",
       "artifact": "executive_terminal.json",
-      "sha256": "8a4f59bab2552c3f155c84b897b997a05923704d68fd26dc86a0093448cb2dba",
+      "sha256": "13dfcb38e21e97533e7a6552378bd8ec9014e2fe10f5282a21a685307ab84a6b",
       "counts": {
         "version": 4
       }
@@ -287,17 +287,17 @@
       "stage": "p2_daily_brief",
       "producer": "p2_intelligence",
       "artifact": "p2_daily_brief.json",
-      "sha256": "56d739557183bc08a406ff3111150ee2fb03a0c016436542d089f92b17526940",
+      "sha256": "4f536f809f1730615ae96346bbcae966233878c02469c6312c399b13ad48f25a",
       "counts": {
         "version": "p2-v1.0"
       }
     }
   ],
   "_provenance": {
-    "run_id": "run_20261027_113737_24e1ba",
-    "build_sha": "a8ee32dc1bcefce13332c70ff25a955ab8eb3ca2",
+    "run_id": "run_20261027_215247_c78a95",
+    "build_sha": "0a046717d8940bdcef5548b6b35f6a4857b98f12",
     "engine_version": "4.2",
     "schema_version": "release-provenance-v1",
-    "generated_at": "2026-10-27T11:37:39.469404+00:00"
+    "generated_at": "2026-10-27T21:52:48.915457+00:00"
   }
 }
