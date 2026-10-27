@@ -1,20 +1,20 @@
 {
   "version": "ir-v1.1",
   "registry_version": "er-v1.1",
-  "generated_at": "2026-10-26T22:20:41Z",
+  "generated_at": "2026-10-27T03:32:02Z",
   "principle": "单一事实源：所有模块引用 canonical_event_id；resolver 只解析、不发明身份。合并与分裂由证据 + 人工 review 决定，resolver 仅产出候选。",
-  "total_references": 109,
-  "resolved": 109,
+  "total_references": 101,
+  "resolved": 101,
   "unresolved": 0,
   "unresolved_rate": 0.0,
   "unresolved_samples": [],
   "partition_stats": {
-    "other": 77,
-    "regulatory": 28,
-    "acquisition": 4
+    "other": 65,
+    "regulatory": 34,
+    "acquisition": 2
   },
   "candidate_merges": {
-    "count": 3,
+    "count": 5,
     "status": "proposed",
     "items": [
       {
@@ -45,18 +45,53 @@
         "status": "proposed"
       },
       {
-        "entity": "Althoff",
+        "entity": "AM Best",
         "type": "Company",
         "canonical_ids": [
-          "cev_14321b51a819",
-          "cev_26ec0af1a081"
+          "cev_182f56c051c6",
+          "cev_3998fb38b0be",
+          "cev_5463897ca6df",
+          "cev_6bdddabf0c6e",
+          "cev_7717aaee8e57",
+          "cev_a96bf8f10619",
+          "cev_c3c84e79c2ed",
+          "cev_df6ccb90b73f"
         ],
         "event_ids": [
-          "cev_26ec0af1a081",
-          "cev_14321b51a819"
+          "cev_df6ccb90b73f",
+          "cev_6bdddabf0c6e",
+          "cev_3998fb38b0be",
+          "cev_c3c84e79c2ed",
+          "cev_5463897ca6df",
+          "cev_7717aaee8e57",
+          "cev_a96bf8f10619",
+          "cev_182f56c051c6"
         ],
         "domain": "other",
-        "evidence": "实体共现（Althoff 跨 2 个 canonical event）",
+        "evidence": "实体共现（AM Best 跨 8 个 canonical event）",
+        "status": "proposed"
+      },
+      {
+        "entity": "Guy Carpenter",
+        "type": "Company",
+        "canonical_ids": [
+          "cev_7116251ba82a",
+          "cev_75ffa0799040",
+          "cev_7f2a43c0f409",
+          "cev_d0cb57ed1b2d",
+          "cev_e3509308cfc6",
+          "cev_e689f5bd3651"
+        ],
+        "event_ids": [
+          "cev_7f2a43c0f409",
+          "cev_7116251ba82a",
+          "cev_e3509308cfc6",
+          "cev_75ffa0799040",
+          "cev_e689f5bd3651",
+          "cev_d0cb57ed1b2d"
+        ],
+        "domain": "other",
+        "evidence": "实体共现（Guy Carpenter 跨 6 个 canonical event）",
         "status": "proposed"
       },
       {
@@ -81,11 +116,26 @@
         "domain": "other",
         "evidence": "实体共现（KCC 跨 6 个 canonical event）",
         "status": "proposed"
+      },
+      {
+        "entity": "Tower",
+        "type": "Company",
+        "canonical_ids": [
+          "cev_0adf70c0264a",
+          "cev_9d8ff9c8de58"
+        ],
+        "event_ids": [
+          "cev_9d8ff9c8de58",
+          "cev_0adf70c0264a"
+        ],
+        "domain": "other",
+        "evidence": "实体共现（Tower 跨 2 个 canonical event）",
+        "status": "proposed"
       }
     ]
   },
   "generic_review": {
-    "count": 18,
+    "count": 20,
     "items": [
       {
         "entity": "A-Cap",
@@ -106,13 +156,31 @@
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
-        "entity": "Althoff",
+        "entity": "AM Best",
+        "type": "Company",
+        "into_ce": false,
+        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
+      },
+      {
+        "entity": "GC Securities",
+        "type": "Company",
+        "into_ce": false,
+        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
+      },
+      {
+        "entity": "Guy Carpenter",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
         "entity": "KCC",
+        "type": "Company",
+        "into_ce": false,
+        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
+      },
+      {
+        "entity": "Klisura",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
@@ -130,7 +198,7 @@
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
-        "entity": "RiskInsight",
+        "entity": "Tower",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
@@ -154,7 +222,7 @@
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
-        "entity": "众安保险",
+        "entity": "以降低的成本将首次巨灾再保险",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
@@ -185,12 +253,6 @@
       },
       {
         "entity": "再保险",
-        "type": "Company",
-        "into_ce": false,
-        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
-      },
-      {
-        "entity": "科技保险",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
