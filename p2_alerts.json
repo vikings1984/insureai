@@ -1,12 +1,12 @@
 {
   "version": "alert-v1.1",
-  "generated_at": "2026-10-28T03:47:47Z",
+  "generated_at": "2026-10-28T12:08:37Z",
   "principle": "两层收敛：Internal Diff（事实）→ Semantic Alert（≤8 条聚合）；两层准入（T1 系统级监管 / T2 个人级 Watch / T3 标准）；NEW_SOURCE/NEW_EVIDENCE 留内部、delta 不伪造、首跑仅种子、告警不改写业务判断",
   "meta": {
-    "total_events": 3160,
+    "total_events": 3183,
     "baseline_present": true,
     "basis": "delta_vs_baseline",
-    "internal_diff_count": 0,
+    "internal_diff_count": 1,
     "alert_count": 8,
     "max_alerts": 8,
     "alert_type_counts": {
@@ -22,7 +22,21 @@
     },
     "suppressed": 0
   },
-  "internal_diffs": [],
+  "internal_diffs": [
+    {
+      "canonical_event_id": "cev_e3509308cfc6",
+      "event_id": "evt_db0a3669a076",
+      "title": "GC Securities 在 2026 年上半年发行了 20 只巨灾债券，总额达到创纪录的 50 亿美元：Guy Carpenter 首席执行官 Klisura",
+      "topic": "capital_reinsurance",
+      "changes": [
+        {
+          "field": "decision_urgency",
+          "old": "watch",
+          "new": null
+        }
+      ]
+    }
+  ],
   "semantic_alerts": [
     {
       "type": "STANDING_MATERIAL",
@@ -30,6 +44,20 @@
       "event_id": "evt_3429758517ea",
       "title": "国家金融监督管理总局：全面推进保险行业AI大模型合规应用指引",
       "topic": "ai_intelligent",
+      "severity": "high",
+      "rationale": "监管效力状态：issued（系统级 T1 准入，今日无变化）",
+      "basis": "standing",
+      "changed_fields": [
+        "status"
+      ],
+      "admission": "T1_system"
+    },
+    {
+      "type": "STANDING_MATERIAL",
+      "canonical_event_id": "cev_e0bccb56f0b9",
+      "event_id": "evt_4d89f33f94aa",
+      "title": "上海启动跨境再保险“外来外用”试点，人保财险等四家险企首批参与",
+      "topic": "capital_reinsurance",
       "severity": "high",
       "rationale": "监管效力状态：issued（系统级 T1 准入，今日无变化）",
       "basis": "standing",
@@ -116,20 +144,6 @@
       "topic": "pension_finance",
       "severity": "high",
       "rationale": "监管效力状态：effective（系统级 T1 准入，今日无变化）",
-      "basis": "standing",
-      "changed_fields": [
-        "status"
-      ],
-      "admission": "T1_system"
-    },
-    {
-      "type": "STANDING_MATERIAL",
-      "canonical_event_id": "cev_2aab5b2d16f0",
-      "event_id": "evt_fd60218d12d1",
-      "title": "中国再保险拟向财政部定增募资不超30亿元 用于增加核心一级资本",
-      "topic": "capital_reinsurance",
-      "severity": "high",
-      "rationale": "监管效力状态：issued（系统级 T1 准入，今日无变化）",
       "basis": "standing",
       "changed_fields": [
         "status"
