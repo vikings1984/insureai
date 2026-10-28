@@ -1,11 +1,11 @@
 {
   "version": "review-decision-v1.0",
-  "generated_at": "2026-10-28T12:08:40+00:00",
+  "generated_at": "2026-10-28T18:19:51+00:00",
   "principle": "三段式收敛：分层呈现(不改状态) + 建议处置(不改状态) + 人工执行(人才改状态)。不做 auto-resolve——阈值未经人工验证，无 ground truth 时自动处置=静默漏斗。",
   "meta": {
     "queue_items": 100,
     "pending": 100,
-    "human_load": 48,
+    "human_load": 42,
     "auto_resolve_enabled": false,
     "note": "所有建议 auto_executable=False；状态变更须由 Human Review 侧人工执行"
   },
@@ -94,6 +94,17 @@
           "status": "pending"
         },
         {
+          "event_id": "evt_12caf4175365",
+          "title": "AM Best 报告称，随着持续增长，美国产权保险保费到 2025 年将上涨 13%",
+          "tier": "decision_required",
+          "tier_label": "需人工裁决",
+          "priority": 85,
+          "suggested_action": "human_decide",
+          "auto_executable": false,
+          "reason": "命中冲突类 reason（conflict/claim_conflict）——需人工裁决",
+          "status": "pending"
+        },
+        {
           "event_id": "evt_578b5faa780f",
           "title": "Verisk 晋升 Harry White 为财产索赔服务主管",
           "tier": "decision_required",
@@ -140,17 +151,6 @@
         {
           "event_id": "evt_40ac78061367",
           "title": "红树林推出百慕大再保险Sidecar Grove Re",
-          "tier": "decision_required",
-          "tier_label": "需人工裁决",
-          "priority": 75,
-          "suggested_action": "human_decide",
-          "auto_executable": false,
-          "reason": "命中冲突类 reason（conflict/claim_conflict）——需人工裁决",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_01df2d86ed30",
-          "title": "AM Best 报告社会通胀成本上升继续对美国责任保险公司构成挑战",
           "tier": "decision_required",
           "tier_label": "需人工裁决",
           "priority": 75,
@@ -285,23 +285,12 @@
     {
       "tier": "material_change",
       "label": "复核实质变化",
-      "count": 24,
+      "count": 18,
       "default_collapsed": false,
       "items": [
         {
-          "event_id": "evt_4d89f33f94aa",
-          "title": "上海启动跨境再保险“外来外用”试点，人保财险等四家险企首批参与",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 60,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_296a03f49c1a",
-          "title": "尽管保费较低，Arch 的再保险部门在 2026 年第三季度仍实现了 3.93 亿美元的承保利润",
+          "event_id": "evt_7b9cd21c8214",
+          "title": "上海再保险“外来外用”进入实操",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -311,8 +300,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_7e7b70466a5a",
-          "title": "RenRe 为新的 Lighthouse Cat Bond 基金筹集了 1.5 亿美元，报告第三季度费用收入为 8170 万美元",
+          "event_id": "evt_1eec2dc45f99",
+          "title": "多元化是再保险强劲有机增长的关键驱动力：Aon 的 Marcell",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -322,8 +311,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_f73ceaf5c161",
-          "title": "跨境再保险分入业务收入境外投资便利化试点启动",
+          "event_id": "evt_2aa8af5cf26e",
+          "title": "客户需求的规模要求我们超越传统将风险与资本联系起来：怡安首席执行官案例",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -333,8 +322,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_02ea96187401",
-          "title": "摩洛哥制定保险证券化监管框架，包括巨灾债券",
+          "event_id": "evt_20275d534c3f",
+          "title": "VIG Re 寻求 5000 万欧元欧元风复古，首次提供查理大桥再保险猫债券赞助",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -344,8 +333,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_9090dc137bb9",
-          "title": "Mapfre Re 26 年 9 月利润增长 11.8% 至 2.86 亿欧元",
+          "event_id": "evt_48b9684ab1b6",
+          "title": "Verisk 扩展跨人工智能平台的保险情报访问",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -355,8 +344,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_9eb3f38933c1",
-          "title": "JD Power：汽车全损索赔降低了保险客户满意度",
+          "event_id": "evt_b123312d2bb1",
+          "title": "1月1日，房地产猫价下降放缓，资本供应现在更加严格：人再集团",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -366,8 +355,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_25c414e5c25a",
-          "title": "Aon 的再保险解决方案在 2026 年第三季度实现收入增长 7% 至 5.72 亿美元",
+          "event_id": "evt_df6fa51d97b8",
+          "title": "26 年 9 月 QIC 毛保费增长 9%，达到 85 亿卡塔尔里亚尔",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -377,8 +366,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_2d620a3e733a",
-          "title": "标准普尔授予鼎睿再保险首次评级",
+          "event_id": "evt_d1f322942857",
+          "title": "AM Best 警告 PHP 漏洞可能会给网络保险公司带来系统性风险",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -388,8 +377,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_897bc0aabbe5",
-          "title": "RenRe 削减财产账目，因承保业绩抵消了意外险和特殊险业务的损失",
+          "event_id": "evt_37fadea1d3dd",
+          "title": "2026 年 9 月平安产险保费收入增长 3.5%",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -399,8 +388,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_144129d658a1",
-          "title": "Lockton Re names Jeremy England Lee as Chairman, Bermuda",
+          "event_id": "evt_c61d52583593",
+          "title": "佛罗里达州代理机构所有者和无证代理被指控伪造证书计划",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -410,8 +399,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_321ff8e0bb3e",
-          "title": "穆迪维持意大利人寿和财产险市场稳定前景",
+          "event_id": "evt_3f2742054226",
+          "title": "更多佛罗里达州保险公司宣布降低汽车、房主、公寓单位的保费",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -421,8 +410,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_d567ac90b538",
-          "title": "Insurwave 重新推出平台，使动态风险可衡量",
+          "event_id": "evt_d507b3d08073",
+          "title": "货运公司面临不断增加的柴油、保险和债务成本",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -432,8 +421,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_44c99d1af0de",
-          "title": "中国再保副董事长朱晓云：将围绕新质生产力培育打造再保险专属解决方案",
+          "event_id": "evt_5cf2c4fd35c4",
+          "title": "跨境再保险“外来外用”试点在上海启动",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -443,8 +432,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_561f49dce23b",
-          "title": "保险“开门红”延期 跨境投资成新亮点",
+          "event_id": "evt_a83c2f0508ec",
+          "title": "Baldwin Group 26 年第三季度的总收入达到 4.803 亿美元",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -454,8 +443,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_08cd14f4547d",
-          "title": "英格兰银行警告气候风险可能扩大英国保险缺口",
+          "event_id": "evt_dda399315ed6",
+          "title": "达信任命 Kristof De Bremme 为达信荷兰公司新任首席执行官",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -465,8 +454,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_2f5b1fa0c2e9",
-          "title": "近日部分年金、保险、公募基金等机构加大买入力度",
+          "event_id": "evt_d27d182031b5",
+          "title": "谁来为创新药买单？",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -476,8 +465,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_f504a7daa8a6",
-          "title": "同一只宠物骗保460万，宠物险遇“成长烦恼”",
+          "event_id": "evt_922815250265",
+          "title": "Slide 预计 26 年第三季度净利润将增长 24.5%，CoR 为 59.3%",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -487,63 +476,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_89708cb090ba",
-          "title": "个人养老金+税优健康险，可申请节税的保险！",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_38f9d9aab544",
-          "title": "广东省机关事业单位养老保险个人参保证明",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_4e9f5b46d987",
-          "title": "中国保险行业协会团体标准专委会常委会...",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_093112194e0e",
-          "title": "Jeremy England Lee moves to Lockton Re Bermuda as Chairman",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_34d709e33562",
-          "title": "中国平安：前三季度寿险及健康险业务营运利润872.38亿元，同比增长5.7%",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_7443776fb6d7",
-          "title": "Selective Insurance appoints Jake Rothfuss as EVP of Standard Lines",
+          "event_id": "evt_4ff61fc44576",
+          "title": "EverPeak appoints Patrick Daley as CUO",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -557,7 +491,7 @@
     {
       "tier": "relevant",
       "label": "一般关注",
-      "count": 15,
+      "count": 16,
       "default_collapsed": false,
       "items": [
         {
@@ -585,6 +519,17 @@
         {
           "event_id": "evt_083577177db6",
           "title": "摩根大通表示再保险定价在 2027 年之前不太可能稳定",
+          "tier": "relevant",
+          "tier_label": "一般关注",
+          "priority": 50,
+          "suggested_action": "review_low_priority",
+          "auto_executable": false,
+          "reason": "优先级 50／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_4d89f33f94aa",
+          "title": "上海启动跨境再保险“外来外用”试点，人保财险等四家险企首批参与",
           "tier": "relevant",
           "tier_label": "一般关注",
           "priority": 50,
@@ -730,9 +675,31 @@
     {
       "tier": "noise",
       "label": "建议归档（低优先级 cluster）",
-      "count": 37,
+      "count": 42,
       "default_collapsed": true,
       "items": [
+        {
+          "event_id": "evt_296a03f49c1a",
+          "title": "尽管保费较低，Arch 的再保险部门在 2026 年第三季度仍实现了 3.93 亿美元的承保利润",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_7e7b70466a5a",
+          "title": "RenRe 为新的 Lighthouse Cat Bond 基金筹集了 1.5 亿美元，报告第三季度费用收入为 8170 万美元",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
         {
           "event_id": "evt_c82d9a9ff13c",
           "title": "橡树资本收购 A-Cap 保险公司的交易破裂，引发新的谈判",
@@ -890,6 +857,17 @@
         {
           "event_id": "evt_40a505012bd4",
           "title": "甘肃省综合巨灾保险试点工作落地，首笔理赔已完成",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_f73ceaf5c161",
+          "title": "跨境再保险分入业务收入境外投资便利化试点启动",
           "tier": "noise",
           "tier_label": "建议归档（低优先级 cluster）",
           "priority": 30,
@@ -1132,6 +1110,28 @@
         {
           "event_id": "evt_2f88f71a66b2",
           "title": "风神在承保、再保险、复古、金融、法律和运营领域掀起促销热潮",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_5e6578f06ce8",
+          "title": "Autonomous表示，再保险市场疲软的影响变得越来越明显",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_11b9a680166d",
+          "title": "1 月企业再保险重组后，Travelers 放弃个人 XOL 条约续签",
           "tier": "noise",
           "tier_label": "建议归档（低优先级 cluster）",
           "priority": 30,

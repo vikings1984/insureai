@@ -1,12 +1,12 @@
 {
   "version": "review-feedback-v1.0",
-  "generated_at": "2026-10-28T12:08:40+00:00",
+  "generated_at": "2026-10-28T18:19:51+00:00",
   "principle": "反馈只记录人怎么判；系统不据此自动改状态、不放开自动化。未登记=未知；样本<30 不结论。",
   "meta": {
     "suggestions_available": 100,
     "feedback_registered": 20,
-    "feedback_matched": 18,
-    "unmatched_feedback": 2,
+    "feedback_matched": 19,
+    "unmatched_feedback": 1,
     "min_sample": 30,
     "concluded": false,
     "auto_action_enabled": false,
@@ -14,12 +14,12 @@
   },
   "by_tier": {
     "decision_required": {
-      "total": 18,
+      "total": 19,
       "accept": 6,
-      "reject": 12,
+      "reject": 13,
       "modify": 0,
       "defer": 0,
-      "accept_rate": 0.3333,
+      "accept_rate": 0.3158,
       "concluded": false
     }
   },
@@ -76,6 +76,15 @@
       "decision": "accept",
       "modified_action": null,
       "reason": "人工复核判定：真实事实冲突/事件确需人工裁决",
+      "at": "2026-10-12T09:01:56+00:00"
+    },
+    {
+      "event_id": "evt_12caf4175365",
+      "tier": "decision_required",
+      "suggested_action": "human_decide",
+      "decision": "reject",
+      "modified_action": null,
+      "reason": "人工复核判定：冲突属数字抽取噪音或事件不需进决策门（非真实事实矛盾）",
       "at": "2026-10-12T09:01:56+00:00"
     },
     {
@@ -191,7 +200,7 @@
     {
       "dimension": "建议准确率样本量",
       "status": "awaiting_human_input",
-      "reason": "18 条已对账（目标 30 条才让接受率有结论意义）",
+      "reason": "19 条已对账（目标 30 条才让接受率有结论意义）",
       "unblock": "在 review_feedback.json 持续登记人工反馈"
     }
   ]
