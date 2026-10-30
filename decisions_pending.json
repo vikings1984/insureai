@@ -1,6 +1,6 @@
 {
   "version": "funnel-v1.1",
-  "generated_at": "2026-10-30T12:09:55Z",
+  "generated_at": "2026-10-30T18:07:17Z",
   "principle": "待决策洪流 → 漏斗（now/soon/watch）+ 排名靠前的待决；已决只来自真实决策记录；六条件硬化为每条待决的注解 + decision_ready 子集；分角色计数；样本<30 不结论；分桶为可观测代理",
   "meta": {
     "total_review_queue": 100,
@@ -10,23 +10,24 @@
     "pending": 67,
     "pending_by_tier": {
       "now": 25,
-      "soon": 29,
-      "watch": 13
+      "soon": 28,
+      "watch": 14
     },
     "pending_by_role": {
-      "ai": 11,
-      "ma": 3,
-      "regulatory": 7,
-      "health": 2,
+      "ai": 13,
+      "ma": 2,
+      "regulatory": 8,
+      "health": 0,
       "other": 44
     },
-    "decision_ready": 6,
+    "decision_ready": 7,
     "decision_ready_ceids": [
-      "cev_768a2e8a9b14",
-      "cev_d792939e352b",
-      "cev_31c8556ed12f",
-      "cev_115d9e583b48",
-      "cev_5a64f6c72f26",
+      "cev_828407ffb4b2",
+      "cev_ccc0559c4607",
+      "cev_934cf85cf382",
+      "cev_0a13f50b4aeb",
+      "cev_6aa72811842e",
+      "cev_bd371bd6aea0",
       "cev_bb54ddbe0129"
     ],
     "decision_ready_precision": 1.0,
@@ -36,8 +37,8 @@
     "gold_status": "seed",
     "gold_source": "seed_assistant",
     "six_failed_counter": {
-      "1": 46,
-      "2": 53,
+      "1": 48,
+      "2": 52,
       "3": 53,
       "4": 30,
       "5": 33,
@@ -302,77 +303,6 @@
         "tier": "now"
       },
       {
-        "event_id": "evt_d2500cca8772",
-        "canonical_event_id": "cev_1b0cf8c913b1",
-        "title": "新华保险前三季度归母股东权益大增24.5% 保险服务业绩同比增长12.4%",
-        "topic": "",
-        "priority": 85,
-        "trust_level": "low",
-        "reason_types": [
-          "change_impact",
-          "conflict"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 3,
-          "trust_level": "low",
-          "source_count": 3,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "now"
-      },
-      {
-        "event_id": "evt_ab99311232f2",
-        "canonical_event_id": "cev_308bc2716e9f",
-        "title": "SafePoint 将 Nature Coast Re 2026-2 巨灾债券目标提高了一倍多，达到 6 亿美元",
-        "topic": "capital_reinsurance",
-        "priority": 80,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact",
-          "claim_conflict"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 2,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "now"
-      },
-      {
         "event_id": "evt_12caf4175365",
         "canonical_event_id": "cev_283f9885982b",
         "title": "AM Best 报告称，随着持续增长，美国产权保险保费到 2025 年将上涨 13%",
@@ -604,6 +534,75 @@
           "evidence_count": 5,
           "trust_level": "low",
           "source_count": 19,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "now"
+      },
+      {
+        "event_id": "evt_d2500cca8772",
+        "canonical_event_id": "cev_1b0cf8c913b1",
+        "title": "新华保险前三季度归母股东权益大增24.5% 保险服务业绩同比增长12.4%",
+        "topic": "",
+        "priority": 75,
+        "trust_level": "low",
+        "reason_types": [
+          "conflict"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 3,
+          "trust_level": "low",
+          "source_count": 3,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "now"
+      },
+      {
+        "event_id": "evt_ab99311232f2",
+        "canonical_event_id": "cev_308bc2716e9f",
+        "title": "SafePoint 将 Nature Coast Re 2026-2 巨灾债券目标提高了一倍多，达到 6 亿美元",
+        "topic": "capital_reinsurance",
+        "priority": 70,
+        "trust_level": "medium",
+        "reason_types": [
+          "claim_conflict"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 2,
+          "trust_level": "medium",
+          "source_count": 1,
           "single_src_regulatory": false,
           "decided": false,
           "feedback_status": null
@@ -951,80 +950,15 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_bbbb94b94713",
-        "canonical_event_id": "cev_b432544dd52e",
-        "title": "SCOR 将来自经纪商设施和第三方资本的竞争视为机遇：首席执行官 Léger",
-        "topic": "capital_reinsurance",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact",
-          "event_cluster"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_ebe66a8b9897",
-        "canonical_event_id": "cev_25a5cc1d88de",
-        "title": "人民健康险驻马店中支被罚15万，涉编制虚假资料等",
-        "topic": "regulatory_change",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact",
-          "event_cluster"
-        ],
-        "role": "regulatory",
-        "meets_six": false,
-        "failed_conditions": [
-          4
-        ],
-        "six_detail": {
-          "monitored": true,
-          "acted": false,
-          "t1_reg": true,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "issued",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": true,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_222eb2937e12",
-        "canonical_event_id": "cev_768a2e8a9b14",
-        "title": "Aon 的 IBEX 扩展为复杂交易提供更大的确定性",
+        "event_id": "evt_ff5694a39aea",
+        "canonical_event_id": "cev_828407ffb4b2",
+        "title": "Markel 预计 Enstar 的 1.2B 美元不利发展保障将带来决胜的确定性",
         "topic": "ai_intelligent",
         "priority": 40,
         "trust_level": "medium",
         "reason_types": [
-          "change_impact"
+          "change_impact",
+          "event_cluster"
         ],
         "role": "ai",
         "meets_six": true,
@@ -1047,9 +981,9 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_d09163456b18",
-        "canonical_event_id": "cev_95f343b4539f",
-        "title": "SCOR 26 年第 3 季度净利润为 2.06 亿欧元，财产险综合成本率为 84.1%",
+        "event_id": "evt_9e14dcc5259c",
+        "canonical_event_id": "cev_b948ca4b217d",
+        "title": "RiverStone International completes $1.6bn LPT reinsurance transactions with QBE",
         "topic": "capital_reinsurance",
         "priority": 40,
         "trust_level": "medium",
@@ -1081,15 +1015,50 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_972ceb1fe8ec",
-        "canonical_event_id": "cev_695d6f8461f7",
-        "title": "Trucordia 简化了保险工作流程，为员工腾出了时间",
+        "event_id": "evt_3855c9d91b60",
+        "canonical_event_id": "cev_fe6bd317d5a1",
+        "title": "河南新发放秋粮收储贷款超70亿元 秋粮保险已赔付6.5亿元",
         "topic": "regulatory_change",
         "priority": 40,
         "trust_level": "medium",
         "reason_types": [
           "change_impact"
         ],
+        "role": "regulatory",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "unknown",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": true,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_9bc085852994",
+        "canonical_event_id": "cev_9539fd43b7e4",
+        "title": "一些趋势预示着美国商用汽车的潜在希望：AM Best",
+        "topic": "capital_reinsurance",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
+        ],
         "role": "other",
         "meets_six": false,
         "failed_conditions": [
@@ -1115,9 +1084,77 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_e10eb5633c92",
-        "canonical_event_id": "cev_d792939e352b",
-        "title": "规模之上看价值：解析中国人寿三季报的经营底盘",
+        "event_id": "evt_a813ce594ad0",
+        "canonical_event_id": "cev_6cfdff27c275",
+        "title": "欧洲猫的定价从高个位数下调至低两位数，以“非常晚”的 1 月 1 日续约：SCOR 的 Conoscente",
+        "topic": "capital_reinsurance",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_26f4976bef76",
+        "canonical_event_id": "cev_a6b4fb0b8f51",
+        "title": "马克尔保险首席执行官表示，竞争激烈的财产保险市场尚未陷入困境",
+        "topic": "capital_reinsurance",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_88a7ee3d6cdd",
+        "canonical_event_id": "cev_ccc0559c4607",
+        "title": "珠穆朗玛峰将智利保险业务出售给 AIG，推进商业零售退出",
         "topic": "ai_intelligent",
         "priority": 40,
         "trust_level": "medium",
@@ -1145,42 +1182,9 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_0887b1762a92",
-        "canonical_event_id": "cev_37bfbb418117",
-        "title": "太平养老保险公司增资至33.3亿",
-        "topic": "pension_finance",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "ma",
-        "meets_six": false,
-        "failed_conditions": [
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": true,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_56fb586af10c",
-        "canonical_event_id": "cev_4f49347921b7",
-        "title": "Brookmont 的巨灾债券 ETF 管理规模超过 1.5 亿美元。 GTS 现在是领先的做市商",
+        "event_id": "evt_d2f8faadc118",
+        "canonical_event_id": "cev_4907e6b9f2ff",
+        "title": "巨灾债券风险利差到 2027 年可能会下降 10%，但市场健康且增长：全会",
         "topic": "capital_reinsurance",
         "priority": 40,
         "trust_level": "medium",
@@ -1210,9 +1214,9 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_fb3cd70ec282",
-        "canonical_event_id": "cev_e22fe6d3ee5c",
-        "title": "日本的网络攻击激增考验其加强防御的努力",
+        "event_id": "evt_99d785eee5c6",
+        "canonical_event_id": "cev_852170a51859",
+        "title": "币安 63 亿美元黑客事件：加密保险如何运作",
         "topic": "ai_intelligent",
         "priority": 40,
         "trust_level": "medium",
@@ -1243,9 +1247,101 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_012af017e792",
-        "canonical_event_id": "cev_a18ba51f9660",
-        "title": "The Hartford returns with $280m target for Foundation Re IV 2027-1 cat bond",
+        "event_id": "evt_3b00de0ce44d",
+        "canonical_event_id": "cev_934cf85cf382",
+        "title": "Opterrix 推出人工智能驱动的投资组合管理工作流程",
+        "topic": "ai_intelligent",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
+        ],
+        "role": "ai",
+        "meets_six": true,
+        "failed_conditions": [],
+        "six_detail": {
+          "monitored": true,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_cd195154f682",
+        "canonical_event_id": "cev_1fa3f9d4f826",
+        "title": "Aon 和 SAGE 为美国各州推出精准作物保险计划",
+        "topic": "product_innovation",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_e7a45cb971e2",
+        "canonical_event_id": "cev_0a13f50b4aeb",
+        "title": "净投资收益下降导致辛辛那提金融公司 26 年第三季度净利润下降，CoR 为 90.9%",
+        "topic": "ai_intelligent",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
+        ],
+        "role": "ai",
+        "meets_six": true,
+        "failed_conditions": [],
+        "six_detail": {
+          "monitored": true,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_c0bf527ac053",
+        "canonical_event_id": "cev_f1d207f7defc",
+        "title": "收益率正常化、不断变化的风险状况要求 ILS 的结构纪律：Nickerson、Icosa",
         "topic": "capital_reinsurance",
         "priority": 40,
         "trust_level": "medium",
@@ -1277,10 +1373,44 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_24aa1ed54acb",
-        "canonical_event_id": "cev_5ac86e8f5b58",
-        "title": "汇丰银行寻求通过信用风险保险对冲数据中心债务",
-        "topic": "digital_transformation",
+        "event_id": "evt_900e22efdeb6",
+        "canonical_event_id": "cev_906d88c2897a",
+        "title": "众安披露众民保披露四周年经营数据，累计承保保单超过600万份",
+        "topic": "product_innovation",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_1ef7f0a2c053",
+        "canonical_event_id": "cev_d9a3e9e65b87",
+        "title": "AM Best 升级堪萨斯州 Upland Mutual 的信用评级",
+        "topic": "capital_reinsurance",
         "priority": 40,
         "trust_level": "medium",
         "reason_types": [
@@ -1310,138 +1440,9 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_cacbb243dcc4",
-        "canonical_event_id": "cev_31c8556ed12f",
-        "title": "健康险冲击万亿元关口 带病体保险正加速突围",
-        "topic": "product_innovation",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "health",
-        "meets_six": true,
-        "failed_conditions": [],
-        "six_detail": {
-          "monitored": true,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_0093f0cde274",
-        "canonical_event_id": "cev_5fa9ec40c72d",
-        "title": "高管密集补位养老与科技线，新华保险“强总部”如何落子？",
-        "topic": "ai_intelligent",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "ai",
-        "meets_six": false,
-        "failed_conditions": [
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": true,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 3,
-          "trust_level": "medium",
-          "source_count": 3,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_86531b6b848d",
-        "canonical_event_id": "cev_e843b2ca946b",
-        "title": "#个人养老金 税优+养老",
-        "topic": "pension_finance",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_619bf7183ce4",
-        "canonical_event_id": "cev_0e562af07116",
-        "title": "个人养老金哪个好？中英人寿福临门两全保险",
-        "topic": "pension_finance",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_41756869947f",
-        "canonical_event_id": "cev_8f0210124316",
-        "title": "AM Best assigns credit rating to Ascot Insurance Guernsey",
+        "event_id": "evt_b11b4f8e2322",
+        "canonical_event_id": "cev_47266f6708eb",
+        "title": "保险服务业绩显著增长12.4%背后，从三季报拆解新华保险的客户经营逻辑",
         "topic": "capital_reinsurance",
         "priority": 40,
         "trust_level": "medium",
@@ -1451,8 +1452,7 @@
         "role": "other",
         "meets_six": false,
         "failed_conditions": [
-          1,
-          4
+          1
         ],
         "six_detail": {
           "monitored": false,
@@ -1464,7 +1464,7 @@
           "evidence_count": 1,
           "trust_level": "medium",
           "source_count": 1,
-          "single_src_regulatory": true,
+          "single_src_regulatory": false,
           "decided": false,
           "feedback_status": null
         },
@@ -1472,9 +1472,76 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_55cb399cb299",
-        "canonical_event_id": "cev_b1e002399b4c",
-        "title": "查询个人养老保险缴费指数的线上及线下常用方法",
+        "event_id": "evt_53a4153a8d33",
+        "canonical_event_id": "cev_96145225de02",
+        "title": "太湖远大：收到台风受灾保险理赔款340万元",
+        "topic": "climate_catastrophe",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_226fffe9cb99",
+        "canonical_event_id": "cev_fe964defd02b",
+        "title": "Hippo 在第三季度继续多元化投资组合，包括伤亡险、商业险",
+        "topic": "ai_intelligent",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
+        ],
+        "role": "ai",
+        "meets_six": false,
+        "failed_conditions": [
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": true,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_6ee6766b9178",
+        "canonical_event_id": "cev_345ca70687f9",
+        "title": "上海银行养老金融领跑市场：养老金代发稳居上海第一",
         "topic": "pension_finance",
         "priority": 40,
         "trust_level": "medium",
@@ -1506,10 +1573,108 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_081e6dcf3476",
-        "canonical_event_id": "cev_61ad0a91a22d",
-        "title": "保险服务业绩增长12.4%！新华保险前三季度保险业务亮眼",
-        "topic": "channel_transformation",
+        "event_id": "evt_42e6fcea5842",
+        "canonical_event_id": "cev_428c943329bb",
+        "title": "提前琢磨好个人养老保险",
+        "topic": "pension_finance",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_ee499241518f",
+        "canonical_event_id": "cev_6aa72811842e",
+        "title": "强子任命约翰·莫法特为国际 CUO",
+        "topic": "ai_intelligent",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
+        ],
+        "role": "ai",
+        "meets_six": true,
+        "failed_conditions": [],
+        "six_detail": {
+          "monitored": true,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_dfe2783498a7",
+        "canonical_event_id": "cev_e878e4d44fcc",
+        "title": "个人养老金 VS 商业养老险，到底怎么选",
+        "topic": "pension_finance",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_b55e816cba32",
+        "canonical_event_id": "cev_8f23f7746fbf",
+        "title": "深度观察 | 保险资金运用的新发展——产品管理创新",
+        "topic": "product_innovation",
         "priority": 40,
         "trust_level": "medium",
         "reason_types": [
@@ -1538,212 +1703,9 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_e41d4f95688c",
-        "canonical_event_id": "cev_5e28dd6a060a",
-        "title": "Arthur J. Gallagher revenues for 9M’26 soar to $12.6bn",
-        "topic": "channel_transformation",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_1d38d321cbc5",
-        "canonical_event_id": "cev_c3d09cb26f32",
-        "title": "Tokio Marine HCC International 和 Adrian Flux 为家用人形机器人开发专业保险",
-        "topic": "channel_transformation",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_859f8ec62695",
-        "canonical_event_id": "cev_820d3e049010",
-        "title": "慢病人群超4亿，商业健康险如何打开带病体市场？",
-        "topic": "product_innovation",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "health",
-        "meets_six": false,
-        "failed_conditions": [
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": true,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_51ebf4f96f80",
-        "canonical_event_id": "cev_d0d99438f20c",
-        "title": "恒生指数上涨1.64%，互联网保险板块持续活跃｜港股午评",
-        "topic": "channel_transformation",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_7d78df462e9d",
-        "canonical_event_id": "cev_cc8baa168fac",
-        "title": "汉密尔顿公布 26 年 9 月承保收入为 1.022 亿美元，CoR 提高至 94.1%",
-        "topic": "",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_9eb4bf606b6c",
-        "canonical_event_id": "cev_8e75c68f9f96",
-        "title": "没出险也涨价、14家保司不给报价：车险续保账单谁说了算？",
-        "topic": "product_innovation",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_247ca9027489",
-        "canonical_event_id": "cev_115d9e583b48",
-        "title": "柯基犬任命贝文为副总裁兼公共事务官",
+        "event_id": "evt_4a35dd45f23f",
+        "canonical_event_id": "cev_bd371bd6aea0",
+        "title": "安达加强其全球理赔团队",
         "topic": "ai_intelligent",
         "priority": 40,
         "trust_level": "medium",
@@ -1771,9 +1733,9 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_c554e4762b6f",
-        "canonical_event_id": "cev_336cc4ffd83d",
-        "title": "BHSI 晋升 Pelletier 为法国勘探与生产主管",
+        "event_id": "evt_0de2dc1171f2",
+        "canonical_event_id": "cev_f87a8d9d0f2e",
+        "title": "路易斯安那州男子因汽车保险欺诈被捕",
         "topic": "",
         "priority": 40,
         "trust_level": "medium",
@@ -1805,20 +1767,24 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_da5313e3bd30",
-        "canonical_event_id": "cev_5a64f6c72f26",
-        "title": "GBLI 任命杰西卡·巴斯 (Jessica Buss) 为其董事会成员",
-        "topic": "ai_intelligent",
+        "event_id": "evt_76e3fab566b1",
+        "canonical_event_id": "cev_daeaa4af235c",
+        "title": "梦百合：美东工厂火灾净损失约5021万美元",
+        "topic": "",
         "priority": 40,
         "trust_level": "medium",
         "reason_types": [
           "change_impact"
         ],
-        "role": "ai",
-        "meets_six": true,
-        "failed_conditions": [],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3
+        ],
         "six_detail": {
-          "monitored": true,
+          "monitored": false,
           "acted": false,
           "t1_reg": false,
           "has_semantic_change": false,
@@ -1835,10 +1801,10 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_601cbea67e44",
-        "canonical_event_id": "cev_4934e2e38982",
-        "title": "文华再保险任命拉斐尔·巴尔加斯·帕洛莫 (Rafael Vargas Palomo) 推动拉丁美洲业务增长",
-        "topic": "",
+        "event_id": "evt_4a8d6d642207",
+        "canonical_event_id": "cev_a26fa9770cc8",
+        "title": "Enstar晋升倪大卫为总裁",
+        "topic": "capital_reinsurance",
         "priority": 40,
         "trust_level": "medium",
         "reason_types": [
@@ -2293,19 +2259,55 @@
         },
         "urgency": null,
         "tier": "watch"
+      },
+      {
+        "event_id": "evt_7b9cd21c8214",
+        "canonical_event_id": "cev_0378b84d70b9",
+        "title": "上海再保险“外来外用”进入实操",
+        "topic": "capital_reinsurance",
+        "priority": 30,
+        "trust_level": "medium",
+        "reason_types": [
+          "event_cluster"
+        ],
+        "role": "regulatory",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "unknown",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": true,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "watch"
       }
     ]
   },
   "top_pending": [
     {
-      "event_id": "evt_222eb2937e12",
-      "canonical_event_id": "cev_768a2e8a9b14",
-      "title": "Aon 的 IBEX 扩展为复杂交易提供更大的确定性",
+      "event_id": "evt_ff5694a39aea",
+      "canonical_event_id": "cev_828407ffb4b2",
+      "title": "Markel 预计 Enstar 的 1.2B 美元不利发展保障将带来决胜的确定性",
       "topic": "ai_intelligent",
       "priority": 40,
       "trust_level": "medium",
       "reason_types": [
-        "change_impact"
+        "change_impact",
+        "event_cluster"
       ],
       "role": "ai",
       "meets_six": true,
@@ -2328,9 +2330,9 @@
       "tier": "soon"
     },
     {
-      "event_id": "evt_e10eb5633c92",
-      "canonical_event_id": "cev_d792939e352b",
-      "title": "规模之上看价值：解析中国人寿三季报的经营底盘",
+      "event_id": "evt_88a7ee3d6cdd",
+      "canonical_event_id": "cev_ccc0559c4607",
+      "title": "珠穆朗玛峰将智利保险业务出售给 AIG，推进商业零售退出",
       "topic": "ai_intelligent",
       "priority": 40,
       "trust_level": "medium",
@@ -2358,39 +2360,9 @@
       "tier": "soon"
     },
     {
-      "event_id": "evt_cacbb243dcc4",
-      "canonical_event_id": "cev_31c8556ed12f",
-      "title": "健康险冲击万亿元关口 带病体保险正加速突围",
-      "topic": "product_innovation",
-      "priority": 40,
-      "trust_level": "medium",
-      "reason_types": [
-        "change_impact"
-      ],
-      "role": "health",
-      "meets_six": true,
-      "failed_conditions": [],
-      "six_detail": {
-        "monitored": true,
-        "acted": false,
-        "t1_reg": false,
-        "has_semantic_change": false,
-        "stage": "n/a",
-        "status": "active",
-        "evidence_count": 1,
-        "trust_level": "medium",
-        "source_count": 1,
-        "single_src_regulatory": false,
-        "decided": false,
-        "feedback_status": null
-      },
-      "urgency": null,
-      "tier": "soon"
-    },
-    {
-      "event_id": "evt_247ca9027489",
-      "canonical_event_id": "cev_115d9e583b48",
-      "title": "柯基犬任命贝文为副总裁兼公共事务官",
+      "event_id": "evt_3b00de0ce44d",
+      "canonical_event_id": "cev_934cf85cf382",
+      "title": "Opterrix 推出人工智能驱动的投资组合管理工作流程",
       "topic": "ai_intelligent",
       "priority": 40,
       "trust_level": "medium",
@@ -2418,9 +2390,69 @@
       "tier": "soon"
     },
     {
-      "event_id": "evt_da5313e3bd30",
-      "canonical_event_id": "cev_5a64f6c72f26",
-      "title": "GBLI 任命杰西卡·巴斯 (Jessica Buss) 为其董事会成员",
+      "event_id": "evt_e7a45cb971e2",
+      "canonical_event_id": "cev_0a13f50b4aeb",
+      "title": "净投资收益下降导致辛辛那提金融公司 26 年第三季度净利润下降，CoR 为 90.9%",
+      "topic": "ai_intelligent",
+      "priority": 40,
+      "trust_level": "medium",
+      "reason_types": [
+        "change_impact"
+      ],
+      "role": "ai",
+      "meets_six": true,
+      "failed_conditions": [],
+      "six_detail": {
+        "monitored": true,
+        "acted": false,
+        "t1_reg": false,
+        "has_semantic_change": false,
+        "stage": "n/a",
+        "status": "active",
+        "evidence_count": 1,
+        "trust_level": "medium",
+        "source_count": 1,
+        "single_src_regulatory": false,
+        "decided": false,
+        "feedback_status": null
+      },
+      "urgency": null,
+      "tier": "soon"
+    },
+    {
+      "event_id": "evt_ee499241518f",
+      "canonical_event_id": "cev_6aa72811842e",
+      "title": "强子任命约翰·莫法特为国际 CUO",
+      "topic": "ai_intelligent",
+      "priority": 40,
+      "trust_level": "medium",
+      "reason_types": [
+        "change_impact"
+      ],
+      "role": "ai",
+      "meets_six": true,
+      "failed_conditions": [],
+      "six_detail": {
+        "monitored": true,
+        "acted": false,
+        "t1_reg": false,
+        "has_semantic_change": false,
+        "stage": "n/a",
+        "status": "active",
+        "evidence_count": 1,
+        "trust_level": "medium",
+        "source_count": 1,
+        "single_src_regulatory": false,
+        "decided": false,
+        "feedback_status": null
+      },
+      "urgency": null,
+      "tier": "soon"
+    },
+    {
+      "event_id": "evt_4a35dd45f23f",
+      "canonical_event_id": "cev_bd371bd6aea0",
+      "title": "安达加强其全球理赔团队",
       "topic": "ai_intelligent",
       "priority": 40,
       "trust_level": "medium",
@@ -2655,42 +2687,6 @@
       },
       "urgency": null,
       "tier": "now"
-    },
-    {
-      "event_id": "evt_3302684c196f",
-      "canonical_event_id": "cev_3d22c2522d58",
-      "title": "汉诺威再保险 (Hannover Re) 获得 4.5 亿美元 Acorn Re 参数型巨灾债券 125% 的扩容",
-      "topic": "climate_catastrophe",
-      "priority": 100,
-      "trust_level": "low",
-      "reason_types": [
-        "claim_conflict",
-        "conflict"
-      ],
-      "role": "other",
-      "meets_six": false,
-      "failed_conditions": [
-        1,
-        2,
-        3,
-        4
-      ],
-      "six_detail": {
-        "monitored": false,
-        "acted": false,
-        "t1_reg": false,
-        "has_semantic_change": false,
-        "stage": "n/a",
-        "status": "active",
-        "evidence_count": 4,
-        "trust_level": "low",
-        "source_count": 1,
-        "single_src_regulatory": false,
-        "decided": false,
-        "feedback_status": null
-      },
-      "urgency": null,
-      "tier": "now"
     }
   ],
   "decided_list": [
@@ -2727,20 +2723,20 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-30T12:07:47Z"
+      "decided_at": "2026-10-30T18:05:29Z"
     },
     {
-      "event_id": "evt_fb73abc82b8f",
-      "canonical_event_id": "cev_1f9acba707af",
-      "title": "太平再保险拟增资10亿元",
-      "topic": "capital_reinsurance",
+      "event_id": "evt_e7f5525b0fd2",
+      "canonical_event_id": "cev_1e20111c45d4",
+      "title": "科技保险护航新质生产力",
+      "topic": "ai_intelligent",
       "priority": 100,
       "trust_level": "medium",
       "reason_types": [
         "claim_conflict",
         "decision"
       ],
-      "role": "ma",
+      "role": "ai",
       "meets_six": false,
       "failed_conditions": [
         5
@@ -2749,18 +2745,18 @@
         "monitored": true,
         "acted": true,
         "t1_reg": false,
-        "has_semantic_change": false,
+        "has_semantic_change": true,
         "stage": "n/a",
         "status": "active",
-        "evidence_count": 2,
+        "evidence_count": 4,
         "trust_level": "medium",
-        "source_count": 2,
+        "source_count": 4,
         "single_src_regulatory": false,
         "decided": true,
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-30T12:07:47Z"
+      "decided_at": "2026-10-30T18:05:29Z"
     },
     {
       "event_id": "evt_41f4834f4882",
@@ -2793,7 +2789,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-30T12:07:47Z"
+      "decided_at": "2026-10-30T18:05:29Z"
     },
     {
       "event_id": "evt_bdcee533e09d",
@@ -2826,7 +2822,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-30T12:07:47Z"
+      "decided_at": "2026-10-30T18:05:29Z"
     },
     {
       "event_id": "evt_63164bd5c318",
@@ -2859,7 +2855,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-30T12:07:47Z"
+      "decided_at": "2026-10-30T18:05:29Z"
     },
     {
       "event_id": "evt_3429758517ea",
@@ -2896,14 +2892,46 @@
       "decided_at": "2026-10-28T18:17:49Z"
     },
     {
-      "event_id": "evt_e7f5525b0fd2",
-      "canonical_event_id": "cev_1e20111c45d4",
-      "title": "科技保险护航新质生产力",
-      "topic": "ai_intelligent",
+      "event_id": "evt_fb73abc82b8f",
+      "canonical_event_id": "cev_1f9acba707af",
+      "title": "太平再保险拟增资10亿元",
+      "topic": "capital_reinsurance",
       "priority": 70,
       "trust_level": "medium",
       "reason_types": [
         "claim_conflict"
+      ],
+      "role": "ma",
+      "meets_six": false,
+      "failed_conditions": [
+        5
+      ],
+      "six_detail": {
+        "monitored": true,
+        "acted": true,
+        "t1_reg": false,
+        "has_semantic_change": true,
+        "stage": "n/a",
+        "status": "active",
+        "evidence_count": 2,
+        "trust_level": "medium",
+        "source_count": 2,
+        "single_src_regulatory": false,
+        "decided": true,
+        "feedback_status": null
+      },
+      "urgency": "now",
+      "decided_at": "2026-10-30T12:07:47Z"
+    },
+    {
+      "event_id": "evt_763e21374709",
+      "canonical_event_id": "cev_4e41b10c42c3",
+      "title": "KCC 推出 RiskInsight 4.16，扩展工作流程自动化和集成",
+      "topic": "ai_intelligent",
+      "priority": 60,
+      "trust_level": "medium",
+      "reason_types": [
+        "decision"
       ],
       "role": "ai",
       "meets_six": false,
@@ -2914,18 +2942,18 @@
         "monitored": true,
         "acted": true,
         "t1_reg": false,
-        "has_semantic_change": false,
+        "has_semantic_change": true,
         "stage": "n/a",
         "status": "active",
-        "evidence_count": 4,
+        "evidence_count": 2,
         "trust_level": "medium",
-        "source_count": 4,
+        "source_count": 2,
         "single_src_regulatory": false,
         "decided": true,
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-26T22:19:07Z"
+      "decided_at": "2026-10-30T18:05:29Z"
     },
     {
       "event_id": "evt_c16162e2cd11",
@@ -2959,7 +2987,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-30T12:07:47Z"
+      "decided_at": "2026-10-30T18:05:29Z"
     },
     {
       "event_id": "evt_0928c4a17c4e",
@@ -2991,7 +3019,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-30T12:07:47Z"
+      "decided_at": "2026-10-30T18:05:29Z"
     },
     {
       "event_id": "evt_7f3ae5a543ea",
@@ -3025,7 +3053,40 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-30T12:07:47Z"
+      "decided_at": "2026-10-30T18:05:29Z"
+    },
+    {
+      "event_id": "evt_845ca4e8e5b6",
+      "canonical_event_id": "cev_26ec0af1a081",
+      "title": "汉诺威再保险在这个市场上的增长很顺利，预计房地产巨灾费率的降低将放缓：Althoff",
+      "topic": "ai_intelligent",
+      "priority": 60,
+      "trust_level": "medium",
+      "reason_types": [
+        "decision"
+      ],
+      "role": "ai",
+      "meets_six": false,
+      "failed_conditions": [
+        3,
+        5
+      ],
+      "six_detail": {
+        "monitored": true,
+        "acted": true,
+        "t1_reg": false,
+        "has_semantic_change": true,
+        "stage": "n/a",
+        "status": "active",
+        "evidence_count": 2,
+        "trust_level": "medium",
+        "source_count": 2,
+        "single_src_regulatory": false,
+        "decided": true,
+        "feedback_status": null
+      },
+      "urgency": "now",
+      "decided_at": "2026-10-30T18:05:29Z"
     },
     {
       "event_id": "evt_c2087cb84c7f",
@@ -3057,7 +3118,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-30T12:07:47Z"
+      "decided_at": "2026-10-30T18:05:29Z"
     },
     {
       "event_id": "evt_c51bc4db164b",
@@ -3089,75 +3150,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-30T12:07:47Z"
-    },
-    {
-      "event_id": "evt_44b26fce9d14",
-      "canonical_event_id": "cev_1784620ea0f1",
-      "title": "瑞士再保险通过提高风险意识、预防和转移来支持客户：Urs Baertschi",
-      "topic": "capital_reinsurance",
-      "priority": 60,
-      "trust_level": "medium",
-      "reason_types": [
-        "decision"
-      ],
-      "role": "other",
-      "meets_six": false,
-      "failed_conditions": [
-        2,
-        3,
-        5
-      ],
-      "six_detail": {
-        "monitored": false,
-        "acted": true,
-        "t1_reg": false,
-        "has_semantic_change": false,
-        "stage": "n/a",
-        "status": "active",
-        "evidence_count": 2,
-        "trust_level": "medium",
-        "source_count": 2,
-        "single_src_regulatory": false,
-        "decided": true,
-        "feedback_status": null
-      },
-      "urgency": "now",
-      "decided_at": "2026-10-30T12:07:47Z"
-    },
-    {
-      "event_id": "evt_5cf2c4fd35c4",
-      "canonical_event_id": "cev_010eafa8070d",
-      "title": "跨境再保险“外来外用”试点在上海启动",
-      "topic": "capital_reinsurance",
-      "priority": 60,
-      "trust_level": "medium",
-      "reason_types": [
-        "decision"
-      ],
-      "role": "other",
-      "meets_six": false,
-      "failed_conditions": [
-        2,
-        3,
-        5
-      ],
-      "six_detail": {
-        "monitored": false,
-        "acted": true,
-        "t1_reg": false,
-        "has_semantic_change": false,
-        "stage": "n/a",
-        "status": "active",
-        "evidence_count": 2,
-        "trust_level": "medium",
-        "source_count": 2,
-        "single_src_regulatory": false,
-        "decided": true,
-        "feedback_status": null
-      },
-      "urgency": "now",
-      "decided_at": "2026-10-30T12:07:47Z"
+      "decided_at": "2026-10-30T18:05:29Z"
     },
     {
       "event_id": "evt_92310abdea56",
@@ -3785,7 +3778,7 @@
     {
       "dimension": "六条件硬化（决策门）",
       "status": "evaluated",
-      "reason": "待决 67 条中真正达到六条件决策门 6 条；各条件未达计数 {'1': 46, '2': 53, '3': 53, '4': 30, '5': 33, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
+      "reason": "待决 67 条中真正达到六条件决策门 7 条；各条件未达计数 {'1': 48, '2': 52, '3': 53, '4': 30, '5': 33, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
       "unblock": "六条件为可观测评估注解；decision_ready 子集供优先拍板，其余仍留 Human Review"
     },
     {

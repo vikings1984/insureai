@@ -1,7 +1,7 @@
 {
   "version": "ir-v1.1",
   "registry_version": "er-v1.1",
-  "generated_at": "2026-10-30T12:09:53Z",
+  "generated_at": "2026-10-30T18:07:15Z",
   "principle": "单一事实源：所有模块引用 canonical_event_id；resolver 只解析、不发明身份。合并与分裂由证据 + 人工 review 决定，resolver 仅产出候选。",
   "total_references": 110,
   "resolved": 110,
@@ -9,12 +9,12 @@
   "unresolved_rate": 0.0,
   "unresolved_samples": [],
   "partition_stats": {
-    "other": 86,
-    "regulatory": 22,
+    "other": 85,
+    "regulatory": 23,
     "acquisition": 2
   },
   "candidate_merges": {
-    "count": 10,
+    "count": 9,
     "status": "proposed",
     "items": [
       {
@@ -69,6 +69,21 @@
         ],
         "domain": "other",
         "evidence": "实体共现（AM Best 跨 8 个 canonical event）",
+        "status": "proposed"
+      },
+      {
+        "entity": "Althoff",
+        "type": "Company",
+        "canonical_ids": [
+          "cev_14321b51a819",
+          "cev_26ec0af1a081"
+        ],
+        "event_ids": [
+          "cev_26ec0af1a081",
+          "cev_14321b51a819"
+        ],
+        "domain": "other",
+        "evidence": "实体共现（Althoff 跨 2 个 canonical event）",
         "status": "proposed"
       },
       {
@@ -180,45 +195,11 @@
         "domain": "other",
         "evidence": "实体共现（Red Bridge 跨 2 个 canonical event）",
         "status": "proposed"
-      },
-      {
-        "entity": "Syndicate",
-        "type": "Company",
-        "canonical_ids": [
-          "cev_14ee012aa3c0",
-          "cev_820e3cc2be7d",
-          "cev_8cb46921c03c"
-        ],
-        "event_ids": [
-          "cev_8cb46921c03c",
-          "cev_820e3cc2be7d",
-          "cev_14ee012aa3c0"
-        ],
-        "domain": "other",
-        "evidence": "实体共现（Syndicate 跨 3 个 canonical event）",
-        "status": "proposed"
-      },
-      {
-        "entity": "TWIA",
-        "type": "Company",
-        "canonical_ids": [
-          "cev_5ffbe2c5bc27",
-          "cev_c6272458389e",
-          "cev_de8d11d1f5e4"
-        ],
-        "event_ids": [
-          "cev_c6272458389e",
-          "cev_de8d11d1f5e4",
-          "cev_5ffbe2c5bc27"
-        ],
-        "domain": "other",
-        "evidence": "实体共现（TWIA 跨 3 个 canonical event）",
-        "status": "proposed"
       }
     ]
   },
   "generic_review": {
-    "count": 20,
+    "count": 19,
     "items": [
       {
         "entity": "A-Cap",
@@ -240,6 +221,12 @@
       },
       {
         "entity": "AM Best",
+        "type": "Company",
+        "into_ce": false,
+        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
+      },
+      {
+        "entity": "Althoff",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
@@ -294,18 +281,6 @@
       },
       {
         "entity": "Red Bridge",
-        "type": "Company",
-        "into_ce": false,
-        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
-      },
-      {
-        "entity": "Syndicate",
-        "type": "Company",
-        "into_ce": false,
-        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
-      },
-      {
-        "entity": "TWIA",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
