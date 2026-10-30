@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "generated_at": "2026-10-29T22:31:03+00:00",
-  "commit": "1fed890d1ec0",
+  "generated_at": "2026-10-30T04:11:02+00:00",
+  "commit": "5ac97b591ed3",
   "overall": {
     "status": "degraded",
     "score": 0.6,
@@ -9,7 +9,7 @@
     "warning_count": 4,
     "reasons": [
       "13 个信源可用性低于 0.5: 众安保险, 保险资管协会, 地方银保监局, 太保寿险, 平安人寿",
-      "162 个信源新鲜度低于 0.2",
+      "164 个信源新鲜度低于 0.2",
       "待复核积压 100 条，超过阈值 50",
       "490 条 pending 复核已滞留 >7 天，超过阈值 20，建议人工清理"
     ]
@@ -32,23 +32,23 @@
       "node_count": 35,
       "failed_nodes": [],
       "slow_nodes": [],
-      "total_duration_sec": 27.899,
-      "run_at": "2026-10-29T22:29:07+00:00"
+      "total_duration_sec": 41.002,
+      "run_at": "2026-10-30T04:08:29+00:00"
     },
     "run": {
       "status": "healthy",
-      "run_id": "run_20261029_121842_0a2f51",
-      "build_sha": "16a6f8ae190f572dde7c9f8d9507bb00bae1b102",
+      "run_id": "run_20261029_223105_d9d99d",
+      "build_sha": "1fed890d1ec085b2fbea8161abd13d0f1c22f391",
       "engine_version": "4.2",
-      "started_at": "2026-10-29T12:18:42.471779+00:00",
-      "ended_at": "2026-10-29T12:18:45.341176+00:00",
+      "started_at": "2026-10-29T22:31:05.342511+00:00",
+      "ended_at": "2026-10-29T22:31:08.302323+00:00",
       "failed_stage": null
     },
     "sources": {
       "status": "degraded",
-      "source_count": 262,
-      "avg_availability": 0.9504,
-      "avg_freshness": 0.2974,
+      "source_count": 265,
+      "avg_availability": 0.9509,
+      "avg_freshness": 0.2927,
       "low_availability": [
         "众安保险",
         "保险资管协会",
@@ -70,6 +70,7 @@
         "l 看齐 l",
         "一本人生攻略",
         "万达信息股份有限公司",
+        "三清之家",
         "上海保险",
         "上海本地宝",
         "世览",
@@ -99,6 +100,7 @@
         "今日保条",
         "代亚冲",
         "众安保险",
+        "何博士说税",
         "佛山本地宝",
         "作业交流群",
         "保藏侃哥",
@@ -240,19 +242,19 @@
     },
     "review": {
       "status": "degraded",
-      "queue_generated_count": 416,
+      "queue_generated_count": 395,
       "queue_items": 100,
       "queue_status_distribution": {
         "pending": 100
       },
-      "tracked_items": 826,
+      "tracked_items": 830,
       "pending": 100,
       "aging": {
         "basis": "review_state",
         "buckets": {
-          "0_1": 99,
-          "1_3": 90,
-          "3_7": 147,
+          "0_1": 102,
+          "1_3": 87,
+          "3_7": 151,
           "7_plus": 490
         },
         "max_age_days": 23,
@@ -263,17 +265,17 @@
       "compression": {
         "tiers": {
           "decision_required": 26,
-          "material_change": 26,
+          "material_change": 4,
           "relevant": 26,
-          "noise": 22
+          "noise": 44
         },
         "basis": "review_queue",
         "total_pending": 100,
         "queue_items": 100,
-        "state_tracked": 826,
-        "stale_state_entries": 726,
-        "daily_human_load": 52,
-        "compression_ratio": 0.48,
+        "state_tracked": 830,
+        "stale_state_entries": 730,
+        "daily_human_load": 30,
+        "compression_ratio": 0.7,
         "thresholds": {
           "decision_reasons": [
             "claim_conflict",
@@ -289,7 +291,7 @@
     },
     "ce_linkage": {
       "status": "healthy",
-      "ce_pool_size": 3250,
+      "ce_pool_size": 3254,
       "surfaces": {
         "decision": {
           "total": 67,
@@ -417,7 +419,7 @@
     {
       "severity": "warning",
       "code": "SOURCE_STALE",
-      "message": "162 个信源新鲜度低于 0.2"
+      "message": "164 个信源新鲜度低于 0.2"
     },
     {
       "severity": "warning",
