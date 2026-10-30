@@ -1,7 +1,7 @@
 {
   "version": 1,
   "principle": "高价值结论必须在去除单一关键输入后保持合理稳健，否则进入人工复核。",
-  "total_cases": 6133,
+  "total_cases": 6184,
   "fragile_cases": 14,
   "fragility_rate": 0.0023,
   "cases": [
@@ -1094,6 +1094,22 @@
       "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
     },
     {
+      "event_id": "evt_bbbb94b94713",
+      "scenario": "remove_conflict_flag",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
+    },
+    {
+      "event_id": "evt_bbbb94b94713",
+      "scenario": "remove_topic_trend_signal",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
+    },
+    {
       "event_id": "evt_0f28d57c8a58",
       "scenario": "remove_conflict_flag",
       "baseline_urgency": "watch",
@@ -1167,22 +1183,6 @@
     },
     {
       "event_id": "evt_b600e473a591",
-      "scenario": "remove_topic_trend_signal",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
-    },
-    {
-      "event_id": "evt_1b340f2945c8",
-      "scenario": "remove_conflict_flag",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
-    },
-    {
-      "event_id": "evt_1b340f2945c8",
       "scenario": "remove_topic_trend_signal",
       "baseline_urgency": "watch",
       "counterfactual_urgency": "watch",
@@ -3462,6 +3462,38 @@
       "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
     },
     {
+      "event_id": "evt_ab99311232f2",
+      "scenario": "remove_conflict_flag",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
+    },
+    {
+      "event_id": "evt_ab99311232f2",
+      "scenario": "remove_topic_trend_signal",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
+    },
+    {
+      "event_id": "evt_ebe66a8b9897",
+      "scenario": "remove_conflict_flag",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
+    },
+    {
+      "event_id": "evt_ebe66a8b9897",
+      "scenario": "remove_topic_trend_signal",
+      "baseline_urgency": "watch",
+      "counterfactual_urgency": "watch",
+      "changed": false,
+      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
+    },
+    {
       "event_id": "evt_7d6c7b167996",
       "scenario": "remove_conflict_flag",
       "baseline_urgency": "watch",
@@ -3967,38 +3999,6 @@
     },
     {
       "event_id": "evt_51cec3b71af5",
-      "scenario": "remove_topic_trend_signal",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
-    },
-    {
-      "event_id": "evt_86214c47399a",
-      "scenario": "remove_conflict_flag",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
-    },
-    {
-      "event_id": "evt_86214c47399a",
-      "scenario": "remove_topic_trend_signal",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "移除该主题趋势信号；用于验证现在/近期判断是否过度依赖时间趋势。"
-    },
-    {
-      "event_id": "evt_87609e20f54b",
-      "scenario": "remove_conflict_flag",
-      "baseline_urgency": "watch",
-      "counterfactual_urgency": "watch",
-      "changed": false,
-      "note": "仅移除冲突标记；用于验证决策是否被单一信号支配。"
-    },
-    {
-      "event_id": "evt_87609e20f54b",
       "scenario": "remove_topic_trend_signal",
       "baseline_urgency": "watch",
       "counterfactual_urgency": "watch",
@@ -4007,10 +4007,10 @@
     }
   ],
   "_provenance": {
-    "run_id": "run_20261030_041105_5ffb83",
-    "build_sha": "5ac97b591ed3e5d9ddf995299029573a7528c2d5",
+    "run_id": "run_20261030_121002_3903fc",
+    "build_sha": "45e24ab37c053331aade63b746427b73c29a83ec",
     "engine_version": "4.2",
     "schema_version": "release-provenance-v1",
-    "generated_at": "2026-10-30T04:11:07.912962+00:00"
+    "generated_at": "2026-10-30T12:10:04.739706+00:00"
   }
 }
