@@ -1,6 +1,6 @@
 {
   "version": "funnel-v1.1",
-  "generated_at": "2026-10-31T11:44:12Z",
+  "generated_at": "2026-10-31T16:51:23Z",
   "principle": "待决策洪流 → 漏斗（now/soon/watch）+ 排名靠前的待决；已决只来自真实决策记录；六条件硬化为每条待决的注解 + decision_ready 子集；分角色计数；样本<30 不结论；分桶为可观测代理",
   "meta": {
     "total_review_queue": 100,
@@ -16,13 +16,12 @@
     "pending_by_role": {
       "ai": 8,
       "ma": 2,
-      "regulatory": 18,
+      "regulatory": 17,
       "health": 0,
-      "other": 38
+      "other": 39
     },
-    "decision_ready": 3,
+    "decision_ready": 2,
     "decision_ready_ceids": [
-      "cev_fc1cfcf2f631",
       "cev_bb54ddbe0129",
       "cev_f045ffa38e68"
     ],
@@ -33,10 +32,10 @@
     "gold_status": "seed",
     "gold_source": "seed_assistant",
     "six_failed_counter": {
-      "1": 45,
+      "1": 46,
       "2": 47,
       "3": 47,
-      "4": 40,
+      "4": 39,
       "5": 34,
       "6": 0
     },
@@ -946,9 +945,42 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_d0cc260b1a2f",
-        "canonical_event_id": "cev_17d99bc82c37",
-        "title": "【新华财经调查】数据缺乏、定价无据、理赔无准——科技保险到底该怎么走？",
+        "event_id": "evt_efe114891ed0",
+        "canonical_event_id": "cev_d63536d985a7",
+        "title": "太平财险助理总经理陆涛：中国巨灾保险在保障深度上仍有较大发展潜力",
+        "topic": "capital_reinsurance",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact",
+          "event_cluster"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_321da84d9c4b",
+        "canonical_event_id": "cev_a7396b148c09",
+        "title": "中国人寿三季报：负债端提质显效 长期价值底盘夯实",
         "topic": "ai_intelligent",
         "priority": 40,
         "trust_level": "medium",
@@ -979,75 +1011,10 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_b46db552b08b",
-        "canonical_event_id": "cev_fc1cfcf2f631",
-        "title": "上海医疗数据从汇聚走向运营，三大场景开发利用正在规模化",
-        "topic": "product_innovation",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "other",
-        "meets_six": true,
-        "failed_conditions": [],
-        "six_detail": {
-          "monitored": true,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_dc538a4750b6",
-        "canonical_event_id": "cev_97239cb84df9",
-        "title": "个人养老金买什么？三类保险产品深度解析",
-        "topic": "pension_finance",
-        "priority": 40,
-        "trust_level": "medium",
-        "reason_types": [
-          "change_impact"
-        ],
-        "role": "regulatory",
-        "meets_six": false,
-        "failed_conditions": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "unknown",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": true,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "soon"
-      },
-      {
-        "event_id": "evt_5fcc8b36d022",
-        "canonical_event_id": "cev_afa20db6e301",
-        "title": "个人养老金：节税+养老+全家健康的优质规划",
-        "topic": "pension_finance",
+        "event_id": "evt_5bca34ab1c01",
+        "canonical_event_id": "cev_eddf1b306ad1",
+        "title": "2026上海国际再保险会议在沪举行 第四届滴水湖再保险续转会议同期召开",
+        "topic": "capital_reinsurance",
         "priority": 40,
         "trust_level": "medium",
         "reason_types": [
@@ -1078,9 +1045,43 @@
         "tier": "soon"
       },
       {
-        "event_id": "evt_dd1fae8000e8",
-        "canonical_event_id": "cev_c89c4fe26030",
-        "title": "用每月工资扣的养老保险个人账户钱计算退休后每月能领多少怎么操作？",
+        "event_id": "evt_40071c731005",
+        "canonical_event_id": "cev_ba4d3eaad917",
+        "title": "太平财险陆涛：对新能源车险长期经营质效持续改善充满信心",
+        "topic": "product_innovation",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_70a8c5c4fdcd",
+        "canonical_event_id": "cev_7947b2593e74",
+        "title": "秦皇岛养老保险查询个人账户",
         "topic": "pension_finance",
         "priority": 40,
         "trust_level": "medium",
@@ -2264,36 +2265,6 @@
   },
   "top_pending": [
     {
-      "event_id": "evt_b46db552b08b",
-      "canonical_event_id": "cev_fc1cfcf2f631",
-      "title": "上海医疗数据从汇聚走向运营，三大场景开发利用正在规模化",
-      "topic": "product_innovation",
-      "priority": 40,
-      "trust_level": "medium",
-      "reason_types": [
-        "change_impact"
-      ],
-      "role": "other",
-      "meets_six": true,
-      "failed_conditions": [],
-      "six_detail": {
-        "monitored": true,
-        "acted": false,
-        "t1_reg": false,
-        "has_semantic_change": false,
-        "stage": "n/a",
-        "status": "active",
-        "evidence_count": 1,
-        "trust_level": "medium",
-        "source_count": 1,
-        "single_src_regulatory": false,
-        "decided": false,
-        "feedback_status": null
-      },
-      "urgency": null,
-      "tier": "soon"
-    },
-    {
       "event_id": "evt_c82d9a9ff13c",
       "canonical_event_id": "cev_bb54ddbe0129",
       "title": "橡树资本收购 A-Cap 保险公司的交易破裂，引发新的谈判",
@@ -2670,6 +2641,41 @@
       },
       "urgency": null,
       "tier": "now"
+    },
+    {
+      "event_id": "evt_7e02d4b37c1f",
+      "canonical_event_id": "cev_59c2a579f30c",
+      "title": "PICC P&C宣布在香港发行首辆Sidecar",
+      "topic": "capital_reinsurance",
+      "priority": 75,
+      "trust_level": "low",
+      "reason_types": [
+        "conflict"
+      ],
+      "role": "other",
+      "meets_six": false,
+      "failed_conditions": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "six_detail": {
+        "monitored": false,
+        "acted": false,
+        "t1_reg": false,
+        "has_semantic_change": false,
+        "stage": "n/a",
+        "status": "active",
+        "evidence_count": 2,
+        "trust_level": "low",
+        "source_count": 2,
+        "single_src_regulatory": false,
+        "decided": false,
+        "feedback_status": null
+      },
+      "urgency": null,
+      "tier": "now"
     }
   ],
   "decided_list": [
@@ -2706,7 +2712,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T11:41:55Z"
+      "decided_at": "2026-10-31T16:49:05Z"
     },
     {
       "event_id": "evt_e833bbc251da",
@@ -2739,7 +2745,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T11:41:55Z"
+      "decided_at": "2026-10-31T16:49:05Z"
     },
     {
       "event_id": "evt_41f4834f4882",
@@ -2772,7 +2778,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T11:41:55Z"
+      "decided_at": "2026-10-31T16:49:05Z"
     },
     {
       "event_id": "evt_bdcee533e09d",
@@ -2805,7 +2811,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T11:41:55Z"
+      "decided_at": "2026-10-31T16:49:05Z"
     },
     {
       "event_id": "evt_63164bd5c318",
@@ -2838,7 +2844,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T11:41:55Z"
+      "decided_at": "2026-10-31T16:49:05Z"
     },
     {
       "event_id": "evt_3429758517ea",
@@ -2968,7 +2974,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T11:41:55Z"
+      "decided_at": "2026-10-31T16:49:05Z"
     },
     {
       "event_id": "evt_c16162e2cd11",
@@ -3002,7 +3008,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T11:41:55Z"
+      "decided_at": "2026-10-31T16:49:05Z"
     },
     {
       "event_id": "evt_0928c4a17c4e",
@@ -3034,7 +3040,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T11:41:55Z"
+      "decided_at": "2026-10-31T16:49:05Z"
     },
     {
       "event_id": "evt_ef42853e4111",
@@ -3066,7 +3072,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T11:41:55Z"
+      "decided_at": "2026-10-31T16:49:05Z"
     },
     {
       "event_id": "evt_4cd0316ba817",
@@ -3098,7 +3104,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T11:41:55Z"
+      "decided_at": "2026-10-31T16:49:05Z"
     },
     {
       "event_id": "evt_b50966786f8c",
@@ -3130,7 +3136,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T11:41:55Z"
+      "decided_at": "2026-10-31T16:49:05Z"
     },
     {
       "event_id": "evt_7f3ae5a543ea",
@@ -3164,7 +3170,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T11:41:55Z"
+      "decided_at": "2026-10-31T16:49:05Z"
     },
     {
       "event_id": "evt_92310abdea56",
@@ -3792,7 +3798,7 @@
     {
       "dimension": "六条件硬化（决策门）",
       "status": "evaluated",
-      "reason": "待决 66 条中真正达到六条件决策门 3 条；各条件未达计数 {'1': 45, '2': 47, '3': 47, '4': 40, '5': 34, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
+      "reason": "待决 66 条中真正达到六条件决策门 2 条；各条件未达计数 {'1': 46, '2': 47, '3': 47, '4': 39, '5': 34, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
       "unblock": "六条件为可观测评估注解；decision_ready 子集供优先拍板，其余仍留 Human Review"
     },
     {
