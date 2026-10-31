@@ -1,6 +1,6 @@
 {
   "version": "p2.5-v1.0",
-  "generated_at": "2026-10-30T22:05:55Z",
+  "generated_at": "2026-10-31T03:54:18Z",
   "principle": "只聚合既有 artifact 中的事实；观察与结论分离，样本不足时不出结论，不伪造时间线",
   "sources": {
     "p2_state.json": {
@@ -17,10 +17,10 @@
       "brief": 20
     },
     "knowledge_graph.json": {
-      "events_indexed": 6616
+      "events_indexed": 6619
     },
     "decisions_ledger.json": {
-      "distinct_events": 59
+      "distinct_events": 60
     }
   },
   "watchlists": {
@@ -300,17 +300,17 @@
   },
   "decisions": {
     "observations": {
-      "sample_size": 59,
+      "sample_size": 60,
       "by_urgency": {
         "watch": 19,
-        "now": 40
+        "now": 41
       },
       "by_action": {
         "评估战略与资本影响": 1,
         "检查监管暴露与经营影响": 6,
         "复核资本配置与竞争格局": 13,
         "评估市场与竞争响应": 4,
-        "保持跟踪，等待更多独立证据或业务信号": 35
+        "保持跟踪，等待更多独立证据或业务信号": 36
       },
       "by_topic": {},
       "by_event_type": {},
@@ -400,21 +400,6 @@
       {
         "event_id": "evt_a6eab18b7680",
         "decided_at": "2026-10-23T11:01:21Z",
-        "urgency": "now"
-      },
-      {
-        "event_id": "evt_e833bbc251da",
-        "decided_at": "2026-10-26T02:56:59Z",
-        "urgency": "now"
-      },
-      {
-        "event_id": "evt_ef42853e4111",
-        "decided_at": "2026-10-26T02:56:59Z",
-        "urgency": "now"
-      },
-      {
-        "event_id": "evt_4cd0316ba817",
-        "decided_at": "2026-10-26T02:56:59Z",
         "urgency": "now"
       },
       {
@@ -563,26 +548,6 @@
         "urgency": "now"
       },
       {
-        "event_id": "evt_bdcee533e09d",
-        "decided_at": "2026-10-30T22:04:35Z",
-        "urgency": "now"
-      },
-      {
-        "event_id": "evt_63164bd5c318",
-        "decided_at": "2026-10-30T22:04:35Z",
-        "urgency": "now"
-      },
-      {
-        "event_id": "evt_c16162e2cd11",
-        "decided_at": "2026-10-30T22:04:35Z",
-        "urgency": "now"
-      },
-      {
-        "event_id": "evt_96c336ca5844",
-        "decided_at": "2026-10-30T22:04:35Z",
-        "urgency": "now"
-      },
-      {
         "event_id": "evt_c2087cb84c7f",
         "decided_at": "2026-10-30T22:04:35Z",
         "urgency": "now"
@@ -593,30 +558,70 @@
         "urgency": "now"
       },
       {
+        "event_id": "evt_e833bbc251da",
+        "decided_at": "2026-10-31T03:52:50Z",
+        "urgency": "now"
+      },
+      {
+        "event_id": "evt_bdcee533e09d",
+        "decided_at": "2026-10-31T03:52:50Z",
+        "urgency": "now"
+      },
+      {
+        "event_id": "evt_63164bd5c318",
+        "decided_at": "2026-10-31T03:52:50Z",
+        "urgency": "now"
+      },
+      {
+        "event_id": "evt_c16162e2cd11",
+        "decided_at": "2026-10-31T03:52:50Z",
+        "urgency": "now"
+      },
+      {
+        "event_id": "evt_96c336ca5844",
+        "decided_at": "2026-10-31T03:52:50Z",
+        "urgency": "now"
+      },
+      {
+        "event_id": "evt_ef42853e4111",
+        "decided_at": "2026-10-31T03:52:50Z",
+        "urgency": "now"
+      },
+      {
+        "event_id": "evt_4cd0316ba817",
+        "decided_at": "2026-10-31T03:52:50Z",
+        "urgency": "now"
+      },
+      {
         "event_id": "evt_41f4834f4882",
-        "decided_at": "2026-10-30T22:04:35Z",
+        "decided_at": "2026-10-31T03:52:50Z",
         "urgency": "now"
       },
       {
         "event_id": "evt_7f3ae5a543ea",
-        "decided_at": "2026-10-30T22:04:35Z",
+        "decided_at": "2026-10-31T03:52:50Z",
         "urgency": "now"
       },
       {
         "event_id": "evt_763e21374709",
-        "decided_at": "2026-10-30T22:04:35Z",
+        "decided_at": "2026-10-31T03:52:50Z",
         "urgency": "now"
       },
       {
         "event_id": "evt_0928c4a17c4e",
-        "decided_at": "2026-10-30T22:04:35Z",
+        "decided_at": "2026-10-31T03:52:50Z",
+        "urgency": "now"
+      },
+      {
+        "event_id": "evt_b50966786f8c",
+        "decided_at": "2026-10-31T03:52:50Z",
         "urgency": "now"
       }
     ],
     "conclusions": [
       {
         "type": "urgency_preference",
-        "statement": "最常采用的处置节奏是 now（40/59）",
+        "statement": "最常采用的处置节奏是 now（41/60）",
         "basis": "决策账本/复核队列的 decision.urgency 分布（真实累计，不伪造）"
       }
     ],
@@ -626,15 +631,15 @@
     "basis": "knowledge_graph.json 中 Event --PARTICIPATES_IN--> Company 的一跳邻居（不做多跳扩散）",
     "acted_entities": [
       {
-        "key": "新华保险",
-        "count": 2
-      },
-      {
-        "key": "AM Best",
+        "key": "AI",
         "count": 1
       },
       {
-        "key": "Althoff",
+        "key": "AIG",
+        "count": 1
+      },
+      {
+        "key": "AM Best",
         "count": 1
       },
       {
@@ -658,11 +663,11 @@
         "count": 1
       },
       {
-        "key": "Novark",
+        "key": "Mariner Re",
         "count": 1
       },
       {
-        "key": "Red Bridge",
+        "key": "Novark",
         "count": 1
       }
     ],
@@ -710,6 +715,10 @@
     ],
     "overlap_entities": [
       {
+        "key": "AI",
+        "count": 1
+      },
+      {
         "key": "KCC",
         "count": 1
       }
@@ -726,10 +735,10 @@
     "sample_size": 88,
     "by_topic": {
       "channel_transformation": 3,
-      "capital_reinsurance": 59,
+      "capital_reinsurance": 56,
       "ai_intelligent": 10,
       "climate_catastrophe": 4,
-      "product_innovation": 2,
+      "product_innovation": 5,
       "pension_finance": 2,
       "regulatory_change": 7
     },
@@ -737,10 +746,10 @@
       "claims_loss": 14,
       "industry_update": 12,
       "rating": 2,
-      "product": 6,
-      "regulatory": 24,
+      "product": 8,
+      "regulatory": 23,
       "acquisition": 2,
-      "capital": 22,
+      "capital": 21,
       "market_entry": 6
     },
     "by_trust_level": {
@@ -840,29 +849,12 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-30T22:04:35Z"
+        "decided_at": "2026-10-31T03:52:50Z"
       },
-      "decided_at": "2026-10-30T22:04:35Z",
+      "decided_at": "2026-10-31T03:52:50Z",
       "event_published_at": "2026-08-18T05:00:49Z",
       "entities": [
         "美洲开发银行通过瑞士再保险"
-      ]
-    },
-    {
-      "event_id": "evt_e7f5525b0fd2",
-      "title": "科技保险护航新质生产力",
-      "topic": "ai_intelligent",
-      "event_type": "product",
-      "priority": 100,
-      "decision": {
-        "urgency": "now",
-        "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-30T22:04:35Z"
-      },
-      "decided_at": "2026-10-30T22:04:35Z",
-      "event_published_at": "2026-09-09T00:00:00+08:00",
-      "entities": [
-        "科技保险"
       ]
     },
     {
@@ -874,9 +866,9 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-30T22:04:35Z"
+        "decided_at": "2026-10-31T03:52:50Z"
       },
-      "decided_at": "2026-10-30T22:04:35Z",
+      "decided_at": "2026-10-31T03:52:50Z",
       "event_published_at": "2026-10-16T15:45:11Z",
       "entities": [
         "Generali",
@@ -894,9 +886,9 @@
       "decision": {
         "urgency": "now",
         "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-10-30T22:04:35Z"
+        "decided_at": "2026-10-31T03:52:50Z"
       },
-      "decided_at": "2026-10-30T22:04:35Z",
+      "decided_at": "2026-10-31T03:52:50Z",
       "event_published_at": "2026-08-10T09:00:48Z",
       "entities": [
         "AM Best"
@@ -911,14 +903,32 @@
       "decision": {
         "urgency": "now",
         "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-10-30T22:04:35Z"
+        "decided_at": "2026-10-31T03:52:50Z"
       },
-      "decided_at": "2026-10-30T22:04:35Z",
+      "decided_at": "2026-10-31T03:52:50Z",
       "event_published_at": "2026-09-07T05:00:27Z",
       "entities": [
         "Howden Re",
         "Novark",
         "以扩大机构获取保险"
+      ]
+    },
+    {
+      "event_id": "evt_e833bbc251da",
+      "title": "Talcott 与高盛合作推出价值 10 亿美元的 West Grove Re sidecar",
+      "topic": "product_innovation",
+      "event_type": "product",
+      "priority": 75,
+      "decision": {
+        "urgency": "now",
+        "action": "保持跟踪，等待更多独立证据或业务信号",
+        "decided_at": "2026-10-31T03:52:50Z"
+      },
+      "decided_at": "2026-10-31T03:52:50Z",
+      "event_published_at": "2026-08-04T14:30:58Z",
+      "entities": [
+        "Talcott",
+        "West Grove Re"
       ]
     },
     {
@@ -930,13 +940,31 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-30T22:04:35Z"
+        "decided_at": "2026-10-31T03:52:50Z"
       },
-      "decided_at": "2026-10-30T22:04:35Z",
+      "decided_at": "2026-10-31T03:52:50Z",
       "event_published_at": "2026-10-22T09:00:00Z",
       "entities": [
         "Korra",
         "推出再保险"
+      ]
+    },
+    {
+      "event_id": "evt_4cd0316ba817",
+      "title": "AIG 与 Parametrix 推出网络参数解决方案以应对云服务中断损失",
+      "topic": "product_innovation",
+      "event_type": "product",
+      "priority": 60,
+      "decision": {
+        "urgency": "now",
+        "action": "保持跟踪，等待更多独立证据或业务信号",
+        "decided_at": "2026-10-31T03:52:50Z"
+      },
+      "decided_at": "2026-10-31T03:52:50Z",
+      "event_published_at": "2026-08-14T09:30:32Z",
+      "entities": [
+        "AIG",
+        "Parametrix"
       ]
     },
     {
@@ -948,9 +976,9 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-30T22:04:35Z"
+        "decided_at": "2026-10-31T03:52:50Z"
       },
-      "decided_at": "2026-10-30T22:04:35Z",
+      "decided_at": "2026-10-31T03:52:50Z",
       "event_published_at": "2026-09-15T14:00:43Z",
       "entities": [
         "KCC",
@@ -966,9 +994,9 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-30T22:04:35Z"
+        "decided_at": "2026-10-31T03:52:50Z"
       },
-      "decided_at": "2026-10-30T22:04:35Z",
+      "decided_at": "2026-10-31T03:52:50Z",
       "event_published_at": "2026-10-07T12:00:13Z",
       "entities": [
         "TWIA",
@@ -976,21 +1004,22 @@
       ]
     },
     {
-      "event_id": "evt_845ca4e8e5b6",
-      "title": "汉诺威再保险在这个市场上的增长很顺利，预计房地产巨灾费率的降低将放缓：Althoff",
-      "topic": "ai_intelligent",
-      "event_type": "industry_update",
+      "event_id": "evt_b50966786f8c",
+      "title": "Mariner Re 启动 7.5 亿美元 TIAA 投资，以支持 Symetra 的年金增长",
+      "topic": "product_innovation",
+      "event_type": "product",
       "priority": 60,
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-30T22:04:35Z"
+        "decided_at": "2026-10-31T03:52:50Z"
       },
-      "decided_at": "2026-10-30T22:04:35Z",
-      "event_published_at": "2026-08-12T11:00:51Z",
+      "decided_at": "2026-10-31T03:52:50Z",
+      "event_published_at": "2026-10-26T17:00:27Z",
       "entities": [
-        "Althoff",
-        "汉诺威再保险"
+        "Mariner Re",
+        "Symetra",
+        "TIAA"
       ]
     },
     {
@@ -1002,9 +1031,9 @@
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-30T22:04:35Z"
+        "decided_at": "2026-10-31T03:52:50Z"
       },
-      "decided_at": "2026-10-30T22:04:35Z",
+      "decided_at": "2026-10-31T03:52:50Z",
       "event_published_at": "2026-08-17T09:45:18Z",
       "entities": [
         "Mangrove",
@@ -1012,38 +1041,20 @@
       ]
     },
     {
-      "event_id": "evt_c2087cb84c7f",
-      "title": "新华保险：在上半年市场调整中积极加仓权益资产",
-      "topic": "capital_reinsurance",
+      "event_id": "evt_ef42853e4111",
+      "title": "中国平安郭晓涛谈百亿投入千亿Tocken：AI基建已完成，处于场景赋能创造价值阶段",
+      "topic": "product_innovation",
       "event_type": "product",
       "priority": 60,
       "decision": {
         "urgency": "now",
         "action": "保持跟踪，等待更多独立证据或业务信号",
-        "decided_at": "2026-10-30T22:04:35Z"
+        "decided_at": "2026-10-31T03:52:50Z"
       },
-      "decided_at": "2026-10-30T22:04:35Z",
-      "event_published_at": "2026-08-27T00:00:00+08:00",
+      "decided_at": "2026-10-31T03:52:50Z",
+      "event_published_at": "2026-08-21T00:00:00+08:00",
       "entities": [
-        "新华保险"
-      ]
-    },
-    {
-      "event_id": "evt_c51bc4db164b",
-      "title": "新华保险：发挥保险资金优势，支持资本市场发展",
-      "topic": "capital_reinsurance",
-      "event_type": "capital",
-      "priority": 60,
-      "decision": {
-        "urgency": "now",
-        "action": "复核资本配置与竞争格局",
-        "decided_at": "2026-10-30T22:04:35Z"
-      },
-      "decided_at": "2026-10-30T22:04:35Z",
-      "event_published_at": "2026-07-20T00:00:00+08:00",
-      "entities": [
-        "发挥保险",
-        "新华保险"
+        "AI"
       ]
     }
   ]

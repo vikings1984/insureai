@@ -1,20 +1,20 @@
 {
   "version": "ir-v1.1",
   "registry_version": "er-v1.1",
-  "generated_at": "2026-10-30T22:05:55Z",
+  "generated_at": "2026-10-31T03:54:19Z",
   "principle": "单一事实源：所有模块引用 canonical_event_id；resolver 只解析、不发明身份。合并与分裂由证据 + 人工 review 决定，resolver 仅产出候选。",
-  "total_references": 107,
-  "resolved": 107,
+  "total_references": 109,
+  "resolved": 109,
   "unresolved": 0,
   "unresolved_rate": 0.0,
   "unresolved_samples": [],
   "partition_stats": {
-    "other": 74,
+    "other": 76,
     "regulatory": 31,
     "acquisition": 2
   },
   "candidate_merges": {
-    "count": 9,
+    "count": 8,
     "status": "proposed",
     "items": [
       {
@@ -45,6 +45,33 @@
         "status": "proposed"
       },
       {
+        "entity": "AIG",
+        "type": "Company",
+        "canonical_ids": [
+          "cev_1531211a5ffd",
+          "cev_6b75e374085d",
+          "cev_7851da468cff",
+          "cev_7b4c815db2e0",
+          "cev_88f964faf2fd",
+          "cev_8ddc2219238f",
+          "cev_97b1a39a5334",
+          "cev_e6ac7f7efdd6"
+        ],
+        "event_ids": [
+          "cev_6b75e374085d",
+          "cev_7851da468cff",
+          "cev_88f964faf2fd",
+          "cev_e6ac7f7efdd6",
+          "cev_1531211a5ffd",
+          "cev_8ddc2219238f",
+          "cev_97b1a39a5334",
+          "cev_7b4c815db2e0"
+        ],
+        "domain": "other",
+        "evidence": "实体共现（AIG 跨 8 个 canonical event）",
+        "status": "proposed"
+      },
+      {
         "entity": "AM Best",
         "type": "Company",
         "canonical_ids": [
@@ -69,21 +96,6 @@
         ],
         "domain": "other",
         "evidence": "实体共现（AM Best 跨 8 个 canonical event）",
-        "status": "proposed"
-      },
-      {
-        "entity": "Althoff",
-        "type": "Company",
-        "canonical_ids": [
-          "cev_14321b51a819",
-          "cev_26ec0af1a081"
-        ],
-        "event_ids": [
-          "cev_26ec0af1a081",
-          "cev_14321b51a819"
-        ],
-        "domain": "other",
-        "evidence": "实体共现（Althoff 跨 2 个 canonical event）",
         "status": "proposed"
       },
       {
@@ -180,26 +192,11 @@
         "domain": "other",
         "evidence": "实体共现（Novark 跨 2 个 canonical event）",
         "status": "proposed"
-      },
-      {
-        "entity": "Red Bridge",
-        "type": "Company",
-        "canonical_ids": [
-          "cev_820e3cc2be7d",
-          "cev_8cb46921c03c"
-        ],
-        "event_ids": [
-          "cev_8cb46921c03c",
-          "cev_820e3cc2be7d"
-        ],
-        "domain": "other",
-        "evidence": "实体共现（Red Bridge 跨 2 个 canonical event）",
-        "status": "proposed"
       }
     ]
   },
   "generic_review": {
-    "count": 19,
+    "count": 18,
     "items": [
       {
         "entity": "A-Cap",
@@ -220,13 +217,13 @@
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
-        "entity": "AM Best",
+        "entity": "AIG",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
-        "entity": "Althoff",
+        "entity": "AM Best",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
@@ -268,6 +265,12 @@
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
       },
       {
+        "entity": "Mariner Re",
+        "type": "Company",
+        "into_ce": false,
+        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
+      },
+      {
         "entity": "Novark",
         "type": "Company",
         "into_ce": false,
@@ -275,12 +278,6 @@
       },
       {
         "entity": "Pro Global",
-        "type": "Company",
-        "into_ce": false,
-        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
-      },
-      {
-        "entity": "Red Bridge",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
@@ -305,12 +302,6 @@
       },
       {
         "entity": "保险公司",
-        "type": "Company",
-        "into_ce": false,
-        "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
-      },
-      {
-        "entity": "新华保险",
         "type": "Company",
         "into_ce": false,
         "reason": "generic_entities_only（无具体 event_id）→ 进复核不进 CE"
