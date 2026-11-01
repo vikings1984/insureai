@@ -1,6 +1,6 @@
 {
   "version": "funnel-v1.1",
-  "generated_at": "2026-10-31T21:02:27Z",
+  "generated_at": "2026-11-01T04:02:42Z",
   "principle": "待决策洪流 → 漏斗（now/soon/watch）+ 排名靠前的待决；已决只来自真实决策记录；六条件硬化为每条待决的注解 + decision_ready 子集；分角色计数；样本<30 不结论；分桶为可观测代理",
   "meta": {
     "total_review_queue": 100,
@@ -10,32 +10,31 @@
     "pending": 66,
     "pending_by_tier": {
       "now": 25,
-      "soon": 1,
-      "watch": 40
+      "soon": 4,
+      "watch": 37
     },
     "pending_by_role": {
-      "ai": 8,
+      "ai": 7,
       "ma": 2,
       "regulatory": 17,
       "health": 0,
-      "other": 39
+      "other": 40
     },
-    "decision_ready": 3,
+    "decision_ready": 2,
     "decision_ready_ceids": [
       "cev_bb54ddbe0129",
-      "cev_f045ffa38e68",
-      "cev_96ad5d9212a7"
+      "cev_f045ffa38e68"
     ],
     "decision_ready_precision": 1.0,
     "human_override_rate": 0.0,
     "gold_precision": 1.0,
-    "gold_labeled": 2,
+    "gold_labeled": 1,
     "gold_status": "seed",
     "gold_source": "seed_assistant",
     "six_failed_counter": {
-      "1": 46,
-      "2": 43,
-      "3": 43,
+      "1": 47,
+      "2": 45,
+      "3": 45,
       "4": 39,
       "5": 34,
       "6": 0
@@ -927,6 +926,106 @@
           1,
           2,
           3
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_8d2ea2c96dc0",
+        "canonical_event_id": "cev_c0e7ecbdb390",
+        "title": "个人养老金、商业养老年金、普通储蓄怎么选",
+        "topic": "pension_finance",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_8425aa1f5830",
+        "canonical_event_id": "cev_debdc9551b64",
+        "title": "“您的养老保险账户发生变动”：养老金个人账户每月缴1829元了！",
+        "topic": "pension_finance",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1,
+          2,
+          3
+        ],
+        "six_detail": {
+          "monitored": false,
+          "acted": false,
+          "t1_reg": false,
+          "has_semantic_change": false,
+          "stage": "n/a",
+          "status": "active",
+          "evidence_count": 1,
+          "trust_level": "medium",
+          "source_count": 1,
+          "single_src_regulatory": false,
+          "decided": false,
+          "feedback_status": null
+        },
+        "urgency": null,
+        "tier": "soon"
+      },
+      {
+        "event_id": "evt_16477249a32d",
+        "canonical_event_id": "cev_3ccba35dfc7c",
+        "title": "保险服务业绩增长！新华保险三季报出炉，最新解读来了",
+        "topic": "",
+        "priority": 40,
+        "trust_level": "medium",
+        "reason_types": [
+          "change_impact"
+        ],
+        "role": "other",
+        "meets_six": false,
+        "failed_conditions": [
+          1
         ],
         "six_detail": {
           "monitored": false,
@@ -2157,100 +2256,6 @@
         },
         "urgency": null,
         "tier": "watch"
-      },
-      {
-        "event_id": "evt_11b9a680166d",
-        "canonical_event_id": "cev_a7c58586dfed",
-        "title": "1 月企业再保险重组后，Travelers 放弃个人 XOL 条约续签",
-        "topic": "capital_reinsurance",
-        "priority": 30,
-        "trust_level": "medium",
-        "reason_types": [
-          "event_cluster"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "watch"
-      },
-      {
-        "event_id": "evt_bc369073060b",
-        "canonical_event_id": "cev_96ad5d9212a7",
-        "title": "中国平安亮相世界人工智能大会 发布医疗、保险、支付领域最新AI成果 AI驱动“综合金融+医疗养老”服务升级",
-        "topic": "ai_intelligent",
-        "priority": 30,
-        "trust_level": "medium",
-        "reason_types": [
-          "event_cluster"
-        ],
-        "role": "ai",
-        "meets_six": true,
-        "failed_conditions": [],
-        "six_detail": {
-          "monitored": true,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "watch"
-      },
-      {
-        "event_id": "evt_b6aea91d6a43",
-        "canonical_event_id": "cev_cb57b20e4ff4",
-        "title": "达信调查发现，尽管保险公司对风险越来越谨慎，但仍热衷于私人信贷",
-        "topic": "capital_reinsurance",
-        "priority": 30,
-        "trust_level": "medium",
-        "reason_types": [
-          "event_cluster"
-        ],
-        "role": "other",
-        "meets_six": false,
-        "failed_conditions": [
-          1
-        ],
-        "six_detail": {
-          "monitored": false,
-          "acted": false,
-          "t1_reg": false,
-          "has_semantic_change": false,
-          "stage": "n/a",
-          "status": "active",
-          "evidence_count": 1,
-          "trust_level": "medium",
-          "source_count": 1,
-          "single_src_regulatory": false,
-          "decided": false,
-          "feedback_status": null
-        },
-        "urgency": null,
-        "tier": "watch"
       }
     ]
   },
@@ -2289,36 +2294,6 @@
       "event_id": "evt_336b18b7e6c7",
       "canonical_event_id": "cev_f045ffa38e68",
       "title": "保险中介行业加速出清，多家机构注销许可证、摘牌离场",
-      "topic": "ai_intelligent",
-      "priority": 30,
-      "trust_level": "medium",
-      "reason_types": [
-        "event_cluster"
-      ],
-      "role": "ai",
-      "meets_six": true,
-      "failed_conditions": [],
-      "six_detail": {
-        "monitored": true,
-        "acted": false,
-        "t1_reg": false,
-        "has_semantic_change": false,
-        "stage": "n/a",
-        "status": "active",
-        "evidence_count": 1,
-        "trust_level": "medium",
-        "source_count": 1,
-        "single_src_regulatory": false,
-        "decided": false,
-        "feedback_status": null
-      },
-      "urgency": null,
-      "tier": "watch"
-    },
-    {
-      "event_id": "evt_bc369073060b",
-      "canonical_event_id": "cev_96ad5d9212a7",
-      "title": "中国平安亮相世界人工智能大会 发布医疗、保险、支付领域最新AI成果 AI驱动“综合金融+医疗养老”服务升级",
       "topic": "ai_intelligent",
       "priority": 30,
       "trust_level": "medium",
@@ -2662,6 +2637,41 @@
       },
       "urgency": null,
       "tier": "now"
+    },
+    {
+      "event_id": "evt_7e02d4b37c1f",
+      "canonical_event_id": "cev_59c2a579f30c",
+      "title": "PICC P&C宣布在香港发行首辆Sidecar",
+      "topic": "capital_reinsurance",
+      "priority": 75,
+      "trust_level": "low",
+      "reason_types": [
+        "conflict"
+      ],
+      "role": "other",
+      "meets_six": false,
+      "failed_conditions": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "six_detail": {
+        "monitored": false,
+        "acted": false,
+        "t1_reg": false,
+        "has_semantic_change": false,
+        "stage": "n/a",
+        "status": "active",
+        "evidence_count": 2,
+        "trust_level": "low",
+        "source_count": 2,
+        "single_src_regulatory": false,
+        "decided": false,
+        "feedback_status": null
+      },
+      "urgency": null,
+      "tier": "now"
     }
   ],
   "decided_list": [
@@ -2698,7 +2708,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T21:00:18Z"
+      "decided_at": "2026-11-01T04:00:51Z"
     },
     {
       "event_id": "evt_e833bbc251da",
@@ -2731,7 +2741,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T21:00:18Z"
+      "decided_at": "2026-11-01T04:00:51Z"
     },
     {
       "event_id": "evt_41f4834f4882",
@@ -2764,7 +2774,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T21:00:18Z"
+      "decided_at": "2026-11-01T04:00:51Z"
     },
     {
       "event_id": "evt_bdcee533e09d",
@@ -2797,7 +2807,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T21:00:18Z"
+      "decided_at": "2026-11-01T04:00:51Z"
     },
     {
       "event_id": "evt_63164bd5c318",
@@ -2830,7 +2840,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T21:00:18Z"
+      "decided_at": "2026-11-01T04:00:51Z"
     },
     {
       "event_id": "evt_3429758517ea",
@@ -2960,7 +2970,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T21:00:18Z"
+      "decided_at": "2026-11-01T04:00:51Z"
     },
     {
       "event_id": "evt_c16162e2cd11",
@@ -2994,7 +3004,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T21:00:18Z"
+      "decided_at": "2026-11-01T04:00:51Z"
     },
     {
       "event_id": "evt_0928c4a17c4e",
@@ -3026,7 +3036,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T21:00:18Z"
+      "decided_at": "2026-11-01T04:00:51Z"
     },
     {
       "event_id": "evt_ef42853e4111",
@@ -3058,7 +3068,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T21:00:18Z"
+      "decided_at": "2026-11-01T04:00:51Z"
     },
     {
       "event_id": "evt_4cd0316ba817",
@@ -3090,7 +3100,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T21:00:18Z"
+      "decided_at": "2026-11-01T04:00:51Z"
     },
     {
       "event_id": "evt_b50966786f8c",
@@ -3122,7 +3132,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T21:00:18Z"
+      "decided_at": "2026-11-01T04:00:51Z"
     },
     {
       "event_id": "evt_7f3ae5a543ea",
@@ -3156,7 +3166,7 @@
         "feedback_status": null
       },
       "urgency": "now",
-      "decided_at": "2026-10-31T21:00:18Z"
+      "decided_at": "2026-11-01T04:00:51Z"
     },
     {
       "event_id": "evt_92310abdea56",
@@ -3784,7 +3794,7 @@
     {
       "dimension": "六条件硬化（决策门）",
       "status": "evaluated",
-      "reason": "待决 66 条中真正达到六条件决策门 3 条；各条件未达计数 {'1': 46, '2': 43, '3': 43, '4': 39, '5': 34, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
+      "reason": "待决 66 条中真正达到六条件决策门 2 条；各条件未达计数 {'1': 47, '2': 45, '3': 45, '4': 39, '5': 34, '6': 0}。单源+监管/评级按纪律不进入 decision_ready。",
       "unblock": "六条件为可观测评估注解；decision_ready 子集供优先拍板，其余仍留 Human Review"
     },
     {

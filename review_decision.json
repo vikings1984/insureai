@@ -1,11 +1,11 @@
 {
   "version": "review-decision-v1.0",
-  "generated_at": "2026-10-31T21:02:30+00:00",
+  "generated_at": "2026-11-01T04:02:45+00:00",
   "principle": "三段式收敛：分层呈现(不改状态) + 建议处置(不改状态) + 人工执行(人才改状态)。不做 auto-resolve——阈值未经人工验证，无 ground truth 时自动处置=静默漏斗。",
   "meta": {
     "queue_items": 100,
     "pending": 100,
-    "human_load": 28,
+    "human_load": 31,
     "auto_resolve_enabled": false,
     "note": "所有建议 auto_executable=False；状态变更须由 Human Review 侧人工执行"
   },
@@ -329,9 +329,43 @@
     {
       "tier": "material_change",
       "label": "复核实质变化",
-      "count": 0,
+      "count": 3,
       "default_collapsed": false,
-      "items": []
+      "items": [
+        {
+          "event_id": "evt_8d2ea2c96dc0",
+          "title": "个人养老金、商业养老年金、普通储蓄怎么选",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 40,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_8425aa1f5830",
+          "title": "“您的养老保险账户发生变动”：养老金个人账户每月缴1829元了！",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 40,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_16477249a32d",
+          "title": "保险服务业绩增长！新华保险三季报出炉，最新解读来了",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 40,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        }
+      ]
     },
     {
       "tier": "relevant",
@@ -641,7 +675,7 @@
     {
       "tier": "noise",
       "label": "建议归档（低优先级 cluster）",
-      "count": 45,
+      "count": 42,
       "default_collapsed": true,
       "items": [
         {
@@ -1098,39 +1132,6 @@
         {
           "event_id": "evt_5e6578f06ce8",
           "title": "Autonomous表示，再保险市场疲软的影响变得越来越明显",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_11b9a680166d",
-          "title": "1 月企业再保险重组后，Travelers 放弃个人 XOL 条约续签",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_bc369073060b",
-          "title": "中国平安亮相世界人工智能大会 发布医疗、保险、支付领域最新AI成果 AI驱动“综合金融+医疗养老”服务升级",
-          "tier": "noise",
-          "tier_label": "建议归档（低优先级 cluster）",
-          "priority": 30,
-          "suggested_action": "suggest_archive",
-          "auto_executable": false,
-          "reason": "优先级 30／信任 medium；无冲突/变化信号",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_b6aea91d6a43",
-          "title": "达信调查发现，尽管保险公司对风险越来越谨慎，但仍热衷于私人信贷",
           "tier": "noise",
           "tier_label": "建议归档（低优先级 cluster）",
           "priority": 30,
