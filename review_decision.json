@@ -1,11 +1,11 @@
 {
   "version": "review-decision-v1.0",
-  "generated_at": "2026-11-03T13:45:58+00:00",
+  "generated_at": "2026-11-03T22:57:53+00:00",
   "principle": "三段式收敛：分层呈现(不改状态) + 建议处置(不改状态) + 人工执行(人才改状态)。不做 auto-resolve——阈值未经人工验证，无 ground truth 时自动处置=静默漏斗。",
   "meta": {
     "queue_items": 100,
     "pending": 100,
-    "human_load": 54,
+    "human_load": 48,
     "auto_resolve_enabled": false,
     "note": "所有建议 auto_executable=False；状态变更须由 Human Review 侧人工执行"
   },
@@ -13,7 +13,7 @@
     {
       "tier": "decision_required",
       "label": "需人工裁决",
-      "count": 28,
+      "count": 30,
       "default_collapsed": false,
       "items": [
         {
@@ -94,11 +94,22 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_2b7435a3f279",
-          "title": "汉密尔顿以较低的价格获得了 3 亿美元的 Easton Re 2027-1 巨灾债券",
+          "event_id": "evt_ad1e4fcaf6d7",
+          "title": "米勒任命彼得·斯塔宾斯 (Peter Stubbings) 担任再保险首席执行官，马斯特斯 (Masters) 出任董事长",
           "tier": "decision_required",
           "tier_label": "需人工裁决",
-          "priority": 80,
+          "priority": 85,
+          "suggested_action": "human_decide",
+          "auto_executable": false,
+          "reason": "命中冲突类 reason（conflict/claim_conflict）——需人工裁决",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_222125dda745",
+          "title": "保险板块午后震荡走高，证券保险ETF易方达（512070）标的指数上涨2%",
+          "tier": "decision_required",
+          "tier_label": "需人工裁决",
+          "priority": 85,
           "suggested_action": "human_decide",
           "auto_executable": false,
           "reason": "命中冲突类 reason（conflict/claim_conflict）——需人工裁决",
@@ -292,6 +303,17 @@
           "status": "pending"
         },
         {
+          "event_id": "evt_2b7435a3f279",
+          "title": "汉密尔顿以较低的价格获得了 3 亿美元的 Easton Re 2027-1 巨灾债券",
+          "tier": "decision_required",
+          "tier_label": "需人工裁决",
+          "priority": 70,
+          "suggested_action": "human_decide",
+          "auto_executable": false,
+          "reason": "命中冲突类 reason（conflict/claim_conflict）——需人工裁决",
+          "status": "pending"
+        },
+        {
           "event_id": "evt_a4023075adcb",
           "title": "USAA 获得 3.5 亿美元住宅再保险 2026-2 巨灾债券规模扩大 56%，价格低于指导值",
           "tier": "decision_required",
@@ -329,12 +351,23 @@
     {
       "tier": "material_change",
       "label": "复核实质变化",
-      "count": 26,
+      "count": 18,
       "default_collapsed": false,
       "items": [
         {
-          "event_id": "evt_b3b7d2f4bc51",
-          "title": "Hiscox ILS 资产第三季度留存收益增加 2 亿美元，达到 31 亿美元，同比增长 139%",
+          "event_id": "evt_267d3f7127bd",
+          "title": "Serenova Re 获得日本 R&I 的 A− 评级",
+          "tier": "material_change",
+          "tier_label": "复核实质变化",
+          "priority": 60,
+          "suggested_action": "review_change",
+          "auto_executable": false,
+          "reason": "存在实质变化影响（change_impact）",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_92b25dd59ba1",
+          "title": "Premia acquires Cowen Reinsurance from TD Bank",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -344,8 +377,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_1a419d74427e",
-          "title": "Atmos Capital Partners 成立，成为合伙人主导的独立巨灾债券投资管理公司",
+          "event_id": "evt_4ddaf05ef1c5",
+          "title": "传统专家 RiverStone 进入 ILS 市场；完成 QBE 损失投资组合转让",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -355,8 +388,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_0ecab0128009",
-          "title": "Fidelis Partnership 宣布 2027 年新加坡再保险扩张计划",
+          "event_id": "evt_351a3e35023c",
+          "title": "美国人拒绝使用人工智能进行医疗和保险决策",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -366,8 +399,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_827ba6922433",
-          "title": "Greenlight Re 26 年第三季度的净利润升至 320 万美元，CoR 为 90.5%",
+          "event_id": "evt_d6b629d50e3e",
+          "title": "Novel 从 Crestview 获得新的股权资本以支持持续扩建",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -377,8 +410,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_2ed868e32703",
-          "title": "NN Group 赞助第四支 Orange Capital Re 巨灾债券，寻求 7500 万欧元的再保险",
+          "event_id": "evt_59acc99b3339",
+          "title": "Vantage 聘请 Lisa Pickard 领导新的 FAC 再保险业务",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -388,8 +421,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_ea1201aa235b",
-          "title": "通过刻意的周期管理，Hiscox Re 净 ICWP 在 26 年 9 月内减少",
+          "event_id": "evt_9fb6cba88009",
+          "title": "国家发改委：开发科技保险等专属产品，更好保障未来产业发展",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -399,8 +432,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_e76e1017a77c",
-          "title": "AXIS Capital第三方资本合作伙伴手续费收入持续上升",
+          "event_id": "evt_82cf486cdb64",
+          "title": "非上市人身险公司三季度透视：投资拖累盈利，银行系“吃饱”",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -410,8 +443,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_0f562b1a12ba",
-          "title": "亚太地区再保险买家受益于市场疲软，但结果仍然取决于风险：OneGlobal",
+          "event_id": "evt_2f5aaf1618d6",
+          "title": "随着市场利差正常化，管理巨灾债券配置：Artemis London 2026 视频",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -421,8 +454,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_b12ddec8883d",
-          "title": "新加坡将设立由行业联盟开发的新数据中心保险设施",
+          "event_id": "evt_fa25888e4c29",
+          "title": "恪守保险资金运用安全原则 太平资产多模式助力国家战略实施",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -432,8 +465,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_957fce8b4a56",
-          "title": "怡安和慕尼黑再保险为印度尼西亚和菲律宾推出参数流行病解决方案",
+          "event_id": "evt_9b85781bcb9e",
+          "title": "伊利首席执行官内卡斯特罗提前辞职；博拉什被任命为临时领导人",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -443,8 +476,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_ce89e7385997",
-          "title": "APCIA 表示正在制定索赔数据标准以更好地应对批评",
+          "event_id": "evt_eb881ce23212",
+          "title": "随着救灾援助成为政治彩票，学校、宗教团体、图书馆纷纷出击",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -454,8 +487,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_2d3492077fde",
-          "title": "广东：支持商业银行用好服务消费与养老再贷款等结构性货币政策工具，加大服务消费与养老领域信贷支持",
+          "event_id": "evt_beceef1ecdb5",
+          "title": "养老服务消费补贴惠及243万失能老年人",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -465,8 +498,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_c465a2e90411",
-          "title": "央行11月3日开展证券、基金、保险互换便利操作，额度超1000亿元；马斯克：2029年轨道算力碾压地面，SpaceX已申请建设由100万颗卫星组成的星座；“九章",
+          "event_id": "evt_449811f3ec01",
+          "title": "众安保险：目前带病体保险市场需求远大于供给",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -476,8 +509,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_7f64534317bb",
-          "title": "中国养老金融学研究联盟成立",
+          "event_id": "evt_cb9677f1afc1",
+          "title": "传统圆桌会议：随着客户期望的变化，建立成功的传统合作伙伴关系的信任关键",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -487,8 +520,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_aa814b3ba11c",
-          "title": "养老金融“不差钱”却“差收益”：79％个人养老金账户零缴存，专家呼吁打通储蓄转化通道",
+          "event_id": "evt_ae3a5c74ca53",
+          "title": "人员流动：专业项目组任命 Dearing 为 SPG ExecuPro 高级副总裁",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -498,8 +531,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_76c5ef68de1e",
-          "title": "非车险撑起保费增量，财险产品新规划出八类红线",
+          "event_id": "evt_345426841b33",
+          "title": "Ardonagh 任命 Mallory Motley 为国际安置主管",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -509,107 +542,8 @@
           "status": "pending"
         },
         {
-          "event_id": "evt_27f67812e64c",
-          "title": "联邦贸易委员会、各州指控Toast软件烧毁餐厅和消费者",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_b4e5e666fd86",
-          "title": "Infinity Auto 同意向佛罗里达保单持有人退还 4600 万美元的超额利润",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_8bdbb6ecea27",
-          "title": "广东：积极扩大失业保险、工伤保险覆盖面 深化灵活就业人员参加失业保险试点",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_d774f8d94bd8",
-          "title": "人身险三季报观察：分红险成新单主力，寿险前十强格局生变",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_98658875dfcb",
-          "title": "智能车OTA升级后发生交通事故、充电起火，保险理赔后如何追偿？",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_7069f8b65cdf",
-          "title": "险企三季报AB面：净利缩水三成与分红险“接棒”",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_7305afa37cc3",
-          "title": "RenRe 任命 Nicole Valadao 为再保险业务全球主管",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_cd64d6a9e55f",
-          "title": "Orion180 首次公开募股后在佛罗里达州开设新总部",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_d9f0257a0ffc",
-          "title": "Liberty Specialty Markets names Richard Richards to lead London property D&F bus",
-          "tier": "material_change",
-          "tier_label": "复核实质变化",
-          "priority": 40,
-          "suggested_action": "review_change",
-          "auto_executable": false,
-          "reason": "存在实质变化影响（change_impact）",
-          "status": "pending"
-        },
-        {
-          "event_id": "evt_511dd6056014",
-          "title": "人员流动：五人被任命为加州 COIN 顾问委员会和课程委员会成员",
+          "event_id": "evt_ed64af74e051",
+          "title": "SRS Altitude任命Sullivan为北美艺术主管",
           "tier": "material_change",
           "tier_label": "复核实质变化",
           "priority": 40,
@@ -807,7 +741,7 @@
     {
       "tier": "noise",
       "label": "建议归档（低优先级 cluster）",
-      "count": 30,
+      "count": 36,
       "default_collapsed": true,
       "items": [
         {
@@ -1132,6 +1066,72 @@
         {
           "event_id": "evt_54eca321f2bd",
           "title": "穆迪评级：超过 25% 的保险公司预计 2027 年增加财产再保险购买量",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_fd60218d12d1",
+          "title": "中国再保险拟向财政部定增募资不超30亿元 用于增加核心一级资本",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_46f85f5c6aae",
+          "title": "瑞士再保险预计到 2030 年数据中心和可再生能源溢价将达到 2000 亿美元。Cat 债券和 Sidecar 可以发挥作用",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_a75c8e446fcd",
+          "title": "平安养老贵州分公司被罚76万，涉多项违规",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_0b848c9301cc",
+          "title": "投资失速、罚单不断，平安产险这份半年成绩单并不轻松",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_9e0d6e83b07e",
+          "title": "从化险到减量提质 金融机构改革重塑资源配置格局",
+          "tier": "noise",
+          "tier_label": "建议归档（低优先级 cluster）",
+          "priority": 30,
+          "suggested_action": "suggest_archive",
+          "auto_executable": false,
+          "reason": "优先级 30／信任 medium；无冲突/变化信号",
+          "status": "pending"
+        },
+        {
+          "event_id": "evt_7f1a02658795",
+          "title": "半年净利23亿元、偿付能力回升，中信保诚的增长“含金量”几何？",
           "tier": "noise",
           "tier_label": "建议归档（低优先级 cluster）",
           "priority": 30,
